@@ -97,8 +97,11 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .mark { width: 34px; height: 26px; flex: none; }
 .tabs { display: flex; gap: 0.25rem 1rem; min-width: 0; }
 .appbar .tab { font-size: var(--t2); letter-spacing: 0.04em; }
+.tab-gear { padding: 0 0.25rem; }
+.tab-gear svg { display: block; }
 @media (max-width: 439px) { .mark { width: 28px; height: 22px; } .ab-in { gap: 0.625rem; } .tabs { gap: 0.25rem 0.75rem; } }
-@media (max-width: 379px) { .appbar .tab { font-size: var(--t1); } .tabs { gap: 0.25rem 0.5rem; } .ab-in { gap: 0.375rem; } }
+@media (max-width: 419px) { .appbar .tab { font-size: 0.9375rem; letter-spacing: 0.02em; } .tabs { gap: 0.25rem 0.625rem; } }
+@media (max-width: 379px) { .appbar .tab { font-size: var(--t1); letter-spacing: 0.01em; } .tabs { gap: 0.25rem 0.5rem; } .ab-in { gap: 0.375rem; } .mark { width: 24px; } }
 .tab { background: none; border: 0; border-bottom: 3px solid transparent; min-height: 44px; padding: 0 0.125rem; font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-soft); cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; }
 .tab[aria-selected="true"], .tab[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--ink); }
 .view[hidden] { display: none; }
@@ -509,6 +512,40 @@ body.typing .restbar { display: none; }
 .cl-item { padding-block: 0.875rem; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.25rem; }
 .cl-title { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 .cl-item ul { margin: 0; padding-left: 1.1rem; color: var(--ink-soft); font-weight: 500; display: flex; flex-direction: column; gap: 0.125rem; }
+/* exercises */
+.xl-wrap { padding-block: 1rem 3rem; }
+.xl-body { display: flex; flex-direction: column; gap: 1.75rem; }
+.xl-body[hidden] { display: none; }
+.xl-search { font: inherit; font-size: var(--t3); font-weight: 600; color: var(--ink); background: transparent; border: 0; border-bottom: 2px solid var(--ctl); border-radius: 0; min-height: 48px; padding: 0.25rem 0; width: 100%; -webkit-appearance: none; appearance: none; }
+.xl-search:focus { outline: none; border-bottom-color: var(--ink); box-shadow: 0 1px 0 var(--ink); }
+.xl-search::placeholder { color: var(--ink-soft); opacity: 1; }
+.xl-tabs .tab, .xl-tabs .pt-div { font-size: 1.125rem; }
+.xl-tabs .tab { min-height: 44px; }
+.xl-tools { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 0.75rem 1rem; }
+.xl-sort { display: flex; flex-direction: column; gap: 0.125rem; min-width: 12rem; }
+.xl-sort select { font: inherit; font-weight: 600; color: var(--ink); border: 0; border-bottom: 2px solid var(--ctl); min-height: 40px; }
+.xl-form { display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem; background: var(--faint); }
+.xl-form[hidden] { display: none; }
+.xl-list { display: flex; flex-direction: column; }
+.xl-gh { padding: 0.5rem 0 0.25rem; margin-top: 0.75rem; border-bottom: 2px solid var(--ink); font-family: var(--f-head); font-weight: 700; font-size: var(--t2); letter-spacing: 0.1em; text-transform: uppercase; display: flex; justify-content: space-between; }
+.xl-gh span:last-child { color: var(--ink-soft); }
+.xl-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.125rem 0.75rem; align-items: center; width: 100%; min-height: 56px; padding: 0.5rem 0.25rem 0.5rem 10px; border: 0; border-bottom: 1px solid var(--line); border-left: 4px solid var(--g, var(--line)); background: none; text-align: left; color: var(--ink); cursor: pointer; transition: background-color 0.15s; }
+.xl-row:hover, .xl-row[aria-expanded="true"] { background: var(--faint); }
+.xl-name { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.1; }
+.xl-meta { grid-column: 1; font-size: var(--t2); color: var(--ink-soft); font-weight: 500; }
+.xl-tag { grid-row: 1 / span 2; grid-column: 2; font-family: var(--f-head); font-weight: 700; font-size: var(--t2); white-space: nowrap; }
+.xl-tag.mine { color: var(--good); }
+.xl-detail { padding: 0.75rem 0 1rem 14px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.5rem; }
+.xl-add { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; }
+.xl-add select { font: inherit; font-weight: 600; color: var(--ink); border: 0; border-bottom: 2px solid var(--ctl); min-height: 40px; min-width: 10rem; }
+.xl-empty { padding: 1.5rem 0; color: var(--ink-soft); font-weight: 500; text-align: center; }
+.xr-list { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(15rem, 78%); gap: 0.75rem; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 0.5rem; scrollbar-width: thin; }
+@media (min-width: 40rem) { .xr-list { grid-auto-flow: row; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); overflow: visible; } }
+.xr-card { scroll-snap-align: start; display: flex; flex-direction: column; gap: 0.25rem; padding: 0.75rem 0.875rem; background: var(--faint); border-left: 3px solid var(--pop); }
+.xr-card .xl-add { margin-top: auto; padding-top: 0.25rem; }
+.xr-card .xl-add select { min-width: 0; flex: 1 1 7rem; }
+.xr-why { font-size: var(--t1); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); font-family: var(--f-head); }
+.xr-name { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.1; }
 /* food */
 .fd-wrap { padding-block: 1rem 3rem; }
 .fd-body { display: flex; flex-direction: column; gap: 1.75rem; }
@@ -607,9 +644,10 @@ body.typing .restbar { display: none; }
       <nav class="tabs" role="tablist" aria-label="View">
         <button class="tab" role="tab" type="button" id="tab-train" data-view="train" aria-selected="true">Train</button>
         <button class="tab" role="tab" type="button" id="tab-plan" data-view="plan" aria-selected="false">Plan</button>
+        <button class="tab" role="tab" type="button" id="tab-exercises" data-view="exercises" aria-selected="false">Exercises</button>
         <button class="tab" role="tab" type="button" id="tab-progress" data-view="progress" aria-selected="false">Progress</button>
         <button class="tab" role="tab" type="button" id="tab-food" data-view="food" aria-selected="false">Food</button>
-        <button class="tab" role="tab" type="button" id="tab-settings" data-view="settings" aria-selected="false">Settings</button>
+        <button class="tab tab-gear" role="tab" type="button" id="tab-settings" data-view="settings" aria-selected="false" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3.3h-4l-.3 2.6a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1l.3 2.6h4l.3-2.6a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg></button>
       </nav>
     </div>
   </header>
@@ -723,6 +761,39 @@ body.typing .restbar { display: none; }
             </div>
           </details>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="view" id="v-exercises" hidden>
+    <div class="xl-wrap in">
+      <p class="loading" id="xl-loading">Loading exercises…</p>
+      <div class="xl-body" id="xl-body" hidden>
+        <section class="p-sec" aria-labelledby="h-xr" id="xr-sec">
+          <div class="p-head"><h2 id="h-xr">For you</h2></div>
+          <p class="note" id="xr-note"></p>
+          <div class="xr-list" id="xr-list"></div>
+        </section>
+        <section class="p-sec" aria-labelledby="h-xl">
+          <div class="p-head"><h2 id="h-xl">All exercises</h2><span class="p-count" id="xl-count"></span></div>
+          <input class="xl-search" type="search" id="xl-search" placeholder="Search by name, muscle or equipment" aria-label="Search exercises" autocomplete="off">
+          <nav class="ptabs xl-tabs" role="tablist" aria-label="Body part" id="xl-tabs"></nav>
+          <div class="xl-tools">
+            <label class="xl-sort"><span class="lab">Sort by</span>
+              <select class="sel" id="xl-sort"><option value="group">Body part</option><option value="az">Name, A to Z</option><option value="mine">Most trained by you</option><option value="equip">Equipment</option></select></label>
+            <button class="skew small" type="button" id="xl-new" aria-expanded="false"><span>+ Add your own</span></button>
+          </div>
+          <form class="xl-form" id="xl-form" hidden novalidate autocomplete="off">
+            <p class="note">Missing an exercise? Add it here. It shows up in this list, in the exercise picker and in Progress like any other.</p>
+            <div class="ed-fields">
+              <label class="ed-f wide"><span class="lab">Name</span><input id="xl-f-name" type="text" placeholder="Cable Y-raise"></label>
+              <label class="ed-f"><span class="lab">Body part</span><select id="xl-f-group"></select></label>
+              <label class="ed-f"><span class="lab">How you measure it</span><select id="xl-f-unit"><option value="kg">Weight in kg</option><option value="stack">Machine pin</option><option value="bw">Bodyweight reps</option><option value="assist">Assistance in kg</option><option value="min">Minutes</option></select></label>
+            </div>
+            <div class="foot-row"><button class="skew pop small" type="submit"><span>Add exercise</span></button><button class="textbtn" type="button" id="xl-f-cancel">Cancel</button><span class="note wz-err" id="xl-f-msg" role="alert"></span></div>
+          </form>
+          <div class="xl-list" id="xl-list"></div>
+        </section>
       </div>
     </div>
   </div>
@@ -1147,7 +1218,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
 
   // ------------------------------------------------------------------ views
-  const VIEWS = ['home', 'train', 'plan', 'progress', 'food', 'settings'];
+  const VIEWS = ['home', 'train', 'plan', 'exercises', 'progress', 'food', 'settings'];
   const setView = (v) => {
     if (S.view !== v) { hideToast(); enter($('#v-' + v), 16 * Math.sign(VIEWS.indexOf(v) - VIEWS.indexOf(S.view))); }
     S.view = v;
@@ -1156,6 +1227,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     VIEWS.forEach((x) => { $('#v-' + x).hidden = x !== v; });
     if (v === 'home') renderHome();
     if (v === 'food') renderFood();
+    if (v === 'exercises') renderExercises();
     if (v === 'plan' && S.ready) renderPlan();
     if (v === 'progress') renderProgress();
     if (v === 'settings') { paintExport(); paintImport(); if (S.ready) paintMe(); }
@@ -1167,6 +1239,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#mark').addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); });
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['2 Nov 2026', 'Exercises', ['New Exercises tab: all 304 exercises with search, body-part tabs and sorting.', 'Add any of them to a training day, or add your own exercise.', 'For you: body parts your training skips, and exercises close to the ones you do most.']],
     ['2 Nov 2026', 'Food', ['New Food tab: a simple list of what you eat, without numbers.', 'Want to count? Switch on calories in Settings, Food: log calories, protein, carbs and fat, get a suggested daily target from your goal, and see averages and a chart over 1 to 12 months.', 'Foods you logged before come back as one-tap chips.', 'About you now asks your goal: lose weight, gain muscle or both.']],
     ['2 Nov 2026', 'Yes Coach! on the web', ['Your own account, with your log and plan in sync between phone and laptop.', 'Add it to your home screen and it opens like an app.', 'New start screen: three quick answers, restore a Yes Coach backup, or bring your history from Strong, Hevy, FitNotes or Fitbod.']],
     ['2 Nov 2026', 'Plans built by your AI', ['Get a plan from your own AI chat in two pastes: Yes Coach writes the request and reads the answer.', 'Starting weights come from your history; starting fresh, week one finds your weights.', 'Backups now bring back your training plan and schedule too.']],
@@ -3126,6 +3199,266 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   let rz = 0;
   let rzW = window.innerWidth;
   window.addEventListener('resize', () => { if (window.innerWidth === rzW) return; rzW = window.innerWidth; clearTimeout(rz); rz = setTimeout(renderProgress, 150); });
+
+  // ------------------------------------------------------------------ exercises: the whole library plus your own, and suggestions
+  const XL_TABS = ['All', 'Chest', 'Back', 'Shoulders', 'Arms', 'Legs', 'Core', 'Cardio and more'];
+  const xlTabOf = (g) => { const b = LIB_GROUP[g] || g; return XL_TABS.includes(b) ? b : 'Cardio and more'; };
+  const XL = { tab: 'All', sort: 'group', open: null, sig: '', rsig: '' };
+  // the list only changes with your exercises and sessions; suggestions also follow your plan
+  const xlSig = () => XL.sort + '|' + Object.keys(S.exercises).length + '|' + Object.keys(S.sessions).length;
+  const recSig = () => Object.keys(S.exercises).length + '|' + Object.keys(S.sessions).length + '|' + Object.values(S.templates).map((t) => (t.items || []).length).join();
+  // which of your exercises is which library entry, and how many sessions each has
+  const libOfEx = (id) => { const e = S.exercises[id]; if (!e) return null; const lid = e.library_id && LIB_BY_ID.has(e.library_id) ? e.library_id : libMatch(e.name); return lid ? LIB_BY_ID.get(lid) : null; };
+  const sessionCounts = () => {
+    const per = {};
+    Object.values(S.sessions).forEach((s) => { const seen = new Set(); Object.values(s.sets || {}).forEach((st) => { if (st && st.ex && isDone(st) && !seen.has(st.ex)) { seen.add(st.ex); per[st.ex] = (per[st.ex] || 0) + 1; } }); });
+    return per;
+  };
+  // one row per exercise: library entries (with your sessions when you did them) and your own exercises that are not in the library
+  const xlRows = () => {
+    const counts = sessionCounts();
+    const mine = new Map(); // library id -> your exercise id
+    Object.keys(S.exercises).forEach((id) => { const l = libOfEx(id); if (l && !mine.has(l.id)) mine.set(l.id, id); });
+    const rows = LIB.map((l) => { const own = mine.get(l.id); return { lib: l, id: own || null, name: l.name, group: l.group, tab: xlTabOf(l.group), equipment: l.equipment, primary: l.primary, secondary: l.secondary, desc: l.desc, shoulder: l.shoulder, n: own ? counts[own] || 0 : 0 }; });
+    Object.entries(S.exercises).forEach(([id, e]) => {
+      if (libOfEx(id)) return;
+      rows.push({ lib: null, id, name: e.name, group: e.group || 'Other', tab: xlTabOf(e.group || 'Other'), equipment: UNIT_NAME[e.unit] || '', primary: e.group || '', secondary: '', desc: 'Your own exercise.', shoulder: e.shoulder, n: counts[id] || 0, custom: true });
+    });
+    return rows;
+  };
+  const UNIT_NAME = { kg: 'Weights', stack: 'Machine', bw: 'Bodyweight', assist: 'Assisted', min: 'Timed' };
+
+  // add an exercise to one of your training days: a day picker and a button
+  const addToDayRow = (r) => {
+    const row = h('div', 'xl-add');
+    const days = templatesSorted();
+    if (!days.length) { row.append(h('span', 'note', 'Make a training day in Plan first, then add exercises to it from here.')); return row; }
+    const sel = h('select', 'sel');
+    sel.setAttribute('aria-label', 'Training day');
+    days.forEach((t) => sel.append(new Option(t.name + (t.weekday ? ' (' + t.weekday + ')' : ''), t.id)));
+    // start on the day that already trains this body part the most
+    const broad = LIB_GROUP[r.group] || r.group;
+    const fit = days.map((t) => [t.id, (t.items || []).filter((it) => groupOf((S.exercises[it.ex] || {}).group) === broad).length]).sort((a, b) => b[1] - a[1])[0];
+    if (fit && fit[1]) sel.value = fit[0];
+    const go = btn('skew pop small', 'Add to day');
+    const msg = h('span', 'note');
+    msg.setAttribute('aria-live', 'polite');
+    go.addEventListener('click', async () => {
+      go.disabled = true;
+      try {
+        const exId = r.id || await ensureExercise(r.lib);
+        const t = clone(S.templates[sel.value]);
+        t.items = t.items || [];
+        if (t.items.some((it) => it.ex === exId)) { msg.textContent = 'Already in ' + t.name + '.'; go.disabled = false; return; }
+        t.items.push({ ex: exId, order: t.items.length + 1, sets: (r.lib && r.lib.sets) || 3, reps: String((r.lib && r.lib.reps) || '10'), target: '', note: null });
+        S.templates[sel.value] = t;
+        await S.rootRef.collection('templates').doc(sel.value).set(t);
+        msg.textContent = 'Added to ' + t.name + '.';
+        XL.sig = xlSig(); // keep the open row open: the list itself did not change
+        showToast(r.name + ' added to ' + t.name + '.', null);
+      } catch (e) { msg.textContent = 'Not added. Check your connection.'; }
+      go.disabled = false;
+    });
+    row.append(sel, go, msg);
+    return row;
+  };
+
+  // ---- suggestions: body parts your training skips, and exercises close to the ones you do most
+  const FOCUS = ['Chest', 'Back', 'Shoulders', 'Quads', 'Hamstrings and glutes', 'Biceps', 'Triceps', 'Calves', 'Core'];
+  const MAJOR = new Set(['Chest', 'Back', 'Shoulders', 'Quads', 'Hamstrings and glutes']);
+  const SPLIT_BROAD = { Arms: ['Biceps', 'Triceps'], Legs: ['Quads', 'Hamstrings and glutes'] };
+  const FOCUS_WORD = { Chest: 'chest', Back: 'back', Shoulders: 'shoulders', Quads: 'quads (front of the thighs)', 'Hamstrings and glutes': 'hamstrings and glutes', Biceps: 'biceps', Triceps: 'triceps', Calves: 'calves', Core: 'core' };
+  const fitsWhere = (l) => {
+    const w = profile().where;
+    const eq = l.equipment.toLowerCase();
+    if (w === 'bodyweight') return /bodyweight|^none$|wall|^bar|step|bench or box|^bench$|parallettes|dip bars/.test(eq) && !/plate|dumbbell|barbell|machine|cable/.test(eq);
+    if (w === 'home') return !/machine|cable|smith|pec deck|leg press|sled|ghd|t-bar|treadmill|erg|elliptical|pool|bike/.test(eq);
+    return true;
+  };
+  const recommend = () => {
+    const since = addDays(today(), -28);
+    const vol = {};
+    FOCUS.forEach((g) => { vol[g] = 0; });
+    const credit = (exId, n) => {
+      const l = libOfEx(exId);
+      const e = S.exercises[exId] || {};
+      const g = l ? l.group : e.group;
+      if (vol[g] != null) vol[g] += n;
+      else if (SPLIT_BROAD[g]) SPLIT_BROAD[g].forEach((x) => { vol[x] += n / 2; });
+    };
+    const recent = Object.values(S.sessions).filter((s) => s.date >= since);
+    let basis;
+    if (recent.length >= 3) {
+      basis = 'your last 4 weeks';
+      recent.forEach((s) => Object.values(s.sets || {}).forEach((st) => { if (st && st.ex && isDone(st) && countsAsWork(st)) credit(st.ex, 1); }));
+    } else if (Object.keys(S.templates).length) {
+      basis = 'your plan';
+      Object.values(S.templates).forEach((t) => (t.items || []).forEach((it) => credit(it.ex, Number(it.sets) || 3)));
+    } else return { basis: null, cards: [] };
+    const doneLib = new Set(Object.keys(S.exercises).map((id) => (libOfEx(id) || {}).id).filter(Boolean));
+    const usedEq = new Set(Object.keys(S.exercises).map((id) => (libOfEx(id) || {}).equipment).filter(Boolean));
+    const pick = (cands, n) => cands.filter((l) => !doneLib.has(l.id) && l.shoulder !== 'skip' && fitsWhere(l) && l.category !== 'cardio')
+      .map((l, i) => ({ l, score: (usedEq.has(l.equipment) ? 2 : 0) + (l.shoulder === 'easy' ? 1 : 0) - i / 1000 }))
+      .sort((a, b) => b.score - a.score).slice(0, n).map((x) => x.l);
+    const top = Math.max(...[...MAJOR].map((g) => vol[g]));
+    const gaps = FOCUS.filter((g) => (MAJOR.has(g) ? vol[g] === 0 || vol[g] < top * 0.3 : vol[g] === 0))
+      .sort((a, b) => (MAJOR.has(b) - MAJOR.has(a)) || vol[a] - vol[b]).slice(0, 2);
+    const cards = [];
+    gaps.forEach((g) => {
+      const why = vol[g] === 0 ? 'No ' + FOCUS_WORD[g] + ' in ' + basis : 'Little ' + FOCUS_WORD[g] + ' in ' + basis;
+      pick(LIB.filter((l) => l.group === g), 2).forEach((l) => cards.push({ why, l }));
+    });
+    // close to your favourites: same body part and equipment, or the same main muscles
+    const counts = sessionCounts();
+    const favs = Object.keys(counts).sort((a, b) => counts[b] - counts[a]).map((id) => ({ id, l: libOfEx(id) })).filter((x) => x.l).slice(0, 4);
+    const shown = new Set(cards.map((c) => c.l.id));
+    favs.forEach(({ id, l }) => {
+      if (cards.length >= 6) return;
+      const alt = pick(LIB.filter((x) => x.id !== l.id && !shown.has(x.id) && x.group === l.group && (x.equipment === l.equipment || x.primary === l.primary)), 1)[0];
+      if (alt) { shown.add(alt.id); cards.push({ why: 'You like ' + S.exercises[id].name, l: alt }); }
+    });
+    return { basis, cards };
+  };
+  const paintRecs = () => {
+    const { basis, cards } = recommend();
+    const box = $('#xr-list');
+    box.replaceChildren();
+    $('#xr-note').textContent = !basis ? 'Log a few workouts or build a plan, and Yes Coach points out body parts you skip and exercises you might like.'
+      : cards.length ? 'Based on ' + basis + '. Add one to a training day, or ignore it: you know your body best.' : 'Based on ' + basis + ': every body part gets work. Nice.';
+    cards.forEach(({ why, l }) => {
+      const c = h('div', 'xr-card');
+      c.dataset.g = LIB_GROUP[l.group] || l.group;
+      c.append(h('span', 'xr-why', why), h('span', 'xr-name', l.name), h('span', 'note', l.primary + ' · ' + l.equipment + ' · ' + l.sets + ' × ' + l.reps), addToDayRow({ lib: l, id: null, name: l.name, group: l.group }));
+      box.append(c);
+    });
+  };
+
+  // ---- the list: built once per data change, then search and tabs only hide and show rows
+  let xlItems = [];
+  const buildXlList = () => {
+    const box = $('#xl-list');
+    box.replaceChildren();
+    const rows = xlRows();
+    const sorters = {
+      az: (a, b) => (a.name < b.name ? -1 : 1),
+      group: (a, b) => GROUP_ORDER.indexOf(a.group) - GROUP_ORDER.indexOf(b.group) || (a.name < b.name ? -1 : 1),
+      mine: (a, b) => b.n - a.n || (a.name < b.name ? -1 : 1),
+      equip: (a, b) => (a.equipment < b.equipment ? -1 : a.equipment > b.equipment ? 1 : a.name < b.name ? -1 : 1),
+    };
+    rows.sort(sorters[XL.sort]);
+    const headOf = XL.sort === 'group' ? (r) => r.group : XL.sort === 'equip' ? (r) => r.equipment || 'Other' : XL.sort === 'mine' ? (r) => (r.n ? 'Trained by you' : 'Not trained yet') : null;
+    xlItems = [];
+    let head = null;
+    rows.forEach((r) => {
+      const hk = headOf ? headOf(r) : null;
+      if (hk !== null && (!head || head.key !== hk)) { head = { key: hk, el: h('div', 'xl-gh'), n: h('span', '') }; head.el.append(h('span', '', hk), head.n); box.append(head.el); head.items = []; }
+      const b = h('button', 'xl-row');
+      b.type = 'button';
+      b.dataset.g = LIB_GROUP[r.group] || r.group;
+      b.setAttribute('aria-expanded', 'false');
+      b.append(h('span', 'xl-name', r.name), h('span', 'xl-meta', [r.group, r.equipment, SHOULDER[r.shoulder] || ''].filter(Boolean).join(' · ')), h('span', 'xl-tag' + (r.n ? ' mine' : ''), r.n ? plural(r.n, 'session') : r.custom ? 'Yours' : ''));
+      const det = h('div', 'xl-detail');
+      det.hidden = true;
+      b.addEventListener('click', () => {
+        const open = det.hidden;
+        if (open && !det.childElementCount) {
+          det.append(h('p', '', r.desc));
+          if (r.lib) det.append(h('p', 'note', 'Main: ' + r.primary + (r.secondary && r.secondary !== 'none' ? ' · Also: ' + r.secondary : '') + ' · Start with ' + r.lib.sets + ' × ' + r.lib.reps));
+          if (r.id && r.n) { const pts = bestSeries(r.id); if (pts.length) det.append(h('p', 'note', 'Your latest best set: ' + pts[pts.length - 1].label + ' (' + dm(pts[pts.length - 1].date) + '), ' + plural(r.n, 'session') + '.')); }
+          det.append(addToDayRow(r));
+        }
+        det.hidden = !open;
+        b.setAttribute('aria-expanded', String(open));
+        if (open) enter(det);
+      });
+      box.append(b, det);
+      const item = { r, row: b, det, head, hay: [r.name, r.group, r.tab, r.primary, r.secondary, r.equipment].join(' ').toLowerCase() };
+      if (head) head.items.push(item);
+      xlItems.push(item);
+    });
+    const empty = h('p', 'xl-empty', 'Nothing matches. Try a muscle like biceps, or equipment like cable. Or add it as your own exercise.');
+    empty.id = 'xl-empty';
+    box.append(empty);
+  };
+  const filterXl = () => {
+    const terms = $('#xl-search').value.toLowerCase().split(/\s+/).filter(Boolean);
+    let n = 0;
+    xlItems.forEach((it) => {
+      const ok = (XL.tab === 'All' || it.r.tab === XL.tab) && terms.every((t) => it.hay.includes(t));
+      it.row.hidden = !ok;
+      if (!ok) it.det.hidden = true;
+      it.ok = ok;
+      if (ok) n += 1;
+    });
+    const heads = new Set(xlItems.map((it) => it.head).filter(Boolean));
+    heads.forEach((hd) => { const k = hd.items.filter((it) => it.ok).length; hd.el.hidden = !k; hd.n.textContent = String(k); });
+    $('#xl-count').textContent = String(n);
+    $('#xl-empty').hidden = n > 0;
+  };
+  const paintXlTabs = () => {
+    const nav = $('#xl-tabs');
+    if (nav.childElementCount) { $$('[data-xt]', nav).forEach((b) => b.setAttribute('aria-selected', String(b.dataset.xt === XL.tab))); return; }
+    XL_TABS.forEach((t, i) => {
+      if (i) { const d = h('span', 'pt-div', '|'); d.setAttribute('aria-hidden', 'true'); nav.append(d); }
+      const b = h('button', 'tab', t);
+      b.type = 'button';
+      b.setAttribute('role', 'tab');
+      b.dataset.xt = t;
+      b.setAttribute('aria-selected', String(t === XL.tab));
+      b.addEventListener('click', () => { XL.tab = t; paintXlTabs(); filterXl(); enter($('#xl-list')); });
+      nav.append(b);
+    });
+  };
+  const renderExercises = () => {
+    if (S.view !== 'exercises') return;
+    const ready = S.ready && S.rootRef;
+    $('#xl-loading').hidden = !!ready;
+    $('#xl-body').hidden = !ready;
+    if (!ready) return;
+    paintXlTabs();
+    // tidy dividers once the tabs are laid out
+    $$('#xl-tabs .pt-div').forEach((d) => { d.style.visibility = ''; const a = d.previousElementSibling; const b = d.nextElementSibling; if (a && b && a.offsetTop !== b.offsetTop) d.style.visibility = 'hidden'; });
+    if (xlSig() !== XL.sig) { XL.sig = xlSig(); buildXlList(); }
+    if (recSig() !== XL.rsig) { XL.rsig = recSig(); paintRecs(); }
+    filterXl();
+  };
+  $('#xl-search').addEventListener('input', filterXl);
+  $('#xl-sort').addEventListener('change', () => { XL.sort = $('#xl-sort').value; XL.sig = ''; renderExercises(); });
+  // your own exercise
+  GROUP_ORDER.forEach((g) => $('#xl-f-group').append(new Option(g, g)));
+  const closeXlForm = () => { $('#xl-form').hidden = true; $('#xl-new').setAttribute('aria-expanded', 'false'); $('#xl-f-msg').textContent = ''; };
+  $('#xl-new').addEventListener('click', () => {
+    const open = $('#xl-form').hidden;
+    if (!open) { closeXlForm(); return; }
+    $('#xl-form').hidden = false;
+    $('#xl-new').setAttribute('aria-expanded', 'true');
+    $('#xl-f-name').value = $('#xl-search').value.trim();
+    $('#xl-f-name').focus();
+  });
+  $('#xl-f-cancel').addEventListener('click', closeXlForm);
+  $('#xl-form').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const name = $('#xl-f-name').value.trim().replace(/\s+/g, ' ');
+    const msg = $('#xl-f-msg');
+    if (!name) { msg.textContent = 'Give it a name.'; $('#xl-f-name').focus(); return; }
+    const lid = libMatch(name);
+    if (lid) { msg.textContent = LIB_BY_ID.get(lid).name + ' is already in the list.'; $('#xl-search').value = LIB_BY_ID.get(lid).name; XL.tab = 'All'; paintXlTabs(); filterXl(); return; }
+    if (Object.values(S.exercises).some((e) => nameKey(e.name) === nameKey(name))) { msg.textContent = 'You already have ' + name + '.'; return; }
+    const unit = $('#xl-f-unit').value;
+    const group = $('#xl-f-group').value;
+    let id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'exercise';
+    while (S.exercises[id]) id += '-2';
+    try {
+      await putExercise(id, { name, group: LIB_GROUP[group] || group, category: unit === 'min' ? 'cardio' : 'strength', unit, better: unit === 'assist' ? 'lower' : 'higher', per_side: false, rest_s: unit === 'stack' ? 75 : 90, shoulder: null, library_id: null });
+    } catch (e) { msg.textContent = 'Not saved. Check your connection.'; return; }
+    closeXlForm();
+    $('#xl-f-name').value = '';
+    $('#xl-search').value = name;
+    XL.tab = 'All';
+    XL.sig = '';
+    renderExercises();
+    showToast(name + ' added. Open it to put it in a training day.', null);
+  });
 
   // ------------------------------------------------------------------ food: your own entries per day, and trends like Progress
   // yc/food/<date> = { date, entries: { id: { name, kcal, p, c, f, at } } }; targets live in root.nutrition = { kcal, protein }
@@ -5329,6 +5662,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     renderTrain();
     if (S.view === 'progress') renderProgress();
     if (S.view === 'food') renderFood();
+    if (S.view === 'exercises') renderExercises();
     if (S.view === 'settings') { paintExport(); paintImport(); }
     if (S.view === 'plan') renderPlan();
     paintChrome();
