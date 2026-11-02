@@ -6,8 +6,8 @@ src = (HERE / 'src' / 'yes-coach.html').read_text()
 brand = re.search(r'<h1 class="brand">.*?</h1>', src, re.S).group(0)
 
 head = '''<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/png" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png?v=2">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png?v=2">
 <meta name="theme-color" content="#26358f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Yes Coach">

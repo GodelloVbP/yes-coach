@@ -331,6 +331,13 @@ td.nowrap { white-space: nowrap; }
 /* settings */
 .set-wrap { padding-block: 1.25rem 3rem; display: flex; flex-direction: column; gap: 0.5rem; }
 .set-wrap section { display: flex; flex-direction: column; gap: 0.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--line); margin-bottom: 1rem; }
+.set-wrap { gap: 0; }
+.set-wrap section.fold { padding-bottom: 0; margin-bottom: 0; gap: 0; }
+.set-wrap section.fold > h2 { margin: 0; }
+.set-tog { display: flex; align-items: center; gap: 0.625rem; width: 100%; min-height: 56px; padding: 0.5rem 0; background: none; border: 0; color: var(--ink); font: inherit; letter-spacing: inherit; text-transform: inherit; text-align: left; cursor: pointer; }
+.set-tog:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.set-tog[aria-expanded="true"] .p-caret { transform: rotate(-135deg); }
+.set-body { display: flex; flex-direction: column; gap: 0.5rem; padding-bottom: 1.5rem; }
 .ex-out { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--t1); line-height: 1.5; height: 20rem; white-space: pre-wrap; overflow: auto; }
 .ex-acts { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; margin-top: 0.5rem; }
 #ex-state { font-weight: 600; }
@@ -1285,7 +1292,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (v === 'exercises') renderExercises();
     if (v === 'plan' && S.ready) renderPlan();
     if (v === 'progress') renderProgress();
-    if (v === 'settings') { paintExport(); paintImport(); if (S.ready) paintMe(); }
+    if (v === 'settings') { foldSettings(); paintExport(); paintImport(); if (S.ready) paintMe(); }
     if (v === 'train' && S.ready) renderTrain();
     if (S.ready) paintChrome();
     local.set('yc-view', v);
@@ -3564,7 +3571,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const fill = (box, prominent) => {
       box.replaceChildren();
       if (sg.missing) {
-        box.append(h('p', '', (prominent ? 'Want a suggested daily target? ' : '') + 'Add your ' + sg.missing.join(', ').replace(/, ([^,]*)$/, ' and $1') + ' in Settings, About you, and Yes Coach suggests one. Or set your own below.'));
+        const go = h('button', 'textbtn', 'Add your ' + sg.missing.join(', ').replace(/, ([^,]*)$/, ' and $1'));
+        go.type = 'button';
+        go.addEventListener('click', () => openSettingFor($('#me-fields'), 'start'));
+        const para = h('p', '', prominent ? 'Want a suggested daily target? ' : '');
+        para.append(go, ' in Settings and Yes Coach suggests one. Or set your own below.');
+        box.append(para);
         return;
       }
       if (sg.minor) { box.append(h('p', '', 'Suggested targets are for adults. Growing bodies need enough food: if you want a target, ask your doctor or a dietitian.')); return; }
@@ -4033,7 +4045,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     enter($('#fd-list').lastElementChild);
     showToast('Added ' + name + '.', null);
   });
-  $('#fd-off-go').addEventListener('click', () => { setView('settings'); requestAnimationFrame(() => $('#set-cal').scrollIntoView({ block: 'center' })); });
+  $('#fd-off-go').addEventListener('click', () => openSettingFor($('#set-cal')));
   // the add button always names the day the food goes to, also when you change day with a card open
   const addLabel = () => { $('#fd-add').firstChild.textContent = S.fday === today() ? 'Add to today' : 'Add to ' + isoDow(S.fday) + ' ' + dm(S.fday); };
   $$('[data-view]').forEach((b) => b.addEventListener('click', () => { if (b.dataset.view !== 'food' && !$('#fd-form').hidden) closeCard(); }));
@@ -4989,7 +5001,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (W.step === 'error') {
       box.append(h('p', 'wz-msg', W.msg));
       const fr = h('div', 'foot-row');
-      fr.append(btn('skew pop', 'Try again'), plainBtn('textbtn', 'Back', null, () => wizStep('start')), plainBtn('textbtn', 'Use the copy-and-paste way', null, () => { imp.src = W.src; imp.file = W.file; closeWizard(); setView('settings'); $('#imp').scrollIntoView({ block: 'start' }); }));
+      fr.append(btn('skew pop', 'Try again'), plainBtn('textbtn', 'Back', null, () => wizStep('start')), plainBtn('textbtn', 'Use the copy-and-paste way', null, () => { imp.src = W.src; imp.file = W.file; closeWizard(); openSettingFor($('#imp'), 'start'); }));
       fr.firstChild.addEventListener('click', () => (W.failed === 'save' ? saveAndClose() : buildPlan()));
       box.append(fr);
       return;
@@ -5913,6 +5925,36 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (S.editing === 'list') { ED = null; renderPlanWeek(box); return; }
     renderDayEditor(box);
   };
+  // Settings: every section folds; all start closed, so the list of sections is the first thing you see
+  function foldSettings() {
+    $$('#v-settings .set-wrap > section').forEach((sec) => {
+      if (sec.classList.contains('fold')) return;
+      const h2 = sec.querySelector(':scope > h2');
+      if (!h2) return;
+      const body = h('div', 'set-body');
+      body.id = (sec.id || h2.id) + '-body';
+      [...sec.children].forEach((c) => { if (c !== h2) body.append(c); });
+      body.hidden = true;
+      const tog = h('button', 'set-tog');
+      tog.type = 'button';
+      tog.setAttribute('aria-expanded', 'false');
+      tog.setAttribute('aria-controls', body.id);
+      tog.append(h('span', '', h2.textContent), h('span', 'p-caret'));
+      tog.lastChild.setAttribute('aria-hidden', 'true');
+      tog.addEventListener('click', () => { const open = body.hidden; body.hidden = !open; tog.setAttribute('aria-expanded', String(open)); if (open) enter(body); });
+      h2.replaceChildren(tog);
+      sec.classList.add('fold');
+      sec.append(body);
+    });
+  }
+  new MutationObserver(() => { if (!$('#v-settings').hidden) foldSettings(); }).observe($('#v-settings .set-wrap'), { childList: true });
+  // open the section that holds an element (a jump from elsewhere in the app) and bring it into view
+  function openSettingFor(el, block) {
+    setView('settings');
+    const sec = el && el.closest('section.fold');
+    if (sec) { const tog = $('.set-tog', sec); const body = $('.set-body', sec); body.hidden = false; tog.setAttribute('aria-expanded', 'true'); }
+    requestAnimationFrame(() => el.scrollIntoView({ block: block || 'center' }));
+  }
   const paintSettings = () => { const cb = $('#set-rir'); cb.checked = showRir(); $('#set-cal').checked = showCal(); if (S.view === 'settings') paintMe(); };
   $('#set-cal').addEventListener('change', () => { setShowCal($('#set-cal').checked); });
   $('#set-rir').addEventListener('change', () => {
