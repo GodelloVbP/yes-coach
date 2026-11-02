@@ -74,9 +74,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 :root[data-theme="dark"] .savebar.error { color: #10142b; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .savebar.error { color: #10142b; } }
 .savebar button { background: none; border: 2px solid currentColor; min-height: 36px; padding: 0 0.875rem; cursor: pointer; font-weight: 700; color: inherit; }
-.appbar { background: var(--bg); border-bottom: 1px solid var(--line); box-shadow: 0 2px 12px rgba(16, 20, 43, 0.10); }
-:root[data-theme="dark"] .appbar { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .appbar { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45); } }
+.appbar { position: relative; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); box-shadow: 0 1px 3px rgba(16, 20, 43, 0.14), 0 6px 22px rgba(16, 20, 43, 0.20); }
+:root[data-theme="dark"] .appbar { background: var(--faint); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), 0 8px 26px rgba(0, 0, 0, 0.75); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .appbar { background: var(--faint); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), 0 8px 26px rgba(0, 0, 0, 0.75); } }
 .ab-in { display: flex; align-items: center; justify-content: center; gap: 1rem; height: 52px; }
 .mark-btn { flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0; background: none; border: 0; border-bottom: 3px solid transparent; cursor: pointer; transition: transform 0.18s cubic-bezier(0.3, 1.7, 0.5, 1); }
 .mark-btn:active { transform: scale(0.9); }
