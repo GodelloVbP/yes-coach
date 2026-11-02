@@ -39,7 +39,7 @@ body.signed-out #stick, body.signed-out main, body.signed-out #resume, body.sign
   --good: #1f7a50;
   --sbar: #ffffff;
   --logo-bar: #26358f;
-  --c-back: #6f3aa8; --c-chest: #0b7285; --c-shoulders: #1f93a6; --c-arms: #9a6dd1; --c-legs: #2e7d5b; --c-other: #5c6378;
+  --c-back: #6f3aa8; --c-chest: #0b7285; --c-shoulders: #1f93a6; --c-arms: #9a6dd1; --c-legs: #2e7d5b; --c-core: #b0457a; --c-other: #5c6378;
   --on-g: #ffffff; --flat: #9a5b00;
   --f-head: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
   --f-body: "Barlow", "Helvetica Neue", Arial, sans-serif;
@@ -50,7 +50,7 @@ body.signed-out #stick, body.signed-out main, body.signed-out #resume, body.sign
   :root:not([data-theme="light"]) {
     --bg: #10142b; --paper: #10142b; --ink: #e3e6fa; --ink-soft: #a1a8d4; --ctl: #6873b6; --line: #333b6b; --faint: #1a2044;
     --pop: #ff8a65; --on-pop: #10142b; --warn: #ff6b5e; --good: #4cc38a; --sbar: #1a2044; --logo-bar: #8f9cff;
-    --c-back: #c6a4f5; --c-chest: #4fd1e0; --c-shoulders: #9ee8f0; --c-arms: #e0c8ff; --c-legs: #6cc69a; --c-other: #a1a8d4;
+    --c-back: #c6a4f5; --c-chest: #4fd1e0; --c-shoulders: #9ee8f0; --c-arms: #e0c8ff; --c-legs: #6cc69a; --c-core: #f29ac4; --c-other: #a1a8d4;
     --on-g: #10142b; --flat: #f2b155;
     color-scheme: dark;
   }
@@ -58,7 +58,7 @@ body.signed-out #stick, body.signed-out main, body.signed-out #resume, body.sign
 :root[data-theme="dark"] {
   --bg: #10142b; --paper: #10142b; --ink: #e3e6fa; --ink-soft: #a1a8d4; --ctl: #6873b6; --line: #333b6b; --faint: #1a2044;
   --pop: #ff8a65; --on-pop: #10142b; --warn: #ff6b5e; --good: #4cc38a; --sbar: #1a2044; --logo-bar: #8f9cff;
-  --c-back: #c6a4f5; --c-chest: #4fd1e0; --c-shoulders: #9ee8f0; --c-arms: #e0c8ff; --c-legs: #6cc69a; --c-other: #a1a8d4;
+  --c-back: #c6a4f5; --c-chest: #4fd1e0; --c-shoulders: #9ee8f0; --c-arms: #e0c8ff; --c-legs: #6cc69a; --c-core: #f29ac4; --c-other: #a1a8d4;
   --on-g: #10142b; --flat: #f2b155;
   color-scheme: dark;
 }
@@ -271,13 +271,18 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .seg-b[aria-checked="true"] { background: var(--ink); color: var(--bg); }
 .ptabs { display: flex; gap: 0 1rem; overflow-x: auto; scrollbar-width: none; }
 .ptabs .tab { font-size: var(--t2); flex: none; }
-/* the headline numbers */
-.p-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin: 0; }
-@media (min-width: 40rem) { .p-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.p-stat { background: var(--faint); padding: 0.75rem 0.875rem; display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 0.125rem; min-width: 0; }
-.p-stat dt { font-size: var(--t1); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); font-family: var(--f-head); }
-.p-stat dd { margin: 0; font-family: var(--f-head); font-size: 1.75rem; font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums; }
-.p-stat dd small { font-size: var(--t2); color: var(--ink-soft); font-weight: 700; margin-left: 0.25rem; }
+/* training days: one square per day, weeks as columns; the numbers sit beside it or under it */
+.p-filters { gap: 0.5rem; padding-bottom: 0.75rem; }
+.p-top { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; }
+.p-top[hidden] { display: none; }
+.p-days.chart { flex: 0 1 auto; max-width: 100%; min-height: 0; margin: 0; overflow-x: auto; scrollbar-width: thin; }
+.p-days svg { display: block; }
+.p-days.chart text { font-size: 11px; fill: var(--ink-soft); font-family: var(--f-head); font-weight: 700; letter-spacing: 0.04em; }
+.p-sum { flex: 1 1 11rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(5.25rem, 1fr)); gap: 0.75rem 1rem; margin: 0; max-width: 34rem; }
+.p-st { display: flex; flex-direction: column; line-height: 1.1; }
+.p-st b { font-family: var(--f-head); font-size: 1.75rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0.01em; }
+.p-st b small { font-size: var(--t2); color: var(--ink-soft); margin-left: 0.2rem; }
+.p-st span { font-size: var(--t1); font-weight: 600; color: var(--ink-soft); }
 /* sections */
 .p-sec { display: flex; flex-direction: column; gap: 0.375rem; min-width: 0; }
 .p-head { display: flex; align-items: baseline; gap: 0.625rem; border-bottom: 2px solid var(--ink); padding-bottom: 0.375rem; }
@@ -445,7 +450,8 @@ body.typing .restbar { display: none; }
 [data-g="Shoulders"] { --g: var(--c-shoulders); }
 [data-g="Arms"] { --g: var(--c-arms); }
 [data-k="Legs"], [data-g="Legs"] { --g: var(--c-legs); }
-[data-k="Other"], [data-g="Other"], [data-g="Core"] { --g: var(--c-other); }
+[data-g="Core"] { --g: var(--c-core); }
+[data-k="Other"], [data-g="Other"] { --g: var(--c-other); }
 .swaprow[data-k] { border-left: 6px solid var(--g); padding-left: 10px; }
 .swaprow[data-k] .day-wd { color: var(--g); }
 .today[data-k] { border-left-color: var(--g); }
@@ -635,18 +641,14 @@ body.typing .restbar { display: none; }
   <div class="view" id="v-progress" hidden>
     <div class="prog-wrap in wide">
       <div class="p-filters">
+        <nav class="ptabs" role="tablist" aria-label="Body part" id="ptabs"></nav>
         <div class="seg" role="radiogroup" aria-label="Period" id="prange"></div>
-        <nav class="ptabs" role="tablist" aria-label="Body part" id="ptabs">
-          <button class="tab" role="tab" type="button" data-ptab="All" aria-selected="true">All</button>
-          <button class="tab" role="tab" type="button" data-ptab="Back" data-g="Back" aria-selected="false">Back</button>
-          <button class="tab" role="tab" type="button" data-ptab="Chest" data-g="Chest" aria-selected="false">Chest</button>
-          <button class="tab" role="tab" type="button" data-ptab="Shoulders" data-g="Shoulders" aria-selected="false">Shoulders</button>
-          <button class="tab" role="tab" type="button" data-ptab="Arms" data-g="Arms" aria-selected="false">Arms</button>
-          <button class="tab" role="tab" type="button" data-ptab="Legs" data-g="Legs" aria-selected="false">Legs</button>
-        </nav>
       </div>
       <p class="p-total" id="take">Loading your progress…</p>
-      <dl class="p-stats" id="p-stats" hidden></dl>
+      <div class="p-top" id="p-top" hidden>
+        <div class="chart p-days" id="p-days"></div>
+        <p class="p-sum" id="p-sum"></p>
+      </div>
       <div class="p-grid" id="p-grid">
         <section class="p-sec" aria-labelledby="h-plist">
           <div class="p-head"><h2 id="h-plist">Your lifts</h2><span class="p-count" id="plist-count"></span></div>
@@ -2484,13 +2486,14 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const isWork = (r) => r.category === 'strength' && !r.warmup;
 
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-  const SERIES = () => ({ Back: css('--c-back'), Chest: css('--c-chest'), Shoulders: css('--c-shoulders'), Arms: css('--c-arms'), Legs: css('--c-legs'), Core: css('--c-other'), Other: css('--c-other') });
+  const SERIES = () => ({ Back: css('--c-back'), Chest: css('--c-chest'), Shoulders: css('--c-shoulders'), Arms: css('--c-arms'), Legs: css('--c-legs'), Core: css('--c-core'), Other: css('--c-other') });
   const NS = 'http://www.w3.org/2000/svg';
   const parse = (s) => new Date(s + 'T00:00:00Z');
   const dayNum = (iso) => parse(iso).getTime() / 864e5;
   const fmtDay = (d) => d.getUTCDate() + ' ' + MON[d.getUTCMonth()];
   const fmtLong = (d) => DOW[d.getUTCDay()] + ' ' + d.getUTCDate() + ' ' + MON[d.getUTCMonth()];
   const signed = (n) => (n > 0 ? '+' : n < 0 ? '−' : '±') + num(Math.abs(n));
+  const PGROUPS = GROUPS.concat(['Core', 'Other']); // every body part a set can count for, in tab order
   const inGroup = (r) => S.ptab === 'All' || r.group === S.ptab;
   const inSession = (r) => S.ptab === 'All' || r['g_' + S.ptab] > 0;
   const plural = (n, one, many) => n + ' ' + (n === 1 ? one : many || one + 's');
@@ -2572,26 +2575,76 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         extras: rs.filter((r) => r.category !== 'strength').map((r) => r.exercise + (r.minutes ? ' ' + r.minutes + ' min' : '')).join(' · '),
         note: (rs.find((r) => r.session_note) || {}).session_note || '',
       };
-      GROUPS.forEach((g) => { const mine = work.filter((r) => r.group === g); row['g_' + g] = mine.length; row['l_' + g] = [...new Set(mine.map((r) => r.exercise))].join(', '); });
+      PGROUPS.forEach((g) => { const mine = work.filter((r) => r.group === g); row['g_' + g] = mine.length; row['l_' + g] = [...new Set(mine.map((r) => r.exercise))].join(', '); });
       return row;
     });
   };
-  // four tiles for the period and body part: sessions, sessions a week, working sets, lifts getting better
+  // the period at a glance: a square per day, filled on days you trained (in the body part's color when a tab is picked),
+  // and next to it four numbers: sessions, sessions a week, working sets, lifts getting better
+  const drawDays = (rows) => {
+    const box = $('#p-days');
+    box.replaceChildren();
+    const from = rangeFrom();
+    const work = rows.filter((r) => isWork(r) && r.date >= from);
+    const end = today();
+    const first = from || (work.length ? work[0].date : end);
+    const start = mondayOf(first);
+    const weeks = Math.round((dayNum(mondayOf(end)) - dayNum(start)) / 7) + 1;
+    const byDay = d3.group(work, (r) => r.date);
+    const avail = Math.max(240, $('#p-top').clientWidth);
+    const gap = weeks > 40 ? 1 : weeks > 20 ? 2 : 3;
+    const fit = (lw) => Math.floor((avail - lw + gap) / weeks) - gap;
+    const left = fit(18) >= 9 ? 18 : 0;
+    const cell = Math.max(4, Math.min(22, fit(left)));
+    const top = 16;
+    const W = left + weeks * (cell + gap) - gap;
+    const H = top + 7 * (cell + gap) - gap;
+    const svg = d3.select(box).append('svg').attr('width', W).attr('height', H).attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img')
+      .attr('aria-label', 'Training days in ' + rangeWord() + ': ' + [...byDay.keys()].filter((d) => byDay.get(d).some(inGroup)).length + ' days');
+    if (left) [['M', 0], ['W', 2], ['F', 4]].forEach(([t, i]) => svg.append('text').attr('x', 0).attr('y', top + i * (cell + gap) + cell / 2 + 4).text(t));
+    // a month name over the week its first day falls in, when there is room
+    let lastLab = -99;
+    for (let w = 0; w < weeks; w += 1) {
+      const mon = addDays(start, w * 7);
+      const sun = addDays(mon, 6);
+      const firstOfMonth = sun.slice(0, 7) !== mon.slice(0, 7) || mon.slice(8) === '01' ? sun.slice(0, 8) + '01' : null;
+      const x = left + w * (cell + gap);
+      const label = w === 0 ? MON[Number(first.slice(5, 7)) - 1] : firstOfMonth ? MON[Number(firstOfMonth.slice(5, 7)) - 1] : null;
+      if (label && x - lastLab >= 30 && x + 24 <= W + 4) { svg.append('text').attr('x', x).attr('y', 11).text(label); lastLab = x; }
+    }
+    const color = S.ptab === 'All' ? 'var(--ink)' : 'var(--c-' + S.ptab.toLowerCase() + ')';
+    for (let w = 0; w < weeks; w += 1) {
+      for (let d = 0; d < 7; d += 1) {
+        const iso = addDays(start, w * 7 + d);
+        if (iso < first || iso > end) continue;
+        const day = byDay.get(iso) || [];
+        const mine = day.filter(inGroup);
+        const r = svg.append('rect').attr('x', left + w * (cell + gap)).attr('y', top + d * (cell + gap)).attr('width', cell).attr('height', cell)
+          .attr('fill', mine.length ? color : day.length ? 'var(--line)' : 'var(--faint)');
+        if (iso === end) r.attr('stroke', 'var(--ink)').attr('stroke-width', 1.5);
+        if (day.length) {
+          const split = day[0].label || day[0].split;
+          tipEvents(r, box, (ev) => showTip(box, ev, fmtLong(parse(iso)), [{ text: split }, { text: plural(mine.length, (S.ptab === 'All' ? '' : S.ptab.toLowerCase() + ' ') + 'working set') }]));
+        }
+      }
+    }
+    box.scrollLeft = box.scrollWidth;
+  };
   const fillTotals = (rows, lifts) => {
     const t = totals(rows.filter(inGroup), rangeFrom());
-    const box = $('#p-stats');
-    box.replaceChildren();
-    box.hidden = !t.sessions;
+    $('#p-top').hidden = !t.sessions;
     $('#take').textContent = t.sessions ? '' : rows.length ? 'No ' + (S.ptab === 'All' ? '' : S.ptab.toLowerCase() + ' ') + 'sessions in ' + rangeWord() + '. Pick a longer period.' : 'No sessions logged yet. Your progress shows up here after your first ticked set.';
     if (!t.sessions) return;
     const judged = lifts.filter((r) => r.trend);
     const up = judged.filter((r) => r.trend === 'up').length;
-    const tile = (label, value, small) => { const w = h('div', 'p-stat'); const dd = h('dd', '', String(value)); if (small) dd.append(h('small', '', small)); w.append(dd, h('dt', '', label)); box.append(w); };
-    tile('Sessions', t.sessions);
-    tile('A week', t.perWeek);
-    tile(S.ptab === 'All' ? 'Working sets' : S.ptab + ' sets', t.sets);
-    if (judged.length) tile('Lifts improving', up, 'of ' + judged.length);
-    else tile('Exercises', t.exercises);
+    const sum = $('#p-sum');
+    sum.replaceChildren();
+    const stat = (value, label, of) => { const w = h('span', 'p-st'); const b = h('b', '', String(value)); if (of) b.append(h('small', '', of)); w.append(b, h('span', '', label)); sum.append(w); };
+    stat(t.sessions, t.sessions === 1 ? 'session' : 'sessions');
+    stat(t.perWeek, 'per week');
+    stat(t.sets, S.ptab === 'All' ? 'working sets' : S.ptab.toLowerCase() + ' sets');
+    if (judged.length) stat(up, 'lifts improving', '/' + judged.length);
+    drawDays(rows);
   };
 
   // ---- comparable performance: one best set per session, compared only within the same exercise and measure
@@ -2675,7 +2728,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const TREND_MARK = { up: '▲ ', down: '▼ ', flat: '= ' };
   const TREND_WORD = { up: 'better', down: 'worse', flat: 'unchanged' };
 
-  // a small line of the best set per session; for assistance lower is better, so it is drawn upside down
+  // a small line of the best set per session, drawn the same way up as the full chart
   const spark = (r) => {
     const pf = perfOf(r.unit);
     const pts = r.series.map((p) => pf.val(p)).filter((v) => v != null);
@@ -2686,7 +2739,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (pts.length < 2) return svg;
     let lo = Math.min(...pts), hi = Math.max(...pts);
     if (lo === hi) { lo -= 1; hi += 1; }
-    const xy = (v, i) => [(i / (pts.length - 1)) * 60 + 2, pf.lower ? 3 + ((v - lo) / (hi - lo)) * 22 : 25 - ((v - lo) / (hi - lo)) * 22];
+    const xy = (v, i) => [(i / (pts.length - 1)) * 60 + 2, 25 - ((v - lo) / (hi - lo)) * 22];
     const path = document.createElementNS(NS, 'polyline');
     path.setAttribute('points', pts.map((v, i) => xy(v, i).map((n) => n.toFixed(1)).join(',')).join(' '));
     path.setAttribute('fill', 'none');
@@ -2891,20 +2944,42 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const renderProgress = () => {
     if (S.view !== 'progress') return;
     paintRange();
-    if (!(S.loaded.sessions && S.loaded.exercises)) { $('#take').textContent = 'Loading your progress…'; $('#p-stats').hidden = true; return; }
+    if (!(S.loaded.sessions && S.loaded.exercises)) { $('#take').textContent = 'Loading your progress…'; $('#p-top').hidden = true; return; }
     const rows = flatten();
+    paintPtabs(rows);
     const lifts = progressRows(rangeFrom());
     fillTotals(rows, lifts.filter(inGroup));
     drawList(lifts);
     drawVolume(rows);
     drawTables(rows);
   };
-  $$('[data-ptab]').forEach((b) => b.addEventListener('click', () => {
+  // the body-part tabs follow your log: a tab appears once you train that body part (cable crunches bring Core)
+  let tabKey = '';
+  const paintPtabs = (rows) => {
+    const have = PGROUPS.filter((g) => rows.some((r) => isWork(r) && r.group === g));
+    if (S.ptab !== 'All' && !have.includes(S.ptab)) S.ptab = 'All';
+    const key = have.join() + '|' + S.ptab;
+    if (key === tabKey) return;
+    tabKey = key;
+    const nav = $('#ptabs');
+    nav.replaceChildren();
+    ['All'].concat(have).forEach((g) => {
+      const b = h('button', 'tab', g);
+      b.type = 'button';
+      b.setAttribute('role', 'tab');
+      b.dataset.ptab = g;
+      if (g !== 'All') b.dataset.g = g;
+      b.setAttribute('aria-selected', String(g === S.ptab));
+      nav.append(b);
+    });
+  };
+  $('#ptabs').addEventListener('click', (ev) => {
+    const b = ev.target.closest('[data-ptab]');
+    if (!b || b.dataset.ptab === S.ptab) return;
     S.ptab = b.dataset.ptab;
-    $$('[data-ptab]').forEach((x) => x.setAttribute('aria-selected', String(x === b)));
     renderProgress();
     enter($('#p-grid'));
-  }));
+  });
   let rz = 0;
   let rzW = window.innerWidth;
   window.addEventListener('resize', () => { if (window.innerWidth === rzW) return; rzW = window.innerWidth; clearTimeout(rz); rz = setTimeout(renderProgress, 150); });
