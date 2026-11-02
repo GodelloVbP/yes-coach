@@ -829,7 +829,6 @@ body.typing .restbar { display: none; }
         <div class="seg" role="radiogroup" aria-label="Period" id="prange"></div>
       </div>
       <p class="p-total" id="take">Loading your progress…</p>
-      <div class="p-sum" id="p-sum" hidden></div>
       <div class="p-grid" id="p-grid">
         <section class="p-sec" aria-labelledby="h-plist">
           <div class="p-head"><h2 id="h-plist">Your lifts</h2><span class="p-count" id="plist-count"></span></div>
@@ -2953,19 +2952,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   const fillTotals = (rows, lifts) => {
     const t = totals(rows.filter(inGroup), rangeFrom());
-    $('#p-sum').hidden = !t.sessions;
     $('#p-days-sec').hidden = !t.sessions;
     $('#take').textContent = t.sessions ? '' : rows.length ? 'No ' + (S.ptab === 'All' ? '' : S.ptab.toLowerCase() + ' ') + 'sessions in ' + rangeWord() + '. Pick a longer period.' : 'No sessions logged yet. Your progress shows up here after your first ticked set.';
     if (!t.sessions) return;
-    const judged = lifts.filter((r) => r.trend);
-    const up = judged.filter((r) => r.trend === 'up').length;
-    const sum = $('#p-sum');
-    sum.replaceChildren();
-    const stat = (value, label, of) => { const w = h('span', 'p-st'); const b = h('b', '', String(value)); if (of) b.append(h('small', '', of)); w.append(b, h('span', '', label)); sum.append(w); };
-    stat(t.sessions, t.sessions === 1 ? 'session' : 'sessions');
-    stat(t.perWeek, 'per week');
-    stat(t.sets, S.ptab === 'All' ? 'working sets' : S.ptab.toLowerCase() + ' sets');
-    if (judged.length) stat(up, 'lifts improving', '/' + judged.length);
     drawDays(rows);
   };
 
@@ -3266,7 +3255,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const renderProgress = () => {
     if (S.view !== 'progress') return;
     paintRange();
-    if (!(S.loaded.sessions && S.loaded.exercises)) { $('#take').textContent = 'Loading your progress…'; $('#p-sum').hidden = true; return; }
+    if (!(S.loaded.sessions && S.loaded.exercises)) { $('#take').textContent = 'Loading your progress…'; return; }
     const rows = flatten();
     paintPtabs(rows);
     tidyDividers();
