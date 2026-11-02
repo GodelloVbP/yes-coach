@@ -431,6 +431,8 @@ body.typing .restbar { display: none; }
 .wz-msg { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 .wz-day[data-k] { border-left: 6px solid var(--g); padding-left: 10px; }
 .wz-day .ed-top { justify-content: flex-start; gap: 0.75rem; flex-wrap: wrap; }
+.wz-err { color: var(--warn); font-weight: 600; }
+.wz-err:empty { display: none; }
 .wz-items { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.125rem; font-weight: 500; }
 .privacy { padding: 0.75rem; background: var(--faint); border-left: 4px solid var(--ink); font-weight: 500; }
 /* native selects look the same everywhere: flat underline, our own chevron */
@@ -3088,7 +3090,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // The export is read here; Claude only gets a short summary plus the exercise library, and answers with one plan in a fixed shape.
   const WHERE = [['', 'Not given'], ['gym', 'Gym'], ['home', 'Home with dumbbells'], ['bodyweight', 'Bodyweight only']];
   const WHERE_LINE = { gym: 'trains in a gym', home: 'trains at home with dumbbells', bodyweight: 'trains with bodyweight only' };
-  const WIZ_SOURCES = [['none', 'Starting fresh'], ['strong', 'Strong'], ['hevy', 'Hevy'], ['fitnotes', 'FitNotes'], ['fitbod', 'Fitbod'], ['other', 'Another app']];
+  const WIZ_SOURCES = [['none', 'Starting fresh'], ['backup', 'Yes Coach backup'], ['strong', 'Strong'], ['hevy', 'Hevy'], ['fitnotes', 'FitNotes'], ['fitbod', 'Fitbod'], ['other', 'Another app']];
   const DAY_PATTERNS = { 1: ['Mon'], 2: ['Mon', 'Thu'], 3: ['Mon', 'Wed', 'Fri'], 4: ['Mon', 'Tue', 'Thu', 'Fri'], 5: ['Mon', 'Tue', 'Wed', 'Fri', 'Sat'], 6: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], 7: WEEKDAYS };
   let W = null; // the open start screen: {step, src, file, rows, plan, chat, msg, ctl, shown, f}
 
@@ -3222,6 +3224,14 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     o.push('', 'Answer with JSON only, in this shape:', '{"summary": "2 or 3 sentences on why this plan suits them", "days": [{"name": "Push A", "kind": "Push", "focus": "a few words", "items": [{"ex": "l04", "sets": 3, "reps": "6 to 8", "target": "60", "rest_s": 150, "note": "short cue"}]}], "weekdays": ["Mon", "Wed", "Fri"], "mapping": {"old name": "l04"}}');
     return o.filter((x) => x !== '').join('\n');
   };
+  // an exercise id from what an AI wrote: "l04", "l4", "L067", or the exercise's name
+  const libId = (v) => {
+    const t = String(v == null ? '' : v).trim();
+    if (LIB_BY_ID.has(t)) return t;
+    const m = t.match(/^l0*(\d+)$/i);
+    if (m) { const n = Number(m[1]); const id = n < 67 ? 'l' + pad2(n) : 'l' + String(n).padStart(3, '0'); if (LIB_BY_ID.has(id)) return id; }
+    return libMatch(t);
+  };
   const intIn = (v, lo, hi, dflt) => { const n = Math.round(Number(v)); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : dflt; };
   // keep only what Yes Coach can use: known exercise ids, sane numbers, real weekdays
   const cleanPlan = (p) => {
@@ -3229,7 +3239,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       name: String((d && d.name) || 'Day ' + (i + 1)).slice(0, 40),
       kind: ['Push', 'Pull', 'Legs', 'Other'].includes(d && d.kind) ? d.kind : 'Other',
       focus: String((d && d.focus) || '').slice(0, 80),
-      items: (Array.isArray(d && d.items) ? d.items : []).filter((it) => it && LIB_BY_ID.has(it.ex)).slice(0, 10).map((it) => ({
+      items: (Array.isArray(d && d.items) ? d.items : []).map((it) => (it && typeof it === 'object' ? Object.assign({}, it, { ex: libId(it.ex || it.id || it.exercise || it.name) }) : null)).filter((it) => it && it.ex).slice(0, 10).map((it) => ({
         ex: it.ex, sets: intIn(it.sets, 1, 8, 3), reps: String(it.reps || '10').slice(0, 20), target: it.target == null ? '' : String(it.target).slice(0, 20),
         rest_s: intIn(it.rest_s, 0, 600, 90), note: it.note ? String(it.note).slice(0, 140) : null,
       })),
@@ -3251,9 +3261,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     for (const name of new Set(rows.map((r) => r.ex))) {
       const mine = rows.filter((r) => r.ex === name);
       const loaded = mine.some((r) => r.kg);
-      const libId = libMatch(name) || mapping[name];
+      const found = libMatch(name) || mapping[name];
       if (own.has(nameKey(name))) ids[name] = own.get(nameKey(name));
-      else if (libId) ids[name] = await ensureExercise(Object.assign({}, LIB_BY_ID.get(libId), loaded && LIB_BY_ID.get(libId).unit === 'stack' ? { unit: 'kg' } : {})); // the old app logged kg, so keep kg
+      else if (found) ids[name] = await ensureExercise(Object.assign({}, LIB_BY_ID.get(found), loaded && LIB_BY_ID.get(found).unit === 'stack' ? { unit: 'kg' } : {})); // the old app logged kg, so keep kg
       else {
         const id = 'imp-' + name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
         ids[name] = S.exercises[id] ? id : await putExercise(id, { name, group: 'Other', category: mine.every((r) => r.reps == null) ? 'cardio' : 'strength', unit: mine.every((r) => r.reps == null) ? 'min' : loaded ? 'kg' : 'bw', better: 'higher', per_side: false, rest_s: 90, shoulder: null, library_id: null });
@@ -3364,6 +3374,20 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       wizStep('error', 'Saving stopped part way (' + ((e && (e.message || e.code)) || 'unknown error') + '). Check your connection and press Try again; what was saved is not saved twice.');
     }
   };
+  const restoreFromWizard = async () => {
+    const bk = readBackup(W.file.text);
+    if (!bk) { wizStep('error', 'That file is not a Yes Coach backup. Use the .json file from Settings, Full backup.'); return; }
+    wizStep('saving', 'Restoring your data…');
+    try {
+      const plan = planRestore(bk);
+      const n = await runRestore(plan, true, (i) => { const m = $('#wiz .wz-msg'); if (m) m.textContent = 'Restoring your data: ' + i + ' items…'; });
+      await saveRoot({ intro_seen: true });
+      closeWizard();
+      showToast('Restored ' + plural(n, 'item') + '. Welcome back.', null);
+    } catch (e) {
+      wizStep('error', 'Restoring stopped part way (' + ((e && (e.message || e.code)) || 'unknown error') + '). Press Back and Restore my data again; what is already restored is skipped.');
+    }
+  };
   const readWizProfile = () => { if (W.f) { Object.assign(W.profile, readProfile(W.f)); W.notes = W.f.notes.value; exportCtx = W.notes; } };
   const renderWizard = (force) => {
     const box = $('#wiz');
@@ -3382,19 +3406,19 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       box.append(chipRow('Coming from', WIZ_SOURCES, W.src, (v) => { W.src = v; W.rows = null; re(); }));
       if (W.src !== 'none') {
         const fileBox = h('div', 'wz-file');
-        fileBox.append(h('p', 'note', IMPORTS[W.src].how.replace(' Then choose the file here.', '').replace(/ Choose the file or paste below\.$/, '')));
+        fileBox.append(h('p', 'note', W.src === 'backup' ? 'The .json file from Settings, Full backup. Your log, plan, schedule and notes come back as they were.' : IMPORTS[W.src].how.replace(' Then choose the file here.', '').replace(/ Choose the file or paste below\.$/, '')));
         const lab = h('label', 'skew filebtn');
         const inp = h('input');
         inp.type = 'file';
         inp.id = 'wz-file';
-        inp.accept = '.csv,.txt,.tsv,text/csv,text/plain';
+        inp.accept = W.src === 'backup' ? '.json,application/json' : '.csv,.txt,.tsv,.json,text/csv,text/plain,application/json';
         lab.htmlFor = 'wz-file';
         lab.append(h('span', '', W.file ? 'Choose another file' : 'Choose export file'), inp);
         inp.addEventListener('change', () => {
           const file = inp.files && inp.files[0];
           if (!file) return;
           const rd = new FileReader();
-          rd.onload = () => { W.file = { name: file.name, text: String(rd.result) }; W.rows = null; const k = detectImport(W.file.text); if (k && WIZ_SOURCES.some(([s]) => s === k)) W.src = k; re(); };
+          rd.onload = () => { W.file = { name: file.name, text: String(rd.result) }; W.rows = null; const k = readBackup(W.file.text) ? 'backup' : detectImport(W.file.text); if (k && WIZ_SOURCES.some(([s]) => s === k)) W.src = k; re(); };
           rd.readAsText(file);
         });
         const row = h('div', 'ex-acts');
@@ -3409,11 +3433,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       box.append(more);
       W.f = profileFields(fields, 'intro', true, ['days_per_week', 'session_length', 'where'], p, W.notes);
       box.append(h('p', 'privacy', window.YC_WEB ? 'Your answers and history stay in your own Yes Coach account. You build the plan with your own AI chat: Yes Coach writes the request, you paste the answer back.' : 'Your answers and history stay in your own claude.ai account. The plan is built by your own Claude, which Yes Coach asks for you; the first time, you are asked to allow that.'));
-      const go = btn('skew pop big', W.src !== 'none' && W.file ? 'Import and build my plan' : 'Build my plan');
+      const go = btn('skew pop big', W.src === 'backup' ? 'Restore my data' : W.src !== 'none' && W.file ? 'Import and build my plan' : 'Build my plan');
       go.id = 'wz-go';
       const missing = W.src !== 'none' && !W.file;
       go.disabled = missing;
-      go.addEventListener('click', () => { readWizProfile(); buildPlan(); });
+      go.addEventListener('click', () => { readWizProfile(); if (W.src === 'backup') restoreFromWizard(); else buildPlan(); });
       const hand = plainBtn('textbtn', S.wiz ? 'Cancel' : 'Set it up by hand', null, () => { readWizProfile(); if (!(S.root && S.root.intro_seen)) saveRoot({ profile: W.profile, export_ctx: exportCtx, intro_seen: true }); closeWizard(); });
       const fr = h('div', 'foot-row');
       fr.append(go, hand);
@@ -3448,18 +3472,20 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       ans.setAttribute('aria-label', 'Answer from your AI');
       const use = btn('skew', '2. Use this answer');
       ans.addEventListener('input', () => { use.classList.toggle('pop', !!ans.value.trim()); copy.classList.toggle('pop', !ans.value.trim()); });
-      const why = h('p', 'why', '');
+      const why = h('p', 'wz-err', '');
+      why.setAttribute('role', 'alert');
       use.addEventListener('click', () => {
         const t = ans.value;
         let plan = null;
         try { plan = cleanPlan(JSON.parse(t.slice(t.indexOf('{'), t.lastIndexOf('}') + 1))); } catch (e) { plan = null; }
-        if (!plan) { why.textContent = 'That answer has no plan Yes Coach can read. Paste the whole answer, including the part between { and }.'; ans.focus(); return; }
+        if (!plan) { why.textContent = t.indexOf('{') < 0 ? 'This answer has no plan data in it. Ask your AI: "Please give the plan as JSON, in the shape the request asks for", then paste that answer here.' : 'Yes Coach could not read a plan in this answer. Paste the whole answer, from the first { to the last }.'; ans.focus(); return; }
         W.plan = plan;
         wizStep('preview');
       });
       const ur = h('div', 'foot-row');
       ur.append(use, plainBtn('textbtn', 'Back', null, () => wizStep(W.plan ? 'preview' : 'start')));
-      box.append(fr, ta, ans, ur, why);
+      ans.addEventListener('input', () => { why.textContent = ''; });
+      box.append(fr, ta, ans, why, ur);
       return;
     }
     if (W.step === 'error') {
@@ -4424,6 +4450,21 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     plan.counts.root = Object.keys(plan.rootAdd).length;
     return plan;
   };
+  // write a planned restore; step(n) reports progress. Skips nothing it has not checked: re-running finishes a stopped restore.
+  const runRestore = async (plan, withPlan, step) => {
+    let done = 0;
+    const tick = (n = 1) => { done += n; step(done); };
+    for (const [k, id, doc] of plan.docs) { await S.rootRef.collection(k).doc(id).set(doc); tick(); }
+    for (const [id, doc] of plan.sessions) { const d = Object.assign({}, doc); delete d._local; await S.rootRef.collection('sessions').doc(id).set(d); tick(); }
+    for (const [id, add] of plan.sessionSets) { await S.rootRef.collection('sessions').doc(id).update({ sets: add }); tick(Object.keys(add).length); }
+    if (plan.counts.root) { await saveRoot(plan.rootAdd); tick(plan.counts.root); }
+    if (withPlan) {
+      for (const [id, t] of plan.days) { S.templates[id] = clone(t); await S.rootRef.collection('templates').doc(id).set(t); tick(); }
+      if (plan.schedule) { await saveRoot({ schedule: plan.schedule }); tick(); }
+    }
+    return done;
+  };
+  const readBackup = (text) => { let bk = null; try { bk = JSON.parse(text); } catch (e) { bk = null; } return bk && bk.app === 'yes-coach' && typeof bk.sessions === 'object' ? bk : null; };
   const paintRestore = (msg, plan) => {
     const box = $('#restore-preview');
     box.replaceChildren();
@@ -4454,16 +4495,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const both = !!(withPlan && withPlan.checked);
       const total = adds + (both ? planChange : 0);
       let done = 0;
-      const step = () => { done += 1; go.firstChild.textContent = 'Restoring ' + done + ' of ' + total + '…'; };
       try {
-        for (const [k, id, doc] of plan.docs) { await S.rootRef.collection(k).doc(id).set(doc); step(); }
-        for (const [id, doc] of plan.sessions) { const d = Object.assign({}, doc); delete d._local; await S.rootRef.collection('sessions').doc(id).set(d); step(); }
-        for (const [id, add] of plan.sessionSets) { await S.rootRef.collection('sessions').doc(id).update({ sets: add }); done += Object.keys(add).length - 1; step(); }
-        if (c.root) { await saveRoot(plan.rootAdd); done += c.root - 1; step(); }
-        if (both) {
-          for (const [id, t] of plan.days) { S.templates[id] = clone(t); await S.rootRef.collection('templates').doc(id).set(t); step(); }
-          if (plan.schedule) { await saveRoot({ schedule: plan.schedule }); step(); }
-        }
+        await runRestore(plan, both, (n) => { done = n; go.firstChild.textContent = 'Restoring ' + n + ' of ' + total + '…'; });
         restorePlan = null;
         $('#ex-restore').value = '';
         paintRestore('Restored ' + plural(total, 'item') + (both ? ', including your training plan' : '') + '.', null);
@@ -4479,9 +4512,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (!f) return;
     const rd = new FileReader();
     rd.onload = () => {
-      let bk = null;
-      try { bk = JSON.parse(String(rd.result)); } catch (e) { bk = null; }
-      if (!bk || bk.app !== 'yes-coach' || typeof bk.sessions !== 'object') { paintRestore('That file is not a Yes Coach! backup. Use the file from Full backup.', null); return; }
+      const bk = readBackup(String(rd.result));
+      if (!bk) { paintRestore('That file is not a Yes Coach! backup. Use the file from Full backup.', null); return; }
       if (!S.rootRef) { paintRestore('Your data is not connected on this screen, so nothing can be restored.', null); return; }
       restorePlan = planRestore(bk);
       paintRestore('Backup from ' + (bk.exported_at ? bk.exported_at.slice(0, 10) : 'an unknown date') + '.', restorePlan);
