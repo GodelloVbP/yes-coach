@@ -524,7 +524,9 @@ body.typing .restbar { display: none; }
 .fd-row .icon { grid-row: 1 / span 2; grid-column: 3; }
 .fd-row:not(:has(.fd-row-mac)) .icon, .fd-row:not(:has(.fd-row-mac)) .fd-row-kcal { grid-row: 1; }
 .fd-sum { max-width: none; }
-.fd-plain .fd-numf, .fd-plain #fd-meter, .fd-plain #fd-sug-top, .fd-plain #fd-targets, .fd-plain #fd-metric, .fd-plain #fd-chart, .fd-plain #fd-chart-note { display: none !important; }
+/* calories hidden: every calorie field and number goes; protein, carbs and fat stay */
+.fd-plain .fd-kcalf { display: none !important; }
+.fd-plain .fd-form { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .fd-sug { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.875rem 1rem; background: var(--faint); border-left: 3px solid var(--pop); }
 .fd-sug[hidden] { display: none; }
 .fd-sug-num { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; }
@@ -698,10 +700,10 @@ body.typing .restbar { display: none; }
           <div class="p-head"><h2 id="h-fd-add">Add food</h2></div>
           <form class="fd-form" id="fd-form" novalidate autocomplete="off">
             <label class="ed-f fd-name"><span class="lab">What you ate</span><input id="fd-name" type="text" list="fd-names" placeholder="Oatmeal with banana" enterkeyhint="next"></label>
-            <label class="ed-f fd-numf"><span class="lab">kcal</span><input id="fd-kcal" inputmode="decimal" placeholder="350"></label>
-            <label class="ed-f fd-numf"><span class="lab">Protein g</span><input id="fd-p" inputmode="decimal" placeholder="optional"></label>
-            <label class="ed-f fd-numf"><span class="lab">Carbs g</span><input id="fd-c" inputmode="decimal" placeholder="optional"></label>
-            <label class="ed-f fd-numf"><span class="lab">Fat g</span><input id="fd-f" inputmode="decimal" placeholder="optional"></label>
+            <label class="ed-f fd-kcalf"><span class="lab">kcal</span><input id="fd-kcal" inputmode="decimal" placeholder="350"></label>
+            <label class="ed-f"><span class="lab">Protein g</span><input id="fd-p" inputmode="decimal" placeholder="optional"></label>
+            <label class="ed-f"><span class="lab">Carbs g</span><input id="fd-c" inputmode="decimal" placeholder="optional"></label>
+            <label class="ed-f"><span class="lab">Fat g</span><input id="fd-f" inputmode="decimal" placeholder="optional"></label>
             <div class="foot-row fd-go"><button class="skew pop small" type="submit" id="fd-add"><span>Add</span></button><span class="note wz-err" id="fd-msg" role="alert"></span></div>
           </form>
           <datalist id="fd-names"></datalist>
@@ -720,11 +722,11 @@ body.typing .restbar { display: none; }
           <p class="note" id="fd-chart-note"></p>
           <div class="chart" id="fd-chart"></div>
         </section>
-        <p class="note fd-off" id="fd-off" hidden>Calories are hidden, so Food is a simple list of what you ate. <button class="textbtn" type="button" id="fd-off-go">Show calories in Settings</button></p>
+        <p class="note fd-off" id="fd-off" hidden>Calories are hidden; protein, carbs and fat still count. <button class="textbtn" type="button" id="fd-off-go">Show calories in Settings</button></p>
         <details class="p-sec p-log" id="fd-targets">
           <summary class="p-head"><h2>Daily targets</h2><span class="p-count" id="fd-tgt-sum"></span><span class="p-caret" aria-hidden="true"></span></summary>
           <div class="ed-fields">
-            <label class="ed-f"><span class="lab">Calories (kcal)</span><input id="fd-t-kcal" inputmode="numeric" placeholder="none"></label>
+            <label class="ed-f fd-kcalf"><span class="lab">Calories (kcal)</span><input id="fd-t-kcal" inputmode="numeric" placeholder="none"></label>
             <label class="ed-f"><span class="lab">Protein (g)</span><input id="fd-t-p" inputmode="numeric" placeholder="none"></label>
           </div>
           <p class="note" id="fd-t-state" aria-live="polite">Leave empty for no target. Targets show as a line on the chart and in the day meter.</p>
@@ -794,8 +796,8 @@ body.typing .restbar { display: none; }
       </section>
       <section aria-labelledby="h-food-set">
         <h2 id="h-food-set">Food</h2>
-        <div class="settings"><label><input type="checkbox" id="set-cal"> Show calories and nutrients in Food</label></div>
-        <p class="note">Off by default: Food is then a simple list of what you ate. Switch it on to log calories, protein, carbs and fat, set targets and see the charts.</p>
+        <div class="settings"><label><input type="checkbox" id="set-cal"> Show calories in Food</label></div>
+        <p class="note">Off by default: Food then tracks what you ate with protein, carbs and fat, without calories. Switch it on to log calories too, with a calorie target and chart.</p>
       </section>
     </div>
   </div>
@@ -3086,7 +3088,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const fnum = (v) => { const t = String(v == null ? '' : v).trim().replace(',', '.'); if (!t) return null; const n = Number(t); return Number.isFinite(n) && n >= 0 ? Math.round(n * 10) / 10 : NaN; };
   const big = (n) => Math.round(n).toLocaleString('en-US');
   const entriesOf = (date) => Object.entries(((S.food[date] || {}).entries) || {}).filter(([, e]) => e && e.name).sort((a, b) => (a[1].at || 0) - (b[1].at || 0));
-  const dayTotals = (date) => entriesOf(date).reduce((t, [, e]) => { t.kcal += e.kcal || 0; t.p += e.p || 0; t.c += e.c || 0; t.f += e.f || 0; t.n += 1; if (e.kcal != null) t.k += 1; return t; }, { kcal: 0, p: 0, c: 0, f: 0, n: 0, k: 0 });
+  const dayTotals = (date) => entriesOf(date).reduce((t, [, e]) => { t.kcal += e.kcal || 0; t.p += e.p || 0; t.c += e.c || 0; t.f += e.f || 0; t.n += 1; if (e.kcal != null) t.k += 1; if (e.p != null || e.c != null || e.f != null) t.m += 1; return t; }, { kcal: 0, p: 0, c: 0, f: 0, n: 0, k: 0, m: 0 });
   const targets = () => (S.root && S.root.nutrition) || {};
   // every food you logged before, newest use first: feeds the quick-add chips and fills in numbers when you type a known name
   const knownFoods = () => {
@@ -3130,24 +3132,28 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         return;
       }
       if (sg.minor) { box.append(h('p', '', 'Suggested targets are for adults. Growing bodies need enough food: if you want a target, ask your doctor or a dietitian.')); return; }
-      box.append(h('span', 'lab', 'Suggested for you'), h('span', 'fd-sug-num', big(sg.kcal) + ' kcal · ' + sg.protein + ' g protein a day'));
-      const same = tg.kcal === sg.kcal && tg.protein === sg.protein;
+      const cal = showCal();
+      box.append(h('span', 'lab', 'Suggested for you'), h('span', 'fd-sug-num', (cal ? big(sg.kcal) + ' kcal · ' : '') + sg.protein + ' g protein a day'));
+      const same = cal ? tg.kcal === sg.kcal && tg.protein === sg.protein : tg.protein === sg.protein;
       const use = btn('skew small', same ? 'These are your targets' : tg.kcal || tg.protein ? 'Use these instead' : 'Use these as my targets');
       use.disabled = same;
       use.addEventListener('click', () => {
-        saveRoot({ nutrition: { kcal: sg.kcal, protein: sg.protein } }).catch(() => showToast('Not saved. Check your connection.', null));
+        saveRoot({ nutrition: { kcal: cal ? sg.kcal : tg.kcal || null, protein: sg.protein } }).catch(() => showToast('Not saved. Check your connection.', null));
         renderFood();
-        showToast('Targets set: ' + big(sg.kcal) + ' kcal and ' + sg.protein + ' g protein.', null);
+        showToast(cal ? 'Targets set: ' + big(sg.kcal) + ' kcal and ' + sg.protein + ' g protein.' : 'Protein target set: ' + sg.protein + ' g a day.', null);
       });
       const how = h('details');
       how.append(h('summary', '', 'How this is worked out'));
       const ul = h('ul');
-      [GOAL_WHY[sg.goal] || GOAL_WHY[''],
+      (cal ? [GOAL_WHY[sg.goal] || GOAL_WHY[''],
         'It starts from your age, height and weight (the Mifflin-St Jeor formula), plus ' + plural(sg.days, 'training day') + ' a week' + (sg.guessDays ? ' (a guess: add yours in About you)' : '') + (sg.guessLife ? ' and an everyday life without much walking (tell us yours in About you)' : '') + '.',
         sg.guessSex ? 'Without sex filled in, it uses the middle between the female and male formula.' : '',
         'It is an estimate: bodies differ. Use it for two or three weeks, see how your training and energy feel, and adjust by about 150 kcal if needed.',
         'It never suggests eating less than your body uses at rest.',
-      ].filter(Boolean).forEach((t) => ul.append(h('li', '', t)));
+      ] : [
+        'About ' + num(Math.round((sg.protein / Number(profile().weight_kg)) * 10) / 10) + ' g of protein per kg of body weight a day' + ({ lose: ': a bit more while losing weight helps you keep your muscle.', muscle: ': enough to build muscle with.', both: ': extra, so muscle can grow while you lose fat.' }[sg.goal] || '. Pick a goal in Settings, About you, to tailor it.'),
+        'Spread over your meals works best. Carbs and fat have no target: eat what keeps your training going.',
+      ]).filter(Boolean).forEach((t) => ul.append(h('li', '', t)));
       how.append(ul);
       const row = h('div', 'foot-row');
       row.append(use);
@@ -3155,7 +3161,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     };
     // above the day only while you have no target at all; always inside Daily targets
     const top = $('#fd-sug-top');
-    top.hidden = !!(tg.kcal || tg.protein);
+    top.hidden = showCal() ? !!(tg.kcal || tg.protein) : !!tg.protein;
     if (!top.hidden) fill(top, true);
     fill($('#fd-sug'), false);
   };
@@ -3207,21 +3213,26 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const tg = targets();
     const box = $('#fd-meter');
     box.replaceChildren();
+    // the headline is calories when they are shown, protein when they are hidden
+    const cal = showCal();
+    const v = cal ? t.kcal : t.p;
+    const tgt = cal ? tg.kcal : tg.protein;
+    const unit = cal ? 'kcal' : 'g protein';
     const top = h('div', 'fd-kcal');
-    top.append(h('b', '', big(t.kcal)), h('span', '', 'kcal' + (tg.kcal ? ' of ' + big(tg.kcal) + ' · ' + (t.kcal <= tg.kcal ? big(tg.kcal - t.kcal) + ' left' : big(t.kcal - tg.kcal) + ' above') : '')));
+    top.append(h('b', '', big(v)), h('span', '', unit + (tgt ? ' of ' + big(tgt) + ' · ' + (v <= tgt ? big(tgt - v) + ' left' : big(v - tgt) + ' above') : '')));
     box.append(top);
-    if (tg.kcal) {
-      const bar = h('div', 'fd-bar' + (t.kcal > tg.kcal ? ' over' : ''));
+    if (tgt) {
+      const bar = h('div', 'fd-bar' + (v > tgt ? ' over' : ''));
       bar.setAttribute('role', 'img');
-      bar.setAttribute('aria-label', Math.round((t.kcal / tg.kcal) * 100) + '% of your calorie target');
+      bar.setAttribute('aria-label', Math.round((v / tgt) * 100) + '% of your ' + (cal ? 'calorie' : 'protein') + ' target');
       const fill = h('i');
-      fill.style.width = Math.min(100, (t.kcal / tg.kcal) * 100) + '%';
+      fill.style.width = Math.min(100, (v / tgt) * 100) + '%';
       bar.append(fill);
       box.append(bar);
     }
     const mac = h('div', 'fd-macros');
-    const m = (label, v, tgt) => { const sp = h('span'); sp.append(label + ' ', h('b', '', big(v) + ' g'), tgt ? ' / ' + big(tgt) : ''); mac.append(sp); };
-    m('Protein', t.p, tg.protein);
+    const m = (label, val, tg2) => { const sp = h('span'); sp.append(label + ' ', h('b', '', big(val) + ' g'), tg2 ? ' / ' + big(tg2) : ''); mac.append(sp); };
+    if (cal) m('Protein', t.p, tg.protein);
     m('Carbs', t.c);
     m('Fat', t.f);
     box.append(mac);
@@ -3238,7 +3249,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const x = plainBtn('icon', '×', 'Remove ' + e.name, () => removeFood(id));
       const cal = showCal();
       row.append(h('span', 'fd-row-name', e.name), h('span', 'fd-row-kcal', cal && e.kcal != null ? big(e.kcal) + ' kcal' : ''), x);
-      if (mac && cal) row.append(h('span', 'fd-row-mac', mac));
+      if (mac) row.append(h('span', 'fd-row-mac', mac));
       box.append(row);
     });
   };
@@ -3273,7 +3284,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const name = $('#fd-name').value.trim();
     const vals = { kcal: fnum($('#fd-kcal').value), p: fnum($('#fd-p').value), c: fnum($('#fd-c').value), f: fnum($('#fd-f').value) };
     if (!name) { msg.textContent = 'Write what you ate.'; $('#fd-name').focus(); return; }
-    if (!showCal()) Object.keys(vals).forEach((k) => { vals[k] = null; });
+    if (!showCal()) vals.kcal = null;
     if (showCal() && (vals.kcal == null || Number.isNaN(vals.kcal))) { msg.textContent = 'Fill in the calories (kcal) as a number.'; $('#fd-kcal').focus(); return; }
     const bad = [['p', '#fd-p'], ['c', '#fd-c'], ['f', '#fd-f']].find(([k]) => Number.isNaN(vals[k]));
     if (bad) { msg.textContent = 'Grams are numbers, or leave them empty.'; $(bad[1]).focus(); return; }
@@ -3291,7 +3302,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   let tgtTimer = 0;
   const paintTargets = () => {
     const tg = targets();
-    $('#fd-tgt-sum').textContent = [tg.kcal ? big(tg.kcal) + ' kcal' : '', tg.protein ? big(tg.protein) + ' g protein' : ''].filter(Boolean).join(' · ');
+    $('#fd-tgt-sum').textContent = [tg.kcal && showCal() ? big(tg.kcal) + ' kcal' : '', tg.protein ? big(tg.protein) + ' g protein' : ''].filter(Boolean).join(' · ');
     [['#fd-t-kcal', tg.kcal], ['#fd-t-p', tg.protein]].forEach(([sel, v]) => { if (document.activeElement !== $(sel)) $(sel).value = v ? String(v) : ''; });
   };
   ['#fd-t-kcal', '#fd-t-p'].forEach((sel) => $(sel).addEventListener('input', () => {
@@ -3300,11 +3311,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const k = fnum($('#fd-t-kcal').value);
       const p = fnum($('#fd-t-p').value);
       if (Number.isNaN(k) || Number.isNaN(p)) { $('#fd-t-state').textContent = 'Targets are numbers, or leave them empty.'; return; }
-      saveRoot({ nutrition: { kcal: k || null, protein: p || null } }).then(() => { $('#fd-t-state').textContent = 'Saved.'; }).catch(() => { $('#fd-t-state').textContent = 'Not saved. Check your connection.'; });
+      saveRoot({ nutrition: { kcal: showCal() ? k || null : targets().kcal || null, protein: p || null } }).then(() => { $('#fd-t-state').textContent = 'Saved.'; }).catch(() => { $('#fd-t-state').textContent = 'Not saved. Check your connection.'; });
       paintMeter();
       paintFoodTrend();
       paintSuggestion();
-      $('#fd-tgt-sum').textContent = [k ? big(k) + ' kcal' : '', p ? big(p) + ' g protein' : ''].filter(Boolean).join(' · ');
+      $('#fd-tgt-sum').textContent = [k && showCal() ? big(k) + ' kcal' : '', p ? big(p) + ' g protein' : ''].filter(Boolean).join(' · ');
     }, 600);
   }));
 
@@ -3323,32 +3334,28 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     // the period starts no earlier than your first logged day, so a new logger does not see a mostly empty year
     const from = [S.frange ? addDays(today(), -S.frange + 1) : '', logged[0] || today()].sort()[1];
     const inRange = logged.filter((d) => d >= from);
-    const days = inRange.map((d) => Object.assign({ date: d }, dayTotals(d))).filter((d) => !showCal() || d.k);
+    const cal = showCal();
+    const days = inRange.map((d) => Object.assign({ date: d }, dayTotals(d))).filter((d) => (cal ? d.k : d.m));
     const box = $('#fd-chart');
     const sum = $('#fd-sum');
     box.replaceChildren();
     sum.replaceChildren();
     $('#fd-metric').replaceChildren();
     $('#fd-chart-note').textContent = '';
-    if (!days.length) { $('#fd-take').textContent = logged.length ? 'Nothing logged in ' + word + '. Pick a longer period.' : 'Log a few days and your averages and a chart show up here.'; return; }
+    if (!days.length) { $('#fd-take').textContent = !logged.length ? 'Log a few days and your averages and a chart show up here.' : inRange.length ? 'No ' + (cal ? 'calories' : 'protein, carbs or fat') + ' filled in for ' + word + ' yet.' : 'Nothing logged in ' + word + '. Pick a longer period.'; return; }
     $('#fd-take').textContent = '';
-    if (!showCal()) {
-      const span0 = Math.round(dayNum(today()) - dayNum(from)) + 1;
-      const w = h('span', 'p-st'); const b = h('b', '', String(days.length)); b.append(h('small', '', '/' + span0)); w.append(b, h('span', '', 'days logged in ' + word)); sum.append(w);
-      const kinds = new Set(); days.forEach((d) => entriesOf(d.date).forEach(([, e]) => kinds.add(e.name.toLowerCase())));
-      const w2 = h('span', 'p-st'); w2.append(h('b', '', String(kinds.size)), h('span', '', 'different foods')); sum.append(w2);
-      return;
-    }
     const tg = targets();
     const span = Math.round(dayNum(today()) - dayNum(from)) + 1;
     const avg = (k) => d3.mean(days, (d) => d[k]);
     const stat = (value, label, of) => { const w = h('span', 'p-st'); const b = h('b', '', String(value)); if (of) b.append(h('small', '', of)); w.append(b, h('span', '', label)); sum.append(w); };
-    stat(big(avg('kcal')), 'kcal a day');
+    if (cal) stat(big(avg('kcal')), 'kcal a day');
     stat(big(avg('p')), 'g protein a day');
-    stat(days.length, 'days logged', '/' + span);
-    if (tg.kcal) stat(days.filter((d) => Math.abs(d.kcal - tg.kcal) <= tg.kcal * 0.1).length, 'days within 10% of target');
-    const key = S.fmetric === 'p' ? 'p' : 'kcal';
-    $('#fd-metric').append(radioTabs('Chart', [['kcal', 'Calories'], ['p', 'Protein']], key, (k) => { S.fmetric = k; paintFoodTrend(); }));
+    if (!cal) stat(big(avg('c')), 'g carbs a day');
+    stat(inRange.length, 'days logged', '/' + span);
+    if (cal && tg.kcal) stat(days.filter((d) => Math.abs(d.kcal - tg.kcal) <= tg.kcal * 0.1).length, 'days within 10% of target');
+    else if (!cal && tg.protein) stat(days.filter((d) => d.p >= tg.protein * 0.9).length, 'days at your protein target');
+    const key = cal && S.fmetric !== 'p' ? 'kcal' : 'p';
+    if (cal) $('#fd-metric').append(radioTabs('Chart', [['kcal', 'Calories'], ['p', 'Protein']], key, (k) => { S.fmetric = k; paintFoodTrend(); }));
     const tgt = key === 'kcal' ? tg.kcal : tg.protein;
     const unit = key === 'kcal' ? ' kcal' : ' g protein';
     // bins: every day up to about 3 months, weeks (average of the days you logged) beyond
@@ -3447,7 +3454,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       out.push('- ' + all.sets + ' working sets across ' + all.exercises + ' exercises; ' + all.repeated + ' were repeated in more than one session.', '');
     }
     const fdays = Object.keys(S.food).filter((d) => d >= addDays(today(), -27) && d <= today() && dayTotals(d).k).map(dayTotals);
-    if (!showCal()) { const n = Object.keys(S.food).filter((d) => d >= addDays(today(), -27) && d <= today() && dayTotals(d).n).length; if (n) out.push('## Nutrition', '', '- The lifter keeps a simple food list without calories (logged ' + n + ' of the past 28 days). Do not ask for calorie numbers unless they bring it up.', ''); }
+    if (!showCal()) {
+      const md = Object.keys(S.food).filter((d) => d >= addDays(today(), -27) && d <= today() && dayTotals(d).m).map(dayTotals);
+      if (md.length) {
+        const av = (k) => Math.round(d3.mean(md, (d) => d[k]));
+        out.push('## Nutrition, past 4 weeks', '', '- Logged protein, carbs and fat on ' + md.length + ' of 28 days. Average per logged day: ' + av('p') + ' g protein, ' + av('c') + ' g carbs, ' + av('f') + ' g fat.' + (targets().protein ? ' Protein target ' + targets().protein + ' g a day.' : ''), '- The lifter does not track calories. Do not ask for calorie numbers unless they bring it up.', '');
+      }
+    }
     else if (fdays.length) {
       const tg = targets();
       const av = (k) => Math.round(d3.mean(fdays, (d) => d[k]));
@@ -4055,7 +4068,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       box.append(chipRow('Where you train', WHERE.slice(1), p.where, (v) => { p.where = v; re(); }));
       box.append(chipRow('Your goal', GOALS.slice(1), p.goal, (v) => { p.goal = v; re(); }));
       const calRow = chipRow('Calories in Food', [['off', 'Hidden'], ['on', 'Show them']], showCal() ? 'on' : 'off', (v) => { setShowCal(v === 'on'); re(); });
-      calRow.append(h('p', 'note', 'Food starts as a simple list of what you ate, without numbers. Want to count calories and protein? Pick Show them, or switch it on later in Settings, Food.'));
+      calRow.append(h('p', 'note', 'Food tracks what you eat with protein, carbs and fat, without calories. Want to count calories too? Pick Show them, or switch it on later in Settings, Food.'));
       box.append(calRow);
       box.append(chipRow('Coming from', WIZ_SOURCES, W.src, (v) => { W.src = v; W.rows = null; re(); }));
       if (W.src !== 'none') {
