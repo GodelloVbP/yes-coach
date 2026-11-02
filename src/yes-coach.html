@@ -1264,7 +1264,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#mark').addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); });
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
-    ['2 Nov 2026', 'Food search', ['Search over 9,000 foods in Food: Dutch foods from NEVO (RIVM) and international foods from USDA.', 'Food is per 100 g and drinks per 100 ml. Do not know the weight? Tap small, medium or large, or a cup, glass or bottle for drinks.', 'Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven and other data sources (USDA FoodData Central).']],
+    ['2 Nov 2026', 'Real portion sizes', ['Dutch foods now offer RIVM\'s household measures: 1 beschuit (10 g), 1 snee (35 g), 1 glas (200 ml), 1 eetlepel and more, with 2 and 3 of them one tap away.', 'Portions: Portie-online versie 2026/2.0, RIVM, Bilthoven.']],
+    ['2 Nov 2026', 'Food search', ['Search over 9,000 foods in Food: Dutch foods from NEVO (RIVM) and international foods from USDA.', 'Food is per 100 g and drinks per 100 ml. Do not know the weight? Tap a portion: for Dutch foods these are RIVM\'s own household measures (Portie-online versie 2026/2.0, RIVM, Bilthoven), like 1 beschuit or 1 eetlepel.', 'Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven and other data sources (USDA FoodData Central).']],
     ['2 Nov 2026', 'Plan, rebuilt', ['Plan is now your week on one screen: every training day with its exercises.', 'Tap the weekdays you train, and choose what a missed day does: skip it, or move it up.', 'Edit a day as a short list: tap an exercise to change sets, reps and weight, drag to reorder, or replace it.', 'Ask your AI coach right from Plan to adjust your plan: you see what changes before anything does.']],
     ['2 Nov 2026', 'Exercises', ['New Exercises tab: all 304 exercises with search, body-part tabs and sorting.', 'Add any of them to a training day, or add your own exercise.', 'For you: body parts your training skips, and exercises close to the ones you do most.']],
     ['2 Nov 2026', 'Food', ['New Food tab: a simple list of what you eat, without numbers.', 'Want to count? Switch on calories in Settings, Food: log calories, protein, carbs and fat, get a suggested daily target from your goal, and see averages and a chart over 1 to 12 months.', 'Foods you logged before come back as one-tap chips.', 'About you now asks your goal: lose weight, gain muscle or both.']],
@@ -3681,10 +3682,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const FD = { pick: null, t: 0 };
   const foldW = (t) => String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   const wordsOf = (t) => foldW(t).split(/[^a-z0-9]+/).filter(Boolean).map((w) => (w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w));
-  const loadFoodDb = () => fdbLoad || (fdbLoad = Promise.all((window.YC_FOOD_FILES || ['foods-nevo.json', 'foods-usda.json']).map((u) => fetch(u).then((r) => (r.ok ? r.json() : null)).catch(() => null))).then((docs) => {
+  const loadFoodDb = () => fdbLoad || (fdbLoad = Promise.all((window.YC_FOOD_FILES || ['foods-nevo.json', 'foods-usda.json', 'portions-nevo.json']).map((u) => fetch(u).then((r) => (r.ok ? r.json() : null)).catch(() => null))).then((docs) => {
     const items = [];
     const srcs = new Set();
+    let portie = null;
     docs.filter(Boolean).forEach((d) => {
+      if (d.src === 'portie') { portie = d.p; return; }
       srcs.add(d.src);
       if (d.src === 'nevo') d.foods.forEach(([ref, nl, en, syn, g, kcal, p, c, f, unit, sug, fib]) => items.push({ src: 'nevo', ref, name: nl, alt: en, type: d.groups[g], kcal, p, c, f, unit, sug, fib, w: wordsOf(nl + ' ' + syn), w2: wordsOf(en) }));
       else d.foods.forEach(([ref, name, g, kcal, p, c, f, sug, fib]) => items.push({ src: 'usda', ref, name, alt: '', type: d.groups[g], kcal, p, c, f, unit: 'g', sug, fib, w: wordsOf(name), w2: [] }));
@@ -3696,7 +3699,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         || (/\b(melk|milk|karnemelk|drank|drink|juice|sap|smoothie|shake|koffie|coffee|thee|tea)\b/.test(n) && !/poeder|powder|gecondenseerd|condensed|ijs|ice cream|pudding|vla|cake|koek|bar\b|reep/.test(n));
       it.u = it.drink ? 'ml' : 'g';
     });
-    FDB = { items, srcs };
+    FDB = { items, srcs, portie };
     return FDB;
   }));
   // NEVO names carry details as text ("m suiker verrijkt m calcium en vitamines"); show them as tags and keep the name short
@@ -3802,6 +3805,25 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (it.type === 'Plant-based' && /yog/.test(n)) return PORTIONS.Dairy;
     return PORTIONS[it.type] || [50, 100, 200];
   };
+  const measureScore = (m, it) => {
+    const t = m.toLowerCase();
+    if (/^(hoeveelheid|voor 1 toastje|voor 1 beschuit|scheutje|snufje|mespunt)/.test(t)) return 0;
+    if (/^slok/.test(t)) return 1;
+    if (/^(theelepel|dessert\/paplepel|dessertlepel)/.test(t)) return 2;
+    if (/^(eetlepel|sauslepel)/.test(t)) return 3;
+    if (/^(opscheplepel|groentelepel|aardappellepel)/.test(t)) return 4;
+    if (/^voor 1 snee\b/.test(t) && ['Spreads', 'Cheese', 'Cold cuts', 'Sweets', 'Fats and oils'].includes(it.type)) return 9;
+    if (/^voor/.test(t)) return 3;
+    if (/^stuks? (gemiddeld|middel|medium|\(m\)|gem)/.test(t) || /^stuks (medium|m) /.test(t)) return 12;
+    if (/^stuks$/.test(t) || /^stuks (enkel|kippen)/.test(t)) return 11;
+    if (/^glas$/.test(t)) return 10;
+    if (/^snee$/.test(t)) return 11;
+    if (/^(glas|beker\/mok|kopje|portie|schaaltje|soepbord|plakje)$/.test(t) || /^(glas|portie|plakje) /.test(t)) return 9;
+    if (/^(broodje\/bolletje)$/.test(t)) return 10;
+    if (/^stuks/.test(t)) return /klein|small|\(s\)|mini|kriel/.test(t) ? 6 : /groot|large|\(l\)|xl/.test(t) ? 5 : 8;
+    if (/^snee/.test(t)) return /zonder korst|dun/.test(t) ? 6 : 7;
+    return 5;
+  };
   const pickFood = (hit) => {
     const it = hit.it;
     FD.pick = { it, label: hit.full };
@@ -3817,32 +3839,48 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const n = foldW(it.name + ' ' + (it.alt || ''));
     const sizes = !it.drink ? [] : it.type === 'Alcohol' ? (/\b(bier|beer)\b/.test(n) ? [['Beer glass', 250], ['Can', 330], ['Bottle', 500]] : [['Wine glass', 125], ['Shot', 35], ['Beer glass', 250]])
       : [['Cup', 125], ['Glass', 200], ['Mug', 250], ['Can', 330], ['Bottle', 500]];
-    const pcs = it.drink ? null : piecesFor(it, n);
-    const slm = it.drink || pcs ? null : portionsFor(it, n);
-    const start = pcs ? pcs[0][1] : slm ? slm[1] : !it.drink ? 100 : /\b(koffie|coffee|thee|tea|espresso)\b/.test(n) ? 125 : sizes[0][0] === 'Beer glass' ? 250 : it.type === 'Alcohol' ? 125 : 200;
+    // RIVM's own household measures for this NEVO food when Portie-online has them: the first countable one as 1, 2 or 3,
+    // the others as they are. Everything else falls back to Yes Coach's estimates.
+    const rp = it.src === 'nevo' && FDB.portie && FDB.portie[it.ref];
+    let official = null;
+    if (rp && rp.length) {
+      // the everyday measure first: a whole piece, a normal slice, a glass, a portion; spoons and sips last
+      const ranked = rp.map((m, i) => [measureScore(m[0], it), i, m]).sort((a, b) => b[0] - a[0] || a[1] - b[1]).map((x) => x[2]);
+      const top = ranked[0];
+      const countable = /^(stuks|stuk\b|stukje|snee|plak|plakje|kapje|heel|portie|broodje|bolletje|reep|blokje)/i.test(top[0]);
+      const lab = (m) => (/^voor\b/i.test(m) ? m : '1 ' + m);
+      official = countable ? [1, 2, 3].map((k) => [k === 1 ? lab(top[0]) : k + ' × ' + top[0], top[1] * k]) : [[lab(top[0]), top[1]]];
+      ranked.slice(1).forEach((m) => { if (official.length < 7) official.push([lab(m[0]), m[1]]); });
+    }
+    // a meal that RIVM only measures in spoons also gets small, medium and large plates
+    const spoonsOnly = official && Math.max(...official.map((o) => o[1])) < 100 && ['Meals', 'Potatoes', 'Vegetables', 'Legumes', 'Soups'].includes(it.type);
+    const pcs = it.drink || official ? null : piecesFor(it, n);
+    const slm = it.drink || pcs || (official && !spoonsOnly) ? null : portionsFor(it, n);
+    const sz = official ? [] : sizes;
+    const start = spoonsOnly && slm ? slm[1] : official ? official[0][1] : pcs ? pcs[0][1] : slm ? slm[1] : !it.drink ? 100 : /\b(koffie|coffee|thee|tea|espresso)\b/.test(n) ? 125 : sizes[0][0] === 'Beer glass' ? 250 : it.type === 'Alcohol' ? 125 : 200;
     const inp = edInput('fd-g', String(start));
     inp.inputMode = 'decimal';
     inp.addEventListener('input', fillFromPick);
     row.append(edField('Amount (' + it.u + ')', inp));
-    (pcs || []).forEach(([l, v]) => {
-      const b = h('button', 'fd-chip', l + ' · ' + v + ' g');
+    (official || pcs || []).forEach(([l, v]) => {
+      const b = h('button', 'fd-chip', l + ' · ' + num(v) + ' ' + it.u);
       b.type = 'button';
       b.addEventListener('click', () => { inp.value = String(v); fillFromPick(); });
       row.append(b);
     });
     if (slm) ['Small', 'Medium', 'Large'].forEach((l, i) => {
-      const b = h('button', 'fd-chip', l + ' · ' + slm[i] + ' g');
+      const b = h('button', 'fd-chip', l + (official ? ' ≈ ' : ' · ') + slm[i] + ' g');
       b.type = 'button';
       b.addEventListener('click', () => { inp.value = String(slm[i]); fillFromPick(); });
       row.append(b);
     });
-    sizes.forEach(([l, v]) => {
+    sz.forEach(([l, v]) => {
       const b = h('button', 'fd-chip', l + ' · ' + v + ' ml');
       b.type = 'button';
       b.addEventListener('click', () => { inp.value = String(v); fillFromPick(); });
       row.append(b);
     });
-    box.append(head, row, h('p', 'note', 'Amounts fill in the numbers below; you can still change them. ' + foodCredit()));
+    box.append(head, row, h('p', 'note', 'Amounts fill in the numbers below; you can still change them. ' + foodCredit() + (official ? ' Portions: Portie-online versie 2026/2.0, RIVM, Bilthoven' + (slm ? '; small, medium and large are Yes Coach estimates.' : '.') : ' Portions: Yes Coach estimates.')));
     fillFromPick();
     inp.focus();
     inp.select();

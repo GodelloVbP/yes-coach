@@ -47,3 +47,4 @@ Food search loads `foods-nevo.json` and `foods-usda.json` the first time someone
 - USDA FoodData Central, SR Legacy (public domain).
 
 Rebuild after a new release: `python3 tools/build_foods.py <NEVO20xx.csv> <USDA sr_legacy csv folder>` (keep the raw NEVO files out of this repo).
+- Portie-online versie 2026/2.0, RIVM, Bilthoven: household measures per NEVO code in `portions-nevo.json` (used unchanged, packaging sizes left out). Full table: `Portie-online 2026-2.0.xlsx` in the Yes Coach folder.
