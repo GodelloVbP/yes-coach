@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body class="signed-out">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#26358f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Yes Coach">
-<meta name="description" content="A free, ad-free workout tracker: log sets, plan your week, track your progress.">
+<meta name="description" content="A free, ad-free workout tracker: log sets, plan your week, track your progress and what you eat.">
 <style>
 body.signed-out #stick, body.signed-out main, body.signed-out #resume, body.signed-out #restbar { display: none !important; }
 .auth { padding-block: 2rem 3rem; display: flex; flex-direction: column; gap: 1rem; max-width: 26rem; }
@@ -17,7 +17,7 @@ body.signed-out #stick, body.signed-out main, body.signed-out #resume, body.sign
 #au-msg { min-height: 1.5em; }
 #au-msg.bad { color: var(--warn); font-weight: 600; }
 </style>
-
+</head><body class="signed-out">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -269,20 +269,26 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .seg-b:first-child { border-left: 0; }
 .seg-b:hover { background: var(--faint); }
 .seg-b[aria-checked="true"] { background: var(--ink); color: var(--bg); }
-.ptabs { display: flex; gap: 0 1rem; overflow-x: auto; scrollbar-width: none; }
-.ptabs .tab { font-size: var(--t2); flex: none; }
-/* training days: one square per day, weeks as columns; the numbers sit beside it or under it */
-.p-filters { gap: 0.5rem; padding-bottom: 0.75rem; }
-.p-top { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; }
-.p-top[hidden] { display: none; }
-.p-days.chart { flex: 0 1 auto; max-width: 100%; min-height: 0; margin: 0; overflow-x: auto; scrollbar-width: thin; }
-.p-days svg { display: block; }
-.p-days.chart text { font-size: 11px; fill: var(--ink-soft); font-family: var(--f-head); font-weight: 700; letter-spacing: 0.04em; }
-.p-sum { flex: 1 1 11rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(5.25rem, 1fr)); gap: 0.75rem 1rem; margin: 0; max-width: 34rem; }
-.p-st { display: flex; flex-direction: column; line-height: 1.1; }
+.ptabs { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0 0.625rem; }
+.ptabs .tab { font-size: 1.5rem; flex: none; min-height: 48px; }
+.pt-div { color: var(--pop); font-family: var(--f-head); font-size: 1.5rem; font-weight: 700; line-height: 1; user-select: none; }
+@media (max-width: 439px) { .ptabs { gap: 0 0.5rem; } .ptabs .tab, .pt-div { font-size: 1.3rem; } }
+.seg { margin-inline: auto; width: 100%; }
+/* the numbers for the period, each with an orange rule like the dividers above */
+.p-sum { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem 1rem; margin: 0; }
+.p-sum[hidden] { display: none; }
+@media (max-width: 30rem) { .p-sum { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.p-st { display: flex; flex-direction: column; line-height: 1.1; border-left: 3px solid var(--pop); padding-left: 0.625rem; }
 .p-st b { font-family: var(--f-head); font-size: 1.75rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0.01em; }
 .p-st b small { font-size: var(--t2); color: var(--ink-soft); margin-left: 0.2rem; }
 .p-st span { font-size: var(--t1); font-weight: 600; color: var(--ink-soft); }
+/* training days: a month calendar for 1M, a strip of weeks for longer periods */
+.p-days.chart { min-height: 0; overflow-x: auto; scrollbar-width: thin; }
+.p-days svg { display: block; }
+.p-days.chart text { font-size: 11px; fill: var(--ink-soft); font-family: var(--f-head); font-weight: 700; letter-spacing: 0.04em; }
+.p-days.chart text.dn { font-size: 13px; fill: var(--ink-soft); font-family: var(--f-body); font-weight: 600; letter-spacing: 0; }
+.p-days.chart text.dn.on { fill: var(--bg); }
+.p-legend i.rest { background: var(--paper); border: 1px solid var(--ctl); box-sizing: border-box; }
 /* sections */
 .p-sec { display: flex; flex-direction: column; gap: 0.375rem; min-width: 0; }
 .p-head { display: flex; align-items: baseline; gap: 0.625rem; border-bottom: 2px solid var(--ink); padding-bottom: 0.375rem; }
@@ -503,6 +509,38 @@ body.typing .restbar { display: none; }
 .cl-item { padding-block: 0.875rem; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.25rem; }
 .cl-title { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 .cl-item ul { margin: 0; padding-left: 1.1rem; color: var(--ink-soft); font-weight: 500; display: flex; flex-direction: column; gap: 0.125rem; }
+/* food */
+.fd-wrap { padding-block: 1rem 3rem; }
+.fd-body { display: flex; flex-direction: column; gap: 1.75rem; }
+.fd-body[hidden] { display: none; }
+.fd-day { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.fd-day h2 { font-size: var(--t3); min-width: 12rem; text-align: center; }
+.fd-day .icon[disabled] { opacity: 0.3; cursor: default; }
+.fd-meter { display: flex; flex-direction: column; gap: 0.5rem; }
+.fd-kcal { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
+.fd-kcal b { font-family: var(--f-head); font-size: var(--t5); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.fd-kcal span { font-weight: 600; color: var(--ink-soft); }
+.fd-bar { height: 12px; background: var(--faint); border: 1px solid var(--line); position: relative; overflow: hidden; }
+.fd-bar i { position: absolute; inset: 0 auto 0 0; background: var(--ink); transition: width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.fd-bar.over i { background: var(--pop); }
+.fd-macros { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; font-weight: 600; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.fd-macros b { color: var(--ink); }
+.fd-form { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem 1rem; }
+.fd-form .fd-name, .fd-form .fd-go { grid-column: 1 / -1; }
+@media (max-width: 30rem) { .fd-form { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.fd-recent { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+.fd-recent .lab { width: 100%; }
+.fd-chip { min-height: 40px; padding: 0 0.75rem; border: 2px solid var(--ctl); background: var(--paper); color: var(--ink); font-weight: 600; font-size: var(--t2); cursor: pointer; transition: transform 0.2s cubic-bezier(0.3, 1.7, 0.5, 1), background-color 0.15s; }
+.fd-chip span { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.fd-chip:hover { background: var(--faint); }
+.fd-chip:active { transform: scale(0.94); }
+.fd-list { display: flex; flex-direction: column; }
+.fd-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 0 0.75rem; min-height: 52px; padding: 0.375rem 0; border-bottom: 1px solid var(--line); }
+.fd-row-name { font-weight: 700; overflow-wrap: anywhere; }
+.fd-row-mac { grid-column: 1; font-size: var(--t2); color: var(--ink-soft); font-weight: 500; font-variant-numeric: tabular-nums; }
+.fd-row-kcal { grid-row: 1 / span 2; grid-column: 2; font-family: var(--f-head); font-weight: 700; font-size: var(--t3); font-variant-numeric: tabular-nums; }
+.fd-row .icon { grid-row: 1 / span 2; grid-column: 3; }
+.fd-sum { max-width: none; }
 .privacy { padding: 0.75rem; background: var(--faint); border-left: 4px solid var(--ink); font-weight: 500; }
 /* native selects look the same everywhere: flat underline, our own chevron */
 .ed-f select, .sm-frow select, #sm-add, .cal-panel select, .mover select, .sel { -webkit-appearance: none; appearance: none; border-radius: 0; background-color: transparent; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%236f79bf' stroke-width='2.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 4px center; padding-right: 26px; }
@@ -561,6 +599,7 @@ body.typing .restbar { display: none; }
         <button class="tab" role="tab" type="button" id="tab-train" data-view="train" aria-selected="true">Train</button>
         <button class="tab" role="tab" type="button" id="tab-plan" data-view="plan" aria-selected="false">Plan</button>
         <button class="tab" role="tab" type="button" id="tab-progress" data-view="progress" aria-selected="false">Progress</button>
+        <button class="tab" role="tab" type="button" id="tab-food" data-view="food" aria-selected="false">Food</button>
         <button class="tab" role="tab" type="button" id="tab-settings" data-view="settings" aria-selected="false">Settings</button>
       </nav>
     </div>
@@ -645,10 +684,7 @@ body.typing .restbar { display: none; }
         <div class="seg" role="radiogroup" aria-label="Period" id="prange"></div>
       </div>
       <p class="p-total" id="take">Loading your progress…</p>
-      <div class="p-top" id="p-top" hidden>
-        <div class="chart p-days" id="p-days"></div>
-        <p class="p-sum" id="p-sum"></p>
-      </div>
+      <div class="p-sum" id="p-sum" hidden></div>
       <div class="p-grid" id="p-grid">
         <section class="p-sec" aria-labelledby="h-plist">
           <div class="p-head"><h2 id="h-plist">Your lifts</h2><span class="p-count" id="plist-count"></span></div>
@@ -656,6 +692,12 @@ body.typing .restbar { display: none; }
           <div class="plist" id="plist"></div>
         </section>
         <div class="p-col">
+          <section class="p-sec" aria-labelledby="h-days" id="p-days-sec">
+            <div class="p-head"><h2 id="h-days">Training days</h2></div>
+            <p class="note" id="days-note"></p>
+            <div class="chart p-days" id="p-days"></div>
+            <div class="legend p-legend" id="days-legend"></div>
+          </section>
           <section class="p-sec" aria-labelledby="h-weekly">
             <div class="p-head"><h2 id="h-weekly">Volume</h2></div>
             <p class="note" id="weekly-note"></p>
@@ -672,6 +714,54 @@ body.typing .restbar { display: none; }
             </div>
           </details>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="view" id="v-food" hidden>
+    <div class="fd-wrap in">
+      <p class="loading" id="fd-loading">Loading your food log…</p>
+      <div class="fd-body" id="fd-body" hidden>
+        <div class="fd-day">
+          <button class="icon" type="button" id="fd-prev" aria-label="Previous day">&#8249;</button>
+          <h2 id="fd-date" aria-live="polite"></h2>
+          <button class="icon" type="button" id="fd-next" aria-label="Next day">&#8250;</button>
+        </div>
+        <div class="fd-meter" id="fd-meter"></div>
+        <section class="p-sec" aria-labelledby="h-fd-add">
+          <div class="p-head"><h2 id="h-fd-add">Add food</h2></div>
+          <form class="fd-form" id="fd-form" novalidate autocomplete="off">
+            <label class="ed-f fd-name"><span class="lab">What you ate</span><input id="fd-name" type="text" list="fd-names" placeholder="Oatmeal with banana" enterkeyhint="next"></label>
+            <label class="ed-f"><span class="lab">kcal</span><input id="fd-kcal" inputmode="decimal" placeholder="350"></label>
+            <label class="ed-f"><span class="lab">Protein g</span><input id="fd-p" inputmode="decimal" placeholder="optional"></label>
+            <label class="ed-f"><span class="lab">Carbs g</span><input id="fd-c" inputmode="decimal" placeholder="optional"></label>
+            <label class="ed-f"><span class="lab">Fat g</span><input id="fd-f" inputmode="decimal" placeholder="optional"></label>
+            <div class="foot-row fd-go"><button class="skew pop small" type="submit" id="fd-add"><span>Add</span></button><span class="note wz-err" id="fd-msg" role="alert"></span></div>
+          </form>
+          <datalist id="fd-names"></datalist>
+          <div class="fd-recent" id="fd-recent"></div>
+        </section>
+        <section class="p-sec" aria-labelledby="h-fd-list">
+          <div class="p-head"><h2 id="h-fd-list">Eaten</h2><span class="p-count" id="fd-count"></span></div>
+          <div class="fd-list" id="fd-list"></div>
+        </section>
+        <section class="p-sec" aria-labelledby="h-fd-trend">
+          <div class="p-head"><h2 id="h-fd-trend">Trends</h2></div>
+          <div class="seg" role="radiogroup" aria-label="Period" id="fd-range"></div>
+          <p class="p-total" id="fd-take"></p>
+          <div class="p-sum fd-sum" id="fd-sum"></div>
+          <div id="fd-metric"></div>
+          <p class="note" id="fd-chart-note"></p>
+          <div class="chart" id="fd-chart"></div>
+        </section>
+        <details class="p-sec p-log" id="fd-targets">
+          <summary class="p-head"><h2>Daily targets</h2><span class="p-count" id="fd-tgt-sum"></span><span class="p-caret" aria-hidden="true"></span></summary>
+          <div class="ed-fields">
+            <label class="ed-f"><span class="lab">Calories (kcal)</span><input id="fd-t-kcal" inputmode="numeric" placeholder="none"></label>
+            <label class="ed-f"><span class="lab">Protein (g)</span><input id="fd-t-p" inputmode="numeric" placeholder="none"></label>
+          </div>
+          <p class="note" id="fd-t-state" aria-live="polite">Leave empty for no target. Targets show as a line on the chart and in the day meter.</p>
+        </details>
       </div>
     </div>
   </div>
@@ -850,10 +940,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const S = {
     db: null, uid: null, rootRef: null, ready: false, failed: false,
     root: null, exercises: {}, templates: {}, sessions: {}, notes: {},
-    loaded: { root: false, exercises: false, templates: false, sessions: false, notes: false, weeks: false },
+    loaded: { root: false, exercises: false, templates: false, sessions: false, notes: false, weeks: false, food: false },
     weeks: {}, editing: null, metric: 'est', weekStart: null,
     active: null, // {date, tpl}
-    view: 'train', ptab: 'All', range: 30, picked: null, away: false,
+    view: 'train', ptab: 'All', range: 30, picked: null, away: false, food: {}, fday: null, frange: 30, fmetric: 'kcal',
     drafts: {}, // date -> set key -> {reps, load, minutes, rir, kind}: Edited values kept on this device
     extraSets: {}, // ex -> extra set rows added this visit
     onServer: new Set(), // session dates the server has confirmed exist
@@ -1032,7 +1122,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
 
   // ------------------------------------------------------------------ views
-  const VIEWS = ['home', 'train', 'plan', 'progress', 'settings'];
+  const VIEWS = ['home', 'train', 'plan', 'progress', 'food', 'settings'];
   const setView = (v) => {
     if (S.view !== v) { hideToast(); enter($('#v-' + v), 16 * Math.sign(VIEWS.indexOf(v) - VIEWS.indexOf(S.view))); }
     S.view = v;
@@ -1040,6 +1130,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (v === 'home') $('#mark').setAttribute('aria-current', 'page'); else $('#mark').removeAttribute('aria-current');
     VIEWS.forEach((x) => { $('#v-' + x).hidden = x !== v; });
     if (v === 'home') renderHome();
+    if (v === 'food') renderFood();
     if (v === 'plan' && S.ready) renderPlan();
     if (v === 'progress') renderProgress();
     if (v === 'settings') { paintExport(); paintImport(); if (S.ready) paintMe(); }
@@ -1051,6 +1142,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#mark').addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); });
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['2 Nov 2026', 'Food', ['New Food tab: log what you eat with calories and, if you like, protein, carbs and fat.', 'Foods you logged before come back as one-tap chips, and their numbers fill in when you type the name.', 'Set daily targets and see your averages and a chart over 1 to 12 months, like Progress.']],
     ['2 Nov 2026', 'Yes Coach! on the web', ['Your own account, with your log and plan in sync between phone and laptop.', 'Add it to your home screen and it opens like an app.', 'New start screen: three quick answers, restore a Yes Coach backup, or bring your history from Strong, Hevy, FitNotes or Fitbod.']],
     ['2 Nov 2026', 'Plans built by your AI', ['Get a plan from your own AI chat in two pastes: Yes Coach writes the request and reads the answer.', 'Starting weights come from your history; starting fresh, week one finds your weights.', 'Backups now bring back your training plan and schedule too.']],
     ['2 Nov 2026', 'Progress and exercises', ['Progress shows trends over 1, 3, 6 or 12 months, with charts that stay readable however much you log.', '304 exercises, including forearms, full body and cardio.', 'Smoother screens and clearer feedback on every tap.']],
@@ -2579,8 +2671,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       return row;
     });
   };
-  // the period at a glance: a square per day, filled on days you trained (in the body part's color when a tab is picked),
-  // and next to it four numbers: sessions, sessions a week, working sets, lifts getting better
+  // the period at a glance: a square per day, filled on days you trained (in the body part's color when a tab is picked).
+  // One month shows as a calendar with dates; longer periods as a strip with a column per week.
   const drawDays = (rows) => {
     const box = $('#p-days');
     box.replaceChildren();
@@ -2591,48 +2683,70 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const start = mondayOf(first);
     const weeks = Math.round((dayNum(mondayOf(end)) - dayNum(start)) / 7) + 1;
     const byDay = d3.group(work, (r) => r.date);
-    const avail = Math.max(240, $('#p-top').clientWidth);
-    const gap = weeks > 40 ? 1 : weeks > 20 ? 2 : 3;
-    const fit = (lw) => Math.floor((avail - lw + gap) / weeks) - gap;
-    const left = fit(18) >= 9 ? 18 : 0;
-    const cell = Math.max(4, Math.min(22, fit(left)));
-    const top = 16;
-    const W = left + weeks * (cell + gap) - gap;
-    const H = top + 7 * (cell + gap) - gap;
-    const svg = d3.select(box).append('svg').attr('width', W).attr('height', H).attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img')
-      .attr('aria-label', 'Training days in ' + rangeWord() + ': ' + [...byDay.keys()].filter((d) => byDay.get(d).some(inGroup)).length + ' days');
-    if (left) [['M', 0], ['W', 2], ['F', 4]].forEach(([t, i]) => svg.append('text').attr('x', 0).attr('y', top + i * (cell + gap) + cell / 2 + 4).text(t));
-    // a month name over the week its first day falls in, when there is room
-    let lastLab = -99;
-    for (let w = 0; w < weeks; w += 1) {
-      const mon = addDays(start, w * 7);
-      const sun = addDays(mon, 6);
-      const firstOfMonth = sun.slice(0, 7) !== mon.slice(0, 7) || mon.slice(8) === '01' ? sun.slice(0, 8) + '01' : null;
-      const x = left + w * (cell + gap);
-      const label = w === 0 ? MON[Number(first.slice(5, 7)) - 1] : firstOfMonth ? MON[Number(firstOfMonth.slice(5, 7)) - 1] : null;
-      if (label && x - lastLab >= 30 && x + 24 <= W + 4) { svg.append('text').attr('x', x).attr('y', 11).text(label); lastLab = x; }
-    }
+    const part = S.ptab === 'All' ? '' : S.ptab.toLowerCase() + ' ';
     const color = S.ptab === 'All' ? 'var(--ink)' : 'var(--c-' + S.ptab.toLowerCase() + ')';
-    for (let w = 0; w < weeks; w += 1) {
-      for (let d = 0; d < 7; d += 1) {
-        const iso = addDays(start, w * 7 + d);
-        if (iso < first || iso > end) continue;
-        const day = byDay.get(iso) || [];
-        const mine = day.filter(inGroup);
-        const r = svg.append('rect').attr('x', left + w * (cell + gap)).attr('y', top + d * (cell + gap)).attr('width', cell).attr('height', cell)
-          .attr('fill', mine.length ? color : day.length ? 'var(--line)' : 'var(--faint)');
-        if (iso === end) r.attr('stroke', 'var(--ink)').attr('stroke-width', 1.5);
-        if (day.length) {
-          const split = day[0].label || day[0].split;
-          tipEvents(r, box, (ev) => showTip(box, ev, fmtLong(parse(iso)), [{ text: split }, { text: plural(mine.length, (S.ptab === 'All' ? '' : S.ptab.toLowerCase() + ' ') + 'working set') }]));
-        }
+    const avail = Math.max(240, box.clientWidth);
+    const month = weeks <= 6;
+    let n = 0;
+    let svg;
+    const cellAt = (iso, x, y, size) => {
+      if (iso < first || iso > end) return;
+      const day = byDay.get(iso) || [];
+      const mine = day.filter(inGroup);
+      if (mine.length) n += 1;
+      const r = svg.append('rect').attr('x', x).attr('y', y).attr('width', size).attr('height', size)
+        .attr('fill', mine.length ? color : day.length ? 'var(--ctl)' : 'var(--paper)').attr('fill-opacity', !mine.length && day.length ? 0.35 : 1)
+        .attr('stroke', mine.length ? 'none' : 'var(--ctl)').attr('stroke-opacity', 0.55).attr('stroke-width', 1);
+      if (iso === end) r.attr('stroke', 'var(--pop)').attr('stroke-width', 3).attr('stroke-opacity', 1);
+      if (month) svg.append('text').attr('class', 'dn' + (mine.length ? ' on' : '')).attr('x', x + 6).attr('y', y + 17).attr('pointer-events', 'none').text(String(Number(iso.slice(8))));
+      if (day.length) tipEvents(r, box, (ev) => showTip(box, ev, fmtLong(parse(iso)), [{ text: day[0].label || day[0].split }, { text: plural(mine.length, part + 'working set') }]));
+    };
+    if (month) {
+      // rows are weeks, columns Monday to Sunday
+      const gap = 4;
+      const cell = Math.min(52, Math.floor((avail - 6 * gap) / 7));
+      const top = 18;
+      const W = 7 * cell + 6 * gap;
+      const H = top + weeks * (cell + gap) - gap;
+      svg = d3.select(box).append('svg').attr('width', W).attr('height', H).attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img');
+      ['M', 'T', 'W', 'T', 'F', 'S', 'S'].forEach((t, i) => svg.append('text').attr('x', i * (cell + gap) + cell / 2).attr('y', 12).attr('text-anchor', 'middle').text(t));
+      for (let w = 0; w < weeks; w += 1) for (let d = 0; d < 7; d += 1) cellAt(addDays(start, w * 7 + d), d * (cell + gap), top + w * (cell + gap), cell);
+    } else {
+      // columns are weeks, rows Monday to Sunday, with a month name over the week the month starts in
+      const gap = weeks > 40 ? 2 : 3;
+      const fit = (lw) => Math.floor((avail - lw + gap) / weeks) - gap;
+      const left = fit(18) >= 9 ? 18 : 0;
+      const cell = Math.max(5, Math.min(26, fit(left)));
+      const top = 16;
+      const W = left + weeks * (cell + gap) - gap;
+      const H = top + 7 * (cell + gap) - gap;
+      svg = d3.select(box).append('svg').attr('width', W).attr('height', H).attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img');
+      if (left) [['M', 0], ['W', 2], ['F', 4]].forEach(([t, i]) => svg.append('text').attr('x', 0).attr('y', top + i * (cell + gap) + cell / 2 + 4).text(t));
+      let lastLab = -99;
+      for (let w = 0; w < weeks; w += 1) {
+        const mon = addDays(start, w * 7);
+        const sun = addDays(mon, 6);
+        const starts = sun.slice(0, 7) !== mon.slice(0, 7) ? sun.slice(0, 8) + '01' : mon.slice(8) === '01' ? mon : null;
+        const x = left + w * (cell + gap);
+        const label = w === 0 ? MON[Number(first.slice(5, 7)) - 1] : starts ? MON[Number(starts.slice(5, 7)) - 1] : null;
+        if (label && x - lastLab >= 30 && x + 22 <= W + 4) { svg.append('text').attr('x', x).attr('y', 11).text(label); lastLab = x; }
+        for (let d = 0; d < 7; d += 1) cellAt(addDays(mon, d), x, top + d * (cell + gap), cell);
       }
     }
+    svg.attr('aria-label', 'Calendar of ' + rangeWord() + ': ' + plural(n, 'day') + ' with ' + part + 'training');
     box.scrollLeft = box.scrollWidth;
+    $('#days-note').textContent = plural(n, 'day') + ' with ' + part + 'training in ' + rangeWord() + '. Today has an orange border.';
+    const lg = $('#days-legend');
+    lg.replaceChildren();
+    const item = (cls, bg, label, op) => { const it = h('span'); const sw = h('i', cls); if (bg) sw.style.background = bg; if (op) sw.style.opacity = op; it.append(sw, label); lg.append(it); };
+    item('', color, S.ptab === 'All' ? 'Trained' : S.ptab + ' trained');
+    if (S.ptab !== 'All') item('', 'var(--ctl)', 'Other training', 0.35);
+    item('rest', '', 'Rest day');
   };
   const fillTotals = (rows, lifts) => {
     const t = totals(rows.filter(inGroup), rangeFrom());
-    $('#p-top').hidden = !t.sessions;
+    $('#p-sum').hidden = !t.sessions;
+    $('#p-days-sec').hidden = !t.sessions;
     $('#take').textContent = t.sessions ? '' : rows.length ? 'No ' + (S.ptab === 'All' ? '' : S.ptab.toLowerCase() + ' ') + 'sessions in ' + rangeWord() + '. Pick a longer period.' : 'No sessions logged yet. Your progress shows up here after your first ticked set.';
     if (!t.sessions) return;
     const judged = lifts.filter((r) => r.trend);
@@ -2944,9 +3058,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const renderProgress = () => {
     if (S.view !== 'progress') return;
     paintRange();
-    if (!(S.loaded.sessions && S.loaded.exercises)) { $('#take').textContent = 'Loading your progress…'; $('#p-top').hidden = true; return; }
+    if (!(S.loaded.sessions && S.loaded.exercises)) { $('#take').textContent = 'Loading your progress…'; $('#p-sum').hidden = true; return; }
     const rows = flatten();
     paintPtabs(rows);
+    tidyDividers();
     const lifts = progressRows(rangeFrom());
     fillTotals(rows, lifts.filter(inGroup));
     drawList(lifts);
@@ -2963,7 +3078,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     tabKey = key;
     const nav = $('#ptabs');
     nav.replaceChildren();
-    ['All'].concat(have).forEach((g) => {
+    ['All'].concat(have).forEach((g, i) => {
+      if (i) { const d = h('span', 'pt-div', '|'); d.setAttribute('aria-hidden', 'true'); nav.append(d); }
       const b = h('button', 'tab', g);
       b.type = 'button';
       b.setAttribute('role', 'tab');
@@ -2973,6 +3089,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       nav.append(b);
     });
   };
+  // a divider only between two tabs on the same line, never dangling at the start or end of a wrapped line
+  const tidyDividers = () => $$('#ptabs .pt-div').forEach((d) => { d.style.visibility = ''; const a = d.previousElementSibling; const b = d.nextElementSibling; if (a && b && a.offsetTop !== b.offsetTop) d.style.visibility = 'hidden'; });
   $('#ptabs').addEventListener('click', (ev) => {
     const b = ev.target.closest('[data-ptab]');
     if (!b || b.dataset.ptab === S.ptab) return;
@@ -2983,6 +3101,224 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   let rz = 0;
   let rzW = window.innerWidth;
   window.addEventListener('resize', () => { if (window.innerWidth === rzW) return; rzW = window.innerWidth; clearTimeout(rz); rz = setTimeout(renderProgress, 150); });
+
+  // ------------------------------------------------------------------ food: your own entries per day, and trends like Progress
+  // yc/food/<date> = { date, entries: { id: { name, kcal, p, c, f, at } } }; targets live in root.nutrition = { kcal, protein }
+  const foodRef = (date) => S.rootRef.collection('food').doc(date);
+  const fnum = (v) => { const t = String(v == null ? '' : v).trim().replace(',', '.'); if (!t) return null; const n = Number(t); return Number.isFinite(n) && n >= 0 ? Math.round(n * 10) / 10 : NaN; };
+  const big = (n) => Math.round(n).toLocaleString('en-US');
+  const entriesOf = (date) => Object.entries(((S.food[date] || {}).entries) || {}).filter(([, e]) => e && e.name).sort((a, b) => (a[1].at || 0) - (b[1].at || 0));
+  const dayTotals = (date) => entriesOf(date).reduce((t, [, e]) => { t.kcal += e.kcal || 0; t.p += e.p || 0; t.c += e.c || 0; t.f += e.f || 0; t.n += 1; return t; }, { kcal: 0, p: 0, c: 0, f: 0, n: 0 });
+  const targets = () => (S.root && S.root.nutrition) || {};
+  // every food you logged before, newest use first: feeds the quick-add chips and fills in numbers when you type a known name
+  const knownFoods = () => {
+    const m = new Map();
+    Object.keys(S.food).sort().forEach((d) => entriesOf(d).forEach(([, e]) => { m.delete(e.name.toLowerCase()); m.set(e.name.toLowerCase(), e); }));
+    return [...m.values()].reverse();
+  };
+  const fdDayWord = (d) => (d === today() ? 'Today, ' : d === addDays(today(), -1) ? 'Yesterday, ' : '') + fmtLong(parse(d));
+  const addFood = async (e, date = S.fday) => {
+    const id = 'e' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+    const entry = { name: e.name, kcal: e.kcal, p: e.p == null ? null : e.p, c: e.c == null ? null : e.c, f: e.f == null ? null : e.f, at: Date.now() };
+    const had = !!S.food[date];
+    S.food[date] = Object.assign({ date }, S.food[date] || {});
+    S.food[date].entries = Object.assign({}, S.food[date].entries || {}, { [id]: entry });
+    renderFood();
+    try {
+      if (had) await foodRef(date).update({ entries: { [id]: entry } });
+      else await foodRef(date).set({ date, entries: { [id]: entry } });
+    } catch (err) { showToast('Not saved. Check your connection.', null); }
+    return id;
+  };
+  const removeFood = (id, date = S.fday) => {
+    const doc = clone(S.food[date]);
+    if (!doc || !doc.entries || !doc.entries[id]) return;
+    const gone = doc.entries[id];
+    delete doc.entries[id];
+    S.food[date] = doc;
+    renderFood();
+    foodRef(date).set(doc).catch(() => showToast('Not removed. Check your connection.', null));
+    showToast('Removed ' + gone.name + '.', () => { addFood(gone, date); });
+  };
+
+  const renderFood = () => {
+    if (S.view !== 'food') return;
+    const ready = S.ready && S.rootRef;
+    $('#fd-loading').hidden = !!ready;
+    $('#fd-body').hidden = !ready;
+    if (!ready) return;
+    if (!S.fday || S.fday > today()) S.fday = today();
+    $('#fd-date').textContent = fdDayWord(S.fday);
+    $('#fd-next').disabled = S.fday >= today();
+    paintMeter();
+    paintFoodList();
+    paintRecent();
+    paintFoodTrend();
+    paintTargets();
+  };
+  const paintMeter = () => {
+    const t = dayTotals(S.fday);
+    const tg = targets();
+    const box = $('#fd-meter');
+    box.replaceChildren();
+    const top = h('div', 'fd-kcal');
+    top.append(h('b', '', big(t.kcal)), h('span', '', 'kcal' + (tg.kcal ? ' of ' + big(tg.kcal) + ' · ' + (t.kcal <= tg.kcal ? big(tg.kcal - t.kcal) + ' left' : big(t.kcal - tg.kcal) + ' over') : '')));
+    box.append(top);
+    if (tg.kcal) {
+      const bar = h('div', 'fd-bar' + (t.kcal > tg.kcal ? ' over' : ''));
+      bar.setAttribute('role', 'img');
+      bar.setAttribute('aria-label', Math.round((t.kcal / tg.kcal) * 100) + '% of your calorie target');
+      const fill = h('i');
+      fill.style.width = Math.min(100, (t.kcal / tg.kcal) * 100) + '%';
+      bar.append(fill);
+      box.append(bar);
+    }
+    const mac = h('div', 'fd-macros');
+    const m = (label, v, tgt) => { const sp = h('span'); sp.append(label + ' ', h('b', '', big(v) + ' g'), tgt ? ' / ' + big(tgt) : ''); mac.append(sp); };
+    m('Protein', t.p, tg.protein);
+    m('Carbs', t.c);
+    m('Fat', t.f);
+    box.append(mac);
+  };
+  const paintFoodList = () => {
+    const box = $('#fd-list');
+    box.replaceChildren();
+    const list = entriesOf(S.fday);
+    $('#fd-count').textContent = list.length ? String(list.length) : '';
+    if (!list.length) { box.append(h('p', 'note', 'Nothing logged ' + (S.fday === today() ? 'today' : 'on this day') + ' yet.')); return; }
+    list.forEach(([id, e]) => {
+      const row = h('div', 'fd-row');
+      const mac = [e.p != null ? 'P ' + num(e.p) + ' g' : '', e.c != null ? 'C ' + num(e.c) + ' g' : '', e.f != null ? 'F ' + num(e.f) + ' g' : ''].filter(Boolean).join(' · ');
+      const x = plainBtn('icon', '×', 'Remove ' + e.name, () => removeFood(id));
+      row.append(h('span', 'fd-row-name', e.name), h('span', 'fd-row-kcal', big(e.kcal) + ' kcal'), x);
+      if (mac) row.append(h('span', 'fd-row-mac', mac));
+      box.append(row);
+    });
+  };
+  const paintRecent = () => {
+    const foods = knownFoods();
+    const dl = $('#fd-names');
+    dl.replaceChildren();
+    foods.slice(0, 200).forEach((e) => { const o = h('option'); o.value = e.name; dl.append(o); });
+    const box = $('#fd-recent');
+    box.replaceChildren();
+    if (!foods.length) return;
+    box.append(h('span', 'lab', 'Add again'));
+    foods.slice(0, 8).forEach((e) => {
+      const b = h('button', 'fd-chip');
+      b.type = 'button';
+      b.append(e.name + ' ', h('span', '', big(e.kcal)));
+      b.setAttribute('aria-label', 'Add ' + e.name + ', ' + big(e.kcal) + ' kcal');
+      b.addEventListener('click', () => { addFood(e); showToast('Added ' + e.name + '.', null); });
+      box.append(b);
+    });
+  };
+  // typing a name you used before fills in its numbers, as long as you have not typed them yourself
+  $('#fd-name').addEventListener('input', (ev) => {
+    const hit = knownFoods().find((e) => e.name.toLowerCase() === ev.target.value.trim().toLowerCase());
+    if (!hit) return;
+    [['#fd-kcal', hit.kcal], ['#fd-p', hit.p], ['#fd-c', hit.c], ['#fd-f', hit.f]].forEach(([sel, v]) => { if (!$(sel).value && v != null) $(sel).value = num(v); });
+  });
+  $('#fd-form').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const msg = $('#fd-msg');
+    const name = $('#fd-name').value.trim();
+    const vals = { kcal: fnum($('#fd-kcal').value), p: fnum($('#fd-p').value), c: fnum($('#fd-c').value), f: fnum($('#fd-f').value) };
+    if (!name) { msg.textContent = 'Write what you ate.'; $('#fd-name').focus(); return; }
+    if (vals.kcal == null || Number.isNaN(vals.kcal)) { msg.textContent = 'Fill in the calories (kcal) as a number.'; $('#fd-kcal').focus(); return; }
+    const bad = [['p', '#fd-p'], ['c', '#fd-c'], ['f', '#fd-f']].find(([k]) => Number.isNaN(vals[k]));
+    if (bad) { msg.textContent = 'Grams are numbers, or leave them empty.'; $(bad[1]).focus(); return; }
+    msg.textContent = '';
+    ['#fd-name', '#fd-kcal', '#fd-p', '#fd-c', '#fd-f'].forEach((sel) => { $(sel).value = ''; });
+    await addFood(Object.assign({ name }, vals));
+    enter($('#fd-list').lastElementChild);
+    $('#fd-name').focus();
+  });
+  $('#fd-prev').addEventListener('click', () => { S.fday = addDays(S.fday, -1); renderFood(); enter($('#fd-meter'), -16); });
+  $('#fd-next').addEventListener('click', () => { if (S.fday < today()) { S.fday = addDays(S.fday, 1); renderFood(); enter($('#fd-meter'), 16); } });
+
+  // ---- targets
+  let tgtTimer = 0;
+  const paintTargets = () => {
+    const tg = targets();
+    $('#fd-tgt-sum').textContent = [tg.kcal ? big(tg.kcal) + ' kcal' : '', tg.protein ? big(tg.protein) + ' g protein' : ''].filter(Boolean).join(' · ');
+    [['#fd-t-kcal', tg.kcal], ['#fd-t-p', tg.protein]].forEach(([sel, v]) => { if (document.activeElement !== $(sel)) $(sel).value = v ? String(v) : ''; });
+  };
+  ['#fd-t-kcal', '#fd-t-p'].forEach((sel) => $(sel).addEventListener('input', () => {
+    clearTimeout(tgtTimer);
+    tgtTimer = setTimeout(() => {
+      const k = fnum($('#fd-t-kcal').value);
+      const p = fnum($('#fd-t-p').value);
+      if (Number.isNaN(k) || Number.isNaN(p)) { $('#fd-t-state').textContent = 'Targets are numbers, or leave them empty.'; return; }
+      saveRoot({ nutrition: { kcal: k || null, protein: p || null } }).then(() => { $('#fd-t-state').textContent = 'Saved.'; }).catch(() => { $('#fd-t-state').textContent = 'Not saved. Check your connection.'; });
+      paintMeter();
+      paintFoodTrend();
+      $('#fd-tgt-sum').textContent = [k ? big(k) + ' kcal' : '', p ? big(p) + ' g protein' : ''].filter(Boolean).join(' · ');
+    }, 600);
+  }));
+
+  // ---- trends: the same periods as Progress; daily bars up to 3 months, weekly averages beyond
+  const fdRangeBtns = RANGES.map(([days, label, word]) => {
+    const b = plainBtn('seg-b', label, 'Show ' + word);
+    b.setAttribute('role', 'radio');
+    b.addEventListener('click', () => { S.frange = days; paintFoodTrend(); enter($('#fd-chart')); });
+    $('#fd-range').append(b);
+    return [days, b];
+  });
+  const paintFoodTrend = () => {
+    fdRangeBtns.forEach(([days, b]) => b.setAttribute('aria-checked', String(days === S.frange)));
+    const word = RANGES.find((r) => r[0] === S.frange)[2];
+    const logged = Object.keys(S.food).filter((d) => d <= today() && dayTotals(d).n).sort();
+    // the period starts no earlier than your first logged day, so a new logger does not see a mostly empty year
+    const from = [S.frange ? addDays(today(), -S.frange + 1) : '', logged[0] || today()].sort()[1];
+    const days = logged.filter((d) => d >= from).map((d) => Object.assign({ date: d }, dayTotals(d)));
+    const box = $('#fd-chart');
+    const sum = $('#fd-sum');
+    box.replaceChildren();
+    sum.replaceChildren();
+    $('#fd-metric').replaceChildren();
+    $('#fd-chart-note').textContent = '';
+    if (!days.length) { $('#fd-take').textContent = logged.length ? 'Nothing logged in ' + word + '. Pick a longer period.' : 'Log a few days and your averages and a chart show up here.'; return; }
+    $('#fd-take').textContent = '';
+    const tg = targets();
+    const span = Math.round(dayNum(today()) - dayNum(from)) + 1;
+    const avg = (k) => d3.mean(days, (d) => d[k]);
+    const stat = (value, label, of) => { const w = h('span', 'p-st'); const b = h('b', '', String(value)); if (of) b.append(h('small', '', of)); w.append(b, h('span', '', label)); sum.append(w); };
+    stat(big(avg('kcal')), 'kcal a day');
+    stat(big(avg('p')), 'g protein a day');
+    stat(days.length, 'days logged', '/' + span);
+    if (tg.kcal) stat(days.filter((d) => Math.abs(d.kcal - tg.kcal) <= tg.kcal * 0.1).length, 'days within 10% of target');
+    const key = S.fmetric === 'p' ? 'p' : 'kcal';
+    $('#fd-metric').append(radioTabs('Chart', [['kcal', 'Calories'], ['p', 'Protein']], key, (k) => { S.fmetric = k; paintFoodTrend(); }));
+    const tgt = key === 'kcal' ? tg.kcal : tg.protein;
+    const unit = key === 'kcal' ? ' kcal' : ' g protein';
+    // bins: every day up to about 3 months, weeks (average of the days you logged) beyond
+    const weekly = span > 100;
+    const bins = [];
+    if (weekly) for (let b = mondayOf(from); b <= today(); b = addDays(b, 7)) bins.push(b);
+    else for (let b = from; b <= today(); b = addDays(b, 1)) bins.push(b);
+    const by = d3.group(days, (d) => (weekly ? mondayOf(d.date) : d.date));
+    const data = bins.map((b) => { const ds = by.get(b) || []; return { bin: b, n: ds.length, v: ds.length ? d3.mean(ds, (d) => d[key]) : null }; });
+    $('#fd-chart-note').textContent = (weekly ? 'Average per logged day, by week' : 'Each day you logged') + ', in ' + word + '.' + (tgt ? ' The dashed line is your target.' : ' Set a target below to see it here.');
+    const H = 220, mt = 16, mb = 26, mr = 8;
+    const svg = chartSvg(box, H, (key === 'kcal' ? 'Calories' : 'Protein') + ' per ' + (weekly ? 'week' : 'day') + ': ' + data.filter((d) => d.n).map((d) => fmtDay(parse(d.bin)) + ' ' + big(d.v) + unit).join(', '));
+    const W = Math.max(box.clientWidth, 260);
+    const y = d3.scaleLinear([0, Math.max(d3.max(data, (d) => d.v || 0), tgt || 0) * 1.12 || 1], [H - mb, mt]).nice(4);
+    const ml = yAxis(svg, y, W - mr);
+    const x = d3.scaleBand(bins, [ml, W - mr]).padding(bins.length > 60 ? 0.1 : 0.25);
+    const fmt = weekly ? (b) => fmtDay(parse(b)) : (b) => fmtDay(parse(b));
+    const nth = Math.max(1, Math.ceil((measure(svg.node(), ['30 Sep']) + 12) / x.step()));
+    svg.append('g').selectAll('text').data(bins.filter((b, i) => (bins.length - 1 - i) % nth === 0)).join('text').attr('x', (b) => x(b) + x.bandwidth() / 2).attr('y', H - 8).attr('text-anchor', 'middle').text(fmt);
+    data.filter((d) => d.n).forEach((d) => {
+      const over = tgt && key === 'kcal' && d.v > tgt * 1.1;
+      tipEvents(svg.append('rect').attr('x', x(d.bin)).attr('y', y(d.v)).attr('width', x.bandwidth()).attr('height', Math.max(1, y(0) - y(d.v))).attr('fill', over ? 'var(--pop)' : 'var(--ink)'), box,
+        (ev) => showTip(box, ev, weekly ? 'Week of ' + fmtDay(parse(d.bin)) : fmtLong(parse(d.bin)), [{ text: big(d.v) + unit + (weekly ? ' a day' : '') }].concat(weekly ? [{ text: plural(d.n, 'day') + ' logged' }] : [])));
+    });
+    if (tgt) {
+      svg.append('line').attr('x1', ml).attr('x2', W - mr).attr('y1', y(tgt)).attr('y2', y(tgt)).attr('stroke', 'var(--pop)').attr('stroke-width', 2).attr('stroke-dasharray', '6 5').attr('pointer-events', 'none');
+      svg.append('text').attr('class', 'val-lab').attr('x', W - mr).attr('y', y(tgt) - 6).attr('text-anchor', 'end').text('target ' + big(tgt));
+    }
+  };
 
   // ------------------------------------------------------------------ export
   let dlCap = null;
@@ -3050,6 +3386,15 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       out.push('## Summary', '');
       out.push('- ' + all.sessions + ' logged sessions in ' + all.weeks + ' weeks since ' + dm(all.first) + ', about ' + all.perWeek + ' a week.');
       out.push('- ' + all.sets + ' working sets across ' + all.exercises + ' exercises; ' + all.repeated + ' were repeated in more than one session.', '');
+    }
+    const fdays = Object.keys(S.food).filter((d) => d >= addDays(today(), -27) && d <= today() && dayTotals(d).n).map(dayTotals);
+    if (fdays.length) {
+      const tg = targets();
+      const av = (k) => Math.round(d3.mean(fdays, (d) => d[k]));
+      out.push('## Nutrition, past 4 weeks', '');
+      out.push('- Logged ' + fdays.length + ' of 28 days. Average per logged day: ' + av('kcal') + ' kcal, ' + av('p') + ' g protein, ' + av('c') + ' g carbs, ' + av('f') + ' g fat. Days are only as complete as the lifter logged them.');
+      if (tg.kcal || tg.protein) out.push('- Targets: ' + [tg.kcal ? tg.kcal + ' kcal' : '', tg.protein ? tg.protein + ' g protein' : ''].filter(Boolean).join(', ') + ' a day.');
+      out.push('');
     }
     const pr = progressRows('').filter((r) => r.sessions >= 2);
     if (pr.length) {
@@ -3223,7 +3568,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#ex-csv').addEventListener('click', async () => flash($('#ex-state'), await download(exportName('csv'), buildCsv())));
   $('#ex-json').addEventListener('click', () => {
     const strip = (m) => { const o = {}; Object.keys(m).forEach((k) => { const d = Object.assign({}, m[k]); delete d._local; o[k] = d; }); return o; };
-    const backup = { app: 'yes-coach', schema: 1, exported_at: new Date().toISOString(), root: S.root, exercises: S.exercises, templates: S.templates, sessions: strip(S.sessions), notes: S.notes, weeks: S.weeks };
+    const backup = { app: 'yes-coach', schema: 1, exported_at: new Date().toISOString(), root: S.root, exercises: S.exercises, templates: S.templates, sessions: strip(S.sessions), notes: S.notes, weeks: S.weeks, food: S.food };
     download(exportName('json'), JSON.stringify(backup, null, 1)).then((m) => flash($('#bk-state'), m));
   });
 
@@ -4663,7 +5008,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#toast-undo').addEventListener('click', () => { const fn = toastUndo; hideToast(); if (fn) fn(); });
 
   // ------------------------------------------------------------------ restore a backup: adds what is missing, never overwrites
-  const KINDS_RESTORE = ['exercises', 'templates', 'notes', 'weeks'];
+  const KINDS_RESTORE = ['exercises', 'templates', 'notes', 'weeks', 'food'];
   let restorePlan = null;
   const planRestore = (bk) => {
     const plan = { docs: [], sessions: [], sessionSets: [], counts: {} };
@@ -4681,6 +5026,16 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       Object.entries(doc.sets || {}).forEach(([k, st]) => { if (!(cur.sets || {})[k]) add[k] = st; });
       if (Object.keys(add).length) plan.sessionSets.push([id, add]);
     });
+    // food days you already have here get the entries they miss
+    plan.foodAdds = [];
+    Object.entries(bk.food || {}).forEach(([id, doc]) => {
+      const cur = S.food[id];
+      if (!cur) return;
+      const add = {};
+      Object.entries(doc.entries || {}).forEach(([k, e]) => { if (!(cur.entries || {})[k]) add[k] = e; });
+      if (Object.keys(add).length) plan.foodAdds.push([id, add]);
+    });
+    plan.counts.foodEntries = plan.foodAdds.reduce((n, [, add]) => n + Object.keys(add).length, 0);
     plan.counts.sessions = plan.sessions.length;
     plan.counts.sets = plan.sessionSets.reduce((n, [, add]) => n + Object.keys(add).length, 0);
     // the plan as it was: days whose content differs from today's, and the schedule
@@ -4690,7 +5045,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const cur = S.root || {};
     plan.rootAdd = {};
     const blank = (v) => v == null || v === '' || (typeof v === 'object' && !Object.keys(v).filter((x) => v[x] != null && v[x] !== '').length);
-    ['profile', 'export_ctx', 'settings', 'intro_seen', 'schedule'].forEach((k) => { if (bk.root && !blank(bk.root[k]) && (blank(cur[k]) || (k === 'schedule' && !cur.schedule.enabled))) plan.rootAdd[k] = bk.root[k]; });
+    ['profile', 'export_ctx', 'settings', 'intro_seen', 'schedule', 'nutrition'].forEach((k) => { if (bk.root && !blank(bk.root[k]) && (blank(cur[k]) || (k === 'schedule' && !cur.schedule.enabled))) plan.rootAdd[k] = bk.root[k]; });
     if (plan.rootAdd.schedule) plan.schedule = null;
     plan.counts.root = Object.keys(plan.rootAdd).length;
     return plan;
@@ -4702,6 +5057,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     for (const [k, id, doc] of plan.docs) { await S.rootRef.collection(k).doc(id).set(doc); tick(); }
     for (const [id, doc] of plan.sessions) { const d = Object.assign({}, doc); delete d._local; await S.rootRef.collection('sessions').doc(id).set(d); tick(); }
     for (const [id, add] of plan.sessionSets) { await S.rootRef.collection('sessions').doc(id).update({ sets: add }); tick(Object.keys(add).length); }
+    for (const [id, add] of plan.foodAdds || []) { await S.rootRef.collection('food').doc(id).update({ entries: add }); tick(Object.keys(add).length); }
     if (plan.counts.root) { await saveRoot(plan.rootAdd); tick(plan.counts.root); }
     if (withPlan) {
       for (const [id, t] of plan.days) { S.templates[id] = clone(t); await S.rootRef.collection('templates').doc(id).set(t); tick(); }
@@ -4716,11 +5072,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (msg) box.append(h('p', 'note sm-msg', msg));
     if (!plan) return;
     const c = plan.counts;
-    const adds = c.sessions + c.sets + c.exercises + c.templates + c.notes + c.weeks + c.root;
+    const adds = c.sessions + c.sets + c.exercises + c.templates + c.notes + c.weeks + c.root + (c.food || 0) + (c.foodEntries || 0);
     const planChange = plan.days.length + (plan.schedule ? 1 : 0);
     if (!adds && !planChange) { box.append(h('p', 'note', 'Nothing to restore: everything in this backup is already here.')); return; }
-    const parts = [[c.sessions, 'session'], [c.sets, 'set', ' missing from sessions you have'], [c.exercises, 'exercise'], [c.templates, 'training day'], [c.notes, 'note'], [c.weeks, 'week plan'], [c.root, 'setting']]
-      .filter(([n]) => n).map(([n, w, tail]) => plural(n, w) + (tail || ''));
+    const parts = [[c.sessions, 'session'], [c.sets, 'set', ' missing from sessions you have'], [c.exercises, 'exercise'], [c.templates, 'training day'], [c.notes, 'note'], [c.weeks, 'week plan'], [c.food || 0, 'day', ' of food'], [c.foodEntries || 0, 'food entry', ' missing from days you have'], [c.root, 'setting']]
+      .filter(([n]) => n).map(([n, w, tail]) => (w === 'food entry' ? n + (n === 1 ? ' food entry' : ' food entries') : plural(n, w)) + (tail || ''));
     if (adds) box.append(h('p', '', 'This backup adds what is missing here: ' + parts.join(', ') + '.'));
     let withPlan = null;
     if (planChange) {
@@ -4843,6 +5199,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (!resumed) { resumed = true; resumeQueue(); }
     renderTrain();
     if (S.view === 'progress') renderProgress();
+    if (S.view === 'food') renderFood();
     if (S.view === 'settings') { paintExport(); paintImport(); }
     if (S.view === 'plan') renderPlan();
     paintChrome();
@@ -4874,7 +5231,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       S.loaded.root = true;
       refresh();
     }, onErr);
-    ['exercises', 'templates', 'notes', 'weeks'].forEach((k) => {
+    ['exercises', 'templates', 'notes', 'weeks', 'food'].forEach((k) => {
       S.rootRef.collection(k).onSnapshot((snap) => { S[k] = toMap(snap); S.loaded[k] = true; refresh(); }, onErr);
     });
     S.rootRef.collection('sessions').onSnapshot((snap) => {

@@ -11,7 +11,7 @@ head = '''<link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#26358f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Yes Coach">
-<meta name="description" content="A free, ad-free workout tracker: log sets, plan your week, track your progress.">
+<meta name="description" content="A free, ad-free workout tracker: log sets, plan your week, track your progress and what you eat.">
 <style>
 body.signed-out #stick, body.signed-out main, body.signed-out #resume, body.signed-out #restbar { display: none !important; }
 .auth { padding-block: 2rem 3rem; display: flex; flex-direction: column; gap: 1rem; max-width: 26rem; }
@@ -40,8 +40,14 @@ auth = f'''<section class="auth in" id="auth" hidden aria-labelledby="au-h">
 def once(s, old, new):
     assert s.count(old) == 1, old[:60]
     return s.replace(old, new)
-out = once(src, '<title>Yes Coach!</title>', '<title>Yes Coach!</title>\n' + head)
-out = once(out, '<body>', '<body class="signed-out">')
+# The source starts with the claude.ai page skeleton (<html><head>…</head><body>), so the title and links sit in <body>.
+# iPhones read the home-screen icon only from <head>: build a real head and move the title and install metadata into it.
+skel = re.match(r'<!doctype html><html><head>(.*?)</head><body>\s*<title>Yes Coach!</title>', src, re.S)
+assert skel, 'unexpected start of the source'
+base_style = re.search(r'<style>.*?</style>', skel.group(1), re.S).group(0)
+out = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
+       '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
+       + base_style + '\n<title>Yes Coach!</title>\n' + head + '</head><body class="signed-out">' + src[skel.end():])
 out = once(out, '<div class="stick" id="stick">', auth + '<div class="stick" id="stick">')
 out = once(out, '<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>',
            '<script src="config.js"></script>\n<script src="vendor/supabase.js"></script>\n<script src="web.js"></script>\n<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>')
