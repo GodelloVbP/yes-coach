@@ -523,6 +523,11 @@ body.typing .restbar { display: none; }
 .fd-row-kcal { grid-row: 1 / span 2; grid-column: 2; font-family: var(--f-head); font-weight: 700; font-size: var(--t3); font-variant-numeric: tabular-nums; }
 .fd-row .icon { grid-row: 1 / span 2; grid-column: 3; }
 .fd-sum { max-width: none; }
+.fd-sug { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.875rem 1rem; background: var(--faint); border-left: 3px solid var(--pop); }
+.fd-sug[hidden] { display: none; }
+.fd-sug-num { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; }
+.fd-sug details summary { cursor: pointer; font-weight: 600; font-size: var(--t2); color: var(--ink-soft); }
+.fd-sug ul { margin: 0.375rem 0 0; padding-left: 1.1rem; color: var(--ink-soft); font-size: var(--t2); font-weight: 500; display: flex; flex-direction: column; gap: 0.125rem; }
 .privacy { padding: 0.75rem; background: var(--faint); border-left: 4px solid var(--ink); font-weight: 500; }
 /* native selects look the same everywhere: flat underline, our own chevron */
 .ed-f select, .sm-frow select, #sm-add, .cal-panel select, .mover select, .sel { -webkit-appearance: none; appearance: none; border-radius: 0; background-color: transparent; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%236f79bf' stroke-width='2.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 4px center; padding-right: 26px; }
@@ -686,6 +691,7 @@ body.typing .restbar { display: none; }
           <button class="icon" type="button" id="fd-next" aria-label="Next day">&#8250;</button>
         </div>
         <div class="fd-meter" id="fd-meter"></div>
+        <div class="fd-sug" id="fd-sug-top" hidden></div>
         <section class="p-sec" aria-labelledby="h-fd-add">
           <div class="p-head"><h2 id="h-fd-add">Add food</h2></div>
           <form class="fd-form" id="fd-form" novalidate autocomplete="off">
@@ -719,6 +725,7 @@ body.typing .restbar { display: none; }
             <label class="ed-f"><span class="lab">Protein (g)</span><input id="fd-t-p" inputmode="numeric" placeholder="none"></label>
           </div>
           <p class="note" id="fd-t-state" aria-live="polite">Leave empty for no target. Targets show as a line on the chart and in the day meter.</p>
+          <div class="fd-sug" id="fd-sug"></div>
         </details>
       </div>
     </div>
@@ -3071,6 +3078,71 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     Object.keys(S.food).sort().forEach((d) => entriesOf(d).forEach(([, e]) => { m.delete(e.name.toLowerCase()); m.set(e.name.toLowerCase(), e); }));
     return [...m.values()].reverse();
   };
+  // A suggested daily intake from age, height, weight, sex, training days, daily life and goal: a starting point, never a verdict.
+  // Energy burned at rest by the Mifflin-St Jeor formula, times an activity factor; losing is a mild 15% under that, gaining 8% over.
+  // No BMI, no ideal weights, no labels about bodies; nothing below what the body burns at rest; nothing for under-18s.
+  const SEX_S = { male: 5, female: -161 };
+  const ACT_ADD = { sit: 0, feet: 0.1, physical: 0.2 };
+  const suggestIntake = (p = profile()) => {
+    const w = Number(p.weight_kg);
+    const ht = Number(p.height_cm);
+    const age = Number(p.age);
+    const missing = [!age && 'age', !ht && 'height', !w && 'weight'].filter(Boolean);
+    if (missing.length) return { missing };
+    if (age < 18) return { minor: true };
+    const rest = 10 * w + 6.25 * ht - 5 * age + (SEX_S[p.sex] != null ? SEX_S[p.sex] : -78);
+    const days = Math.min(7, Number(p.days_per_week) || 3);
+    const burn = rest * (1.2 + 0.075 * days + (ACT_ADD[p.activity] || 0));
+    const goal = p.goal || '';
+    const kcal = Math.max(rest * 1.1, burn * ({ lose: 0.85, muscle: 1.08, both: 0.95 }[goal] || 1));
+    const protein = Math.min(200, w * ({ lose: 1.8, muscle: 1.8, both: 2 }[goal] || 1.6));
+    return { kcal: Math.round(kcal / 50) * 50, protein: Math.round(protein / 5) * 5, burn: Math.round(burn / 50) * 50, goal, days, guessDays: !p.days_per_week, guessSex: SEX_S[p.sex] == null, guessLife: !p.activity };
+  };
+  const GOAL_WHY = {
+    lose: 'Your goal is to lose weight, so this is about 15% under what you burn: slow enough to keep your energy for training. More protein helps you keep your muscle.',
+    muscle: 'Your goal is to gain muscle, so this is a little over what you burn, with plenty of protein to build with.',
+    both: 'Your goal is both, so this is a little under what you burn, with extra protein so muscle can still grow.',
+    '': 'You have not picked a goal, so this is about what you burn. Pick one in Settings, About you, to tailor it.',
+  };
+  const paintSuggestion = () => {
+    const sg = suggestIntake();
+    const tg = targets();
+    const fill = (box, prominent) => {
+      box.replaceChildren();
+      if (sg.missing) {
+        box.append(h('p', '', (prominent ? 'Want a suggested daily target? ' : '') + 'Add your ' + sg.missing.join(', ').replace(/, ([^,]*)$/, ' and $1') + ' in Settings, About you, and Yes Coach suggests one. Or set your own below.'));
+        return;
+      }
+      if (sg.minor) { box.append(h('p', '', 'Suggested targets are for adults. Growing bodies need enough food: if you want a target, ask your doctor or a dietitian.')); return; }
+      box.append(h('span', 'lab', 'Suggested for you'), h('span', 'fd-sug-num', big(sg.kcal) + ' kcal · ' + sg.protein + ' g protein a day'));
+      const same = tg.kcal === sg.kcal && tg.protein === sg.protein;
+      const use = btn('skew small', same ? 'These are your targets' : tg.kcal || tg.protein ? 'Use these instead' : 'Use these as my targets');
+      use.disabled = same;
+      use.addEventListener('click', () => {
+        saveRoot({ nutrition: { kcal: sg.kcal, protein: sg.protein } }).catch(() => showToast('Not saved. Check your connection.', null));
+        renderFood();
+        showToast('Targets set: ' + big(sg.kcal) + ' kcal and ' + sg.protein + ' g protein.', null);
+      });
+      const how = h('details');
+      how.append(h('summary', '', 'How this is worked out'));
+      const ul = h('ul');
+      [GOAL_WHY[sg.goal] || GOAL_WHY[''],
+        'It starts from your age, height and weight (the Mifflin-St Jeor formula), plus ' + plural(sg.days, 'training day') + ' a week' + (sg.guessDays ? ' (a guess: add yours in About you)' : '') + (sg.guessLife ? ' and an everyday life without much walking (tell us yours in About you)' : '') + '.',
+        sg.guessSex ? 'Without sex filled in, it uses the middle between the female and male formula.' : '',
+        'It is an estimate: bodies differ. Use it for two or three weeks, see how your training and energy feel, and adjust by about 150 kcal if needed.',
+        'It never suggests eating less than your body uses at rest.',
+      ].filter(Boolean).forEach((t) => ul.append(h('li', '', t)));
+      how.append(ul);
+      const row = h('div', 'foot-row');
+      row.append(use);
+      box.append(row, how);
+    };
+    // above the day only while you have no target at all; always inside Daily targets
+    const top = $('#fd-sug-top');
+    top.hidden = !!(tg.kcal || tg.protein);
+    if (!top.hidden) fill(top, true);
+    fill($('#fd-sug'), false);
+  };
   const fdDayWord = (d) => (d === today() ? 'Today, ' : d === addDays(today(), -1) ? 'Yesterday, ' : '') + fmtLong(parse(d));
   const addFood = async (e, date = S.fday) => {
     const id = 'e' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
@@ -3110,6 +3182,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     paintRecent();
     paintFoodTrend();
     paintTargets();
+    paintSuggestion();
   };
   const paintMeter = () => {
     const t = dayTotals(S.fday);
@@ -3117,7 +3190,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const box = $('#fd-meter');
     box.replaceChildren();
     const top = h('div', 'fd-kcal');
-    top.append(h('b', '', big(t.kcal)), h('span', '', 'kcal' + (tg.kcal ? ' of ' + big(tg.kcal) + ' · ' + (t.kcal <= tg.kcal ? big(tg.kcal - t.kcal) + ' left' : big(t.kcal - tg.kcal) + ' over') : '')));
+    top.append(h('b', '', big(t.kcal)), h('span', '', 'kcal' + (tg.kcal ? ' of ' + big(tg.kcal) + ' · ' + (t.kcal <= tg.kcal ? big(tg.kcal - t.kcal) + ' left' : big(t.kcal - tg.kcal) + ' above') : '')));
     box.append(top);
     if (tg.kcal) {
       const bar = h('div', 'fd-bar' + (t.kcal > tg.kcal ? ' over' : ''));
@@ -3208,6 +3281,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       saveRoot({ nutrition: { kcal: k || null, protein: p || null } }).then(() => { $('#fd-t-state').textContent = 'Saved.'; }).catch(() => { $('#fd-t-state').textContent = 'Not saved. Check your connection.'; });
       paintMeter();
       paintFoodTrend();
+      paintSuggestion();
       $('#fd-tgt-sum').textContent = [k ? big(k) + ' kcal' : '', p ? big(p) + ' g protein' : ''].filter(Boolean).join(' · ');
     }, 600);
   }));
@@ -3942,12 +4016,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (W.step === 'start') {
       const skip = () => { readWizProfile(); if (!(S.root && S.root.intro_seen)) saveRoot({ profile: W.profile, export_ctx: exportCtx, intro_seen: true }); closeWizard(); };
       const top = h('div', 'wz-top');
-      top.append(h('p', '', 'Three quick answers and your coach builds your first plan. Coming from another app? Bring your history along.'), plainBtn('textbtn wz-skip', S.wiz ? 'Cancel' : 'Skip setup', null, skip));
+      top.append(h('p', '', 'Four quick answers and your coach builds your first plan. Coming from another app? Bring your history along.'), plainBtn('textbtn wz-skip', S.wiz ? 'Cancel' : 'Skip setup', null, skip));
       box.append(top);
       const re = () => { readWizProfile(); renderWizard(true); };
       box.append(chipRow('Days a week', [2, 3, 4, 5, 6].map((n) => [n, String(n)]), p.days_per_week, (v) => { p.days_per_week = v; re(); }));
       box.append(chipRow('Session length', [['short', '45 min'], ['medium', '60 min'], ['long', '90 min']], p.session_length, (v) => { p.session_length = v; re(); }));
       box.append(chipRow('Where you train', WHERE.slice(1), p.where, (v) => { p.where = v; re(); }));
+      box.append(chipRow('Your goal', GOALS.slice(1), p.goal, (v) => { p.goal = v; re(); }));
       box.append(chipRow('Coming from', WIZ_SOURCES, W.src, (v) => { W.src = v; W.rows = null; re(); }));
       if (W.src !== 'none') {
         const fileBox = h('div', 'wz-file');
@@ -3976,7 +4051,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const fields = h('div', 'ed-fields');
       more.append(fields);
       box.append(more);
-      W.f = profileFields(fields, 'intro', true, ['days_per_week', 'session_length', 'where'], p, W.notes);
+      W.f = profileFields(fields, 'intro', true, ['days_per_week', 'session_length', 'where', 'goal'], p, W.notes);
       box.append(h('p', 'privacy', window.YC_WEB ? 'Your answers and history stay in your own Yes Coach account. You build the plan with your own AI chat: Yes Coach writes the request, you paste the answer back.' : 'Your answers and history stay in your own claude.ai account. The plan is built by your own Claude, which Yes Coach asks for you; the first time, you are asked to allow that.'));
       const go = btn('skew pop big', W.src === 'backup' ? 'Restore my data' : W.src !== 'none' && W.file ? 'Import and build my plan' : 'Build my plan');
       go.id = 'wz-go';
@@ -5083,6 +5158,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const SEXES = [['', 'Not given'], ['female', 'Female'], ['male', 'Male'], ['other', 'Other']];
   const WEEK_DAYS = [['', 'Not given']].concat([1, 2, 3, 4, 5, 6, 7].map((n) => [String(n), plural(n, 'day')]));
   const LENGTHS = [['', 'Not given'], ['short', 'Short, about 45 min'], ['medium', 'Medium, about 60 min'], ['long', 'Long, about 90 min']];
+  const GOALS = [['', 'Not given'], ['lose', 'Lose weight'], ['muscle', 'Gain muscle'], ['both', 'Both']];
+  const GOAL_LINE = { lose: 'goal: lose weight', muscle: 'goal: gain muscle', both: 'goal: lose fat and gain muscle at the same time' };
+  const ACTIVITY = [['', 'Not given'], ['sit', 'Mostly sitting'], ['feet', 'On my feet a lot'], ['physical', 'Physical work']];
+  const ACTIVITY_LINE = { sit: 'mostly sits outside training', feet: 'on their feet a lot outside training', physical: 'does physical work outside training' };
   const optName = (opts, v) => (opts.find((o) => o[0] === String(v)) || ['', String(v)])[1];
   // every About-you field: the stored key, its label, a list of choices or a number, and how it reads in the coach's text
   const PROFILE = [
@@ -5093,6 +5172,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     { key: 'days_per_week', label: 'Training days per week', opts: WEEK_DAYS, numeric: true, line: (v) => 'wants to train ' + plural(v, 'day') + ' a week' },
     { key: 'where', label: 'Where you train', opts: WHERE, line: (v) => WHERE_LINE[v] || '' },
     { key: 'session_length', label: 'Session length', opts: LENGTHS, line: (v) => 'wants ' + v + ' sessions (' + optName(LENGTHS, v).split(', ')[1] + ')' },
+    { key: 'goal', label: 'Your goal', opts: GOALS, line: (v) => GOAL_LINE[v] || '' },
+    { key: 'activity', label: 'Daily life outside training', opts: ACTIVITY, line: (v) => ACTIVITY_LINE[v] || '' },
   ];
   const profile = () => (S.root && S.root.profile) || {};
   const profileLine = (p = profile()) => { return PROFILE.filter((f) => p[f.key]).map((f) => f.line(p[f.key])).join(', '); };
