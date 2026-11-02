@@ -494,6 +494,57 @@ body.typing .restbar { display: none; }
 .cl-item { padding-block: 0.875rem; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.25rem; }
 .cl-title { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 .cl-item ul { margin: 0; padding-left: 1.1rem; color: var(--ink-soft); font-weight: 500; display: flex; flex-direction: column; gap: 0.125rem; }
+/* plan: your week */
+#editor.pw-wide { max-width: 72rem; }
+.pw-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+.pw-top h2 { font-size: var(--t4); }
+.pw-ai { padding: 0.875rem 1rem; background: var(--faint); border-left: 3px solid var(--pop); display: flex; flex-direction: column; gap: 0.5rem; }
+.pw-set { display: flex; flex-direction: column; gap: 0.375rem; }
+.pw-days { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.25rem 0.375rem; }
+.pw-days .pk-chip { min-width: 3.5rem; }
+.pw-mode { margin-top: -0.25rem; }
+.pw-set > .lab { margin-top: 0.5rem; }
+.pw-note { padding: 0.5rem 0.75rem; background: var(--faint); border-left: 3px solid var(--ctl); font-weight: 500; }
+.pw-board { display: flex; flex-direction: column; border-top: 2px solid var(--ink); }
+.pw-card { padding: 0.75rem 0 0.875rem 0.75rem; border-bottom: 1px solid var(--line); border-left: 4px solid var(--g, var(--ink)); display: flex; flex-direction: column; gap: 0.375rem; min-width: 0; }
+.pw-chead { display: flex; align-items: baseline; gap: 0.625rem; flex-wrap: wrap; }
+.pw-wd { font-family: var(--f-head); font-size: var(--t2); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); min-width: 2.5rem; }
+.pw-name { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--g, var(--ink)); }
+.pw-ex { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.125rem; font-size: var(--t2); }
+.pw-ex li { display: flex; justify-content: space-between; gap: 0.75rem; }
+.pw-ex li span { min-width: 0; overflow-wrap: anywhere; }
+.pw-ex li b { white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--ink-soft); font-weight: 600; }
+.pw-acts { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.25rem; }
+.pw-acts .sel { font: inherit; font-weight: 600; color: var(--ink); border: 0; border-bottom: 2px solid var(--ctl); min-height: 40px; max-width: 12rem; }
+.pw-rest { display: flex; align-items: baseline; gap: 0.625rem; padding: 0.5rem 0 0.5rem 0.75rem; border-bottom: 1px solid var(--line); border-left: 4px solid transparent; }
+@media (min-width: 64rem) {
+  .pw-board.fixed { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0 0.5rem; }
+  .pw-board:not(.fixed) { display: grid; grid-template-columns: repeat(min(var(--n), 4), minmax(0, 1fr)); gap: 0.5rem; }
+  .pw-board.fixed .pw-rest { flex-direction: column; border-left: 4px solid var(--line); }
+  .pw-board .pw-card { padding-right: 0.5rem; }
+  .pw-board.fixed .pw-ex li { flex-direction: column; gap: 0; }
+  .pw-board.fixed .pw-acts .sel { max-width: 100%; width: 100%; }
+}
+.pw-more { display: flex; flex-direction: column; gap: 0.5rem; }
+.pw-spare { display: flex; flex-direction: column; border-top: 2px solid var(--ink); }
+.pw-srow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; padding: 0.5rem 0 0.5rem 0.75rem; border-bottom: 1px solid var(--line); border-left: 4px solid var(--g, var(--line)); }
+.pw-srow .pw-acts { margin: 0 0 0 auto; }
+.pw-more > .foot-row .sel { font: inherit; font-weight: 600; color: var(--ink); border: 0; border-bottom: 2px solid var(--ctl); min-height: 40px; }
+.pw-title { font: inherit; font-family: var(--f-head); font-size: var(--t4); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink); background: transparent; border: 0; border-bottom: 2px solid var(--ctl); padding: 0.125rem 0; width: 100%; }
+.pw-title:focus { outline: none; border-bottom-color: var(--ink); }
+.pw-items { display: flex; flex-direction: column; border-top: 2px solid var(--ink); }
+.pw-item { border-bottom: 1px solid var(--line); background: var(--bg); }
+.pw-item.dragging { background: var(--faint); box-shadow: 0 4px 14px rgba(16, 20, 43, 0.18); position: relative; z-index: 2; }
+.pw-line { display: flex; align-items: stretch; }
+.pw-handle { flex: none; width: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.375rem; color: var(--ctl); cursor: grab; touch-action: none; user-select: none; }
+.pw-tap { flex: 1; min-width: 0; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; min-height: 52px; padding: 0.375rem 0.5rem 0.375rem 0; border: 0; background: none; text-align: left; color: var(--ink); cursor: pointer; font: inherit; }
+.pw-tap:hover, .pw-tap[aria-expanded="true"] { background: var(--faint); }
+.pw-iname { font-weight: 700; overflow-wrap: anywhere; }
+.pw-idesc { white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--ink-soft); font-weight: 600; }
+.pw-det { padding: 0.5rem 0.5rem 0.875rem 40px; display: flex; flex-direction: column; gap: 0.625rem; }
+.pw-moreset summary { cursor: pointer; font-weight: 600; font-size: var(--t2); color: var(--ink-soft); min-height: 36px; display: flex; align-items: center; }
+.pw-moreset[open] { display: flex; flex-direction: column; gap: 0.625rem; }
+.pw-daymore { margin-top: 0.5rem; }
 /* exercises */
 .xl-wrap { padding-block: 1rem 3rem; }
 .xl-body { display: flex; flex-direction: column; gap: 1.75rem; }
@@ -1194,12 +1245,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#mark').addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); });
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['2 Nov 2026', 'Plan, rebuilt', ['Plan is now your week on one screen: every training day with its exercises.', 'Tap the weekdays you train, and choose what a missed day does: skip it, or move it up.', 'Edit a day as a short list: tap an exercise to change sets, reps and weight, drag to reorder, or replace it.', 'Ask your AI coach right from Plan to adjust your plan: you see what changes before anything does.']],
     ['2 Nov 2026', 'Exercises', ['New Exercises tab: all 304 exercises with search, body-part tabs and sorting.', 'Add any of them to a training day, or add your own exercise.', 'For you: body parts your training skips, and exercises close to the ones you do most.']],
     ['2 Nov 2026', 'Food', ['New Food tab: a simple list of what you eat, without numbers.', 'Want to count? Switch on calories in Settings, Food: log calories, protein, carbs and fat, get a suggested daily target from your goal, and see averages and a chart over 1 to 12 months.', 'Foods you logged before come back as one-tap chips.', 'About you now asks your goal: lose weight, gain muscle or both.']],
     ['2 Nov 2026', 'Yes Coach! on the web', ['Your own account, with your log and plan in sync between phone and laptop.', 'Add it to your home screen and it opens like an app.', 'New start screen: three quick answers, restore a Yes Coach backup, or bring your history from Strong, Hevy, FitNotes or Fitbod.']],
     ['2 Nov 2026', 'Plans built by your AI', ['Get a plan from your own AI chat in two pastes: Yes Coach writes the request and reads the answer.', 'Starting weights come from your history; starting fresh, week one finds your weights.', 'Backups now bring back your training plan and schedule too.']],
     ['2 Nov 2026', 'Progress and exercises', ['Progress shows trends over 1, 3, 6 or 12 months, with charts that stay readable however much you log.', '304 exercises, including forearms, full body and cardio.', 'Smoother screens and clearer feedback on every tap.']],
-    ['Oct 2026', 'First version', ['Log sets with a rest timer, plan your week with drag and drop, the schedule maker, notes for your coach, and export for an AI review.']],
+    ['Oct 2026', 'First version', ['Log sets with a rest timer, plan your week with drag and drop, notes for your coach, and export for an AI review.']],
   ];
   const renderHome = () => {
     const brand = $('#hm-brand');
@@ -1419,7 +1471,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const renderPlan = () => {
     if (!S.editing) S.editing = 'list';
     // a day being edited keeps its inputs; the list and the maker refresh from the database
-    if (!$('#editor').childElementCount || S.edShown !== S.editing || S.editing === 'list' || S.editing === 'schedule') renderEditor();
+    if (!$('#editor').childElementCount || S.edShown !== S.editing || S.editing === 'list') renderEditor();
   };
   const goPlan = (what) => { hideToast(); S.editing = what; if (S.view !== 'plan') setView('plan'); else renderPlan(); window.scrollTo({ top: 0 }); };
   const sessionTally = (sid, tpl) => {
@@ -4201,12 +4253,17 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const planPrompt = () => {
     const p = W.profile;
     const unmatched = W.rows ? [...new Set(W.rows.map((r) => r.ex))].filter((n) => !libMatch(n)).slice(0, 80) : [];
-    const o = [COACH_VOICE, '', 'Build a first training plan for Yes Coach, a workout tracker.', ''];
+    const o = [COACH_VOICE, '', W.adjust ? 'Adjust the current training plan of a Yes Coach user (a workout tracker). Keep what works; change what they ask for and what their progress shows needs changing. Keep the name of every day that stays, and keep their training weekdays unless they ask otherwise or the plan really needs it.' : 'Build a first training plan for Yes Coach, a workout tracker.', ''];
     o.push('## The lifter', profileLine(p) || 'No details given.', W.notes ? 'Notes about their body: ' + W.notes : '', '');
     o.push('## Their wishes', 'Days a week: ' + (p.days_per_week || 'not given, choose 3') + '. Session length: ' + (p.session_length ? LENGTH_PLAN[p.session_length] : 'not given, plan about 60 minutes') + '. Where: ' + (WHERE_LINE[p.where] || 'not given, assume a normal gym') + '.', '');
-    o.push('## Their history', W.rows ? historySummary(W.rows) : W.file && W.src === 'other' ? 'Their raw export (one row per set; read the columns from the header):\n' + W.file.text.slice(0, 60000) : 'None. They are starting fresh: the first week is for finding their weights (see the rules), and the summary should say so.', '');
+    if (W.adjust) o.push('## Their progress, last 3 months', adjustProgress(), '');
+    else o.push('## Their history', W.rows ? historySummary(W.rows) : W.file && W.src === 'other' ? 'Their raw export (one row per set; read the columns from the header):\n' + W.file.text.slice(0, 60000) : 'None. They are starting fresh: the first week is for finding their weights (see the rules), and the summary should say so.', '');
     o.push('## Exercises you may use (id | name | group | equipment)', LIB_LIST, '');
-    if (W.chat.length) o.push('## Your previous plan', JSON.stringify(W.chat[W.chat.length - 1].plan), '', '## What they want changed', W.chat[W.chat.length - 1].ask, '');
+    if (W.adjust) {
+      const own = Object.entries(S.exercises).filter(([id]) => !libOfEx(id));
+      if (own.length) o.push('## Their own exercises (not in the list; use them as "ex:<id>")', own.map(([id, e]) => 'ex:' + id + ' | ' + e.name + ' | ' + (e.group || '')).join('\n'), '');
+    }
+    if (W.chat.length) o.push(W.adjust && W.chat.length === 1 ? '## Their current plan' : '## Your previous plan', JSON.stringify(W.chat[W.chat.length - 1].plan), '', '## What they want changed', W.chat[W.chat.length - 1].ask, '');
     o.push('## Rules');
     o.push('- One training day per day they train, or a rotation of fewer days that repeats; fit the session length (about 45 min: 4-5 exercises, 60: 5-6, 90: 6-8).');
     o.push('- Only use exercise ids from the list, and only equipment they have. Leave out exercises marked hard on shoulders if their notes mention a shoulder.');
@@ -4216,6 +4273,44 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (unmatched.length) o.push('- mapping: for each of these names from their old app, the matching exercise id from the list, or null when nothing matches: ' + unmatched.map((n) => JSON.stringify(n)).join(', '));
     o.push('', 'Answer with JSON only, in this shape:', '{"summary": "2 or 3 sentences on why this plan suits them", "days": [{"name": "Push A", "kind": "Push", "focus": "a few words", "items": [{"ex": "l04", "sets": 3, "reps": "6 to 8", "target": "60", "rest_s": 150, "note": "short cue"}]}], "weekdays": ["Mon", "Wed", "Fri"], "mapping": {"old name": "l04"}}');
     return o.filter((x) => x !== '').join('\n');
+  };
+  // ---- adjusting the current plan: what the coach gets, and what changes
+  const planIdOf = (exId) => (libOfEx(exId) || {}).id || 'ex:' + exId;
+  const planExName = (id) => (String(id).startsWith('ex:') ? (S.exercises[id.slice(3)] || {}).name || id.slice(3) : (LIB_BY_ID.get(id) || {}).name || id);
+  const planDayIds = () => { const m = schedModel(); return [...new Set(m.mode === 'fixed' ? WEEKDAYS.map((w) => m.week[w]).filter(Boolean) : m.rotation)]; };
+  const currentPlanForAI = () => {
+    const m = schedModel();
+    return { weekdays: trainWeekdays(m), days: planDayIds().map((id) => { const t = S.templates[id]; return { name: t.name, kind: t.kind || 'Other', focus: t.focus || '', items: (t.items || []).map((it) => ({ ex: planIdOf(it.ex), sets: it.sets, reps: it.reps, target: it.target || '', rest_s: it.rest_s == null ? 90 : it.rest_s, note: it.note || null })) }; }) };
+  };
+  const adjustProgress = () => {
+    const rows = progressRows(addDays(today(), -91));
+    const t = totals(flatten(), addDays(today(), -91));
+    if (!rows.length) return 'No sessions logged in the last 3 months.';
+    return [t.sessions + ' sessions in 13 weeks, about ' + t.perWeek + ' a week.'].concat(rows.map((r) => '- ' + r.exercise + ' (' + r.group + '): ' + r.firstLabel + ' to ' + r.latestLabel + ', best ' + r.bestLabel + ', ' + r.sessions + ' sessions' + (r.trend ? ', trend ' + r.changeLabel + ' (' + TREND_WORD[r.trend] + ')' : ''))).join('\n');
+  };
+  const ownPlanEx = (v) => { const t = String(v == null ? '' : v).trim(); return t.startsWith('ex:') && S.exercises[t.slice(3)] ? t : null; };
+  const planDiff = (base, next) => {
+    const out = [];
+    const key = (n) => String(n).trim().toLowerCase();
+    if (base.weekdays.join() !== next.weekdays.join()) out.push('Training days: ' + (base.weekdays.join(', ') || 'none') + ' → ' + next.weekdays.join(', '));
+    const used = new Set();
+    next.days.forEach((d) => {
+      const b = base.days.find((x, i) => !used.has(i) && key(x.name) === key(d.name));
+      if (!b) { out.push('New day: ' + d.name + ' (' + d.items.map((it) => planExName(it.ex)).join(', ') + ')'); return; }
+      used.add(base.days.indexOf(b));
+      const bi = new Map(b.items.map((it) => [it.ex, it]));
+      const ni = new Map(d.items.map((it) => [it.ex, it]));
+      const ch = [];
+      d.items.forEach((it) => {
+        const o = bi.get(it.ex);
+        if (!o) ch.push('+ ' + planExName(it.ex) + ' ' + it.sets + ' × ' + it.reps);
+        else if (String(o.sets) !== String(it.sets) || String(o.reps) !== String(it.reps) || String(o.target || '') !== String(it.target || '')) ch.push(planExName(it.ex) + ' ' + o.sets + ' × ' + o.reps + (o.target ? ' @ ' + o.target : '') + ' → ' + it.sets + ' × ' + it.reps + (it.target ? ' @ ' + it.target : ''));
+      });
+      b.items.forEach((it) => { if (!ni.has(it.ex)) ch.push('− ' + planExName(it.ex)); });
+      if (ch.length) out.push(d.name + ': ' + ch.join('; '));
+    });
+    base.days.forEach((b, i) => { if (!used.has(i)) out.push(b.name + ' leaves your week (it stays under Not in your week)'); });
+    return out;
   };
   // an exercise id from what an AI wrote: "l04", "l4", "L067", or the exercise's name
   const libId = (v) => {
@@ -4232,7 +4327,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       name: String((d && d.name) || 'Day ' + (i + 1)).slice(0, 40),
       kind: ['Push', 'Pull', 'Legs', 'Other'].includes(d && d.kind) ? d.kind : 'Other',
       focus: String((d && d.focus) || '').slice(0, 80),
-      items: (Array.isArray(d && d.items) ? d.items : []).map((it) => (it && typeof it === 'object' ? Object.assign({}, it, { ex: libId(it.ex || it.id || it.exercise || it.name) }) : null)).filter((it) => it && it.ex).slice(0, 10).map((it) => ({
+      items: (Array.isArray(d && d.items) ? d.items : []).map((it) => (it && typeof it === 'object' ? Object.assign({}, it, { ex: ownPlanEx(it.ex) || libId(it.ex || it.id || it.exercise || it.name) }) : null)).filter((it) => it && it.ex).slice(0, 10).map((it) => ({
         ex: it.ex, sets: intIn(it.sets, 1, 8, 3), reps: String(it.reps || '10').slice(0, 20), target: it.target == null ? '' : String(it.target).slice(0, 20),
         rest_s: intIn(it.rest_s, 0, 600, 90), note: it.note ? String(it.note).slice(0, 140) : null,
       })),
@@ -4270,7 +4365,29 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const rows = W.rows || [];
     const exIds = rows.length ? await resolveHistory(rows, plan.mapping) : {};
     const libToMine = {};
-    for (const d of plan.days) for (const it of d.items) if (!libToMine[it.ex]) libToMine[it.ex] = await ensureExercise(planExercise(it));
+    for (const d of plan.days) for (const it of d.items) if (!libToMine[it.ex]) libToMine[it.ex] = it.ex.startsWith('ex:') ? it.ex.slice(3) : await ensureExercise(planExercise(it));
+    if (W.adjust) {
+      // match each new day to a current one by name, then by place; the rest become new days
+      const base = W.baseIds.filter((id) => S.templates[id]);
+      const taken = new Set();
+      const ids = plan.days.map((d) => { const hit = base.find((id) => !taken.has(id) && S.templates[id].name.trim().toLowerCase() === d.name.trim().toLowerCase()); if (hit) taken.add(hit); return hit || null; });
+      ids.forEach((id, i) => { if (!id) { const free = base.find((x) => !taken.has(x)); if (free) { taken.add(free); ids[i] = free; } } });
+      for (const [i, d] of plan.days.entries()) {
+        const items = d.items.map((it, k) => ({ ex: libToMine[it.ex], order: k + 1, sets: it.sets, reps: it.reps, target: it.target, target_at: today(), rest_s: it.rest_s, note: it.note }));
+        if (!ids[i]) ids[i] = newDay(d.name);
+        const doc = Object.assign({}, S.templates[ids[i]], { name: d.name, kind: d.kind, focus: d.focus, items });
+        S.templates[ids[i]] = doc;
+        await S.rootRef.collection('templates').doc(ids[i]).set(doc);
+      }
+      const before = clone(S.root && S.root.schedule) || null;
+      const wd = plan.weekdays;
+      const sched = schedModel().mode === 'fixed' && wd.length === ids.length
+        ? { enabled: true, mode: 'fixed', week: Object.fromEntries(WEEKDAYS.map((w) => [w, wd.includes(w) ? ids[wd.indexOf(w)] : ''])) }
+        : { enabled: true, mode: 'rotation', days: wd, rotation: ids };
+      W.before = before;
+      await saveRoot(Object.assign({ schedule: sched }, before ? { schedule_before: before } : {}));
+      return;
+    }
     const ts = templatesSorted();
     let order = ts.length ? Math.max(...ts.map((t) => t.order || 0)) : 0;
     let n = 1;
@@ -4319,7 +4436,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     prompt_too_large: 'Your history is too large to send in one go. Use the copy-and-paste way and attach the file instead.',
   };
   const coachError = (e) => COACH_ERRORS[e && e.code] || (['sampling_disabled', 'not_declared', 'session_expired'].includes(e && e.code) ? COACH_ERRORS.unavailable : 'The plan did not come back in a usable form. Try again.');
-  const newWizard = (preset = {}) => ({ step: 'start', src: preset.src && WIZ_SOURCES.some(([k]) => k === preset.src) ? preset.src : 'none', file: preset.file || null, rows: null, plan: null, chat: [], msg: '', profile: Object.assign({}, profile()), notes: exportCtx });
+  const newWizard = (preset = {}) => ({ adjust: !!preset.adjust, ask: '', step: 'start', src: preset.src && WIZ_SOURCES.some(([k]) => k === preset.src) ? preset.src : 'none', file: preset.file || null, rows: null, plan: null, chat: [], msg: '', profile: Object.assign({}, profile()), notes: exportCtx });
   const openWizard = (preset) => {
     W = newWizard(preset);
     S.wiz = true;
@@ -4360,7 +4477,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       await savePlan((i, total) => { W.msg = 'Saving your history: ' + i + ' of ' + total + ' sessions…'; const m = $('#wiz .wz-msg'); if (m) m.textContent = W.msg; });
       const first = W.plan.days[0].name + ' is up first on ' + W.plan.weekdays[0] + '.';
       const before = W.before;
+      const adj = W.adjust;
       closeWizard();
+      if (adj) { goPlan('list'); showToast('Plan updated.', null); return; }
       showToast('Plan saved. ' + first + (before ? ' Undo puts your old schedule back.' : ''), before ? () => { saveRoot({ schedule: before }); renderTrain(); } : null);
     } catch (e) {
       W.failed = 'save';
@@ -4388,8 +4507,30 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (W.shown !== W.step) enter(box); // a new step slides in; a tap on the same step just repaints
     W.shown = W.step;
     box.replaceChildren();
-    $('#h-intro').textContent = { manual: 'Ask your AI', start: S.root && S.root.intro_seen ? 'Build my plan' : 'Welcome to Yes Coach!', busy: 'Building your plan', saving: 'Saving your plan', error: 'That did not work', preview: 'Your plan' }[W.step];
+    $('#h-intro').textContent = { manual: 'Ask your AI', start: W.adjust ? 'Adjust my plan' : S.root && S.root.intro_seen ? 'Build my plan' : 'Welcome to Yes Coach!', busy: 'Building your plan', saving: 'Saving your plan', error: 'That did not work', preview: 'Your plan' }[W.step];
     const p = W.profile;
+    if (W.step === 'start' && W.adjust) {
+      box.append(h('p', '', 'Your coach gets your current plan, your progress over the last 3 months and your notes about your body. Say what you want changed, or leave it empty for a check-up.'));
+      const ta = h('textarea', 'nt-text');
+      ta.id = 'wz-adjust';
+      ta.rows = 3;
+      ta.value = W.ask;
+      ta.placeholder = 'For example: my bench has stalled, I want more legs, I can only train 3 days now, swap the dips because of my shoulder.';
+      ta.setAttribute('aria-label', 'What to change in your plan');
+      ta.addEventListener('input', () => { W.ask = ta.value; });
+      const go = btn('skew pop big', 'Ask my coach');
+      go.id = 'wz-go';
+      go.addEventListener('click', () => {
+        W.ask = ta.value.trim();
+        W.baseIds = planDayIds();
+        W.chat = [{ plan: currentPlanForAI(), ask: W.ask || 'Nothing specific: check the plan against their progress and improve what needs it.' }];
+        buildPlan();
+      });
+      const fr = h('div', 'foot-row');
+      fr.append(go, plainBtn('textbtn', 'Cancel', null, () => { closeWizard(); goPlan('list'); }));
+      box.append(ta, h('p', 'privacy', window.YC_WEB ? 'You ask your own AI chat: Yes Coach writes the request, you paste the answer back. Nothing changes until you apply it.' : 'Yes Coach asks your own Claude. Nothing changes until you apply it.'), fr);
+      return;
+    }
     if (W.step === 'start') {
       const skip = () => { readWizProfile(); if (!(S.root && S.root.intro_seen)) saveRoot({ profile: W.profile, export_ctx: exportCtx, intro_seen: true }); closeWizard(); };
       const top = h('div', 'wz-top');
@@ -4499,7 +4640,15 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     // preview
     const plan = W.plan;
     if (plan.summary) box.append(h('p', '', plan.summary));
-    box.append(h('p', 'note', 'Rolling on ' + plan.weekdays.join(', ') + ': ' + plan.days.map((d) => d.name).join(' → ') + '. Miss a day and the next one simply waits.'));
+    if (W.adjust) {
+      const diff = planDiff(W.chat[0].plan, plan);
+      const ch = h('div', 'pw-ai');
+      ch.append(h('span', 'lab', 'What changes'));
+      if (!diff.length) ch.append(h('p', '', 'Nothing: your coach keeps your plan as it is.'));
+      else { const ul = h('ul', 'wz-items'); diff.forEach((x) => ul.append(h('li', '', x))); ch.append(ul); }
+      box.append(ch);
+    }
+    if (!W.adjust) box.append(h('p', 'note', 'Rolling on ' + plan.weekdays.join(', ') + ': ' + plan.days.map((d) => d.name).join(' → ') + '. Miss a day and the next one simply waits.'));
     const list = h('div', 'ed-items');
     plan.days.forEach((d) => {
       const it = h('div', 'ed-item wz-day');
@@ -4507,7 +4656,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const head = h('div', 'ed-top');
       head.append(h('span', 'ed-name', d.name), h('span', 'note', d.focus));
       const ul = h('ul', 'wz-items');
-      d.items.forEach((x) => { const lib = LIB_BY_ID.get(x.ex); ul.append(h('li', '', lib.name + ' · ' + x.sets + ' × ' + x.reps + (x.target && /^[\d.,\s]+$/.test(x.target) ? ' @ ' + x.target + ' kg' : ''))); });
+      d.items.forEach((x) => { ul.append(h('li', '', planExName(x.ex) + ' · ' + x.sets + ' × ' + x.reps + (x.target && /^[\d.,\s]+$/.test(x.target) ? ' @ ' + x.target + ' kg' : ''))); });
       it.append(head, ul);
       list.append(it);
     });
@@ -4518,7 +4667,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const skipped = [...new Set(W.rows.map((r) => r.date))].filter((d) => S.sessions[d]).length;
       box.append(h('p', 'note', 'Also imports ' + plural(n - skipped, 'session') + ' of history' + (skipped ? ' (' + skipped + ' dates you already have are left alone)' : '') + '. Weights are saved in kg.'));
     }
-    if (templatesSorted().length) box.append(h('p', 'note', 'Your current training days stay in Plan; your week switches to this plan.'));
+    if (W.adjust) box.append(h('p', 'note', 'Applying updates your days in place. Logged sessions stay exactly as they were, and Your week can bring back the old week.'));
+    else if (templatesSorted().length) box.append(h('p', 'note', 'Your current training days stay in Plan; your week switches to this plan.'));
     const ta = h('textarea', 'nt-text');
     ta.id = 'wz-ask';
     ta.rows = 2;
@@ -4529,7 +4679,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const cr = h('div', 'foot-row');
     cr.append(change);
     box.append(ta, cr);
-    const start = btn('skew pop big', 'Start with this plan');
+    const start = btn('skew pop big', W.adjust ? 'Apply changes' : 'Start with this plan');
     start.id = 'wz-start';
     start.addEventListener('click', saveAndClose);
     const fr = h('div', 'foot-row');
@@ -4651,10 +4801,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const activeSchedule = () => {
     const sc = S.root && S.root.schedule;
     if (!sc || !sc.enabled) return null;
-    if (sc.mode === 'fixed') return Object.values(sc.week || {}).some((id) => id && S.templates[id]) ? sc : null;
-    if (!(sc.days || []).length) return null;
+    if (sc.mode === 'fixed') return sc;
     const rot = (sc.rotation || []).filter((id) => S.templates[id]);
-    return rot.length ? Object.assign({}, sc, { rotation: rot }) : null;
+    return (sc.days || []).length && rot.length ? Object.assign({}, sc, { rotation: rot }) : { enabled: true, mode: 'fixed', week: {} };
   };
   // The rotation is rolling: the next training day in the list goes on your next training weekday, whatever you trained last.
   // pos = where the list stands after the days you logged; days you skipped are not owed.
@@ -4682,9 +4831,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       days.forEach((w, i) => {
         const date = addDays(ws, WEEKDAYS.indexOf(w));
         if (date < r.from) return;
-        const tpl = sc.rotation[(r.pos + n) % sc.rotation.length];
+        const idx = (r.pos + n) % sc.rotation.length;
+        const tpl = sc.rotation[idx];
         n += 1;
-        out.push({ key: tpl + '@' + i, tpl, date, rolling: true });
+        out.push({ key: tpl + '@' + i, tpl, date, rolling: true, idx });
       });
     } else {
       templatesSorted().forEach((t) => {
@@ -4925,205 +5075,6 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const sameSchedule = (a, b) => JSON.stringify(a || null) === JSON.stringify(b || null);
 
   // ------------------------------------------------------------------ schedule maker
-  let SM = null; // working copy {mode, week, days, rotation, msg}
-  const permutations = (arr) => {
-    if (arr.length <= 1) return [arr.slice()];
-    const out = [];
-    arr.forEach((x, i) => { permutations(arr.slice(0, i).concat(arr.slice(i + 1))).forEach((p) => out.push([x].concat(p))); });
-    return out;
-  };
-  const simulate = (sc, weeks) => {
-    // clashes over the next weeks for a candidate schedule, ignoring logged sessions and moves
-    const ws0 = mondayOf(today());
-    const roll = { from: ws0, pos: 0 };
-    const list = [];
-    for (let k = 0; k < weeks; k += 1) {
-      const ws = addDays(ws0, 7 * k);
-      const dates = WEEKDAYS.map((_, i) => addDays(ws, i));
-      const kinds = {};
-      plannedFor(ws, sc, roll).forEach((p) => { (kinds[p.date] = kinds[p.date] || new Set()).add(kindOf(p.tpl)); });
-      if (k < weeks - 1) { const next = plannedFor(addDays(ws, 7), sc, roll).find((p) => p.date === addDays(ws, 7)); if (next) { dates.push(next.date); (kinds[next.date] = kinds[next.date] || new Set()).add(kindOf(next.tpl)); } }
-      list.push(...spacingWarnings(dates, kinds));
-    }
-    return { n: list.length, list };
-  };
-  const smCandidate = (cur) => (SM.mode === 'fixed'
-    ? { enabled: true, mode: 'fixed', week: Object.fromEntries(WEEKDAYS.map((w) => [w, SM.week[w] && S.templates[SM.week[w]] ? SM.week[w] : ''])) }
-    : { enabled: true, mode: 'rotation', days: SM.days.slice(), rotation: SM.rotation.filter((id) => S.templates[id]) });
-  const smWhy = (c) => (c.mode === 'fixed'
-    ? (Object.values(c.week).some(Boolean) ? '' : 'Pick a training day for at least one weekday.')
-    : !c.days.length && !c.rotation.length ? 'Pick your training weekdays and add at least one training day.' : !c.days.length ? 'Pick at least one training weekday.' : !c.rotation.length ? 'Add at least one training day to the rotation.' : '');
-  const leaveMaker = () => { SM = null; goPlan('list'); };
-  const renderScheduleMaker = (box) => {
-    const cur = (S.root && S.root.schedule) || {};
-    if (!SM) {
-      SM = {
-        mode: cur.mode === 'fixed' ? 'fixed' : 'rotation',
-        week: Object.assign({}, cur.week || {}),
-        days: (cur.days || []).slice(),
-        rotation: (cur.rotation || []).filter((id) => S.templates[id]),
-        msg: '',
-      };
-    }
-    box.append(barHead('Schedule maker', '‹ Plan', leaveMaker));
-    const ts = templatesSorted();
-    if (!ts.length) {
-      box.append(h('p', 'note', 'A schedule is built from your training days, and you have none yet. Create one, then come back here.'));
-      const mk = btn('skew pop', 'Create a training day');
-      mk.addEventListener('click', () => { SM = null; goPlan('list'); });
-      box.append(mk);
-      return;
-    }
-    box.append(radioTabs('Schedule type', [['fixed', 'Same every week'], ['rotation', 'Rolling']], SM.mode, (m) => { SM.mode = m; SM.msg = ''; renderEditor(); }, 'metric sm-modes'));
-    const opts = (sel, value, restLabel) => {
-      sel.append(new Option(restLabel, ''));
-      ts.forEach((t) => sel.append(new Option(t.name, t.id)));
-      sel.value = value && S.templates[value] ? value : '';
-    };
-    if (SM.mode === 'fixed') {
-      box.append(h('p', 'note', 'Choose what you train on each weekday. The same week repeats until you change it.'));
-      const list = h('div', 'sm-fixed');
-      WEEKDAYS.forEach((w) => {
-        const row = h('label', 'sm-frow');
-        const sel = h('select');
-        sel.id = 'sm-week-' + w;
-        opts(sel, SM.week[w], 'Rest');
-        sel.addEventListener('change', () => { SM.week[w] = sel.value; SM.msg = ''; renderEditor(); });
-        row.append(h('span', 'wk-wd', w), sel);
-        list.append(row);
-      });
-      box.append(list);
-    } else {
-      box.append(h('p', 'note', 'Pick the weekdays you can train, then add training days in the order they should repeat. The next day in the list goes on your next training weekday. Miss a day and nothing is lost: the same day is planned next time. A day can appear more than once.'));
-      box.append(h('div', 'lab', 'Training weekdays'));
-      const daysRow = h('div', 'sm-days');
-      WEEKDAYS.forEach((w) => {
-        const b = btn('pk-chip', w, 'Train on ' + w);
-        b.setAttribute('aria-pressed', String(SM.days.includes(w)));
-        b.addEventListener('click', () => {
-          SM.days = SM.days.includes(w) ? SM.days.filter((x) => x !== w) : SM.days.concat(w);
-          SM.days.sort((a, c) => WEEKDAYS.indexOf(a) - WEEKDAYS.indexOf(c));
-          SM.msg = '';
-          renderEditor();
-        });
-        daysRow.append(b);
-      });
-      box.append(daysRow);
-      box.append(h('div', 'lab', 'Rotation order'));
-      const list = h('div', 'ed-items');
-      if (!SM.rotation.length) list.append(h('p', 'note sm-empty', 'Empty. Add your first training day below.'));
-      SM.rotation.forEach((id, i) => {
-        const t = S.templates[id];
-        const row = h('div', 'ed-item');
-        const top = h('div', 'ed-top');
-        top.append(h('span', 'ed-name', (i + 1) + '. ' + t.name));
-        const bs = h('div', 'ed-btns');
-        const mv = (j) => { const r = SM.rotation.slice(); r.splice(j, 0, r.splice(i, 1)[0]); SM.rotation = r; SM.msg = ''; renderEditor(); };
-        bs.append(
-          arrowBtn('↑', 'Move ' + t.name + ' earlier', i === 0, () => mv(i - 1)),
-          arrowBtn('↓', 'Move ' + t.name + ' later', i === SM.rotation.length - 1, () => mv(i + 1)),
-          h('span', 'gap'),
-          armedRemove(t.name + ' from the rotation', () => { SM.rotation = SM.rotation.filter((_, k) => k !== i); SM.msg = ''; }, renderEditor),
-        );
-        top.append(bs);
-        row.append(top);
-        list.append(row);
-      });
-      box.append(list);
-      const addRow = h('div', 'foot-row');
-      const pick = h('select');
-      pick.id = 'sm-add';
-      pick.setAttribute('aria-label', 'Training day to add');
-      pick.style.width = 'auto';
-      ts.forEach((t) => pick.append(new Option(t.name, t.id)));
-      const add = btn('skew small', '+ Add to rotation');
-      add.addEventListener('click', () => { SM.rotation = SM.rotation.concat(pick.value); SM.msg = ''; renderEditor(); });
-      const fix = btn('skew small', 'Fix spacing');
-      fix.disabled = SM.rotation.length < 2 || SM.rotation.length > 7 || !SM.days.length;
-      fix.addEventListener('click', () => {
-        const base = smCandidate(cur);
-        let best = null;
-        const seen = new Set();
-        permutations(base.rotation).forEach((perm) => {
-          const k = perm.join('|');
-          if (seen.has(k)) return;
-          seen.add(k);
-          const r = simulate(Object.assign({}, base, { rotation: perm }), 4).n;
-          if (!best || r < best.n) best = { n: r, perm };
-        });
-        const changed = best.perm.join() !== base.rotation.join();
-        SM.rotation = best.perm;
-        SM.msg = best.n === 0
-          ? (changed ? 'Reordered: no clashing days back to back in the next four weeks.' : 'Already spaced well: no clashing days back to back.')
-          : (changed ? 'Reordered to the best spacing possible on these weekdays. ' : 'This is already the best order for these weekdays. ') + (best.n === 1 ? 'One back-to-back clash remains' : best.n + ' back-to-back clashes remain') + ' in four weeks; another weekday pattern would avoid ' + (best.n === 1 ? 'it.' : 'them.');
-        renderEditor();
-      });
-      addRow.append(pick, add, fix);
-      box.append(addRow);
-    }
-    if (SM.msg) box.append(h('p', 'note sm-msg', SM.msg));
-
-    const cand = smCandidate(cur);
-    const why = smWhy(cand);
-    box.append(h('div', 'lab', 'Preview'));
-    const pv = h('div', 'sm-preview');
-    if (why) pv.append(h('p', 'note', 'The two-week preview appears once the schedule is complete.'));
-    else {
-      const sim = simulate(cand, 2);
-      const bad = new Set(sim.list.flatMap((p) => [p[0], p[1]]));
-      [0, 1].forEach((k) => {
-        const ws = addDays(mondayOf(today()), 7 * k);
-        const col = h('div', 'sm-week');
-        col.append(h('div', 'wk-wd', dm(ws) + ' – ' + dm(addDays(ws, 6))));
-        const plan = plannedFor(ws, cand);
-        WEEKDAYS.forEach((w, i) => {
-          const d = addDays(ws, i);
-          const p = plan.find((x) => x.date === d);
-          const r = h('div', 'sm-row' + (bad.has(d) ? ' bad' : ''));
-          const nm = h('span', p ? 'sm-day' : 'note', p ? S.templates[p.tpl].name : 'Rest');
-          if (p) nm.dataset.k = kindKey(p.tpl);
-          r.append(h('span', 'wk-wd', w + ' ' + Number(d.slice(8))), nm);
-          col.append(r);
-        });
-        pv.append(col);
-      });
-      sim.list.forEach((p) => pv.append(h('p', 'wk-warn', warnText(p))));
-    }
-    box.append(pv);
-
-    const save = h('div', 'sm-save');
-    const ok = btn('skew pop', 'Save schedule');
-    ok.disabled = !!why;
-    if (why) { const w = h('span', 'why', why); w.id = 'sm-why'; ok.setAttribute('aria-describedby', 'sm-why'); save.append(ok, w); } else save.append(ok);
-    ok.addEventListener('click', () => {
-      ok.disabled = true;
-      saveRoot({ schedule: Object.assign({}, cand) }).then(() => { leaveMaker(); showToast('Schedule saved. Your week now follows it.', null); }).catch(() => { SM.msg = 'Not saved. Check your connection and try again.'; renderEditor(); });
-    });
-    save.append(plainBtn('textbtn', 'Cancel', null, leaveMaker));
-    box.append(save);
-    const prev = S.root && S.root.schedule_before;
-    if (prev && !sameSchedule(prev, cur)) {
-      const back = h('div', 'confirm');
-      const b = btn('skew small', 'Bring back this schedule');
-      b.addEventListener('click', () => { saveRoot({ schedule: prev }).then(() => { leaveMaker(); showToast('Your previous schedule is back.', () => saveRoot({ schedule: cur })); }).catch(() => { SM.msg = 'Not saved. Check your connection and try again.'; renderEditor(); }); });
-      const fr = h('div', 'foot-row');
-      fr.append(b);
-      back.append(h('div', 'lab', 'Your schedule before the last new plan'), h('p', '', scheduleSummary(prev)), fr);
-      box.append(back);
-    }
-    if (cur.enabled) {
-      const offRow = h('div', 'foot-row');
-      const off = btn('skew small', 'Turn off schedule');
-      off.addEventListener('click', () => {
-        saveRoot({ schedule: Object.assign({}, cur, { enabled: false }) }).catch(() => {});
-        SM.msg = 'Schedule off. Planned days follow each day\'s weekday again.';
-        renderEditor();
-      });
-      offRow.append(off);
-      box.append(offRow);
-    }
-  };
-
   // ------------------------------------------------------------------ calendar file (.ics): works with Apple, Google and Outlook calendars
   const icsStamp = (d) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
   const icsEsc = (t) => String(t).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
@@ -5197,166 +5148,359 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       id: 'ex:' + k, name: e.name, group: 'Your exercises', primary: e.group, secondary: 'none', equipment: UNIT_LABEL[e.unit] || e.unit, desc: 'From your log.', shoulder: e.shoulder,
     })).sort((a, b) => (a.name < b.name ? -1 : 1));
   };
-  const renderEditor = () => {
-    const box = $('#editor');
-    box.hidden = false;
-    box.replaceChildren();
-    if (S.edShown !== S.editing) enter(box, S.editing === 'list' ? -16 : 16);
-    S.edShown = S.editing;
-    if (S.editing === 'schedule') { renderScheduleMaker(box); return; }
-    if (S.editing === 'list' || !S.templates[S.editing]) {
-      S.editing = 'list';
-      ED = null;
-      const head = h('div', 'bar');
-      head.append(h('h2', '', 'Plan'));
-      box.append(head, h('p', 'note', 'Your training days and the exercises in each, and the schedule that places them in your week. Changes save as you make them; logged sessions never change.'));
-      const sch = h('div', 'confirm');
-      sch.append(h('div', 'lab', 'Schedule'), h('p', '', scheduleSummary()));
-      const om = btn('skew small', 'Open schedule maker');
-      om.addEventListener('click', () => { SM = null; goPlan('schedule'); });
-      const omRow = h('div', 'foot-row');
-      omRow.append(om);
-      sch.append(omRow);
-      box.append(sch, h('div', 'lab', 'Training days'));
-      const list = h('div', 'ed-items');
+  // ------------------------------------------------------------------ Plan: your normal week on one screen
+  // Two ways a week can work, asked as one question: miss a day and it is skipped (the same days every week, mode 'fixed'),
+  // or it moves up (the days repeat in order on your training weekdays, mode 'rotation'). Everything saves as you change it.
+  const schedModel = () => {
+    const sc = S.root && S.root.schedule;
+    if (sc && sc.enabled && sc.mode === 'rotation') return { mode: 'rotation', days: WEEKDAYS.filter((w) => (sc.days || []).includes(w)), rotation: (sc.rotation || []).filter((id) => S.templates[id]) };
+    const week = Object.fromEntries(WEEKDAYS.map((w) => [w, '']));
+    if (sc && sc.enabled && sc.mode === 'fixed') WEEKDAYS.forEach((w) => { if (sc.week && S.templates[sc.week[w]]) week[w] = sc.week[w]; });
+    else templatesSorted().forEach((t) => { const w = (t.weekday || '').slice(0, 3); if (WEEKDAYS.includes(w) && !week[w]) week[w] = t.id; }); // no schedule yet: each day on its own weekday
+    return { mode: 'fixed', week };
+  };
+  const trainWeekdays = (m) => (m.mode === 'fixed' ? WEEKDAYS.filter((w) => m.week[w]) : m.days);
+  const inWeek = (m) => new Set(m.mode === 'fixed' ? Object.values(m.week).filter(Boolean) : m.rotation);
+  const saveSched = (m, msg) => {
+    const sc = m.mode === 'fixed' ? { enabled: true, mode: 'fixed', week: m.week } : { enabled: true, mode: 'rotation', days: m.days, rotation: m.rotation };
+    saveRoot({ schedule: sc }).catch(() => showToast('Not saved. Check your connection.', null));
+    if (msg) showToast(msg, null);
+    renderEditor();
+  };
+  const newDay = (name) => {
+    let n = 1;
+    while (S.templates['day-' + n]) n += 1;
+    const id = 'day-' + n;
+    const ts = templatesSorted();
+    const doc = { name: name || 'Day ' + String.fromCharCode(64 + Math.min(26, ts.length + 1)), order: ts.length ? Math.max(...ts.map((t) => t.order || 0)) + 1 : 1, kind: 'Other', focus: '', items: [] };
+    S.templates[id] = doc;
+    S.rootRef.collection('templates').doc(id).set(doc).catch(() => {});
+    return id;
+  };
+  const toggleWeekday = (m, w) => {
+    if (m.mode === 'fixed') {
+      if (m.week[w]) { m.week[w] = ''; saveSched(m); return; }
+      const used = inWeek(m);
       const ts = templatesSorted();
-      ts.forEach((t, i) => {
-        const it = h('div', 'ed-item');
-        const top = h('div', 'ed-top');
-        const name = h('div');
-        name.append(h('div', 'ed-name', t.name), h('div', 'note', (t.weekday || '') + ' · ' + (t.items || []).length + ' exercises'));
-        const bs = h('div', 'ed-btns');
-        const swap = (j) => {
-          const a = ts[i], b = ts[j];
-          const oa = a.order, ob = b.order === oa ? oa + (j > i ? 1 : -1) : b.order;
-          S.templates[a.id].order = ob; S.templates[b.id].order = oa;
-          renderEditor();
-          S.rootRef.collection('templates').doc(a.id).update({ order: ob }).then(() => S.rootRef.collection('templates').doc(b.id).update({ order: oa })).catch(() => {});
-        };
-        const ed = btn('skew small', 'Edit', 'Edit ' + t.name);
-        ed.addEventListener('click', () => { S.editing = t.id; renderEditor(); window.scrollTo({ top: 0 }); });
-        bs.append(arrowBtn('↑', 'Move ' + t.name + ' up', i === 0, () => swap(i - 1)), arrowBtn('↓', 'Move ' + t.name + ' down', i === ts.length - 1, () => swap(i + 1)), h('span', 'gap'), ed);
-        top.append(name, bs);
-        it.append(top);
-        list.append(it);
-      });
-      if (!ts.length) list.append(h('p', 'note sm-empty', 'No training days yet.'));
-      box.append(list);
-      const add = btn('skew', '+ New day');
-      add.addEventListener('click', () => {
-        let n = 1;
-        while (S.templates['day-' + n]) n += 1;
-        const id = 'day-' + n;
-        const doc = { name: 'New day', order: ts.length ? Math.max(...ts.map((t) => t.order || 0)) + 1 : 1, weekday: 'Mon', kind: 'Other', focus: '', items: [] };
-        S.templates[id] = doc;
-        S.rootRef.collection('templates').doc(id).set(doc).catch(() => {});
-        S.editing = id;
-        renderEditor();
-      });
-      const fr = h('div', 'foot-row');
-      fr.append(add);
-      box.append(fr);
+      m.week[w] = (ts.find((t) => !used.has(t.id)) || ts[0] || { id: newDay() }).id;
+      saveSched(m);
       return;
     }
-    // one day
-    if (!ED || ED.id !== S.editing) ED = { id: S.editing, doc: clone(S.templates[S.editing]), timer: 0, status: null, armed: false, confirm: null };
+    m.days = m.days.includes(w) ? m.days.filter((x) => x !== w) : WEEKDAYS.filter((x) => x === w || m.days.includes(x));
+    if (!m.rotation.length) m.rotation = templatesSorted().map((t) => t.id);
+    if (!m.rotation.length) m.rotation = [newDay()];
+    saveSched(m);
+  };
+  const switchMode = (m, to) => {
+    if (m.mode === to) return;
+    if (to === 'rotation') {
+      const days = trainWeekdays(m);
+      saveSched({ mode: 'rotation', days, rotation: days.map((w) => m.week[w]) }, 'Missed days now move up: your days repeat in this order.');
+    } else {
+      const week = Object.fromEntries(WEEKDAYS.map((w) => [w, '']));
+      m.days.forEach((w, i) => { week[w] = m.rotation.length ? m.rotation[i % m.rotation.length] : ''; });
+      saveSched({ mode: 'fixed', week }, 'Missed days are now skipped: the same days every week.');
+    }
+  };
+  // what this week does differently, from moves and removals made in Train
+  const weekChanges = () => {
+    const ws = mondayOf(today());
+    const wk = S.weeks[ws] || {};
+    const out = [];
+    Object.entries(wk.moves || {}).forEach(([key, to]) => {
+      const t = S.templates[key.split('@')[0]];
+      if (!t || to == null) return;
+      out.push(to === 'skip' ? t.name + ' skipped' : t.name + ' moved to ' + isoDow(to) + ' ' + dm(to));
+    });
+    Object.entries(wk.adds || {}).forEach(([d, ids]) => (ids || []).forEach((id) => { if (S.templates[id]) out.push(S.templates[id].name + ' on ' + isoDow(d) + ' ' + dm(d)); }));
+    return out;
+  };
+  const exLine = (it) => {
+    const e = S.exercises[it.ex] || { name: exName(it.ex) };
+    const tgt = it.target ? withUnit(it.target, unitWord(e)) : '';
+    return [e.name, it.sets + ' × ' + (it.reps || '?') + (tgt ? ' · ' + tgt : '')];
+  };
+  // one training day as a card: name, its exercises, and what you can do with it here
+  const dayCard = (id, label, extra) => {
+    const t = S.templates[id];
+    const c = h('div', 'pw-card');
+    c.dataset.k = kindKey(id);
+    const head = h('div', 'pw-chead');
+    if (label) head.append(h('span', 'pw-wd', label));
+    head.append(h('span', 'pw-name', t.name));
+    c.append(head);
+    const ul = h('ul', 'pw-ex');
+    (t.items || []).forEach((it) => { const [n, d] = exLine(it); const li = h('li'); li.append(h('span', '', n), h('b', '', d)); ul.append(li); });
+    if (!(t.items || []).length) ul.append(h('li', 'note', 'No exercises yet'));
+    c.append(ul);
+    const acts = h('div', 'pw-acts');
+    const ed = btn('skew small', 'Edit day', 'Edit ' + t.name);
+    ed.addEventListener('click', () => { S.editing = id; renderEditor(); window.scrollTo({ top: 0 }); });
+    acts.append(ed);
+    if (extra) extra(acts, c);
+    c.append(acts);
+    return c;
+  };
+  const renderPlanWeek = (box) => {
+    const m = schedModel();
+    const head = h('div', 'pw-top');
+    head.append(h('h2', '', 'Your week'));
+    const ai = btn('skew pop small', 'Ask your AI coach');
+    ai.setAttribute('aria-expanded', String(!!S.planAi));
+    ai.addEventListener('click', () => { S.planAi = !S.planAi; renderEditor(); });
+    head.append(ai);
+    box.append(head);
+    if (S.planAi) {
+      const p = h('div', 'pw-ai');
+      p.append(h('p', '', 'Your coach gets your plan, your progress and your notes, and answers with a plan you can check before it changes anything.'));
+      const row = h('div', 'foot-row');
+      const adj = btn('skew pop small', 'Adjust this plan');
+      adj.addEventListener('click', () => { S.planAi = false; openWizard({ adjust: true }); });
+      const fresh = btn('skew small', 'Build a new plan');
+      fresh.addEventListener('click', () => { S.planAi = false; openWizard(); });
+      if (templatesSorted().length) row.append(adj);
+      row.append(fresh);
+      p.append(row);
+      box.append(p);
+    }
+    // which weekdays, and what a missed day does
+    const set = h('div', 'pw-set');
+    const chips = h('div', 'pw-days');
+    chips.setAttribute('role', 'group');
+    chips.setAttribute('aria-label', 'Days you train');
+    const on = trainWeekdays(m);
+    WEEKDAYS.forEach((w) => {
+      const b = btn('pk-chip', w, (on.includes(w) ? 'Stop training on ' : 'Train on ') + w);
+      b.setAttribute('aria-pressed', String(on.includes(w)));
+      b.addEventListener('click', () => toggleWeekday(schedModel(), w));
+      chips.append(b);
+    });
+    set.append(h('span', 'lab', 'You train on'), chips);
+    set.append(h('span', 'lab', 'If you miss a day'), radioTabs('If you miss a day', [['fixed', 'Skip it'], ['rotation', 'Move it up']], m.mode, (k) => switchMode(schedModel(), k), 'metric pw-mode'));
+    set.append(h('p', 'note', m.mode === 'fixed' ? 'It is skipped: each weekday keeps its own training day.' : 'It moves up: your days repeat in this order on your training weekdays, so nothing is skipped.'));
+    box.append(set);
+    const ch = weekChanges();
+    if (ch.length) {
+      const n = h('div', 'pw-note');
+      const go = plainBtn('textbtn', 'Open this week', null, () => setView('train'));
+      n.append(h('span', '', 'This week only: ' + ch.join(', ') + '. '), go);
+      box.append(n);
+    }
+    const ts = templatesSorted();
+    const board = h('div', 'pw-board');
+    if (m.mode === 'fixed') {
+      board.classList.add('fixed');
+      WEEKDAYS.forEach((w) => {
+        const id = m.week[w];
+        if (!id) { const r = h('div', 'pw-rest'); r.append(h('span', 'pw-wd', w), h('span', 'note', 'Rest')); board.append(r); return; }
+        board.append(dayCard(id, w, (acts) => {
+          const sel = h('select', 'sel');
+          sel.setAttribute('aria-label', 'Training day on ' + w);
+          ts.forEach((t) => sel.append(new Option(t.name, t.id)));
+          sel.append(new Option('Rest', ''));
+          sel.value = id;
+          sel.addEventListener('change', () => { const mm = schedModel(); mm.week[w] = sel.value; saveSched(mm); });
+          acts.prepend(sel);
+        }));
+      });
+    } else {
+      board.style.setProperty('--n', String(Math.max(1, m.rotation.length)));
+      // this week's dates for each place in the order, from the same planning Train uses
+      const ahead = plannedFor(mondayOf(today()), activeSchedule()).concat(plannedFor(addDays(mondayOf(today()), 7), activeSchedule())).filter((p) => p.date >= today());
+      m.rotation.forEach((id, i) => {
+        const next = ahead.find((p) => p.idx === i);
+        board.append(dayCard(id, String(i + 1) + (next ? ' · next ' + isoDow(next.date) + ' ' + dm(next.date) : ''), (acts) => {
+          const move = (j) => { const mm = schedModel(); const x = mm.rotation.splice(i, 1)[0]; mm.rotation.splice(j, 0, x); saveSched(mm); };
+          const side = window.matchMedia('(min-width: 64rem)').matches;
+          acts.append(arrowBtn(side ? '←' : '↑', 'Earlier in the order', i === 0, () => move(i - 1)), arrowBtn(side ? '→' : '↓', 'Later in the order', i === m.rotation.length - 1, () => move(i + 1)),
+            armedRemove(S.templates[id].name + ' from the order', () => { const mm = schedModel(); mm.rotation.splice(i, 1); saveSched(mm); }));
+        }));
+      });
+      if (!m.rotation.length) board.append(h('p', 'note', 'No days in the order yet. Add one below.'));
+    }
+    box.append(board);
+    // days that are not in the week, and making a new one
+    const used = inWeek(m);
+    const spare = ts.filter((t) => !used.has(t.id));
+    const more = h('div', 'pw-more');
+    if (spare.length) {
+      more.append(h('div', 'lab', 'Not in your week'));
+      const list = h('div', 'pw-spare');
+      spare.forEach((t) => {
+        const r = h('div', 'pw-srow');
+        r.dataset.k = kindKey(t.id);
+        r.append(h('span', 'pw-name', t.name), h('span', 'note', plural((t.items || []).length, 'exercise')));
+        const put = h('div', 'pw-acts');
+        if (m.mode === 'fixed') {
+          const sel = h('select', 'sel');
+          sel.setAttribute('aria-label', 'Put ' + t.name + ' on a weekday');
+          sel.append(new Option('Put on…', ''));
+          WEEKDAYS.forEach((w) => sel.append(new Option(w + (m.week[w] ? ' (instead of ' + S.templates[m.week[w]].name + ')' : ''), w)));
+          sel.addEventListener('change', () => { if (!sel.value) return; const mm = schedModel(); mm.week[sel.value] = t.id; saveSched(mm); });
+          put.append(sel);
+        } else {
+          const add = btn('skew small', 'Add to the order');
+          add.addEventListener('click', () => { const mm = schedModel(); mm.rotation.push(t.id); if (!mm.days.length) mm.days = ['Mon', 'Wed', 'Fri']; saveSched(mm); });
+          put.append(add);
+        }
+        const ed = btn('skew small', 'Edit', 'Edit ' + t.name);
+        ed.addEventListener('click', () => { S.editing = t.id; renderEditor(); window.scrollTo({ top: 0 }); });
+        put.append(ed);
+        r.append(put);
+        list.append(r);
+      });
+      more.append(list);
+    }
+    const fr = h('div', 'foot-row');
+    const nd = btn('skew', '+ New training day');
+    nd.addEventListener('click', () => { S.editing = newDay(); renderEditor(); window.scrollTo({ top: 0 }); const n = $('#ed-name'); if (n) { n.focus(); n.select(); } });
+    fr.append(nd);
+    if (m.mode === 'rotation' && ts.length) {
+      const sel = h('select', 'sel');
+      sel.setAttribute('aria-label', 'Add a day to the order again');
+      sel.append(new Option('Repeat a day in the order…', ''));
+      ts.forEach((t) => sel.append(new Option(t.name, t.id)));
+      sel.addEventListener('change', () => { if (!sel.value) return; const mm = schedModel(); mm.rotation.push(sel.value); saveSched(mm); });
+      fr.append(sel);
+    }
+    more.append(fr);
+    box.append(more);
+    const prev = S.root && S.root.schedule_before;
+    const cur = S.root && S.root.schedule;
+    if (prev && !sameSchedule(prev, cur)) {
+      const back = h('div', 'pw-note');
+      back.append(h('span', '', 'Before your last new plan: ' + scheduleSummary(prev) + ' '), plainBtn('textbtn', 'Bring it back', null, () => {
+        saveRoot({ schedule: prev }).then(() => { showToast('Your previous week is back.', () => { saveRoot({ schedule: cur }); renderEditor(); }); renderEditor(); }).catch(() => showToast('Not saved. Check your connection.', null));
+      }));
+      box.append(back);
+    }
+  };
+
+  // ---- one training day: a compact line per exercise; tap one to change it, drag the handle to reorder
+  const renderDayEditor = (box) => {
+    if (!ED || ED.id !== S.editing) ED = { id: S.editing, doc: clone(S.templates[S.editing]), timer: 0, status: null, armed: false, confirm: null, open: null };
     const d = ED.doc;
     d.items = d.items || [];
     ED.status = h('div', 'ed-status', '');
-    box.append(barHead('Edit ' + d.name, '‹ All days', () => { saveTemplate(true); S.editing = 'list'; renderEditor(); window.scrollTo({ top: 0 }); }), ED.status);
-    const fields = h('div', 'ed-fields');
+    box.append(barHead(d.name, '‹ Your week', () => { saveTemplate(true); S.editing = 'list'; renderEditor(); window.scrollTo({ top: 0 }); }), ED.status);
     const nm = edInput('ed-name', d.name);
-    nm.addEventListener('input', () => { d.name = nm.value || 'Day'; saveTemplate(); });
-    const wd = h('select'); wd.id = 'ed-weekday';
-    WEEKDAYS.forEach((w) => wd.append(new Option(w, w)));
-    wd.value = (d.weekday || 'Mon').slice(0, 3);
-    wd.addEventListener('change', () => { d.weekday = wd.value; saveTemplate(); });
-    const kd = h('select'); kd.id = 'ed-kind';
-    KINDS.forEach(([v, l]) => kd.append(new Option(l, v)));
-    kd.value = d.kind || 'Other';
-    kd.addEventListener('change', () => { d.kind = kd.value; saveTemplate(); });
-    const fc = edInput('ed-focus', d.focus);
-    fc.addEventListener('input', () => { d.focus = fc.value; saveTemplate(); });
-    fields.append(edField('Name', nm), edField('Weekday', wd), edField('Type', kd), edField('Focus', fc));
-    box.append(fields);
-    const list = h('div', 'ed-items');
+    nm.classList.add('pw-title');
+    nm.setAttribute('aria-label', 'Name of this day');
+    nm.addEventListener('input', () => { d.name = nm.value || 'Day'; saveTemplate(); $('#editor .bar h2').textContent = d.name; });
+    box.append(nm);
+    const m = schedModel();
+    const where = m.mode === 'fixed' ? WEEKDAYS.filter((w) => m.week[w] === ED.id) : m.rotation.includes(ED.id) ? m.days : [];
+    box.append(h('p', 'note', where.length ? (m.mode === 'fixed' ? 'On ' + where.join(', ') + '.' : 'In your order, on ' + where.join(', ') + '.') + ' Change when in Your week.' : 'Not in your week yet: put it on a day in Your week.'));
+    const list = h('div', 'pw-items');
+    const commitOrder = () => { d.items.forEach((y, k) => { y.order = k + 1; }); saveTemplate(true); };
     d.items.forEach((it, i) => {
-      const e = S.exercises[it.ex] || { name: it.ex };
-      const row = h('div', 'ed-item');
-      const top = h('div', 'ed-top');
-      top.append(h('div', 'ed-name', e.name));
-      const bs = h('div', 'ed-btns');
-      const move = (j) => { const x = d.items.splice(i, 1)[0]; d.items.splice(j, 0, x); d.items.forEach((y, k) => { y.order = k + 1; }); saveTemplate(true); renderEditor(); };
-      bs.append(
-        arrowBtn('↑', 'Move ' + e.name + ' up', i === 0, () => move(i - 1)),
-        arrowBtn('↓', 'Move ' + e.name + ' down', i === d.items.length - 1, () => move(i + 1)),
-        h('span', 'gap'),
-        armedRemove(e.name + ' from ' + d.name, () => { d.items.splice(i, 1); d.items.forEach((y, k) => { y.order = k + 1; }); saveTemplate(true); }, renderEditor),
-      );
-      top.append(bs);
-      row.append(top);
-      const r = h('div', 'ed-row');
-      const sets = edInput('ed-sets-' + i, it.sets, 'number'); sets.min = '1'; sets.max = '12'; sets.inputMode = 'numeric';
-      const reps = edInput('ed-reps-' + i, it.reps);
-      const tgt = edInput('ed-target-' + i, it.target);
-      const rest = edInput('ed-rest-' + i, it.rest_s != null ? it.rest_s : (e.rest_s != null ? e.rest_s : ''), 'number'); rest.min = '0'; rest.step = '15'; rest.inputMode = 'numeric';
-      sets.addEventListener('input', () => { it.sets = Math.max(1, Math.min(12, Number(sets.value) || 1)); saveTemplate(); });
-      reps.addEventListener('input', () => { it.reps = reps.value; it.target_at = today(); saveTemplate(); });
-      tgt.addEventListener('input', () => { it.target = tgt.value; it.target_at = today(); saveTemplate(); });
-      rest.addEventListener('input', () => { it.rest_s = rest.value === '' ? null : Number(rest.value); saveTemplate(); });
-      const rf = edField('Rest s', rest); rf.classList.add('ed-rest');
-      r.append(edField('Sets', sets), edField('Reps', reps), edField('Target (' + (unitWord(e) || 'load') + ')', tgt), rf);
-      row.append(r);
-      const mr = h('div', 'ed-row note-row');
-      const ms = h('select');
-      ms.id = 'ed-measure-' + i;
-      MEASURES.forEach(([v, l]) => ms.append(new Option(l, v)));
-      const curV = measureOf(e);
-      ms.value = curV;
-      const pendingConfirm = ED.confirm && ED.confirm.ex === it.ex;
-      if (pendingConfirm) ms.value = ED.confirm.to;
-      ms.addEventListener('change', () => {
-        if (ms.value === curV) { ED.confirm = null; renderEditor(); return; }
-        ED.confirm = { ex: it.ex, to: ms.value };
-        renderEditor();
-        const c = $('#ed-confirm-go');
-        if (c) c.focus();
+      const e = S.exercises[it.ex] || { name: exName(it.ex) };
+      const row = h('div', 'pw-item');
+      row.dataset.i = String(i);
+      const line = h('div', 'pw-line');
+      const handle = h('span', 'pw-handle', '≡');
+      handle.setAttribute('aria-hidden', 'true');
+      handle.title = 'Drag to reorder';
+      const open = ED.open === i;
+      const tap = h('button', 'pw-tap');
+      tap.type = 'button';
+      tap.setAttribute('aria-expanded', String(open));
+      const [n, desc] = exLine(it);
+      tap.append(h('span', 'pw-iname', n), h('span', 'pw-idesc', desc + (it.kind === 'warmup' ? ' · warm-up' : '')));
+      tap.addEventListener('click', () => { ED.open = open ? null : i; renderEditor(); });
+      line.append(handle, tap);
+      row.append(line);
+      // drag by the handle: the row follows the finger, the list reorders as it passes others
+      handle.addEventListener('pointerdown', (ev) => {
+        ev.preventDefault();
+        row.classList.add('dragging'); // listen on the document: moving the row in the page would drop a pointer capture
+        const moveTo = (y) => {
+          const rows = [...list.children].filter((r) => r !== row);
+          const before = rows.find((r) => { const b = r.getBoundingClientRect(); return y < b.top + b.height / 2; });
+          if (before) list.insertBefore(row, before); else list.append(row);
+        };
+        const mv = (e2) => { if (e2.pointerId === ev.pointerId) moveTo(e2.clientY); };
+        const up = (e2) => {
+          if (e2.pointerId !== ev.pointerId) return;
+          document.removeEventListener('pointermove', mv);
+          document.removeEventListener('pointerup', up);
+          document.removeEventListener('pointercancel', up);
+          row.classList.remove('dragging');
+          const order = [...list.children].map((r) => Number(r.dataset.i));
+          if (order.some((v, k) => v !== k)) { const old = d.items.slice(); d.items = order.map((k) => old[k]); ED.doc.items = d.items; ED.open = null; commitOrder(); renderEditor(); }
+        };
+        document.addEventListener('pointermove', mv);
+        document.addEventListener('pointerup', up);
+        document.addEventListener('pointercancel', up);
       });
-      mr.append(edField('Measured as (applies to every day using ' + e.name + ')', ms));
-      row.append(mr);
-      if (pendingConfirm) {
-        const cf = confirmBox({
-          label: 'Confirm measure change',
-          text: 'Change how ' + e.name + ' is measured from ' + measureName(curV) + ' to ' + measureName(ED.confirm.to) + '? Sets you already logged keep their numbers. Progress starts a new trend from today.',
-          yes: 'Change measure', keep: 'Keep ' + measureName(curV), yesId: 'ed-confirm-go',
-          onYes: () => {
-            const to = ED.confirm.to;
-            ED.confirm = null;
-            applyMeasure(it.ex, to).then(() => { if (ED) ED.status.textContent = 'Saved'; }).catch(() => { if (ED) ED.status.textContent = 'Not saved. Check your connection.'; });
-            renderEditor();
-          },
-          onKeep: () => { ED.confirm = null; renderEditor(); },
-        });
-        row.append(cf);
+      if (open) {
+        const det = h('div', 'pw-det');
+        const r = h('div', 'ed-row');
+        const sets = edInput('ed-sets-' + i, it.sets, 'number'); sets.min = '1'; sets.max = '12'; sets.inputMode = 'numeric';
+        const reps = edInput('ed-reps-' + i, it.reps);
+        const tgt = edInput('ed-target-' + i, it.target);
+        sets.addEventListener('input', () => { it.sets = Math.max(1, Math.min(12, Number(sets.value) || 1)); saveTemplate(); });
+        reps.addEventListener('input', () => { it.reps = reps.value; it.target_at = today(); saveTemplate(); });
+        tgt.addEventListener('input', () => { it.target = tgt.value; it.target_at = today(); saveTemplate(); });
+        r.append(edField('Sets', sets), edField('Reps', reps), edField('Target (' + (unitWord(e) || 'load') + ')', tgt));
+        det.append(r);
+        const acts = h('div', 'foot-row');
+        const pk = h('div', 'pk');
+        pk.hidden = true;
+        const swap = btn('skew small', 'Replace');
+        swap.setAttribute('aria-expanded', 'false');
+        const onSwap = async (pick) => { it.ex = await resolveExercise(pick); it.target = ''; saveTemplate(true); renderEditor(); };
+        onSwap.extra = exerciseChoices();
+        swap.addEventListener('click', () => togglePicker(swap, pk, onSwap));
+        const up = arrowBtn('↑', 'Move ' + e.name + ' up', i === 0, () => { const x = d.items.splice(i, 1)[0]; d.items.splice(i - 1, 0, x); ED.open = i - 1; commitOrder(); renderEditor(); });
+        const dn = arrowBtn('↓', 'Move ' + e.name + ' down', i === d.items.length - 1, () => { const x = d.items.splice(i, 1)[0]; d.items.splice(i + 1, 0, x); ED.open = i + 1; commitOrder(); renderEditor(); });
+        acts.append(swap, up, dn, armedRemove(e.name + ' from ' + d.name, () => { d.items.splice(i, 1); ED.open = null; commitOrder(); }, renderEditor));
+        det.append(acts, pk);
+        // the rarely changed parts
+        const more = h('details', 'pw-moreset');
+        if (ED.confirm && ED.confirm.ex === it.ex) more.open = true;
+        more.append(h('summary', '', 'More: rest, how it is measured, warm-up, note'));
+        const rest = edInput('ed-rest-' + i, it.rest_s != null ? it.rest_s : (e.rest_s != null ? e.rest_s : ''), 'number'); rest.min = '0'; rest.step = '15'; rest.inputMode = 'numeric';
+        rest.addEventListener('input', () => { it.rest_s = rest.value === '' ? null : Number(rest.value); saveTemplate(); });
+        const ms = h('select');
+        ms.id = 'ed-measure-' + i;
+        MEASURES.forEach(([v, l]) => ms.append(new Option(l, v)));
+        const curV = measureOf(e);
+        ms.value = ED.confirm && ED.confirm.ex === it.ex ? ED.confirm.to : curV;
+        ms.addEventListener('change', () => { ED.confirm = ms.value === curV ? null : { ex: it.ex, to: ms.value }; renderEditor(); const c = $('#ed-confirm-go'); if (c) c.focus(); });
+        const note = edInput('ed-note-' + i, it.note);
+        note.addEventListener('input', () => { it.note = note.value || null; saveTemplate(); });
+        const f = h('div', 'ed-fields');
+        f.append(edField('Rest (seconds)', rest), edField('Measured as (every day with ' + e.name + ')', ms));
+        const nf = edField('Note', note);
+        nf.classList.add('wide');
+        f.append(nf);
+        more.append(f);
+        if (ED.confirm && ED.confirm.ex === it.ex) {
+          more.append(confirmBox({
+            label: 'Confirm measure change',
+            text: 'Change how ' + e.name + ' is measured from ' + measureName(curV) + ' to ' + measureName(ED.confirm.to) + '? Sets you already logged keep their numbers. Progress starts a new trend from today.',
+            yes: 'Change measure', keep: 'Keep ' + measureName(curV), yesId: 'ed-confirm-go',
+            onYes: () => { const to = ED.confirm.to; ED.confirm = null; applyMeasure(it.ex, to).then(() => { if (ED) ED.status.textContent = 'Saved'; }).catch(() => { if (ED) ED.status.textContent = 'Not saved. Check your connection.'; }); renderEditor(); },
+            onKeep: () => { ED.confirm = null; renderEditor(); },
+          }));
+        }
+        const wr = h('div', 'settings');
+        const wl = h('label');
+        const wc = h('input');
+        wc.type = 'checkbox';
+        wc.id = 'ed-warm-' + i;
+        wc.checked = it.kind === 'warmup';
+        wc.addEventListener('change', () => { if (wc.checked) it.kind = 'warmup'; else delete it.kind; saveTemplate(true); });
+        wl.append(wc, document.createTextNode(' Warm-up: these sets do not count as working sets'));
+        wr.append(wl);
+        more.append(wr);
+        det.append(more);
+        row.append(det);
       }
-      const wr = h('div', 'settings');
-      const wl = h('label');
-      const wc = h('input');
-      wc.type = 'checkbox';
-      wc.id = 'ed-warm-' + i;
-      wc.checked = it.kind === 'warmup';
-      wc.addEventListener('change', () => { if (wc.checked) it.kind = 'warmup'; else delete it.kind; saveTemplate(true); });
-      wl.append(wc, document.createTextNode('Warm-up: sets start as warm-up and do not count as working sets'));
-      wr.append(wl);
-      row.append(wr);
-      const nr = h('div', 'ed-row note-row');
-      const note = edInput('ed-note-' + i, it.note);
-      note.addEventListener('input', () => { it.note = note.value || null; saveTemplate(); });
-      nr.append(edField('Note', note));
-      row.append(nr);
       list.append(row);
     });
-    if (!d.items.length) list.append(h('p', 'note', 'No exercises yet. Add the first one below.'));
+    if (!d.items.length) list.append(h('p', 'note', 'No exercises yet. Add the first one.'));
     box.append(list);
     const addRow = h('div', 'foot-row');
     const addBtn = btn('skew', '+ Add exercise');
@@ -5373,7 +5517,16 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     addBtn.addEventListener('click', () => togglePicker(addBtn, pk, onPick));
     addRow.append(addBtn);
     box.append(addRow, pk);
-    const dz = h('div', 'danger-zone');
+    const more = h('details', 'pw-moreset pw-daymore');
+    more.append(h('summary', '', 'More: type of day, delete'));
+    const kd = h('select');
+    kd.id = 'ed-kind';
+    KINDS.forEach(([v, l]) => kd.append(new Option(l, v)));
+    kd.value = d.kind || 'Other';
+    kd.addEventListener('change', () => { d.kind = kd.value; saveTemplate(); });
+    const kf = h('div', 'ed-fields');
+    kf.append(edField('Type (sets its color and helps your AI coach)', kd));
+    more.append(kf);
     const del = btn('skew small danger', ED.armed ? 'Tap again to delete ' + d.name : 'Delete this day');
     del.addEventListener('click', () => {
       if (!ED.armed) { ED.armed = true; renderEditor(); setTimeout(() => { if (ED) { ED.armed = false; if (S.editing === ED.id) renderEditor(); } }, 4000); return; }
@@ -5381,12 +5534,29 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       clearTimeout(ED.timer);
       delete S.templates[id];
       S.rootRef.collection('templates').doc(id).delete().catch(() => {});
+      // take it out of the week too
+      const mm = schedModel();
+      if (mm.mode === 'fixed') WEEKDAYS.forEach((w) => { if (mm.week[w] === id) mm.week[w] = ''; }); else mm.rotation = mm.rotation.filter((x) => x !== id);
       S.editing = 'list';
       ED = null;
-      renderEditor();
+      saveSched(mm);
     });
+    const dz = h('div', 'danger-zone');
     dz.append(del, h('span', 'note', 'Deleting a day keeps every session you logged with it.'));
-    box.append(dz);
+    more.append(dz);
+    if (ED.armed) more.open = true;
+    box.append(more);
+  };
+  const renderEditor = () => {
+    const box = $('#editor');
+    box.hidden = false;
+    box.replaceChildren();
+    if (S.editing !== 'list' && !S.templates[S.editing]) S.editing = 'list';
+    if (S.edShown !== S.editing) enter(box, S.editing === 'list' ? -16 : 16);
+    S.edShown = S.editing;
+    box.classList.toggle('pw-wide', S.editing === 'list');
+    if (S.editing === 'list') { ED = null; renderPlanWeek(box); return; }
+    renderDayEditor(box);
   };
   const paintSettings = () => { const cb = $('#set-rir'); cb.checked = showRir(); $('#set-cal').checked = showCal(); if (S.view === 'settings') paintMe(); };
   $('#set-cal').addEventListener('change', () => { setShowCal($('#set-cal').checked); });
