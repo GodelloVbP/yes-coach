@@ -3768,7 +3768,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   const foodCredit = () => (FDB && FDB.srcs.has('nevo') ? 'Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven' + (FDB.srcs.has('usda') ? ' and other data sources (USDA FoodData Central).' : '.') : 'Food data: USDA FoodData Central.');
   // every word you type must start a word of the name; the first word, exact words and short names rank higher
-  const PROCESSED = ['breaded', 'fried', 'battered', 'canned', 'frozen', 'sweetened', 'flavored', 'tender', 'nugget', 'patty', 'microwaved', 'fast', 'restaurant', 'sliced', 'deli', 'roll', 'prepackaged', 'powder', 'luncheon'];
+  const PROCESSED = ['breaded', 'fried', 'battered', 'canned', 'frozen', 'sweetened', 'flavored', 'tender', 'nugget', 'patty', 'microwaved', 'fast', 'restaurant', 'sliced', 'deli', 'roll', 'prepackaged', 'powder', 'luncheon', 'dried', 'gedroogd', 'sauce', 'pie', 'taart', 'strudel', 'turnover', 'flap'];
   const searchFoods = (q) => {
     const toks = wordsOf(q);
     if (!toks.length || !FDB) return [];
@@ -3819,44 +3819,48 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#fd-f').value = num(Math.round((it.f || 0) * k * 10) / 10);
   };
   // typical small, medium and large portions in grams by kind of food, for when you do not know the weight (rough Dutch portions)
+  // Checked against Portie-online: meat portion 100 g, fish 125 g, meat substitute 90 g, a serving spoon of vegetables 55 g,
+  // of potatoes 70 g, of rice or beans 60 g, a bowl of yoghurt 150 g, a soup bowl 250 g, a handful of nuts 25 g, a biscuit or cake 20 g.
+  // Spoon-based sizes are 2, 3 and 4 spoons (vegetables, potatoes) or 3, 4 and 5 (rice, pasta, beans). Meals have no RIVM portion: an estimate.
   const PORTIONS = {
-    Meals: [250, 400, 550], Restaurant: [250, 400, 550], 'Fast food': [150, 250, 400], Soups: [200, 300, 450],
-    Meat: [75, 125, 200], Fish: [75, 125, 200], 'Plant-based': [75, 125, 200], 'Cold cuts': [15, 30, 60],
-    Vegetables: [100, 200, 300], Potatoes: [150, 250, 350], Legumes: [100, 175, 250], Fruit: [75, 125, 200],
-    Bread: [35, 70, 105], Bakery: [30, 60, 100], Pastry: [30, 60, 100], Cereals: [30, 45, 70],
-    Dairy: [100, 150, 250], Cheese: [20, 40, 60], Eggs: [50, 100, 150], 'Nuts and seeds': [15, 30, 50],
-    Snacks: [25, 50, 100], Sweets: [15, 30, 60], 'Fats and oils': [5, 10, 20], Spreads: [10, 20, 40], Sauces: [15, 30, 60], Supplements: [15, 30, 60],
+    Meals: [200, 350, 500], Restaurant: [200, 350, 500], 'Fast food': [150, 250, 400], Soups: [200, 250, 350],
+    Meat: [75, 100, 150], Fish: [75, 125, 175], 'Plant-based': [60, 90, 150], 'Cold cuts': [15, 30, 60],
+    Vegetables: [110, 165, 220], Potatoes: [140, 210, 280], Legumes: [180, 240, 300], Fruit: [75, 125, 200],
+    Bread: [35, 70, 105], Bakery: [20, 40, 80], Pastry: [20, 40, 80], Cereals: [30, 40, 60],
+    Dairy: [100, 150, 250], Cheese: [20, 40, 60], Eggs: [50, 100, 150], 'Nuts and seeds': [15, 25, 50],
+    Snacks: [25, 40, 100], Sweets: [15, 30, 60], 'Fats and oils': [5, 10, 20], Spreads: [10, 20, 40], Sauces: [15, 25, 50], Supplements: [15, 30, 60],
   };
   // things you count: one, two or three of them, each of a typical weight (first match wins)
   const PIECES = [
     [/knackebrod|knackebröd|crispbread|cracotte/, 'slice', 'slices', 10], [/beschuit|crispbake|rusk/, 'rusk', 'rusks', 10],
-    [/rijstwafel|rice cake|maiswafel/, 'cake', 'cakes', 8], [/cracker/, 'cracker', 'crackers', 8], [/biscuit|koekje|cookie/, 'biscuit', 'biscuits', 8],
-    [/ontbijtkoek/, 'slice', 'slices', 25], [/krentenbol|bolletje|pistolet|broodje|\bbun\b|\broll\b/, 'roll', 'rolls', 55], [/croissant/, 'croissant', 'croissants', 50],
-    [/tortilla|\bwrap\b/, 'wrap', 'wraps', 60], [/brood|bread/, 'slice', 'slices', 35],
-    [/^(ei|egg)\b|\b(ei|egg) (heel|whole|gekookt|boiled|gebakken|fried)/, 'egg', 'eggs', 55],
-    [/banaan|banana/, 'banana', 'bananas', 120], [/^appel|\bapple\b/, 'apple', 'apples', 150], [/sinaasappel|\borange\b/, 'orange', 'oranges', 150],
-    [/mandarijn|clementine|mandarin/, 'mandarin', 'mandarins', 70], [/\bkiwi/, 'kiwi', 'kiwis', 70],
+    [/rijstwafel|rice cake|maiswafel/, 'cake', 'cakes', 8], [/cracker/, 'cracker', 'crackers', 7], [/biscuit|koekje|cookie/, 'biscuit', 'biscuits', 15],
+    [/ontbijtkoek/, 'slice', 'slices', 25], [/krentenbol/, 'roll', 'rolls', 50], [/bolletje|pistolet|broodje|\bbun\b|\broll\b/, 'roll', 'rolls', 60], [/croissant/, 'croissant', 'croissants', 45],
+    [/tortilla|\bwrap\b/, 'wrap', 'wraps', 60], [/bagel/, 'bagel', 'bagels', 95], [/kroket|frikandel/, 'piece', 'pieces', 70], [/brood|bread/, 'slice', 'slices', 35],
+    [/^(ei|egg)\b|\b(ei|egg) (heel|whole|gekookt|boiled|gebakken|fried)/, 'egg', 'eggs', 50],
+    [/banaan|banana/, 'banana', 'bananas', 130], [/^appel|\bapple\b/, 'apple', 'apples', 120], [/sinaasappel|\borange\b/, 'orange', 'oranges', 115],
+    [/mandarijn|clementine|mandarin/, 'mandarin', 'mandarins', 70], [/\bkiwi/, 'kiwi', 'kiwis', 80],
   ];
   const piecesFor = (it, n) => {
-    if (!['Bread', 'Bakery', 'Pastry', 'Snacks', 'Eggs', 'Fruit', 'Grains'].includes(it.type)) return null;
+    if (!['Bread', 'Bakery', 'Pastry', 'Snacks', 'Eggs', 'Fruit', 'Grains', 'Fast food', 'Meals'].includes(it.type)) return null;
     const hit = PIECES.find(([re]) => re.test(n));
     return hit ? [1, 2, 3].map((k) => [k + ' ' + (k === 1 ? hit[1] : hit[2]), k * hit[3]]) : null;
   };
   const portionsFor = (it, n) => {
     if (it.type === 'Spices') return null;
-    if (/\b(tosti|broodje|sandwich|wrap|burger|hamburger|kroket|frikandel|croissant)\b/.test(n)) return [100, 175, 250];
-    if (it.type === 'Grains') return /\b(gekookt|bereid|cooked|boiled)\b/.test(n) ? [150, 250, 350] : [30, 50, 80];
+    if (/\b(tosti|broodje|sandwich|burger|hamburger)\b/.test(n)) return [100, 175, 250];
+    if (it.type === 'Grains') return /\b(gekookt|bereid|cooked|boiled)\b/.test(n) ? [180, 240, 300] : [30, 50, 80];
     if (it.type === 'Sauces and soups') return /\b(soep|soup)\b/.test(n) ? PORTIONS.Soups : PORTIONS.Sauces;
     if (it.type === 'Plant-based' && /yog/.test(n)) return PORTIONS.Dairy;
     return PORTIONS[it.type] || [50, 100, 200];
   };
-  const measureScore = (m, it) => {
+  const measureScore = (m, it, g) => {
     const t = m.toLowerCase();
+    if (/afval/.test(t) || (/^stuks/.test(t) && g < 20 && ['Vegetables', 'Potatoes'].includes(it.type))) return 2; // one green bean is not a portion
     if (/^(hoeveelheid|voor 1 toastje|voor 1 beschuit|scheutje|snufje|mespunt)/.test(t)) return 0;
     if (/^slok/.test(t)) return 1;
     if (/^(theelepel|dessert\/paplepel|dessertlepel)/.test(t)) return 2;
     if (/^(eetlepel|sauslepel)/.test(t)) return 3;
-    if (/^(opscheplepel|groentelepel|aardappellepel)/.test(t)) return 4;
+    if (/^(opscheplepel|groentelepel|aardappellepel)/.test(t)) return ['Vegetables', 'Potatoes', 'Legumes'].includes(it.type) ? 7 : 4;
     if (/^voor 1 snee\b/.test(t) && ['Spreads', 'Cheese', 'Cold cuts', 'Sweets', 'Fats and oils'].includes(it.type)) return 9;
     if (/^voor/.test(t)) return 3;
     if (/^stuks? (gemiddeld|middel|medium|\(m\)|gem)/.test(t) || /^stuks (medium|m) /.test(t)) return 12;
@@ -3882,7 +3886,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const row = h('div', 'fd-amt-row');
     // a few fixed sizes for drinks, the same for every drink; food stays in grams
     const n = foldW(it.name + ' ' + (it.alt || ''));
-    const sizes = !it.drink ? [] : it.type === 'Alcohol' ? (/\b(bier|beer)\b/.test(n) ? [['Beer glass', 250], ['Can', 330], ['Bottle', 500]] : [['Wine glass', 125], ['Shot', 35], ['Beer glass', 250]])
+    const sizes = !it.drink ? [] : it.type === 'Alcohol' ? (/\b(bier|beer)\b/.test(n) ? [['Beer glass', 250], ['Can', 330], ['Bottle', 500]] : [['Wine glass', 125], ['Shot glass', 50], ['Beer glass', 250]])
       : [['Cup', 125], ['Glass', 200], ['Mug', 250], ['Can', 330], ['Bottle', 500]];
     // RIVM's own household measures for this NEVO food when Portie-online has them: the first countable one as 1, 2 or 3,
     // the others as they are. Everything else falls back to Yes Coach's estimates.
@@ -3890,19 +3894,20 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     let official = null;
     if (rp && rp.length) {
       // the everyday measure first: a whole piece, a normal slice, a glass, a portion; spoons and sips last
-      const ranked = rp.map((m, i) => [measureScore(m[0], it), i, m]).sort((a, b) => b[0] - a[0] || a[1] - b[1]).map((x) => x[2]);
+      const ranked = rp.map((m, i) => [measureScore(m[0], it, m[1]), i, m]).sort((a, b) => b[0] - a[0] || a[1] - b[1]).map((x) => x[2]);
       const top = ranked[0];
       const countable = /^(stuks|stuk\b|stukje|snee|plak|plakje|kapje|heel|portie|broodje|bolletje|reep|blokje)/i.test(top[0]);
+      const spoons = /^(opscheplepel|groentelepel|aardappellepel)/i.test(top[0]);
       const lab = (m) => (/^voor\b/i.test(m) ? m : '1 ' + m);
-      official = countable ? [1, 2, 3].map((k) => [k === 1 ? lab(top[0]) : k + ' × ' + top[0], top[1] * k]) : [[lab(top[0]), top[1]]];
+      official = countable ? [1, 2, 3].map((k) => [k === 1 ? lab(top[0]) : k + ' × ' + top[0], top[1] * k])
+        : spoons ? [2, 4, 6].map((k) => [k + ' × ' + top[0], top[1] * k]) : [[lab(top[0]), top[1]]];
+      if (spoons) official.splice(1, 0, official.splice(1, 1)[0]);
       ranked.slice(1).forEach((m) => { if (official.length < 7) official.push([lab(m[0]), m[1]]); });
     }
-    // a meal that RIVM only measures in spoons also gets small, medium and large plates
-    const spoonsOnly = official && Math.max(...official.map((o) => o[1])) < 100 && ['Meals', 'Potatoes', 'Vegetables', 'Legumes', 'Soups'].includes(it.type);
     const pcs = it.drink || official ? null : piecesFor(it, n);
-    const slm = it.drink || pcs || (official && !spoonsOnly) ? null : portionsFor(it, n);
+    const slm = it.drink || pcs || official ? null : portionsFor(it, n);
     const sz = official ? [] : sizes;
-    const start = spoonsOnly && slm ? slm[1] : official ? official[0][1] : pcs ? pcs[0][1] : slm ? slm[1] : !it.drink ? 100 : /\b(koffie|coffee|thee|tea|espresso)\b/.test(n) ? 125 : sizes[0][0] === 'Beer glass' ? 250 : it.type === 'Alcohol' ? 125 : 200;
+    const start = official ? (/^4 × /.test(official[1] ? official[1][0] : '') ? official[1][1] : official[0][1]) : pcs ? pcs[0][1] : slm ? slm[1] : !it.drink ? 100 : /\b(koffie|coffee|thee|tea|espresso)\b/.test(n) ? 125 : sizes[0][0] === 'Beer glass' ? 250 : it.type === 'Alcohol' ? 125 : 200;
     const inp = edInput('fd-g', String(start));
     inp.inputMode = 'decimal';
     inp.addEventListener('input', fillFromPick);
@@ -3914,7 +3919,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       row.append(b);
     });
     if (slm) ['Small', 'Medium', 'Large'].forEach((l, i) => {
-      const b = h('button', 'fd-chip', l + (official ? ' ≈ ' : ' · ') + slm[i] + ' g');
+      const b = h('button', 'fd-chip', l + ' · ' + slm[i] + ' g');
       b.type = 'button';
       b.addEventListener('click', () => { inp.value = String(slm[i]); fillFromPick(); });
       row.append(b);
@@ -3925,7 +3930,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       b.addEventListener('click', () => { inp.value = String(v); fillFromPick(); });
       row.append(b);
     });
-    box.append(head, row, h('p', 'note', 'Amounts fill in the numbers below; you can still change them. ' + foodCredit() + (official ? ' Portions: Portie-online versie 2026/2.0, RIVM, Bilthoven' + (slm ? '; small, medium and large are Yes Coach estimates.' : '.') : ' Portions: Yes Coach estimates.')));
+    box.append(head, row, h('p', 'note', 'Amounts fill in the numbers below; you can still change them. ' + foodCredit() + (official ? ' Portions: Portie-online versie 2026/2.0, RIVM, Bilthoven.' : ' Portions: Yes Coach estimates, checked against Portie-online where it has a similar food.')));
     fillFromPick();
     inp.focus();
     inp.select();
