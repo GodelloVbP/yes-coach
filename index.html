@@ -611,8 +611,33 @@ body.typing .restbar { display: none; }
 .fd-bar.over i { background: var(--pop); }
 .fd-macros { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; font-weight: 600; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
 .fd-macros b { color: var(--ink); }
-.fd-form { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem 1rem; }
-.fd-form .fd-name, .fd-form .fd-go, .fd-form .fd-hits, .fd-form .fd-amount { grid-column: 1 / -1; }
+/* add food: search, pick one result, then a card for that one food */
+.fd-find { position: relative; }
+.fd-card { display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem; background: var(--paper); border: 2px solid var(--ink); border-left-width: 6px; }
+.fd-card[hidden] { display: none; }
+.fd-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
+.fd-card-title { display: flex; flex-direction: column; gap: 0.375rem; min-width: 0; }
+.fd-card-title b { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.15; }
+.fd-result { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+.fd-result b { font-family: var(--f-head); font-size: var(--t3); }
+.fd-adjust { align-self: flex-start; min-height: 32px; font-size: var(--t1); }
+.fd-nums { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem 1rem; }
+.fd-nums[hidden] { display: none; }
+.fd-nums .fd-ownname { grid-column: 1 / -1; }
+@media (max-width: 30rem) { .fd-nums { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.fd-plain .fd-nums { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.fd-hit.fd-new { background: var(--faint); }
+.fd-amt-row .fd-chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+/* the day's totals: a bar for calories and protein, carbs and fat on one line */
+.fd-meter { gap: 0.875rem; }
+.fd-mrow { display: flex; flex-direction: column; gap: 0.375rem; }
+.fd-mhead { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; font-weight: 600; color: var(--ink-soft); }
+.fd-mhead > span:first-child { font-family: var(--f-head); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: var(--t2); color: var(--ink); }
+.fd-mhead b { font-family: var(--f-head); font-size: var(--t4); color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1; }
+.fd-mhead small { font-size: var(--t2); font-weight: 600; color: var(--ink-soft); margin-left: 0.25rem; }
+.fd-msplit { display: flex; justify-content: space-between; gap: 1rem; padding-top: 0.625rem; border-top: 1px solid var(--line); font-weight: 600; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.fd-msplit b { color: var(--ink); font-family: var(--f-head); font-size: var(--t3); margin-left: 0.5rem; }
+.fd-bar.p i { background: var(--good); }
 .fd-hits { display: flex; flex-direction: column; border: 2px solid var(--ctl); margin-top: -0.5rem; background: var(--paper); }
 .fd-hits[hidden], .fd-amount[hidden] { display: none; }
 .fd-hit { display: flex; flex-direction: column; align-items: flex-start; gap: 0.125rem; width: 100%; padding: 0.5rem 0.75rem; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; color: var(--ink); cursor: pointer; font: inherit; }
@@ -626,16 +651,12 @@ body.typing .restbar { display: none; }
 .fd-bub.plain { color: var(--ink); background: var(--faint); }
 .fd-bub.mine { color: var(--ink); background: var(--faint); border: 1px solid var(--ctl); }
 .fd-mini { font-size: var(--t1); color: var(--ink-soft); font-weight: 500; font-variant-numeric: tabular-nums; }
-.fd-amt-head { display: flex; flex-direction: column; gap: 0.375rem; }
 .fd-tag { display: inline-block; font-family: var(--f-head); font-weight: 700; letter-spacing: 0.06em; font-size: 0.75rem; padding: 0 0.375rem; margin-right: 0.375rem; border: 1px solid var(--ctl); color: var(--ink); text-transform: uppercase; }
 .fd-credit { padding: 0.375rem 0.75rem; font-size: var(--t1); color: var(--ink-soft); }
-.fd-amount { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.75rem; background: var(--faint); border-left: 3px solid var(--pop); }
+.fd-amount { display: flex; flex-direction: column; gap: 0.5rem; }
 .fd-amt-row { display: flex; flex-wrap: wrap; align-items: end; gap: 0.5rem 0.75rem; }
 .fd-amt-row .ed-f { width: 7rem; }
 .fd-amt-row .fd-chip { min-height: 36px; font-size: var(--t1); }
-@media (max-width: 30rem) { .fd-form { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.fd-recent { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
-.fd-recent .lab { width: 100%; }
 .fd-chip { min-height: 40px; padding: 0 0.75rem; border: 2px solid var(--ctl); background: var(--paper); color: var(--ink); font-weight: 600; font-size: var(--t2); cursor: pointer; transition: transform 0.2s cubic-bezier(0.3, 1.7, 0.5, 1), background-color 0.15s; }
 .fd-chip span { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
 .fd-chip:hover { background: var(--faint); }
@@ -650,7 +671,6 @@ body.typing .restbar { display: none; }
 .fd-sum { max-width: none; }
 /* calories hidden: every calorie field and number goes; protein, carbs and fat stay */
 .fd-plain .fd-kcalf { display: none !important; }
-.fd-plain .fd-form { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .fd-sug { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.875rem 1rem; background: var(--faint); border-left: 3px solid var(--pop); }
 .fd-sug[hidden] { display: none; }
 .fd-sug-num { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; }
@@ -880,17 +900,25 @@ body.typing .restbar { display: none; }
         <div class="fd-sug" id="fd-sug-top" hidden></div>
         <section class="p-sec" aria-labelledby="h-fd-add">
           <div class="p-head"><h2 id="h-fd-add">Add food</h2></div>
-          <form class="fd-form" id="fd-form" novalidate autocomplete="off">
-            <label class="ed-f fd-name"><span class="lab">What you ate</span><input id="fd-name" type="text" placeholder="Search a food, or type your own" enterkeyhint="next" autocomplete="off" aria-controls="fd-hits" aria-expanded="false"></label>
+          <div class="fd-find">
+            <input class="xl-search" id="fd-name" type="search" placeholder="Search a food: kwark, banaan, rice…" autocomplete="off" enterkeyhint="search" aria-label="Search a food" aria-controls="fd-hits" aria-expanded="false">
             <div class="fd-hits" id="fd-hits" hidden></div>
-            <div class="fd-amount" id="fd-amount" hidden></div>
-            <label class="ed-f fd-kcalf"><span class="lab">kcal</span><input id="fd-kcal" inputmode="decimal" placeholder="350"></label>
-            <label class="ed-f"><span class="lab">Protein g</span><input id="fd-p" inputmode="decimal" placeholder="optional"></label>
-            <label class="ed-f"><span class="lab">Carbs g</span><input id="fd-c" inputmode="decimal" placeholder="optional"></label>
-            <label class="ed-f"><span class="lab">Fat g</span><input id="fd-f" inputmode="decimal" placeholder="optional"></label>
-            <div class="foot-row fd-go"><button class="skew pop small" type="submit" id="fd-add"><span>Add</span></button><span class="note wz-err" id="fd-msg" role="alert"></span></div>
+          </div>
+          <form class="fd-card" id="fd-form" hidden novalidate autocomplete="off">
+            <div class="fd-card-top"><div class="fd-card-title" id="fd-card-title"></div><button class="textbtn" type="button" id="fd-cancel">Cancel</button></div>
+            <div class="fd-amount" id="fd-amount"></div>
+            <p class="fd-result" id="fd-result" aria-live="polite"></p>
+            <button class="textbtn fd-adjust" type="button" id="fd-adjust" aria-expanded="false">Change the numbers</button>
+            <div class="fd-nums" id="fd-nums">
+              <label class="ed-f fd-ownname"><span class="lab">Name</span><input id="fd-own-name" type="text" placeholder="Grandma's soup"></label>
+              <label class="ed-f fd-kcalf"><span class="lab">kcal</span><input id="fd-kcal" inputmode="decimal" placeholder="350"></label>
+              <label class="ed-f"><span class="lab">Protein g</span><input id="fd-p" inputmode="decimal" placeholder="optional"></label>
+              <label class="ed-f"><span class="lab">Carbs g</span><input id="fd-c" inputmode="decimal" placeholder="optional"></label>
+              <label class="ed-f"><span class="lab">Fat g</span><input id="fd-f" inputmode="decimal" placeholder="optional"></label>
+            </div>
+            <div class="foot-row"><button class="skew pop" type="submit" id="fd-add"><span>Add</span></button><span class="note wz-err" id="fd-msg" role="alert"></span></div>
+            <p class="fd-credit" id="fd-src"></p>
           </form>
-          <div class="fd-recent" id="fd-recent"></div>
         </section>
         <section class="p-sec" aria-labelledby="h-fd-list">
           <div class="p-head"><h2 id="h-fd-list">Eaten</h2><span class="p-count" id="fd-count"></span></div>
@@ -1310,7 +1338,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['2 Nov 2026', 'Real portion sizes', ['Dutch foods now offer RIVM\'s household measures: 1 beschuit (10 g), 1 snee (35 g), 1 glas (200 ml), 1 eetlepel and more, with 2 and 3 of them one tap away.', 'Portions: Portie-online versie 2026/2.0, RIVM, Bilthoven.']],
-    ['2 Nov 2026', 'Food search', ['Search over 9,000 foods in Food: Dutch foods from NEVO (RIVM) and international foods from USDA.', 'Food is per 100 g and drinks per 100 ml. Do not know the weight? Tap a portion: for Dutch foods these are RIVM\'s own household measures (Portie-online versie 2026/2.0, RIVM, Bilthoven), like 1 beschuit or 1 eetlepel.', 'Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven and other data sources (USDA FoodData Central).']],
+    ['2 Nov 2026', 'Food search', ['Search over 9,000 foods in Food: Dutch foods from NEVO (RIVM) and international foods from USDA.', 'Search, pick a food, tap how much. Food is per 100 g and drinks per 100 ml. Do not know the weight? Tap a portion: for Dutch foods these are RIVM\'s own household measures (Portie-online versie 2026/2.0, RIVM, Bilthoven), like 1 beschuit or 1 eetlepel.', 'Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven and other data sources (USDA FoodData Central).']],
     ['2 Nov 2026', 'Plan, rebuilt', ['Plan is now your week on one screen: every training day with its exercises.', 'Tap the weekdays you train, and choose what a missed day does: skip it, or move it up.', 'Edit a day as a short list: tap an exercise to change sets, reps and weight, drag to reorder, or replace it.', 'Ask your AI coach right from Plan to adjust your plan: you see what changes before anything does.']],
     ['2 Nov 2026', 'Exercises', ['New Exercises tab: all 304 exercises with search, body-part tabs and sorting.', 'Add any of them to a training day, or add your own exercise.', 'For you: body parts your training skips, and exercises close to the ones you do most.']],
     ['2 Nov 2026', 'Food', ['New Food tab: a simple list of what you eat, without numbers.', 'Want to count? Switch on calories in Settings, Food: log calories, protein, carbs and fat, get a suggested daily target from your goal, and see averages and a chart over 1 to 12 months.', 'Foods you logged before come back as one-tap chips.', 'About you now asks your goal: lose weight, gain muscle or both.']],
@@ -3655,39 +3683,41 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#fd-next').disabled = S.fday >= today();
     paintMeter();
     paintFoodList();
-    paintRecent();
     paintFoodTrend();
     paintTargets();
     paintSuggestion();
   };
+  // the day so far: calories (when shown) and protein each get a bar towards their target; carbs and fat share one line
   const paintMeter = () => {
     const t = dayTotals(S.fday);
     const tg = targets();
     const box = $('#fd-meter');
     box.replaceChildren();
-    // the headline is calories when they are shown, protein when they are hidden
-    const cal = showCal();
-    const v = cal ? t.kcal : t.p;
-    const tgt = cal ? tg.kcal : tg.protein;
-    const unit = cal ? 'kcal' : 'g protein';
-    const top = h('div', 'fd-kcal');
-    top.append(h('b', '', big(v)), h('span', '', unit + (tgt ? ' of ' + big(tgt) + ' · ' + (v <= tgt ? big(tgt - v) + ' left' : big(v - tgt) + ' above') : '')));
-    box.append(top);
-    if (tgt) {
-      const bar = h('div', 'fd-bar' + (v > tgt ? ' over' : ''));
-      bar.setAttribute('role', 'img');
-      bar.setAttribute('aria-label', Math.round((v / tgt) * 100) + '% of your ' + (cal ? 'calorie' : 'protein') + ' target');
-      const fill = h('i');
-      fill.style.width = Math.min(100, (v / tgt) * 100) + '%';
-      bar.append(fill);
-      box.append(bar);
-    }
-    const mac = h('div', 'fd-macros');
-    const m = (label, val, tg2) => { const sp = h('span'); sp.append(label + ' ', h('b', '', big(val) + ' g'), tg2 ? ' / ' + big(tg2) : ''); mac.append(sp); };
-    if (cal) m('Protein', t.p, tg.protein);
-    m('Carbs', t.c);
-    m('Fat', t.f);
-    box.append(mac);
+    const meterRow = (label, v, tgt, unit, cls) => {
+      const row = h('div', 'fd-mrow');
+      const head = h('div', 'fd-mhead');
+      const val = h('span');
+      val.append(h('b', '', big(v)), h('small', '', (tgt ? '/ ' + big(tgt) + ' ' : '') + unit));
+      head.append(h('span', '', label), val);
+      row.append(head);
+      if (tgt) {
+        const bar = h('div', 'fd-bar ' + cls + (v > tgt ? ' over' : ''));
+        bar.setAttribute('role', 'img');
+        bar.setAttribute('aria-label', label + ' ' + Math.round((v / tgt) * 100) + '% of your target');
+        const fill = h('i');
+        fill.style.width = Math.min(100, (v / tgt) * 100) + '%';
+        bar.append(fill);
+        row.append(bar, h('span', 'note', v <= tgt ? big(tgt - v) + ' ' + unit + ' left' : big(v - tgt) + ' ' + unit + ' above your target'));
+      }
+      return row;
+    };
+    if (showCal()) box.append(meterRow('Calories', t.kcal, tg.kcal, 'kcal', 'k'));
+    box.append(meterRow('Protein', t.p, tg.protein, 'g', 'p'));
+    const split = h('div', 'fd-msplit');
+    const a1 = h('span'); a1.append('Carbs', h('b', '', big(t.c) + ' g'));
+    const a2 = h('span'); a2.append('Fat', h('b', '', big(t.f) + ' g'));
+    split.append(a1, a2);
+    box.append(split);
   };
   const paintFoodList = () => {
     const box = $('#fd-list');
@@ -3703,22 +3733,6 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       row.append(h('span', 'fd-row-name', e.name + (e.g ? ' · ' + num(e.g) + ' ' + (e.u || 'g') : '')), h('span', 'fd-row-kcal', cal && e.kcal != null ? big(e.kcal) + ' kcal' : ''), x);
       if (mac) row.append(h('span', 'fd-row-mac', mac));
       box.append(row);
-    });
-  };
-  const paintRecent = () => {
-    const foods = knownFoods();
-    const box = $('#fd-recent');
-    box.replaceChildren();
-    if (!foods.length) return;
-    box.append(h('span', 'lab', 'Add again'));
-    foods.slice(0, 8).forEach((e) => {
-      const b = h('button', 'fd-chip');
-      b.type = 'button';
-      const cal = showCal() && e.kcal != null;
-      b.append(e.name + (cal ? ' ' : ''), cal ? h('span', '', big(e.kcal)) : '');
-      b.setAttribute('aria-label', 'Add ' + e.name + (cal ? ', ' + big(e.kcal) + ' kcal' : ''));
-      b.addEventListener('click', () => { addFood(e); showToast('Added ' + e.name + '.', null); });
-      box.append(b);
     });
   };
   // ---- food search: NEVO (Dutch) and USDA (international) tables, loaded the first time someone searches
@@ -3808,6 +3822,44 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   const per100 = (it) => 'per 100 ' + it.u + ': ' + (showCal() ? it.kcal + ' kcal · ' : '') + 'P ' + num(it.p || 0) + ' · C ' + num(it.c || 0) + ' · F ' + num(it.f || 0);
   const closeHits = () => { $('#fd-hits').hidden = true; $('#fd-name').setAttribute('aria-expanded', 'false'); };
+  // the numbers that will be added, in one line, from whatever is in the fields
+  const paintResult = () => {
+    const v = { kcal: fnum($('#fd-kcal').value), p: fnum($('#fd-p').value), c: fnum($('#fd-c').value), f: fnum($('#fd-f').value) };
+    const out = $('#fd-result');
+    out.replaceChildren();
+    const part = (n, unit, label) => { if (n == null || Number.isNaN(n)) return null; const sp = h('span'); sp.append(h('b', '', num(n)), ' ' + unit + (label ? ' ' + label : '')); return sp; };
+    const bits = [showCal() ? part(v.kcal, 'kcal') : null, part(v.p, 'g', 'protein'), part(v.c, 'g', 'carbs'), part(v.f, 'g', 'fat')].filter(Boolean);
+    if (!bits.length) return;
+    out.append('= ');
+    bits.forEach((b, i) => { if (i) out.append(' · '); out.append(b); });
+  };
+  // one card for the food you are adding: 'db' (from the tables, by amount), 'mine' (one you logged before) or 'new' (your own numbers)
+  const openCard = (mode, title, tags) => {
+    FD.mode = mode;
+    $('#fd-form').hidden = false;
+    $('#fd-msg').textContent = '';
+    const t = $('#fd-card-title');
+    t.replaceChildren(h('b', '', title || 'Your own food'));
+    if (tags) t.append(tags);
+    $('#fd-amount').replaceChildren();
+    $('#fd-amount').hidden = mode !== 'db';
+    $('.fd-ownname').hidden = mode !== 'new';
+    $('#fd-nums').hidden = mode !== 'new';
+    $('#fd-adjust').hidden = mode === 'new';
+    $('#fd-adjust').setAttribute('aria-expanded', 'false');
+    $('#fd-src').textContent = '';
+    $('#fd-result').replaceChildren();
+    $('#fd-result').hidden = mode === 'new';
+    $('.fd-find').hidden = true;
+    $('#fd-add').firstChild.textContent = S.fday === today() ? 'Add to today' : 'Add to ' + isoDow(S.fday) + ' ' + dm(S.fday);
+    ['#fd-kcal', '#fd-p', '#fd-c', '#fd-f'].forEach((sel) => { $(sel).value = ''; });
+    closeHits();
+    enter($('#fd-form'));
+  };
+  const closeCard = () => { $('#fd-form').hidden = true; $('.fd-find').hidden = false; FD.pick = null; FD.mode = null; };
+  $('#fd-cancel').addEventListener('click', () => { closeCard(); $('#fd-name').focus(); });
+  $('#fd-adjust').addEventListener('click', () => { const open = $('#fd-nums').hidden; $('#fd-nums').hidden = !open; $('#fd-adjust').setAttribute('aria-expanded', String(open)); });
+  ['#fd-kcal', '#fd-p', '#fd-c', '#fd-f'].forEach((sel) => $(sel).addEventListener('input', paintResult));
   const fillFromPick = () => {
     const it = FD.pick.it;
     const g = fnum($('#fd-g').value);
@@ -3817,6 +3869,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#fd-p').value = num(Math.round((it.p || 0) * k * 10) / 10);
     $('#fd-c').value = num(Math.round((it.c || 0) * k * 10) / 10);
     $('#fd-f').value = num(Math.round((it.f || 0) * k * 10) / 10);
+    paintResult();
   };
   // typical small, medium and large portions in grams by kind of food, for when you do not know the weight (rough Dutch portions)
   // Checked against Portie-online: meat portion 100 g, fish 125 g, meat substitute 90 g, a serving spoon of vegetables 55 g,
@@ -3873,16 +3926,14 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (/^snee/.test(t)) return /zonder korst|dun/.test(t) ? 6 : 7;
     return 5;
   };
-  const pickFood = (hit) => {
+  const markChip = (row, b) => $$('.fd-chip', row).forEach((c) => c.setAttribute('aria-pressed', String(c === b)));
+  const pickFood = (hit, grams) => {
     const it = hit.it;
+    const tags = h('div', 'fd-card-tags');
+    tags.append(tagRow(it), h('span', 'note', per100(it)));
+    openCard('db', hit.full, tags);
     FD.pick = { it, label: hit.full };
-    $('#fd-name').value = hit.full;
-    closeHits();
     const box = $('#fd-amount');
-    box.replaceChildren();
-    box.hidden = false;
-    const head = h('div', 'fd-amt-head');
-    head.append(h('b', '', hit.label), tagRow(it), h('span', 'note', per100(it) + ' · ' + (it.src === 'nevo' ? 'NEVO' : 'USDA')));
     const row = h('div', 'fd-amt-row');
     // a few fixed sizes for drinks, the same for every drink; food stays in grams
     const n = foldW(it.name + ' ' + (it.alt || ''));
@@ -3908,30 +3959,37 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const slm = it.drink || pcs || official ? null : portionsFor(it, n);
     const sz = official ? [] : sizes;
     const start = official ? (/^4 × /.test(official[1] ? official[1][0] : '') ? official[1][1] : official[0][1]) : pcs ? pcs[0][1] : slm ? slm[1] : !it.drink ? 100 : /\b(koffie|coffee|thee|tea|espresso)\b/.test(n) ? 125 : sizes[0][0] === 'Beer glass' ? 250 : it.type === 'Alcohol' ? 125 : 200;
-    const inp = edInput('fd-g', String(start));
+    const inp = edInput('fd-g', String(grams || start));
     inp.inputMode = 'decimal';
     inp.addEventListener('input', fillFromPick);
-    row.append(edField('Amount (' + it.u + ')', inp));
+    row.append(edField('How much (' + it.u + ')', inp));
     (official || pcs || []).forEach(([l, v]) => {
       const b = h('button', 'fd-chip', l + ' · ' + num(v) + ' ' + it.u);
       b.type = 'button';
-      b.addEventListener('click', () => { inp.value = String(v); fillFromPick(); });
+      b.addEventListener('click', () => { inp.value = String(v); fillFromPick(); markChip(row, b); });
       row.append(b);
     });
     if (slm) ['Small', 'Medium', 'Large'].forEach((l, i) => {
       const b = h('button', 'fd-chip', l + ' · ' + slm[i] + ' g');
       b.type = 'button';
-      b.addEventListener('click', () => { inp.value = String(slm[i]); fillFromPick(); });
+      b.addEventListener('click', () => { inp.value = String(slm[i]); fillFromPick(); markChip(row, b); });
       row.append(b);
     });
     sz.forEach(([l, v]) => {
       const b = h('button', 'fd-chip', l + ' · ' + v + ' ml');
       b.type = 'button';
-      b.addEventListener('click', () => { inp.value = String(v); fillFromPick(); });
+      b.addEventListener('click', () => { inp.value = String(v); fillFromPick(); markChip(row, b); });
       row.append(b);
     });
-    box.append(head, row, h('p', 'note', 'Amounts fill in the numbers below; you can still change them. ' + foodCredit() + (official ? ' Portions: Portie-online versie 2026/2.0, RIVM, Bilthoven.' : ' Portions: Yes Coach estimates, checked against Portie-online where it has a similar food.')));
+    box.append(row);
+    // the chip that matches the amount is marked; typing your own amount clears the mark
+    $$('.fd-chip', row).forEach((c) => { c.dataset.g = String(Number((c.textContent.match(/· ([\d.]+)/) || [])[1])); });
+    const sync = () => $$('.fd-chip', row).forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.g === String(Number(inp.value)))));
+    inp.addEventListener('input', sync);
+    sync();
+    $('#fd-src').textContent = foodCredit() + (official ? ' Portions: Portie-online versie 2026/2.0, RIVM, Bilthoven.' : ' Portions: Yes Coach estimates, checked against Portie-online where it has a similar food.');
     fillFromPick();
+    $('#fd-name').value = '';
     inp.focus();
     inp.select();
   };
@@ -3941,7 +3999,6 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const mine = ql.length >= 2 ? knownFoods().filter((e) => foldW(e.name).includes(ql)).slice(0, 3) : [];
     const db = searchFoods(q).filter((x) => !mine.some((e) => e.name.toLowerCase() === x.full.toLowerCase()));
     box.replaceChildren();
-    if (!mine.length && !db.length) { closeHits(); return; }
     mine.forEach((e) => {
       const b = h('button', 'fd-hit');
       b.type = 'button';
@@ -3949,11 +4006,14 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       row.append(h('span', 'fd-bub mine', 'Yours'), h('span', 'fd-mini', [showCal() && e.kcal != null ? big(e.kcal) + ' kcal' : '', e.p != null ? 'P ' + num(e.p) + ' g' : ''].filter(Boolean).join(' · ') || 'logged before'));
       b.append(h('b', '', e.name), row);
       b.addEventListener('click', () => {
-        FD.pick = null;
-        $('#fd-amount').hidden = true;
-        $('#fd-name').value = e.name;
+        // a food you took from the tables before opens again by amount, starting at what you had last time
+        const it = e.src && FDB && FDB.items.find((x) => x.src === e.src && String(x.ref) === String(e.ref));
+        if (it) { pickFood({ it, label: e.name, full: e.name }, e.g); return; }
+        openCard('mine', e.name, h('span', 'note', 'The same as last time'));
+        FD.mineName = e.name;
         [['#fd-kcal', e.kcal], ['#fd-p', e.p], ['#fd-c', e.c], ['#fd-f', e.f]].forEach(([sel, v]) => { $(sel).value = v == null ? '' : num(v); });
-        closeHits();
+        paintResult();
+        $('#fd-name').value = '';
         $('#fd-add').focus();
       });
       box.append(b);
@@ -3966,13 +4026,21 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       b.addEventListener('click', () => pickFood(hit));
       box.append(b);
     });
+    const own = h('button', 'fd-hit fd-new');
+    own.type = 'button';
+    own.append(h('b', '', '+ Add “' + q.trim() + '” with your own numbers'), h('span', 'fd-mini', 'Not in the list, or something home-made'));
+    own.addEventListener('click', () => {
+      openCard('new', 'Your own food');
+      $('#fd-own-name').value = q.trim();
+      $('#fd-name').value = '';
+      $(showCal() ? '#fd-kcal' : '#fd-p').focus();
+    });
+    box.append(own);
     if (db.length) box.append(h('p', 'fd-credit', foodCredit()));
     box.hidden = false;
     $('#fd-name').setAttribute('aria-expanded', 'true');
   };
   $('#fd-name').addEventListener('input', (ev) => {
-    FD.pick = null;
-    $('#fd-amount').hidden = true;
     clearTimeout(FD.t);
     const q = ev.target.value;
     if (q.trim().length < 2) { closeHits(); return; }
@@ -3980,31 +4048,25 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   });
   $('#fd-name').addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeHits(); });
   document.addEventListener('pointerdown', (ev) => { if (!ev.target.closest('#fd-hits') && ev.target !== $('#fd-name')) closeHits(); });
-  // typing a name you used before fills in its numbers, as long as you have not typed them yourself
-  $('#fd-name').addEventListener('input', (ev) => {
-    const hit = knownFoods().find((e) => e.name.toLowerCase() === ev.target.value.trim().toLowerCase());
-    if (!hit) return;
-    [['#fd-kcal', hit.kcal], ['#fd-p', hit.p], ['#fd-c', hit.c], ['#fd-f', hit.f]].forEach(([sel, v]) => { if (!$(sel).value && v != null) $(sel).value = num(v); });
-  });
+  $('#fd-name').addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); const first = $('#fd-hits .fd-hit'); if (first && !$('#fd-hits').hidden) first.click(); } });
   $('#fd-form').addEventListener('submit', async (ev) => {
     ev.preventDefault();
     const msg = $('#fd-msg');
-    const name = $('#fd-name').value.trim();
+    const name = (FD.mode === 'new' ? $('#fd-own-name').value : FD.mode === 'mine' ? FD.mineName : FD.pick ? FD.pick.label : '').trim();
     const vals = { kcal: fnum($('#fd-kcal').value), p: fnum($('#fd-p').value), c: fnum($('#fd-c').value), f: fnum($('#fd-f').value) };
-    if (!name) { msg.textContent = 'Write what you ate.'; $('#fd-name').focus(); return; }
+    if (!name) { msg.textContent = 'Give it a name.'; $('#fd-own-name').focus(); return; }
     if (!showCal() && !FD.pick) vals.kcal = null;
-    if (showCal() && (vals.kcal == null || Number.isNaN(vals.kcal))) { msg.textContent = 'Fill in the calories (kcal) as a number.'; $('#fd-kcal').focus(); return; }
+    if (showCal() && (vals.kcal == null || Number.isNaN(vals.kcal))) { msg.textContent = 'Fill in the calories (kcal) as a number.'; $('#fd-nums').hidden = false; $('#fd-kcal').focus(); return; }
     const bad = [['p', '#fd-p'], ['c', '#fd-c'], ['f', '#fd-f']].find(([k]) => Number.isNaN(vals[k]));
-    if (bad) { msg.textContent = 'Grams are numbers, or leave them empty.'; $(bad[1]).focus(); return; }
+    if (bad) { msg.textContent = 'Grams are numbers, or leave them empty.'; $('#fd-nums').hidden = false; $(bad[1]).focus(); return; }
     msg.textContent = '';
     const from = FD.pick && FD.pick.label === name ? { src: FD.pick.it.src, ref: FD.pick.it.ref, g: fnum($('#fd-g').value), u: FD.pick.it.u } : {};
-    ['#fd-name', '#fd-kcal', '#fd-p', '#fd-c', '#fd-f'].forEach((sel) => { $(sel).value = ''; });
-    FD.pick = null;
-    $('#fd-amount').hidden = true;
+    closeCard();
     closeHits();
+    $('#fd-name').value = '';
     await addFood(Object.assign({ name }, vals, from));
     enter($('#fd-list').lastElementChild);
-    $('#fd-name').focus();
+    showToast('Added ' + name + '.', null);
   });
   $('#fd-off-go').addEventListener('click', () => { setView('settings'); requestAnimationFrame(() => $('#set-cal').scrollIntoView({ block: 'center' })); });
   $('#fd-prev').addEventListener('click', () => { S.fday = addDays(S.fday, -1); renderFood(); enter($('#fd-meter'), -16); });
