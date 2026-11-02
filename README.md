@@ -38,3 +38,12 @@ Change `src/yes-coach.html` (the same file runs the claude.ai version), run `pyt
 
 - Before many people use *Forgot password*: add a custom email sender (Authentication → Emails → SMTP, for example Resend's free plan), because the built-in one is limited to a few emails an hour.
 - A Yes Coach connector, so a user's own AI can read and update their plan without copy and paste.
+
+## Food data
+
+Food search loads `foods-nevo.json` and `foods-usda.json` the first time someone searches in Food.
+
+- NEVO: NEVO online version 2025/9.0, RIVM, Bilthoven. Values used unchanged; the app shows the required line "Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven and other data sources". Conditions: no charging users, replace with each new NEVO release.
+- USDA FoodData Central, SR Legacy (public domain).
+
+Rebuild after a new release: `python3 tools/build_foods.py <NEVO20xx.csv> <USDA sr_legacy csv folder>` (keep the raw NEVO files out of this repo).
