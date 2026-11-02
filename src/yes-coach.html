@@ -3779,6 +3779,21 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     Dairy: [100, 150, 250], Cheese: [20, 40, 60], Eggs: [50, 100, 150], 'Nuts and seeds': [15, 30, 50],
     Snacks: [25, 50, 100], Sweets: [15, 30, 60], 'Fats and oils': [5, 10, 20], Spreads: [10, 20, 40], Sauces: [15, 30, 60], Supplements: [15, 30, 60],
   };
+  // things you count: one, two or three of them, each of a typical weight (first match wins)
+  const PIECES = [
+    [/knackebrod|knackebröd|crispbread|cracotte/, 'slice', 'slices', 10], [/beschuit|crispbake|rusk/, 'rusk', 'rusks', 10],
+    [/rijstwafel|rice cake|maiswafel/, 'cake', 'cakes', 8], [/cracker/, 'cracker', 'crackers', 8], [/biscuit|koekje|cookie/, 'biscuit', 'biscuits', 8],
+    [/ontbijtkoek/, 'slice', 'slices', 25], [/krentenbol|bolletje|pistolet|broodje|\bbun\b|\broll\b/, 'roll', 'rolls', 55], [/croissant/, 'croissant', 'croissants', 50],
+    [/tortilla|\bwrap\b/, 'wrap', 'wraps', 60], [/brood|bread/, 'slice', 'slices', 35],
+    [/^(ei|egg)\b|\b(ei|egg) (heel|whole|gekookt|boiled|gebakken|fried)/, 'egg', 'eggs', 55],
+    [/banaan|banana/, 'banana', 'bananas', 120], [/^appel|\bapple\b/, 'apple', 'apples', 150], [/sinaasappel|\borange\b/, 'orange', 'oranges', 150],
+    [/mandarijn|clementine|mandarin/, 'mandarin', 'mandarins', 70], [/\bkiwi/, 'kiwi', 'kiwis', 70],
+  ];
+  const piecesFor = (it, n) => {
+    if (!['Bread', 'Bakery', 'Pastry', 'Snacks', 'Eggs', 'Fruit', 'Grains'].includes(it.type)) return null;
+    const hit = PIECES.find(([re]) => re.test(n));
+    return hit ? [1, 2, 3].map((k) => [k + ' ' + (k === 1 ? hit[1] : hit[2]), k * hit[3]]) : null;
+  };
   const portionsFor = (it, n) => {
     if (it.type === 'Spices') return null;
     if (/\b(tosti|broodje|sandwich|wrap|burger|hamburger|kroket|frikandel|croissant)\b/.test(n)) return [100, 175, 250];
@@ -3802,12 +3817,19 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const n = foldW(it.name + ' ' + (it.alt || ''));
     const sizes = !it.drink ? [] : it.type === 'Alcohol' ? (/\b(bier|beer)\b/.test(n) ? [['Beer glass', 250], ['Can', 330], ['Bottle', 500]] : [['Wine glass', 125], ['Shot', 35], ['Beer glass', 250]])
       : [['Cup', 125], ['Glass', 200], ['Mug', 250], ['Can', 330], ['Bottle', 500]];
-    const slm = it.drink ? null : portionsFor(it, n);
-    const start = slm ? slm[1] : !it.drink ? 100 : /\b(koffie|coffee|thee|tea|espresso)\b/.test(n) ? 125 : sizes[0][0] === 'Beer glass' ? 250 : it.type === 'Alcohol' ? 125 : 200;
+    const pcs = it.drink ? null : piecesFor(it, n);
+    const slm = it.drink || pcs ? null : portionsFor(it, n);
+    const start = pcs ? pcs[0][1] : slm ? slm[1] : !it.drink ? 100 : /\b(koffie|coffee|thee|tea|espresso)\b/.test(n) ? 125 : sizes[0][0] === 'Beer glass' ? 250 : it.type === 'Alcohol' ? 125 : 200;
     const inp = edInput('fd-g', String(start));
     inp.inputMode = 'decimal';
     inp.addEventListener('input', fillFromPick);
     row.append(edField('Amount (' + it.u + ')', inp));
+    (pcs || []).forEach(([l, v]) => {
+      const b = h('button', 'fd-chip', l + ' · ' + v + ' g');
+      b.type = 'button';
+      b.addEventListener('click', () => { inp.value = String(v); fillFromPick(); });
+      row.append(b);
+    });
     if (slm) ['Small', 'Medium', 'Large'].forEach((l, i) => {
       const b = h('button', 'fd-chip', l + ' · ' + slm[i] + ' g');
       b.type = 'button';
