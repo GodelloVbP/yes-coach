@@ -1,6 +1,6 @@
 """Build the food tables the Food search loads on demand: foods-nevo.json and foods-usda.json.
 NEVO: NEVO2025_v9.0.csv from RIVM (values unchanged; only the decimal comma is read as a number).
-USDA: the SR Legacy CSV download from FoodData Central (public domain).
+USDA: the SR Legacy CSV download from FoodData Central (public domain). Both per 100 g: no household portions, so every food works the same way.
 Usage: python3 tools/build_foods.py <NEVO2025_v9.0.csv> <usda sr_legacy folder>"""
 import csv, json, sys, collections, pathlib
 OUT = pathlib.Path(__file__).resolve().parent.parent
@@ -52,7 +52,7 @@ def usda(folder):
         v = vals.get(f['fdc_id'], {})
         kcal = v.get('kcal', v.get('k2', v.get('k3')))
         if kcal is None: continue
-        out.append([int(f['fdc_id']), f['description'], cat, round(kcal), r1(v.get('p', 0)), r1(v.get('c', 0)), r1(v.get('f', 0)), [[l, g] for _, l, g in sorted(por.get(f['fdc_id'], []))][:4]])
+        out.append([int(f['fdc_id']), f['description'], cat, round(kcal), r1(v.get('p', 0)), r1(v.get('c', 0)), r1(v.get('f', 0))])
     cl = sorted({o[2] for o in out}); ci = {c: i for i, c in enumerate(cl)}
     for o in out: o[2] = ci[o[2]]
     doc = {'v': 1, 'src': 'usda', 'credit': 'USDA FoodData Central', 'groups': cl, 'foods': out}

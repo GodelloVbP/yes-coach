@@ -1296,7 +1296,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#mark').addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); });
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
-    ['2 Nov 2026', 'Food search', ['Search over 9,000 foods in Food: Dutch foods from NEVO (RIVM) and international foods from USDA.', 'Pick a food, enter the amount or tap a portion, and protein, carbs, fat and calories fill in.', 'Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven and other data sources (USDA FoodData Central).']],
+    ['2 Nov 2026', 'Food search', ['Search over 9,000 foods in Food: Dutch foods from NEVO (RIVM) and international foods from USDA.', 'Every food is per 100 g (drinks per 100 ml): pick one, enter how much you had, and protein, carbs, fat and calories fill in.', 'Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven and other data sources (USDA FoodData Central).']],
     ['2 Nov 2026', 'Plan, rebuilt', ['Plan is now your week on one screen: every training day with its exercises.', 'Tap the weekdays you train, and choose what a missed day does: skip it, or move it up.', 'Edit a day as a short list: tap an exercise to change sets, reps and weight, drag to reorder, or replace it.', 'Ask your AI coach right from Plan to adjust your plan: you see what changes before anything does.']],
     ['2 Nov 2026', 'Exercises', ['New Exercises tab: all 304 exercises with search, body-part tabs and sorting.', 'Add any of them to a training day, or add your own exercise.', 'For you: body parts your training skips, and exercises close to the ones you do most.']],
     ['2 Nov 2026', 'Food', ['New Food tab: a simple list of what you eat, without numbers.', 'Want to count? Switch on calories in Settings, Food: log calories, protein, carbs and fat, get a suggested daily target from your goal, and see averages and a chart over 1 to 12 months.', 'Foods you logged before come back as one-tap chips.', 'About you now asks your goal: lose weight, gain muscle or both.']],
@@ -3718,8 +3718,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const srcs = new Set();
     docs.filter(Boolean).forEach((d) => {
       srcs.add(d.src);
-      if (d.src === 'nevo') d.foods.forEach(([ref, nl, en, syn, , kcal, p, c, f, unit]) => items.push({ src: 'nevo', ref, name: nl, alt: en, kcal, p, c, f, unit, portions: [], w: wordsOf(nl + ' ' + syn), w2: wordsOf(en) }));
-      else d.foods.forEach(([ref, name, , kcal, p, c, f, portions]) => items.push({ src: 'usda', ref, name, alt: '', kcal, p, c, f, unit: 'g', portions, w: wordsOf(name), w2: [] }));
+      if (d.src === 'nevo') d.foods.forEach(([ref, nl, en, syn, , kcal, p, c, f, unit]) => items.push({ src: 'nevo', ref, name: nl, alt: en, kcal, p, c, f, unit, w: wordsOf(nl + ' ' + syn), w2: wordsOf(en) }));
+      else d.foods.forEach(([ref, name, , kcal, p, c, f]) => items.push({ src: 'usda', ref, name, alt: '', kcal, p, c, f, unit: 'g', w: wordsOf(name), w2: [] }));
     });
     FDB = { items, srcs };
     return FDB;
@@ -3771,16 +3771,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const head = h('div', '');
     head.append(tag, h('span', 'note', per100(it)));
     const row = h('div', 'fd-amt-row');
-    const inp = edInput('fd-g', String((it.portions[0] && it.portions[0][1]) || 100));
+    const inp = edInput('fd-g', '100');
     inp.inputMode = 'decimal';
     inp.addEventListener('input', fillFromPick);
     row.append(edField('Amount (' + it.unit + ')', inp));
-    [['100 ' + it.unit, 100]].concat(it.portions).forEach(([l, g]) => {
-      const b = h('button', 'fd-chip', l + (l.startsWith('100 ') ? '' : ' · ' + num(g) + ' g'));
-      b.type = 'button';
-      b.addEventListener('click', () => { inp.value = num(g); fillFromPick(); });
-      row.append(b);
-    });
     box.append(head, row, h('p', 'note', 'Amounts fill in the numbers below; you can still change them. ' + foodCredit()));
     fillFromPick();
     inp.focus();
