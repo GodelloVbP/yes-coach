@@ -87,13 +87,18 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 :root[data-theme="dark"] .savebar.error { color: #10142b; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .savebar.error { color: #10142b; } }
 .savebar button { background: none; border: 2px solid currentColor; min-height: 36px; padding: 0 0.875rem; cursor: pointer; font-weight: 700; color: inherit; }
-.appbar { background: var(--bg); border-bottom: 1px solid var(--line); }
-.ab-in { display: flex; align-items: center; gap: 1rem; height: 48px; }
+.appbar { background: var(--bg); border-bottom: 1px solid var(--line); box-shadow: 0 2px 12px rgba(16, 20, 43, 0.10); }
+:root[data-theme="dark"] .appbar { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .appbar { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45); } }
+.ab-in { display: flex; align-items: center; justify-content: center; gap: 1rem; height: 52px; }
+.mark-btn { flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0; background: none; border: 0; border-bottom: 3px solid transparent; cursor: pointer; transition: transform 0.18s cubic-bezier(0.3, 1.7, 0.5, 1); }
+.mark-btn:active { transform: scale(0.9); }
+.mark-btn[aria-current="page"] { border-bottom-color: var(--ink); }
 .mark { width: 34px; height: 26px; flex: none; }
 .tabs { display: flex; gap: 0.25rem 1rem; min-width: 0; }
 .appbar .tab { font-size: var(--t2); letter-spacing: 0.04em; }
-@media (max-width: 439px) { .mark { display: none; } .tabs { gap: 0.25rem 0.875rem; } }
-@media (max-width: 359px) { .appbar .tab { font-size: var(--t1); } .tabs { gap: 0.25rem 0.625rem; } }
+@media (max-width: 439px) { .mark { width: 28px; height: 22px; } .ab-in { gap: 0.625rem; } .tabs { gap: 0.25rem 0.75rem; } }
+@media (max-width: 379px) { .appbar .tab { font-size: var(--t1); } .tabs { gap: 0.25rem 0.5rem; } .ab-in { gap: 0.375rem; } }
 .tab { background: none; border: 0; border-bottom: 3px solid transparent; min-height: 44px; padding: 0 0.125rem; font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-soft); cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; }
 .tab[aria-selected="true"], .tab[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--ink); }
 .view[hidden] { display: none; }
@@ -255,23 +260,48 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 /* progress */
 .prog-wrap { padding-block: 1rem 3rem; display: flex; flex-direction: column; gap: 1rem; }
-.p-total { font-weight: 600; }
-.ptabs { display: flex; flex-wrap: wrap; gap: 0 1rem; }
-.ptabs .tab { font-size: var(--t2); }
-.prange { display: flex; flex-wrap: wrap; gap: 0.5rem; padding-inline: 0.375rem; }
-.prange .pk-chip { min-width: 3.25rem; }
+.p-total { font-weight: 600; color: var(--ink-soft); }
+.p-total:empty { display: none; }
+/* filters: the period as one segmented bar, body parts as tabs under it */
+.p-filters { display: flex; flex-direction: column; gap: 0.25rem; padding-bottom: 0.25rem; border-bottom: 1px solid var(--line); }
+.seg { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border: 2px solid var(--ink); max-width: 26rem; }
+.seg-b { min-height: 40px; border: 0; border-left: 2px solid var(--ink); background: var(--paper); color: var(--ink); font-family: var(--f-head); font-size: var(--t2); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; transition: background-color 0.15s, color 0.15s; }
+.seg-b:first-child { border-left: 0; }
+.seg-b:hover { background: var(--faint); }
+.seg-b[aria-checked="true"] { background: var(--ink); color: var(--bg); }
+.ptabs { display: flex; gap: 0 1rem; overflow-x: auto; scrollbar-width: none; }
+.ptabs .tab { font-size: var(--t2); flex: none; }
+/* the headline numbers */
+.p-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin: 0; }
+@media (min-width: 40rem) { .p-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.p-stat { background: var(--faint); padding: 0.75rem 0.875rem; display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 0.125rem; min-width: 0; }
+.p-stat dt { font-size: var(--t1); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); font-family: var(--f-head); }
+.p-stat dd { margin: 0; font-family: var(--f-head); font-size: 1.75rem; font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.p-stat dd small { font-size: var(--t2); color: var(--ink-soft); font-weight: 700; margin-left: 0.25rem; }
+/* sections */
+.p-sec { display: flex; flex-direction: column; gap: 0.375rem; min-width: 0; }
+.p-head { display: flex; align-items: baseline; gap: 0.625rem; border-bottom: 2px solid var(--ink); padding-bottom: 0.375rem; }
+
+.p-count { font-family: var(--f-head); font-weight: 700; color: var(--ink-soft); font-size: var(--t2); }
+.p-log summary { list-style: none; cursor: pointer; min-height: 44px; align-items: center; }
+.p-log summary::-webkit-details-marker { display: none; }
+.p-caret { margin-left: auto; width: 0.6rem; height: 0.6rem; border-right: 2.5px solid var(--ink); border-bottom: 2.5px solid var(--ink); transform: rotate(45deg); transition: transform 0.2s; margin-right: 0.375rem; }
+.p-log[open] .p-caret { transform: rotate(-135deg); }
 .p-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; }
 @media (min-width: 64rem) { .p-grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start; } }
 .p-col { display: flex; flex-direction: column; gap: 1.5rem; min-width: 0; }
 .card { display: flex; flex-direction: column; gap: 0.375rem; min-width: 0; }
-.plist { display: flex; flex-direction: column; border-top: 2px solid var(--ink); }
-.prow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.125rem 0.75rem; align-items: center; width: 100%; min-height: 56px; padding: 0.5rem 0.25rem; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; color: var(--ink); cursor: pointer; }
+.plist { display: flex; flex-direction: column; }
+.prow { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 0.125rem 0.75rem; align-items: center; width: 100%; min-height: 56px; padding: 0.5rem 0.25rem; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; color: var(--ink); cursor: pointer; }
 .prow:hover { background: var(--faint); }
 .prow[aria-expanded="true"] { background: var(--faint); }
 .prow .p-name { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.1; }
 .prow .p-line { grid-column: 1; font-size: var(--t2); font-weight: 500; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
 .prow .p-line b { color: var(--ink); font-weight: 700; }
-.prow .p-ch { grid-row: 1 / span 2; grid-column: 2; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.prow .p-spark { grid-row: 1 / span 2; grid-column: 2; width: 64px; height: 28px; overflow: visible; }
+.prow .p-ch { grid-row: 1 / span 2; grid-column: 3; justify-self: end; min-width: 6rem; text-align: center; padding: 0.25rem 0.5rem; font-family: var(--f-head); font-size: var(--t2); font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; background: var(--faint); }
+.prow .p-ch:empty { background: none; }
+@media (max-width: 379px) { .prow .p-spark { display: none; } }
 .p-detail { padding: 0.75rem 0 1.25rem; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.375rem; }
 .metric { display: flex; gap: 1rem; }
 .metric .tab { font-size: var(--t2); }
@@ -428,15 +458,19 @@ body.typing .restbar { display: none; }
 #sbar[data-k] .sb-line i { background: var(--g); }
 .prow[data-g] { border-left: 4px solid var(--g); padding-left: 10px; }
 .ptabs .tab[data-g][aria-selected="true"] { border-bottom-color: var(--g); }
-.p-ch.up { color: var(--good); }
-.p-ch.down { color: var(--warn); }
-.p-ch.flat { color: var(--flat); }
+.p-ch.up { color: var(--good); background: color-mix(in srgb, var(--good) 14%, transparent); }
+.p-ch.down { color: var(--warn); background: color-mix(in srgb, var(--warn) 14%, transparent); }
+.p-ch.flat { color: var(--flat); background: color-mix(in srgb, var(--flat) 14%, transparent); }
+.p-spark.up { color: var(--good); } .p-spark.down { color: var(--warn); } .p-spark.flat { color: var(--flat); }
 .intro { padding-block: 1.5rem 3rem; display: flex; flex-direction: column; gap: 1rem; }
 .intro h2 { font-size: var(--t4); }
 .intro textarea, .ed-f textarea { font: inherit; font-weight: 500; color: var(--ink); background: var(--faint); border: 0; border-bottom: 2px solid var(--ctl); padding: 0.5rem 0.625rem; width: 100%; resize: vertical; }
 .ed-f.wide { grid-column: 1 / -1; }
 #imp { scroll-margin-top: 4rem; }
 #wiz { display: flex; flex-direction: column; gap: 1rem; }
+.wz-top { display: flex; align-items: flex-start; gap: 1rem; }
+.wz-top p { flex: 1; }
+.wz-skip { flex: none; margin-top: -0.6rem; }
 .wz-q { display: flex; flex-direction: column; gap: 0.25rem; }
 .wz-q .sm-days { padding-inline: 0.375rem; }
 .wz-file { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.75rem; background: var(--faint); border-left: 4px solid var(--ink); }
@@ -452,6 +486,17 @@ body.typing .restbar { display: none; }
 .wz-err { color: var(--warn); font-weight: 600; }
 .wz-err:empty { display: none; }
 .wz-items { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.125rem; font-weight: 500; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.hm { padding-block: 1.5rem 3rem; display: flex; flex-direction: column; gap: 1rem; }
+.hm .brand svg { width: min(100%, 20rem); }
+.hm-tag { font-size: var(--t3); font-weight: 500; text-align: center; text-wrap: balance; }
+.hm-users { align-self: center; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.375rem 1rem; background: var(--faint); border-left: 4px solid var(--pop); }
+.hm .foot-row { justify-content: center; }
+.hm > h2 { margin-top: 1rem; border-bottom: 2px solid var(--ink); padding-bottom: 0.375rem; }
+.changelog { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.cl-item { padding-block: 0.875rem; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.25rem; }
+.cl-title { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.cl-item ul { margin: 0; padding-left: 1.1rem; color: var(--ink-soft); font-weight: 500; display: flex; flex-direction: column; gap: 0.125rem; }
 .privacy { padding: 0.75rem; background: var(--faint); border-left: 4px solid var(--ink); font-weight: 500; }
 /* native selects look the same everywhere: flat underline, our own chevron */
 .ed-f select, .sm-frow select, #sm-add, .cal-panel select, .mover select, .sel { -webkit-appearance: none; appearance: none; border-radius: 0; background-color: transparent; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%236f79bf' stroke-width='2.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 4px center; padding-right: 26px; }
@@ -505,7 +550,7 @@ body.typing .restbar { display: none; }
   <div class="savebar" id="savebar" hidden role="status" aria-live="polite"><div class="in"><span id="save-text"></span><button type="button" id="save-retry" hidden>Retry</button></div></div>
   <header class="appbar" id="appbar">
     <div class="in ab-in">
-      <svg class="mark" viewBox="0 0 52 40" aria-hidden="true"><g transform="translate(8 0) skewX(-14)"><rect x="0" y="12" width="7" height="16" fill="var(--logo-bar)"/><rect x="9" y="2" width="9" height="36" fill="var(--logo-bar)"/><rect x="20" y="12" width="7" height="16" fill="#ff8a65"/><rect x="29" y="2" width="9" height="36" fill="var(--logo-bar)"/></g></svg>
+      <button type="button" class="mark-btn" id="mark" aria-label="Yes Coach! home"><svg class="mark" viewBox="0 0 52 40" aria-hidden="true"><g transform="translate(8 0) skewX(-14)"><rect x="0" y="12" width="7" height="16" fill="var(--logo-bar)"/><rect x="9" y="2" width="9" height="36" fill="var(--logo-bar)"/><rect x="20" y="12" width="7" height="16" fill="#ff8a65"/><rect x="29" y="2" width="9" height="36" fill="var(--logo-bar)"/></g></svg></button>
       <nav class="tabs" role="tablist" aria-label="View">
         <button class="tab" role="tab" type="button" id="tab-train" data-view="train" aria-selected="true">Train</button>
         <button class="tab" role="tab" type="button" id="tab-plan" data-view="plan" aria-selected="false">Plan</button>
@@ -538,6 +583,18 @@ body.typing .restbar { display: none; }
 <div class="resume in" id="resume" hidden><button type="button" class="resume-btn" id="resume-btn"><span id="resume-text"></span><b>Resume</b></button></div>
 
 <main>
+  <div class="view" id="v-home" hidden>
+    <section class="hm in" aria-labelledby="h-home">
+      <h1 class="brand" id="hm-brand"></h1>
+      <h2 class="sr-only" id="h-home">Yes Coach! home</h2>
+      <p class="hm-tag">A free, ad-free workout tracker. Log your sets, plan your week, see your progress.</p>
+      <p class="hm-users" id="hm-users" hidden></p>
+      <div class="foot-row"><button class="skew pop" type="button" id="hm-train"><span>Today's training</span></button></div>
+      <h2>What's new</h2>
+      <ol class="changelog" id="changelog"></ol>
+    </section>
+  </div>
+
   <div class="view" id="v-train">
     <p class="loading in" id="train-loading">Loading your training days…</p>
     <section class="intro in" id="intro" hidden aria-labelledby="h-intro">
@@ -577,30 +634,33 @@ body.typing .restbar { display: none; }
 
   <div class="view" id="v-progress" hidden>
     <div class="prog-wrap in wide">
+      <div class="p-filters">
+        <div class="seg" role="radiogroup" aria-label="Period" id="prange"></div>
+        <nav class="ptabs" role="tablist" aria-label="Body part" id="ptabs">
+          <button class="tab" role="tab" type="button" data-ptab="All" aria-selected="true">All</button>
+          <button class="tab" role="tab" type="button" data-ptab="Back" data-g="Back" aria-selected="false">Back</button>
+          <button class="tab" role="tab" type="button" data-ptab="Chest" data-g="Chest" aria-selected="false">Chest</button>
+          <button class="tab" role="tab" type="button" data-ptab="Shoulders" data-g="Shoulders" aria-selected="false">Shoulders</button>
+          <button class="tab" role="tab" type="button" data-ptab="Arms" data-g="Arms" aria-selected="false">Arms</button>
+          <button class="tab" role="tab" type="button" data-ptab="Legs" data-g="Legs" aria-selected="false">Legs</button>
+        </nav>
+      </div>
       <p class="p-total" id="take">Loading your progress…</p>
-      <nav class="ptabs" role="tablist" aria-label="Body part" id="ptabs">
-        <button class="tab" role="tab" type="button" data-ptab="All" aria-selected="true">All</button>
-        <button class="tab" role="tab" type="button" data-ptab="Back" data-g="Back" aria-selected="false">Back</button>
-        <button class="tab" role="tab" type="button" data-ptab="Chest" data-g="Chest" aria-selected="false">Chest</button>
-        <button class="tab" role="tab" type="button" data-ptab="Shoulders" data-g="Shoulders" aria-selected="false">Shoulders</button>
-        <button class="tab" role="tab" type="button" data-ptab="Arms" data-g="Arms" aria-selected="false">Arms</button>
-        <button class="tab" role="tab" type="button" data-ptab="Legs" data-g="Legs" aria-selected="false">Legs</button>
-      </nav>
-      <div class="prange" role="radiogroup" aria-label="Period" id="prange"></div>
+      <dl class="p-stats" id="p-stats" hidden></dl>
       <div class="p-grid" id="p-grid">
-        <section class="card" aria-labelledby="h-plist">
-          <h2 id="h-plist">Progress by exercise</h2>
+        <section class="p-sec" aria-labelledby="h-plist">
+          <div class="p-head"><h2 id="h-plist">Your lifts</h2><span class="p-count" id="plist-count"></span></div>
           <p class="note" id="plist-note"></p>
           <div class="plist" id="plist"></div>
         </section>
         <div class="p-col">
-          <section class="card" aria-labelledby="h-weekly">
-            <h2 id="h-weekly">Training volume</h2>
+          <section class="p-sec" aria-labelledby="h-weekly">
+            <div class="p-head"><h2 id="h-weekly">Volume</h2></div>
             <p class="note" id="weekly-note"></p>
             <div class="chart" id="weekly"></div>
           </section>
-          <section class="card" aria-labelledby="h-log">
-            <h2 id="h-log">Session log</h2>
+          <details class="p-sec p-log" id="p-log">
+            <summary class="p-head"><h2 id="h-log">Session log</h2><span class="p-count" id="log-count"></span><span class="p-caret" aria-hidden="true"></span></summary>
             <p class="note">Newest first. Working sets exclude warm-ups.</p>
             <div class="scroll">
               <table id="sess-table">
@@ -608,7 +668,7 @@ body.typing .restbar { display: none; }
                 <tbody></tbody>
               </table>
             </div>
-          </section>
+          </details>
         </div>
       </div>
     </div>
@@ -970,16 +1030,15 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
 
   // ------------------------------------------------------------------ views
-  const VIEWS = ['train', 'plan', 'progress', 'settings'];
+  const VIEWS = ['home', 'train', 'plan', 'progress', 'settings'];
   const setView = (v) => {
     if (S.view !== v) { hideToast(); enter($('#v-' + v), 16 * Math.sign(VIEWS.indexOf(v) - VIEWS.indexOf(S.view))); }
     S.view = v;
     $$('[data-view]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.view === v)));
-    $('#v-train').hidden = v !== 'train';
-    $('#v-progress').hidden = v !== 'progress';
-    $('#v-plan').hidden = v !== 'plan';
+    if (v === 'home') $('#mark').setAttribute('aria-current', 'page'); else $('#mark').removeAttribute('aria-current');
+    VIEWS.forEach((x) => { $('#v-' + x).hidden = x !== v; });
+    if (v === 'home') renderHome();
     if (v === 'plan' && S.ready) renderPlan();
-    $('#v-settings').hidden = v !== 'settings';
     if (v === 'progress') renderProgress();
     if (v === 'settings') { paintExport(); paintImport(); if (S.ready) paintMe(); }
     if (v === 'train' && S.ready) renderTrain();
@@ -987,6 +1046,29 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     local.set('yc-view', v);
   };
   $$('[data-view]').forEach((b) => b.addEventListener('click', () => { setView(b.dataset.view); window.scrollTo({ top: 0 }); }));
+  $('#mark').addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); });
+  // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
+  const CHANGELOG = [
+    ['2 Nov 2026', 'Yes Coach! on the web', ['Your own account, with your log and plan in sync between phone and laptop.', 'Add it to your home screen and it opens like an app.', 'New start screen: three quick answers, restore a Yes Coach backup, or bring your history from Strong, Hevy, FitNotes or Fitbod.']],
+    ['2 Nov 2026', 'Plans built by your AI', ['Get a plan from your own AI chat in two pastes: Yes Coach writes the request and reads the answer.', 'Starting weights come from your history; starting fresh, week one finds your weights.', 'Backups now bring back your training plan and schedule too.']],
+    ['2 Nov 2026', 'Progress and exercises', ['Progress shows trends over 1, 3, 6 or 12 months, with charts that stay readable however much you log.', '304 exercises, including forearms, full body and cardio.', 'Smoother screens and clearer feedback on every tap.']],
+    ['Oct 2026', 'First version', ['Log sets with a rest timer, plan your week with drag and drop, the schedule maker, notes for your coach, and export for an AI review.']],
+  ];
+  const renderHome = () => {
+    const brand = $('#hm-brand');
+    if (!brand.childElementCount) brand.append($('#pickday .brand svg').cloneNode(true));
+    const list = $('#changelog');
+    if (!list.childElementCount) CHANGELOG.forEach(([date, title, items]) => {
+      const li = h('li', 'cl-item');
+      const ul = h('ul');
+      items.forEach((t) => ul.append(h('li', '', t)));
+      li.append(h('div', 'lab', date), h('h3', 'cl-title', title), ul);
+      list.append(li);
+    });
+    const users = $('#hm-users');
+    if (window.YC_USERS) window.YC_USERS().then((n) => { if (n) { users.textContent = n === 1 ? '1 person trains with Yes Coach!' : n + ' people train with Yes Coach!'; users.hidden = false; } }).catch(() => {});
+  };
+  $('#hm-train').addEventListener('click', () => { setView('train'); window.scrollTo({ top: 0 }); });
   document.addEventListener('touchstart', () => {}, { passive: true }); // lets iOS show the :active press states
 
   // ------------------------------------------------------------------ values kept on this device
@@ -2418,13 +2500,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const rangeFrom = () => (S.range ? addDays(today(), -S.range) : '');
   const rangeWord = () => RANGES.find((r) => r[0] === S.range)[2];
   const rangeBtns = RANGES.map(([days, label, word]) => {
-    const b = btn('pk-chip', label, 'Show ' + word);
+    const b = plainBtn('seg-b', label, 'Show ' + word);
     b.setAttribute('role', 'radio');
     b.addEventListener('click', () => { S.range = days; renderProgress(); enter($('#p-grid')); });
     $('#prange').append(b);
     return [days, b];
   });
-  const paintRange = () => rangeBtns.forEach(([days, b]) => { b.setAttribute('aria-checked', String(days === S.range)); b.setAttribute('aria-pressed', String(days === S.range)); });
+  const paintRange = () => rangeBtns.forEach(([days, b]) => b.setAttribute('aria-checked', String(days === S.range)));
 
   // ---- chart parts shared by the line chart and the volume chart
   const measure = (svg, labels) => {
@@ -2494,11 +2576,22 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       return row;
     });
   };
-  const fillTotals = (rows) => {
-    const t = totals(rows, rangeFrom());
-    $('#take').textContent = t.sessions
-      ? plural(t.sessions, 'session') + ' in ' + rangeWord() + ' · ' + t.perWeek + ' a week · ' + plural(t.sets, 'working set') + ' · ' + plural(t.exercises, 'exercise')
-      : rows.length ? 'No sessions in ' + rangeWord() + '. Pick a longer period.' : 'No sessions logged yet. Your progress shows up here after your first ticked set.';
+  // four tiles for the period and body part: sessions, sessions a week, working sets, lifts getting better
+  const fillTotals = (rows, lifts) => {
+    const t = totals(rows.filter(inGroup), rangeFrom());
+    const box = $('#p-stats');
+    box.replaceChildren();
+    box.hidden = !t.sessions;
+    $('#take').textContent = t.sessions ? '' : rows.length ? 'No ' + (S.ptab === 'All' ? '' : S.ptab.toLowerCase() + ' ') + 'sessions in ' + rangeWord() + '. Pick a longer period.' : 'No sessions logged yet. Your progress shows up here after your first ticked set.';
+    if (!t.sessions) return;
+    const judged = lifts.filter((r) => r.trend);
+    const up = judged.filter((r) => r.trend === 'up').length;
+    const tile = (label, value, small) => { const w = h('div', 'p-stat'); const dd = h('dd', '', String(value)); if (small) dd.append(h('small', '', small)); w.append(dd, h('dt', '', label)); box.append(w); };
+    tile('Sessions', t.sessions);
+    tile('A week', t.perWeek);
+    tile(S.ptab === 'All' ? 'Working sets' : S.ptab + ' sets', t.sets);
+    if (judged.length) tile('Lifts improving', up, 'of ' + judged.length);
+    else tile('Exercises', t.exercises);
   };
 
   // ---- comparable performance: one best set per session, compared only within the same exercise and measure
@@ -2582,12 +2675,38 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const TREND_MARK = { up: '▲ ', down: '▼ ', flat: '= ' };
   const TREND_WORD = { up: 'better', down: 'worse', flat: 'unchanged' };
 
-  const drawList = () => {
+  // a small line of the best set per session; for assistance lower is better, so it is drawn upside down
+  const spark = (r) => {
+    const pf = perfOf(r.unit);
+    const pts = r.series.map((p) => pf.val(p)).filter((v) => v != null);
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('class', 'p-spark' + (r.trend ? ' ' + r.trend : ''));
+    svg.setAttribute('viewBox', '0 0 64 28');
+    svg.setAttribute('aria-hidden', 'true');
+    if (pts.length < 2) return svg;
+    let lo = Math.min(...pts), hi = Math.max(...pts);
+    if (lo === hi) { lo -= 1; hi += 1; }
+    const xy = (v, i) => [(i / (pts.length - 1)) * 60 + 2, pf.lower ? 3 + ((v - lo) / (hi - lo)) * 22 : 25 - ((v - lo) / (hi - lo)) * 22];
+    const path = document.createElementNS(NS, 'polyline');
+    path.setAttribute('points', pts.map((v, i) => xy(v, i).map((n) => n.toFixed(1)).join(',')).join(' '));
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', 'currentColor');
+    path.setAttribute('stroke-width', '2');
+    path.setAttribute('stroke-linejoin', 'round');
+    path.setAttribute('stroke-linecap', 'round');
+    const end = document.createElementNS(NS, 'circle');
+    const [ex, ey] = xy(pts[pts.length - 1], pts.length - 1);
+    end.setAttribute('cx', ex); end.setAttribute('cy', ey); end.setAttribute('r', '2.75'); end.setAttribute('fill', 'currentColor');
+    svg.append(path, end);
+    return svg;
+  };
+  const drawList = (all) => {
     const box = $('#plist');
     box.replaceChildren();
-    const rows = progressRows(rangeFrom()).filter(inGroup);
+    const rows = (all || progressRows(rangeFrom())).filter(inGroup);
     const hidden = progressRows('').filter(inGroup).length - rows.length;
-    $('#plist-note').textContent = 'Best working set per session in ' + rangeWord() + '. The change is the trend line through those sessions, so one good or bad day does not decide it.' + (hidden ? ' ' + plural(hidden, 'exercise') + ' you did not train in this period ' + (hidden === 1 ? 'is' : 'are') + ' left out.' : '') + ' Tap an exercise for its chart.';
+    $('#plist-count').textContent = rows.length ? String(rows.length) : '';
+    $('#plist-note').textContent = 'Best set per session and its trend over ' + rangeWord() + '. Tap a lift for its chart.' + (hidden ? ' ' + plural(hidden, 'lift') + ' not trained in this period ' + (hidden === 1 ? 'is' : 'are') + ' left out.' : '');
     if (!rows.length) { box.append(h('div', 'empty', hidden ? 'Nothing trained here in ' + rangeWord() + '.' : 'Nothing logged here yet.')); return; }
     if (S.picked && !rows.some((r) => r.exercise === S.picked)) S.picked = null;
     rows.forEach((r) => {
@@ -2597,10 +2716,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       b.dataset.g = r.group;
       b.setAttribute('aria-expanded', String(open));
       const line = h('span', 'p-line');
-      line.append(h('b', '', r.latestLabel), r.sessions > 1 ? ' latest · best ' + r.bestLabel + ' · ' + plural(r.sessions, 'session') : ' · one session in this period');
-      b.append(h('span', 'p-name', r.exercise), line, h('span', 'p-ch' + (r.trend ? ' ' + r.trend : ''), r.trend ? TREND_MARK[r.trend] + r.changeLabel : ''));
+      line.append('Latest ', h('b', '', r.latestLabel), ' · ' + plural(r.sessions, 'session'));
+      b.append(h('span', 'p-name', r.exercise), line, spark(r), h('span', 'p-ch' + (r.trend ? ' ' + r.trend : ''), r.trend ? TREND_MARK[r.trend] + r.changeLabel : ''));
       b.setAttribute('aria-label', r.exercise + '. Latest best set ' + r.latestLabel + (r.sessions > 1 ? ', best ' + r.bestLabel + ', trend ' + TREND_WORD[r.trend] + ' ' + r.changeLabel + ' over ' + r.sessions + ' sessions' : ', one session in this period') + '. ' + (open ? 'Hide' : 'Show') + ' chart');
-      b.addEventListener('click', () => { S.picked = open ? null : r.exercise; drawList(); });
+      b.addEventListener('click', () => { S.picked = open ? null : r.exercise; drawList(all); });
       box.append(b);
       if (open) {
         const det = h('div', 'p-detail');
@@ -2671,7 +2790,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const key = loaded ? (S.metric === 'load' ? 'load' : 'est') : row.unit === 'bw' ? 'reps' : 'assist';
     const m = METRICS[key];
     if (loaded) det.append(radioTabs('Chart', [['est', 'Est. strength'], ['load', 'Heaviest set']], key, (k) => { S.metric = k; drawList(); }));
-    det.append(h('p', 'note', m.note + (key === 'est' && row.unit === 'stack' ? ' Pin numbers compare only with this machine.' : '') + ' The dashed line is the trend.'));
+    det.append(h('p', 'note', (row.sessions > 1 ? 'Best in this period: ' + row.bestLabel + '. ' : '') + m.note + (key === 'est' && row.unit === 'stack' ? ' Pin numbers compare only with this machine.' : '') + ' The dashed line is the trend, so one good or bad day does not decide the change.'));
     const box = h('div', 'chart');
     det.append(box);
     // a fresh start when earlier numbers no longer compare (new technique, other machine, bad-form history)
@@ -2765,15 +2884,18 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const drawTables = (all) => {
     const tab = S.ptab;
     const from = rangeFrom();
-    fillTable($('#sess-table'), sessionRows(all.filter((r) => r.date >= from)).filter(inSession), 5, (r) => [[fmtLong(parse(r.date)), 'nowrap'], [r.split], [String(tab === 'All' ? r.sets : r['g_' + tab]), 'num'], [tab === 'All' ? String(r.exercises) : r['l_' + tab], tab === 'All' ? 'num hide-n' : 'wrap hide-n'], [[r.note, r.extras].filter(Boolean).join(' · '), 'wrap']]);
+    const sess = sessionRows(all.filter((r) => r.date >= from)).filter(inSession);
+    $('#log-count').textContent = sess.length ? String(sess.length) : '';
+    fillTable($('#sess-table'), sess, 5, (r) => [[fmtLong(parse(r.date)), 'nowrap'], [r.split], [String(tab === 'All' ? r.sets : r['g_' + tab]), 'num'], [tab === 'All' ? String(r.exercises) : r['l_' + tab], tab === 'All' ? 'num hide-n' : 'wrap hide-n'], [[r.note, r.extras].filter(Boolean).join(' · '), 'wrap']]);
   };
   const renderProgress = () => {
     if (S.view !== 'progress') return;
     paintRange();
-    if (!(S.loaded.sessions && S.loaded.exercises)) { $('#take').textContent = 'Loading your progress…'; return; }
+    if (!(S.loaded.sessions && S.loaded.exercises)) { $('#take').textContent = 'Loading your progress…'; $('#p-stats').hidden = true; return; }
     const rows = flatten();
-    fillTotals(rows);
-    drawList();
+    const lifts = progressRows(rangeFrom());
+    fillTotals(rows, lifts.filter(inGroup));
+    drawList(lifts);
     drawVolume(rows);
     drawTables(rows);
   };
@@ -3443,7 +3565,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#h-intro').textContent = { manual: 'Ask your AI', start: S.root && S.root.intro_seen ? 'Build my plan' : 'Welcome to Yes Coach!', busy: 'Building your plan', saving: 'Saving your plan', error: 'That did not work', preview: 'Your plan' }[W.step];
     const p = W.profile;
     if (W.step === 'start') {
-      box.append(h('p', '', 'Three quick answers and your coach builds your first plan. Coming from another app? Bring your history along.'));
+      const skip = () => { readWizProfile(); if (!(S.root && S.root.intro_seen)) saveRoot({ profile: W.profile, export_ctx: exportCtx, intro_seen: true }); closeWizard(); };
+      const top = h('div', 'wz-top');
+      top.append(h('p', '', 'Three quick answers and your coach builds your first plan. Coming from another app? Bring your history along.'), plainBtn('textbtn wz-skip', S.wiz ? 'Cancel' : 'Skip setup', null, skip));
+      box.append(top);
       const re = () => { readWizProfile(); renderWizard(true); };
       box.append(chipRow('Days a week', [2, 3, 4, 5, 6].map((n) => [n, String(n)]), p.days_per_week, (v) => { p.days_per_week = v; re(); }));
       box.append(chipRow('Session length', [['short', '45 min'], ['medium', '60 min'], ['long', '90 min']], p.session_length, (v) => { p.session_length = v; re(); }));
@@ -3483,7 +3608,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const missing = W.src !== 'none' && !W.file;
       go.disabled = missing;
       go.addEventListener('click', () => { readWizProfile(); if (W.src === 'backup') restoreFromWizard(); else buildPlan(); });
-      const hand = plainBtn('textbtn', S.wiz ? 'Cancel' : 'Set it up by hand', null, () => { readWizProfile(); if (!(S.root && S.root.intro_seen)) saveRoot({ profile: W.profile, export_ctx: exportCtx, intro_seen: true }); closeWizard(); });
+      const hand = plainBtn('textbtn', S.wiz ? 'Cancel' : 'Skip setup', null, skip);
       const fr = h('div', 'foot-row');
       fr.append(go, hand);
       box.append(fr);
@@ -4656,7 +4781,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const boot = async () => {
     loadDrafts();
     const v = local.get('yc-view');
-    if (VIEWS.includes(v) || v === 'export') setView(v === 'export' ? 'settings' : v);
+    if ((VIEWS.includes(v) && v !== 'train') || v === 'export') setView(v === 'export' ? 'settings' : v);
     const a = local.get('yc-active');
     if (a && a.date && a.tpl) S.active = a;
     let db = null, user = null;

@@ -55,3 +55,11 @@ grant execute on function public.yc_update(text, jsonb) to authenticated;
 do $$ begin
   alter publication supabase_realtime add table public.docs;
 exception when duplicate_object then null; end $$;
+
+-- The number of accounts, for the Home page ("N people train with Yes Coach!"). Returns a count only, no emails.
+create or replace function public.user_count() returns integer
+language sql security definer set search_path = public as $$
+  select count(*)::int from auth.users;
+$$;
+revoke all on function public.user_count() from public;
+grant execute on function public.user_count() to anon, authenticated;

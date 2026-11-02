@@ -110,6 +110,8 @@
     setTimeout(() => URL.revokeObjectURL(url), 4000);
     return Promise.resolve();
   };
+  // how many people have an account, for the Home page; null when it cannot be read
+  window.YC_USERS = async () => { try { return await call(sb.rpc('user_count')); } catch (e) { return null; } };
   window.claude = {
     use: async (what) => {
       await signedIn;
