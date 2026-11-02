@@ -65,6 +65,11 @@ body.signed-out #stick, body.signed-out main, body.signed-out #resume, body.sign
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: var(--t2); line-height: 1.45; overflow-x: clip; }
+/* doodles behind every page: one line drawing, tinted with the ink color so it works in light and dark */
+body::after { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: var(--ink); opacity: var(--doodle, 0.08); -webkit-mask: url("doodles.png") 0 0 / 440px repeat; mask: url("doodles.png") 0 0 / 440px repeat; }
+:root[data-theme="dark"] { --doodle: 0.06; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --doodle: 0.06; } }
+@media (max-width: 600px) { body::after { -webkit-mask-size: 340px; mask-size: 340px; } }
 h1, h2, h3, p { margin: 0; }
 button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
@@ -1304,7 +1309,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#mark').addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); });
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
-    ['2 Nov 2026', 'Food search', ['Search over 9,000 foods in Food: Dutch foods from NEVO (RIVM) and international foods from USDA.', 'Food is per 100 g and drinks per 100 ml, with a cup, glass or bottle to tap: pick one, enter how much you had, and protein, carbs, fat and calories fill in.', 'Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven and other data sources (USDA FoodData Central).']],
+    ['2 Nov 2026', 'Food search', ['Search over 9,000 foods in Food: Dutch foods from NEVO (RIVM) and international foods from USDA.', 'Food is per 100 g and drinks per 100 ml. Do not know the weight? Tap small, medium or large, or a cup, glass or bottle for drinks.', 'Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven and other data sources (USDA FoodData Central).']],
     ['2 Nov 2026', 'Plan, rebuilt', ['Plan is now your week on one screen: every training day with its exercises.', 'Tap the weekdays you train, and choose what a missed day does: skip it, or move it up.', 'Edit a day as a short list: tap an exercise to change sets, reps and weight, drag to reorder, or replace it.', 'Ask your AI coach right from Plan to adjust your plan: you see what changes before anything does.']],
     ['2 Nov 2026', 'Exercises', ['New Exercises tab: all 304 exercises with search, body-part tabs and sorting.', 'Add any of them to a training day, or add your own exercise.', 'For you: body parts your training skips, and exercises close to the ones you do most.']],
     ['2 Nov 2026', 'Food', ['New Food tab: a simple list of what you eat, without numbers.', 'Want to count? Switch on calories in Settings, Food: log calories, protein, carbs and fat, get a suggested daily target from your goal, and see averages and a chart over 1 to 12 months.', 'Foods you logged before come back as one-tap chips.', 'About you now asks your goal: lose weight, gain muscle or both.']],
@@ -3810,6 +3815,23 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#fd-c').value = num(Math.round((it.c || 0) * k * 10) / 10);
     $('#fd-f').value = num(Math.round((it.f || 0) * k * 10) / 10);
   };
+  // typical small, medium and large portions in grams by kind of food, for when you do not know the weight (rough Dutch portions)
+  const PORTIONS = {
+    Meals: [250, 400, 550], Restaurant: [250, 400, 550], 'Fast food': [150, 250, 400], Soups: [200, 300, 450],
+    Meat: [75, 125, 200], Fish: [75, 125, 200], 'Plant-based': [75, 125, 200], 'Cold cuts': [15, 30, 60],
+    Vegetables: [100, 200, 300], Potatoes: [150, 250, 350], Legumes: [100, 175, 250], Fruit: [75, 125, 200],
+    Bread: [35, 70, 105], Bakery: [30, 60, 100], Pastry: [30, 60, 100], Cereals: [30, 45, 70],
+    Dairy: [100, 150, 250], Cheese: [20, 40, 60], Eggs: [50, 100, 150], 'Nuts and seeds': [15, 30, 50],
+    Snacks: [25, 50, 100], Sweets: [15, 30, 60], 'Fats and oils': [5, 10, 20], Spreads: [10, 20, 40], Sauces: [15, 30, 60], Supplements: [15, 30, 60],
+  };
+  const portionsFor = (it, n) => {
+    if (it.type === 'Spices') return null;
+    if (/\b(tosti|broodje|sandwich|wrap|burger|hamburger|kroket|frikandel|croissant)\b/.test(n)) return [100, 175, 250];
+    if (it.type === 'Grains') return /\b(gekookt|bereid|cooked|boiled)\b/.test(n) ? [150, 250, 350] : [30, 50, 80];
+    if (it.type === 'Sauces and soups') return /\b(soep|soup)\b/.test(n) ? PORTIONS.Soups : PORTIONS.Sauces;
+    if (it.type === 'Plant-based' && /yog/.test(n)) return PORTIONS.Dairy;
+    return PORTIONS[it.type] || [50, 100, 200];
+  };
   const pickFood = (hit) => {
     const it = hit.it;
     FD.pick = { it, label: hit.full };
@@ -3825,11 +3847,18 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const n = foldW(it.name + ' ' + (it.alt || ''));
     const sizes = !it.drink ? [] : it.type === 'Alcohol' ? (/\b(bier|beer)\b/.test(n) ? [['Beer glass', 250], ['Can', 330], ['Bottle', 500]] : [['Wine glass', 125], ['Shot', 35], ['Beer glass', 250]])
       : [['Cup', 125], ['Glass', 200], ['Mug', 250], ['Can', 330], ['Bottle', 500]];
-    const start = !it.drink ? 100 : /\b(koffie|coffee|thee|tea|espresso)\b/.test(n) ? 125 : sizes[0][0] === 'Beer glass' ? 250 : it.type === 'Alcohol' ? 125 : 200;
+    const slm = it.drink ? null : portionsFor(it, n);
+    const start = slm ? slm[1] : !it.drink ? 100 : /\b(koffie|coffee|thee|tea|espresso)\b/.test(n) ? 125 : sizes[0][0] === 'Beer glass' ? 250 : it.type === 'Alcohol' ? 125 : 200;
     const inp = edInput('fd-g', String(start));
     inp.inputMode = 'decimal';
     inp.addEventListener('input', fillFromPick);
     row.append(edField('Amount (' + it.u + ')', inp));
+    if (slm) ['Small', 'Medium', 'Large'].forEach((l, i) => {
+      const b = h('button', 'fd-chip', l + ' · ' + slm[i] + ' g');
+      b.type = 'button';
+      b.addEventListener('click', () => { inp.value = String(slm[i]); fillFromPick(); });
+      row.append(b);
+    });
     sizes.forEach(([l, v]) => {
       const b = h('button', 'fd-chip', l + ' · ' + v + ' ml');
       b.type = 'button';
