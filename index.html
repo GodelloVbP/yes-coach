@@ -1087,7 +1087,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const hasDone = (s) => Object.values((s && s.sets) || {}).some(isDone);
   const showRir = () => !!(S.root && S.root.settings && S.root.settings.show_rir);
   // calories and nutrients in Food are off until someone switches them on (on the start screen or in Settings)
-  const showCal = () => !!(S.root && S.root.settings && S.root.settings.show_calories);
+  // Accounts that already logged calories or set a target before this switch existed keep seeing them, until they switch it off.
+  const showCal = () => {
+    const v = S.root && S.root.settings && S.root.settings.show_calories;
+    if (typeof v === 'boolean') return v;
+    return !!((S.root && S.root.nutrition && (S.root.nutrition.kcal || S.root.nutrition.protein)) || Object.values(S.food || {}).some((d) => Object.values((d && d.entries) || {}).some((e) => e && e.kcal != null)));
+  };
   const setShowCal = (on) => saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { show_calories: !!on }) }).catch(() => {});
   const sessionsSorted = () => Object.values(S.sessions).sort((a, b) => (a.date < b.date ? 1 : -1));
   let lastCache = null;
