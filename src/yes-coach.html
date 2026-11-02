@@ -1259,7 +1259,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#mark').addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); });
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
-    ['2 Nov 2026', 'Food search', ['Search over 9,000 foods in Food: Dutch foods from NEVO (RIVM) and international foods from USDA.', 'Every food is per 100 g (drinks per 100 ml): pick one, enter how much you had, and protein, carbs, fat and calories fill in.', 'Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven and other data sources (USDA FoodData Central).']],
+    ['2 Nov 2026', 'Food search', ['Search over 9,000 foods in Food: Dutch foods from NEVO (RIVM) and international foods from USDA.', 'Food is per 100 g and drinks per 100 ml, with a cup, glass or bottle to tap: pick one, enter how much you had, and protein, carbs, fat and calories fill in.', 'Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven and other data sources (USDA FoodData Central).']],
     ['2 Nov 2026', 'Plan, rebuilt', ['Plan is now your week on one screen: every training day with its exercises.', 'Tap the weekdays you train, and choose what a missed day does: skip it, or move it up.', 'Edit a day as a short list: tap an exercise to change sets, reps and weight, drag to reorder, or replace it.', 'Ask your AI coach right from Plan to adjust your plan: you see what changes before anything does.']],
     ['2 Nov 2026', 'Exercises', ['New Exercises tab: all 304 exercises with search, body-part tabs and sorting.', 'Add any of them to a training day, or add your own exercise.', 'For you: body parts your training skips, and exercises close to the ones you do most.']],
     ['2 Nov 2026', 'Food', ['New Food tab: a simple list of what you eat, without numbers.', 'Want to count? Switch on calories in Settings, Food: log calories, protein, carbs and fat, get a suggested daily target from your goal, and see averages and a chart over 1 to 12 months.', 'Foods you logged before come back as one-tap chips.', 'About you now asks your goal: lose weight, gain muscle or both.']],
@@ -3569,7 +3569,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const addFood = async (e, date = S.fday) => {
     const id = 'e' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
     const entry = { name: e.name, kcal: e.kcal, p: e.p == null ? null : e.p, c: e.c == null ? null : e.c, f: e.f == null ? null : e.f, at: Date.now() };
-    if (e.src) Object.assign(entry, { src: e.src, ref: e.ref, g: e.g == null ? null : e.g });
+    if (e.src) Object.assign(entry, { src: e.src, ref: e.ref, g: e.g == null ? null : e.g, u: e.u || 'g' });
     const had = !!S.food[date];
     S.food[date] = Object.assign({ date }, S.food[date] || {});
     S.food[date].entries = Object.assign({}, S.food[date].entries || {}, { [id]: entry });
@@ -3649,7 +3649,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const mac = [e.p != null ? 'P ' + num(e.p) + ' g' : '', e.c != null ? 'C ' + num(e.c) + ' g' : '', e.f != null ? 'F ' + num(e.f) + ' g' : ''].filter(Boolean).join(' · ');
       const x = plainBtn('icon', '×', 'Remove ' + e.name, () => removeFood(id));
       const cal = showCal();
-      row.append(h('span', 'fd-row-name', e.name), h('span', 'fd-row-kcal', cal && e.kcal != null ? big(e.kcal) + ' kcal' : ''), x);
+      row.append(h('span', 'fd-row-name', e.name + (e.g ? ' · ' + num(e.g) + ' ' + (e.u || 'g') : '')), h('span', 'fd-row-kcal', cal && e.kcal != null ? big(e.kcal) + ' kcal' : ''), x);
       if (mac) row.append(h('span', 'fd-row-mac', mac));
       box.append(row);
     });
@@ -3685,6 +3685,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       else d.foods.forEach(([ref, name, g, kcal, p, c, f, sug, fib]) => items.push({ src: 'usda', ref, name, alt: '', type: d.groups[g], kcal, p, c, f, unit: 'g', sug, fib, w: wordsOf(name), w2: [] }));
     });
     items.forEach(shortName);
+    items.forEach((it) => {
+      const n = foldW(it.name + ' ' + (it.alt || ''));
+      it.drink = it.unit === 'ml' || it.type === 'Drinks' || it.type === 'Alcohol'
+        || (/\b(melk|milk|karnemelk|drank|drink|juice|sap|smoothie|shake|koffie|coffee|thee|tea)\b/.test(n) && !/poeder|powder|gecondenseerd|condensed|ijs|ice cream|pudding|vla|cake|koek|bar\b|reep/.test(n));
+      it.u = it.drink ? 'ml' : 'g';
+    });
     FDB = { items, srcs };
     return FDB;
   }));
@@ -3734,7 +3740,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // high protein: at least 20% of the energy from protein (EU claim) and enough to matter; high fibre: 6 g or more (EU claim);
   // high sugar: over 22.5 g, drinks over 11.25 g (UK front-of-pack red). Plus the kind of food.
   const foodTags = (it) => {
-    const ml = it.unit === 'ml' || it.type === 'Drinks';
+    const ml = it.drink;
     const t = [];
     if (it.kcal > 0 && ((it.p || 0) * 4) / it.kcal >= 0.2 && (it.p || 0) >= (ml ? 5 : 8)) t.push(['High protein', 'good']);
     if ((it.fib || 0) >= 6) t.push(['High fibre', 'good']);
@@ -3747,7 +3753,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (extra) row.append(h('span', 'fd-mini', extra));
     return row;
   };
-  const per100 = (it) => 'per 100 ' + it.unit + ': ' + (showCal() ? it.kcal + ' kcal · ' : '') + 'P ' + num(it.p || 0) + ' · C ' + num(it.c || 0) + ' · F ' + num(it.f || 0);
+  const per100 = (it) => 'per 100 ' + it.u + ': ' + (showCal() ? it.kcal + ' kcal · ' : '') + 'P ' + num(it.p || 0) + ' · C ' + num(it.c || 0) + ' · F ' + num(it.f || 0);
   const closeHits = () => { $('#fd-hits').hidden = true; $('#fd-name').setAttribute('aria-expanded', 'false'); };
   const fillFromPick = () => {
     const it = FD.pick.it;
@@ -3770,10 +3776,21 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const head = h('div', 'fd-amt-head');
     head.append(h('b', '', hit.label), tagRow(it), h('span', 'note', per100(it) + ' · ' + (it.src === 'nevo' ? 'NEVO' : 'USDA')));
     const row = h('div', 'fd-amt-row');
-    const inp = edInput('fd-g', '100');
+    // a few fixed sizes for drinks, the same for every drink; food stays in grams
+    const n = foldW(it.name + ' ' + (it.alt || ''));
+    const sizes = !it.drink ? [] : it.type === 'Alcohol' ? (/\b(bier|beer)\b/.test(n) ? [['Beer glass', 250], ['Can', 330], ['Bottle', 500]] : [['Wine glass', 125], ['Shot', 35], ['Beer glass', 250]])
+      : [['Cup', 125], ['Glass', 200], ['Mug', 250], ['Can', 330], ['Bottle', 500]];
+    const start = !it.drink ? 100 : /\b(koffie|coffee|thee|tea|espresso)\b/.test(n) ? 125 : sizes[0][0] === 'Beer glass' ? 250 : it.type === 'Alcohol' ? 125 : 200;
+    const inp = edInput('fd-g', String(start));
     inp.inputMode = 'decimal';
     inp.addEventListener('input', fillFromPick);
-    row.append(edField('Amount (' + it.unit + ')', inp));
+    row.append(edField('Amount (' + it.u + ')', inp));
+    sizes.forEach(([l, v]) => {
+      const b = h('button', 'fd-chip', l + ' · ' + v + ' ml');
+      b.type = 'button';
+      b.addEventListener('click', () => { inp.value = String(v); fillFromPick(); });
+      row.append(b);
+    });
     box.append(head, row, h('p', 'note', 'Amounts fill in the numbers below; you can still change them. ' + foodCredit()));
     fillFromPick();
     inp.focus();
@@ -3841,7 +3858,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const bad = [['p', '#fd-p'], ['c', '#fd-c'], ['f', '#fd-f']].find(([k]) => Number.isNaN(vals[k]));
     if (bad) { msg.textContent = 'Grams are numbers, or leave them empty.'; $(bad[1]).focus(); return; }
     msg.textContent = '';
-    const from = FD.pick && FD.pick.label === name ? { src: FD.pick.it.src, ref: FD.pick.it.ref, g: fnum($('#fd-g').value) } : {};
+    const from = FD.pick && FD.pick.label === name ? { src: FD.pick.it.src, ref: FD.pick.it.ref, g: fnum($('#fd-g').value), u: FD.pick.it.u } : {};
     ['#fd-name', '#fd-kcal', '#fd-p', '#fd-c', '#fd-f'].forEach((sel) => { $(sel).value = ''; });
     FD.pick = null;
     $('#fd-amount').hidden = true;
