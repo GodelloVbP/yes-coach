@@ -374,6 +374,16 @@ td.nowrap { white-space: nowrap; }
 .filebtn:focus-within { outline: 2px solid var(--ink); outline-offset: 2px; }
 #restore-preview { display: flex; flex-direction: column; gap: 0.5rem; }
 .settings { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; align-items: center; }
+.cr { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem; }
+.cr[hidden] { display: none; }
+.cr-card { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.75rem; border: 2px solid var(--ctl); }
+.cr-card.bad { border-color: var(--warn); }
+.cr-lab { display: flex; gap: 0.75rem; align-items: flex-start; cursor: pointer; }
+.cr-lab input { width: 1.25rem; height: 1.25rem; margin-top: 0.125rem; flex: none; accent-color: var(--ink); }
+.cr-body { display: flex; flex-direction: column; gap: 0.25rem; }
+.cr-what { font-weight: 700; }
+.cr-day { font-weight: 700; font-size: var(--t3); }
+.cr-pick { font: inherit; min-height: 44px; color: var(--ink); background: var(--paper); border: 2px solid var(--ctl); }
 .settings label { display: inline-flex; align-items: center; gap: 0.625rem; font-weight: 600; cursor: pointer; min-height: 44px; }
 .settings input[type="checkbox"] { width: 1.375rem; height: 1.375rem; accent-color: var(--ink); }
 
@@ -1004,8 +1014,10 @@ body.typing .restbar { display: none; }
           <button class="skew pop" type="button" id="ex-copy"><span>Copy</span></button>
           <button class="skew" type="button" id="ex-dl"><span>Download .md</span></button>
           <button class="skew" type="button" id="ex-csv"><span>Download .csv</span></button>
+          <button class="skew" type="button" id="ex-paste"><span>Paste coach reply</span></button>
           <span id="ex-state" aria-live="polite"></span>
         </div>
+        <div class="cr" id="ex-review" hidden></div>
         <label class="lab" for="ex-out" style="margin-top:0.75rem">Preview <span class="note" id="ex-size"></span></label>
         <textarea class="nt-text ex-out" id="ex-out" readonly spellcheck="false"></textarea>
       </section>
@@ -1356,6 +1368,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#mark').addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); });
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['4 Nov 2026', 'Your coach changes your plan', ['After Copy day, copy your AI\'s whole answer and tap Paste coach reply: Yes Coach shows each change, you untick any you do not want, and one tap applies them.', 'Undo puts your plan back. Also in Settings, under Export for review.']],
     ['2 Nov 2026', 'Real portion sizes', ['Dutch foods now offer RIVM\'s household measures: 1 beschuit (10 g), 1 snee (35 g), 1 glas (200 ml), 1 eetlepel and more, with 2 and 3 of them one tap away.', 'Portions: Portie-online versie 2026/2.0, RIVM, Bilthoven.']],
     ['2 Nov 2026', 'Food search', ['Search over 9,000 foods in Food: Dutch foods from NEVO (RIVM) and international foods from USDA.', 'Search, pick a food, tap how much. Food is per 100 g and drinks per 100 ml. Do not know the weight? Tap a portion: for Dutch foods these are RIVM\'s own household measures (Portie-online versie 2026/2.0, RIVM, Bilthoven), like 1 beschuit or 1 eetlepel.', 'Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven and other data sources (USDA FoodData Central).']],
     ['2 Nov 2026', 'Plan, rebuilt', ['Plan is now your week on one screen: every training day with its exercises.', 'Tap the weekdays you train, and choose what a missed day does: skip it, or move it up.', 'Edit a day as a short list: tap an exercise to change sets, reps and weight, drag to reorder, or replace it.', 'Ask your AI coach right from Plan to adjust your plan: you see what changes before anything does.']],
@@ -1887,12 +1900,16 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       if (ok) cpBox.hidden = true;
       cpMsg.textContent = ok ? COPIED : COPY_BLOCKED;
     });
-    copyRow.append(cp, cpMsg);
+    const rv = h('div', 'cr');
+    rv.hidden = true;
+    const paste = btn('skew', 'Paste coach reply');
+    paste.addEventListener('click', () => pasteReply(rv, S.active.tpl));
+    copyRow.append(cp, paste, cpMsg);
     const finRow = h('div', 'foot-row');
     const fin = btn('skew', 'Finish session');
     fin.addEventListener('click', finishSession);
     finRow.append(fin, h('span', 'note', 'Ticked sets are already saved; finishing closes the day.'));
-    foot.append(addRow, pk, gen, copyRow, cpBox, finRow);
+    foot.append(addRow, pk, gen, copyRow, cpBox, rv, finRow);
     // a day opened on another date: a day ahead is a look at your set, a day behind is a look back.
     // Either way one button trains that same day today (a day done earlier this week is not planned again, so this is the way in).
     if (a.date !== today()) {
@@ -4219,11 +4236,24 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const CAN_WRITE = 'If you can read and write the Yes Coach database (your artifact data tool; artifact ' + APP_URL + ')';
   const ITEM_FIELDS = 'Item fields: ex (exercise id), order (1, 2, 3 ...: the order of the exercises on that day; to reorder, send the items in the new order and renumber them), sets (number), reps (text, for example "8", "10 per arm", "max"), target (the load as text, a number in the exercise\'s unit), target_at (today\'s date as YYYY-MM-DD, set whenever reps or target change), rest_s (seconds), note (a short coaching cue), kind ("warmup" for warm-up exercises, otherwise leave it out).';
   const EXERCISE_DOC = 'set, collection "' + DB + '/exercises", doc_id the lowercase hyphenated name, data {"name", "group" (Back, Chest, Shoulders, Arms, Legs, Core or Other), "category": "strength" ("cardio" for cardio), "unit" (kg, stack, bw, assist or min), "load_basis" ("total" or "per_side", kg only), "better": "higher", "per_side": false, "rest_s": 90, "shoulder": null, "library_id": null}';
+  // the block Yes Coach reads back when the reply is pasted (Paste coach reply); readPlanBlock parses it
+  const PLAN_BLOCK = [
+    'Then repeat the same changes in one code block for Yes Coach, which applies them when I paste your answer back. Use exactly this format, with ids from Plan data and only the fields that change:',
+    '```yescoach-plan',
+    '{"template": "<template id>", "version": "<version from Plan data>", "changes": [',
+    '  {"ex": "<exercise id>", "sets": 3, "reps": "8", "target": "22.5", "why": "<one-line reason>"},',
+    '  {"ex": "<exercise id>", "add_after": "<exercise id it follows>", "sets": 2, "reps": "max", "target": "", "why": "<reason>"},',
+    '  {"ex": "<exercise id>", "remove": true, "why": "<reason>"}',
+    ']}',
+    '```',
+    'Fields you can change: sets (number), reps (text), target (the load as text, a number in the exercise\'s unit; "" for bodyweight), rest_s (seconds), note (a short cue). To add an exercise that has no id yet, invent a lowercase hyphenated id and add "name". More than one day: a JSON array with one object per day. No changes: "changes": [].',
+  ];
   const applyLines = (ids) => {
     const have = ids.filter((id) => S.templates[id]);
     const many = have.length > 1;
     const o = ['## Changing my plan in Yes Coach', ''];
     o.push('End your review with "Plan changes": one line per change (exercise, sets x reps, load with unit, a one-line reason). List only what should change.');
+    if (have.length) o.push.apply(o, PLAN_BLOCK);
     if (!have.length || !AI_CAN_WRITE) return o.concat(['']);
     o.push(CAN_WRITE + ', apply the changes yourself in two calls, without exploring:');
     o.push('1. get, collection "' + DB + '/templates", doc_id ' + (many ? 'the template id of the day you change (listed under Plan data)' : '"' + have[0] + '"') + '. The result carries the version.');
@@ -4240,13 +4270,19 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const exIds = [];
     have.forEach((id) => {
       const t = S.templates[id];
-      o.push('### Template id: ' + id + ' (' + (t.name || id) + ')');
+      o.push('### Template id: ' + id + ' (' + (t.name || id) + '), version ' + tplVersion(t));
       o.push('[', (t.items || []).map((it) => '  ' + JSON.stringify(it)).join(',\n'), ']', '');
       (t.items || []).forEach((it) => { if (!exIds.includes(it.ex)) exIds.push(it.ex); });
     });
-    o.push('Exercise ids: ' + exIds.map((x) => { const e = S.exercises[x] || {}; return x + ' = ' + (e.name || x) + ' (' + (unitWord(e) || 'bodyweight') + ')'; }).join('; ') + '.', '');
+    const exLine = (ids) => ids.map((x) => { const e = S.exercises[x] || {}; return x + ' = ' + (e.name || x) + ' (' + (unitWord(e) || 'bodyweight') + ')'; }).join('; ') + '.';
+    o.push('Exercise ids: ' + exLine(exIds));
+    const others = Object.keys(S.exercises).filter((x) => !exIds.includes(x)).sort();
+    if (others.length) o.push('Other exercises in my log, to add by id: ' + exLine(others));
+    o.push('');
     return o;
   };
+  // a short fingerprint of a day's items: the plan block echoes it, so a reply to an older plan is noticed
+  const tplVersion = (t) => { const s = JSON.stringify((t && t.items) || []); let x = 0; for (let i = 0; i < s.length; i++) x = (x * 31 + s.charCodeAt(i)) | 0; return (x >>> 0).toString(36); };
   const buildExportText = () => {
     const out = [];
     out.push('# Training review request', '');
@@ -4443,6 +4479,218 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   const COPIED = 'Copied. Paste it into your chat or message.';
   const COPY_BLOCKED = 'Copying is blocked here. Select the text below and copy it.';
+
+  // ------------------------------------------------------------------ paste coach reply: the AI's plan block back into the plan
+  const PLAN_FIELDS = ['sets', 'reps', 'target', 'rest_s', 'note'];
+  const ASK_BLOCK = 'Please end your answer with the yescoach-plan code block, in the format my message asked for.';
+  const sortedItems = (t) => ((t && t.items) || []).slice().sort((a, b) => (a.order || 0) - (b.order || 0));
+  // every yescoach-plan code block in the reply as one list of days [{template, version, changes}]; null when there is none or it is not JSON
+  const readPlanBlock = (text) => {
+    const days = [];
+    const re = /```[ \t]*yescoach-plan\s*([\s\S]*?)```/gi;
+    let m;
+    while ((m = re.exec(String(text || '')))) {
+      let j = null;
+      try { j = JSON.parse(m[1]); } catch (e) { return null; }
+      (Array.isArray(j) ? j : [j]).forEach((d) => { if (d && typeof d === 'object') days.push(d); });
+    }
+    return days.length ? days : null;
+  };
+  // only the fields Yes Coach stores, within sane limits
+  const cleanFields = (c) => {
+    const f = {};
+    if (c.sets != null) f.sets = intIn(c.sets, 1, 10, 3);
+    if (c.reps != null) f.reps = String(c.reps).slice(0, 20);
+    if (c.target != null) f.target = String(c.target).slice(0, 20);
+    if (c.rest_s != null) f.rest_s = intIn(c.rest_s, 0, 600, 90);
+    if (c.note !== undefined) f.note = c.note ? String(c.note).slice(0, 140) : null;
+    return f;
+  };
+  // the exercise a change means: yours by id or name, else a library one (created on Apply), else unknown ({name})
+  const resolvePlanEx = (c, items) => {
+    const id = String(c.ex || '').trim();
+    if (S.exercises[id] || items.some((it) => it.ex === id)) return { ex: id };
+    const name = String(c.name || id.replace(/-/g, ' ')).trim();
+    const own = Object.keys(S.exercises).find((k) => nameKey(S.exercises[k].name) === nameKey(name));
+    if (own) return { ex: own };
+    const lib = name ? libMatch(name) : null;
+    return lib ? { lib: LIB_BY_ID.get(lib) } : { name: name || '?' };
+  };
+  // the reply as review cards: one group per training day, one change per card, unknown exercises left unticked
+  const planReview = (days, fallbackTpl) => {
+    const rv = { groups: [], problems: [] };
+    days.forEach((d) => {
+      const id = S.templates[d.template] ? d.template : days.length === 1 && S.templates[fallbackTpl] ? fallbackTpl : null;
+      if (!id) { rv.problems.push('Your coach changed a day you do not have (' + (d.template || 'no day named') + '). Those changes are left out.'); return; }
+      const t = S.templates[id];
+      const items = sortedItems(t);
+      let g = rv.groups.find((x) => x.id === id);
+      if (!g) { g = { id, name: t.name || id, stale: d.version != null && String(d.version) !== tplVersion(t), changes: [] }; rv.groups.push(g); }
+      (Array.isArray(d.changes) ? d.changes : []).forEach((c) => {
+        if (!c || typeof c !== 'object') return;
+        const r = resolvePlanEx(c, items);
+        const cur = r.ex ? items.find((it) => it.ex === r.ex) : null;
+        const why = c.why ? String(c.why).slice(0, 200) : '';
+        if (c.remove) { if (cur) g.changes.push({ kind: 'remove', ex: r.ex, fields: {}, why, on: true }); return; }
+        const fields = cleanFields(c);
+        if (cur && !PLAN_FIELDS.some((k) => k in fields && String(fields[k] == null ? '' : fields[k]) !== String(cur[k] == null ? '' : cur[k]))) return; // asks for what is already there
+        g.changes.push({ kind: cur ? 'edit' : 'add', ex: r.ex || null, lib: r.lib || null, name: r.name || null, fields, after: c.add_after ? String(c.add_after) : null, why, on: !!(r.ex || r.lib) });
+      });
+    });
+    return rv;
+  };
+  const loadText = (it, ex) => (it.sets || '?') + ' × ' + (it.reps || '?') + (it.target ? ' @ ' + withUnit(it.target, unitWord(S.exercises[ex] || {})) : '');
+  const changeText = (g, c) => {
+    const name = c.ex ? exName(c.ex) : c.lib ? c.lib.name : c.name;
+    if (c.kind === 'remove') return name + ': take out of ' + g.name;
+    const cur = c.ex ? sortedItems(S.templates[g.id]).find((it) => it.ex === c.ex) : null;
+    if (!cur) return name + ': add ' + loadText(Object.assign({ sets: 3, reps: '10', target: '' }, c.fields), c.ex) + (c.after ? ' after ' + exName(c.after) : '');
+    const next = Object.assign({}, cur, c.fields);
+    const bits = [];
+    if (['sets', 'reps', 'target'].some((k) => k in c.fields)) bits.push(loadText(cur, c.ex) + ' → ' + loadText(next, c.ex));
+    if ('rest_s' in c.fields) bits.push('rest ' + (cur.rest_s == null ? '?' : cur.rest_s) + ' → ' + next.rest_s + ' s');
+    if ('note' in c.fields) bits.push('new cue: ' + (next.note || 'none'));
+    return name + ': ' + bits.join(', ');
+  };
+  // write the ticked changes; returns how many and the days as they were, for Undo
+  const applyPlanReview = async (rv) => {
+    const before = {};
+    let n = 0;
+    for (const g of rv.groups) {
+      const on = g.changes.filter((c) => c.on);
+      if (!on.length) continue;
+      before[g.id] = clone(S.templates[g.id]);
+      const t = clone(S.templates[g.id]);
+      const items = sortedItems(t);
+      for (const c of on) {
+        const ex = c.ex || await ensureExercise(c.lib);
+        const at = items.findIndex((it) => it.ex === ex);
+        const f = Object.assign({}, c.fields);
+        if ('reps' in f || 'target' in f) f.target_at = today();
+        if (c.kind === 'remove') { if (at >= 0) items.splice(at, 1); }
+        else if (at >= 0) Object.assign(items[at], f);
+        else {
+          const e = S.exercises[ex] || {};
+          const after = c.after ? items.findIndex((it) => it.ex === c.after) : -1;
+          items.splice(after >= 0 ? after + 1 : items.length, 0, Object.assign({ ex, sets: 3, reps: '10', target: '', target_at: today(), rest_s: e.rest_s == null ? 90 : e.rest_s, note: null }, f));
+        }
+        n++;
+      }
+      items.forEach((it, k) => { it.order = k + 1; });
+      t.items = items;
+      S.templates[g.id] = t;
+      await S.rootRef.collection('templates').doc(g.id).set(t);
+    }
+    return { n, before };
+  };
+  const undoPlan = (before) => {
+    Object.entries(before).forEach(([id, t]) => { S.templates[id] = t; S.rootRef.collection('templates').doc(id).set(t).catch(() => {}); });
+    refresh();
+    showToast('Your plan is back as it was.', null);
+  };
+  const closeReview = (box) => { box.replaceChildren(); box.hidden = true; };
+  const openReview = (box) => { box.replaceChildren(); box.hidden = false; };
+  const reviewRow = (box, buttons) => { const r = h('div', 'foot-row'); r.append.apply(r, buttons.concat(plainBtn('textbtn', 'Close', null, () => closeReview(box)))); box.append(r); return r; };
+  // Paste coach reply: the clipboard first; a paste box when the browser says no or the clipboard is empty
+  const pasteReply = async (box, tpl) => {
+    let text = '';
+    try { text = await navigator.clipboard.readText(); } catch (e) { text = ''; }
+    if (text.trim()) showReply(box, text, tpl); else pasteBox(box, tpl);
+  };
+  const pasteBox = (box, tpl) => {
+    openReview(box);
+    const ta = h('textarea', 'nt-text');
+    ta.rows = 5;
+    ta.placeholder = 'Paste your coach\'s whole answer here.';
+    ta.setAttribute('aria-label', 'Your coach\'s answer');
+    const go = btn('skew pop', 'Read the answer');
+    go.addEventListener('click', () => { if (ta.value.trim()) showReply(box, ta.value, tpl); else ta.focus(); });
+    box.append(ta);
+    reviewRow(box, [go]);
+    ta.focus();
+  };
+  // the text Yes Coach itself copied (Copy day or the export): it carries the format example, which is not a reply
+  const isOwnText = (text) => text.includes('## Plan data (as stored)');
+  const noBlock = (box, text, tpl) => {
+    openReview(box);
+    const byHand = plainBtn('textbtn', 'Paste by hand', null, () => pasteBox(box, tpl));
+    if (isOwnText(text)) { box.append(h('p', 'wz-err', 'That is still your own workout text. Copy your coach\'s answer first, then tap Paste coach reply again.')); reviewRow(box, [byHand]); return; }
+    const broken = /```[ \t]*yescoach-plan/i.test(text);
+    box.append(h('p', 'wz-err', (broken ? 'The plan block in your coach\'s answer has a mistake in it' : 'Your coach did not include the plan block') + ', so Yes Coach cannot read the changes. Send your coach this line, then copy the new answer:'), h('p', 'note', ASK_BLOCK));
+    const ta = h('textarea', 'nt-text ex-out');
+    ta.readOnly = true;
+    ta.hidden = true;
+    const cp = btn('skew pop', 'Copy this line');
+    const msg = h('span', 'note');
+    msg.setAttribute('aria-live', 'polite');
+    cp.addEventListener('click', async () => { msg.textContent = (await copyText(ASK_BLOCK, ta)) ? COPIED : COPY_BLOCKED; });
+    reviewRow(box, [cp, msg, byHand]);
+    box.append(ta);
+  };
+  const changeCard = (g, c, onChange) => {
+    const card = h('div', 'cr-card' + (c.ex || c.lib ? '' : ' bad'));
+    const lab = h('label', 'cr-lab');
+    const cb = h('input');
+    cb.type = 'checkbox';
+    cb.checked = c.on;
+    cb.disabled = !(c.ex || c.lib);
+    cb.addEventListener('change', () => { c.on = cb.checked; onChange(); });
+    const what = h('span', 'cr-what', changeText(g, c));
+    const body = h('span', 'cr-body');
+    body.append(what);
+    if (c.why) body.append(h('span', 'note', c.why));
+    lab.append(cb, body);
+    card.append(lab);
+    if (!c.ex && !c.lib) {
+      const hint = h('span', 'note', 'Yes Coach does not know "' + c.name + '". Pick the exercise your coach means, or leave it out.');
+      const sel = h('select', 'cr-pick');
+      sel.setAttribute('aria-label', 'Exercise for ' + c.name);
+      sel.append(new Option('Pick an exercise…', ''));
+      Object.entries(S.exercises).sort((a, b) => (a[1].name < b[1].name ? -1 : 1)).forEach(([id, e]) => sel.append(new Option(e.name, id)));
+      sel.addEventListener('change', () => {
+        c.ex = sel.value || null;
+        cb.disabled = !c.ex;
+        cb.checked = c.on = !!c.ex;
+        card.classList.toggle('bad', !c.ex);
+        what.textContent = changeText(g, c);
+        onChange();
+      });
+      card.append(hint, sel);
+    }
+    return card;
+  };
+  const showReply = (box, text, tpl) => {
+    const days = isOwnText(text) ? null : readPlanBlock(text);
+    if (!days) { noBlock(box, text, tpl); return; }
+    const rv = planReview(days, tpl);
+    const all = [].concat.apply([], rv.groups.map((g) => g.changes));
+    openReview(box);
+    rv.problems.forEach((p) => box.append(h('p', 'wz-err', p)));
+    if (!all.length) { box.append(h('p', '', 'Your coach keeps your plan as it is. Nothing to change.')); reviewRow(box, []); return; }
+    box.append(h('span', 'lab', 'Changes from your coach'));
+    const apply = btn('skew pop', '');
+    const err = h('p', 'wz-err');
+    err.setAttribute('role', 'alert');
+    const sync = () => { const k = all.filter((c) => c.on).length; apply.disabled = !k; apply.firstChild.textContent = k ? 'Apply ' + plural(k, 'change') : 'Nothing ticked'; };
+    rv.groups.forEach((g) => {
+      if (!g.changes.length) return;
+      if (rv.groups.length > 1) box.append(h('p', 'cr-day', g.name));
+      if (g.stale) box.append(h('p', 'wz-err', g.name + ' changed after you copied it, so your coach saw an older version. Check these before you apply them.'));
+      g.changes.forEach((c) => box.append(changeCard(g, c, sync)));
+    });
+    apply.addEventListener('click', async () => {
+      apply.disabled = true;
+      try {
+        const res = await applyPlanReview(rv);
+        closeReview(box);
+        refresh();
+        showToast(plural(res.n, 'change') + ' applied to your plan.', () => undoPlan(res.before));
+      } catch (e) { err.textContent = 'Not saved. Check your connection and try again.'; sync(); }
+    });
+    sync();
+    box.append(err);
+    reviewRow(box, [apply]);
+  };
   // save a file through the page's download permission; resolves to the line to show
   const download = async (filename, data, ok = 'File ready.') => {
     if (!dlCap) return 'Downloads are not available in this view. Use Copy instead.';
@@ -4456,6 +4704,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     ctxTimer = setTimeout(() => { if (S.rootRef && S.root) saveRoot({ export_ctx: exportCtx }).catch(() => flash($('#ex-state'), 'Your notes were not saved. Keep typing to retry.')); }, 800);
     paintExport();
   });
+  $('#ex-paste').addEventListener('click', () => pasteReply($('#ex-review'), null));
   $('#ex-copy').addEventListener('click', async () => { paintExport(); flash($('#ex-state'), (await copyText($('#ex-out').value, $('#ex-out'))) ? COPIED : COPY_BLOCKED); });
   $('#ex-dl').addEventListener('click', async () => { paintExport(); flash($('#ex-state'), await download(exportName('md'), $('#ex-out').value)); });
   $('#ex-csv').addEventListener('click', async () => flash($('#ex-state'), await download(exportName('csv'), buildCsv())));
