@@ -175,6 +175,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .ex.is-done .ex-name { color: var(--ink-soft); }
 .ex.is-done .ex-name::after { content: " ✓"; }
 .ex-cap { font-size: var(--t2); font-weight: 500; color: var(--ink-soft); }
+.ex-dtog { display: flex; align-items: center; gap: 0.625rem; width: 100%; min-height: 44px; padding: 0.25rem 0; background: none; border: 0; border-bottom: 1px solid var(--line); color: var(--ink-soft); font: inherit; font-size: var(--t1); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; text-align: left; cursor: pointer; }
+.ex-dtog:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.ex-dtog .p-caret { width: 0.5rem; height: 0.5rem; border-color: var(--ink-soft); border-width: 0 2px 2px 0; }
+.ex-dtog[aria-expanded="true"] .p-caret { transform: rotate(-135deg); }
+.ex-det { display: flex; flex-direction: column; gap: 0.5rem; }
+.ex-det[hidden] { display: none; }
 .ex-cap b { color: var(--ink); font-weight: 600; }
 .ex-tip { font-size: var(--t2); color: var(--ink); font-weight: 500; border-left: 3px solid var(--ctl); padding-left: 0.625rem; }
 .ex-lastnote { font-size: var(--t1); color: var(--ink-soft); font-weight: 500; line-height: 1.4; }
@@ -1943,13 +1949,34 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (item.planned) bits.push(['Target' + (item.target_at ? ' (' + dm(item.target_at) + ')' : ''), item.sets + ' × ' + (item.reps || '?') + (item.target ? ' @ ' + withUnit(item.target, uw) : '')]);
     bits.push(['Last', last ? fmtSets(last.sets, unit, uw) + ' (' + dm(last.date) + ')' : 'none yet']);
     bits.forEach(([k, v], i) => { if (i) cap.append(' · '); cap.append(k + ' '); cap.append(h('b', '', v)); });
-    wrap.append(cap);
-    if (item.note) wrap.append(h('div', 'ex-tip', item.note));
+    // target, last time, how-to and your last note fold away under one header; closed until you open it, remembered per exercise
+    const det = h('div', 'ex-det');
+    det.id = 'det-' + item.ex;
+    det.append(cap);
+    if (item.note) det.append(h('div', 'ex-tip', item.note));
     const ln = lastNoteFor(item.ex);
     if (ln) {
       const t = String(ln.text).replace(/\s+/g, ' ').trim();
-      wrap.append(h('div', 'ex-lastnote', 'Your note, ' + dm(ln.date) + ': ' + (t.length > 160 ? t.slice(0, 157) + '…' : t)));
+      det.append(h('div', 'ex-lastnote', 'Your note, ' + dm(ln.date) + ': ' + (t.length > 160 ? t.slice(0, 157) + '…' : t)));
     }
+    const opened = local.get('yc-exopen') || [];
+    const isOpen = opened.includes(item.ex);
+    det.hidden = !isOpen;
+    const dtog = h('button', 'ex-dtog');
+    dtog.type = 'button';
+    dtog.setAttribute('aria-expanded', String(isOpen));
+    dtog.setAttribute('aria-controls', det.id);
+    dtog.append(h('span', '', [item.planned ? 'Target' : null, 'Last time', item.note ? 'How to' : null, ln ? 'Your note' : null].filter(Boolean).join(' · ')), h('span', 'p-caret'));
+    dtog.lastChild.setAttribute('aria-hidden', 'true');
+    dtog.addEventListener('click', () => {
+      const open = det.hidden;
+      det.hidden = !open;
+      dtog.setAttribute('aria-expanded', String(open));
+      const list = (local.get('yc-exopen') || []).filter((x) => x !== item.ex);
+      if (open) { list.push(item.ex); enter(det); }
+      local.set('yc-exopen', list.slice(-60));
+    });
+    wrap.append(dtog, det);
     let fill = null;
     let why = null;
     if (last) {
