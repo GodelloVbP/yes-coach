@@ -718,6 +718,30 @@ body.typing .restbar { display: none; }
 .swaprow, .prow, .kmenu button, .sb-menu button, .set-tick { transition: background-color 0.15s, transform 0.2s cubic-bezier(0.3, 1.7, 0.5, 1); }
 .swaprow:active, .prow:active, .kmenu button:active, .sb-menu button:active { background: var(--faint); }
 .set-tick.pop > span { animation: tick-pop 0.32s ease-out; }
+/* ---- feedback on every control. Press: shows at once, fades out slowly, so even a quick tap is seen. Hover: mouse only. ---- */
+:root { --press: color-mix(in srgb, var(--ink) 16%, transparent); --hover: color-mix(in srgb, var(--ink) 8%, transparent); }
+.set-tog, summary, .prow, .xl-row, .seg-b, .fd-hit, .pw-tap, .swaprow, .kmenu button, .sb-menu button, .menu-btn, .mark-btn, .sb-more, .arrow, select { transition: background-color 0.3s ease-out, border-color 0.15s, color 0.15s, transform 0.18s cubic-bezier(0.3, 1.7, 0.5, 1); }
+.set-tog:active, summary:active, .prow:active, .xl-row:active, .seg-b:active, .fd-hit:active, .pw-tap:active, .swaprow:active, .kmenu button:active, .sb-menu button:active, .menu-btn:active, .sb-more:active, .arrow:active, select:active { background-color: var(--press); transition-duration: 0s; }
+.menu-btn:active, .mark-btn:active { transform: scale(0.92); }
+.skew.solid:not([disabled]):active { opacity: 0.8; }
+.day-go:active { fill-opacity: 0.6; }
+@media (max-width: 719px) {
+  .appbar .tab { transition: background-color 0.3s ease-out, color 0.15s; }
+  .appbar .tab:active { background-color: var(--press); transform: none; transition-duration: 0s; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .skew:not([disabled]):hover { border-color: var(--ink); }
+  .skew:not([disabled]):not(.pop):not(.solid):hover { background-color: var(--faint); }
+  .skew.solid:not([disabled]):hover { opacity: 0.88; }
+  .pill:hover, .pk-chip:hover { border-color: var(--ink); }
+  .pk-chip:not([aria-pressed="true"]):hover { background-color: var(--faint); }
+  .tab:not([aria-selected="true"]):not([aria-pressed="true"]):hover { color: var(--ink); border-bottom-color: var(--ctl); }
+  .set-tog:hover, summary:hover, .menu-btn:hover, .mark-btn:hover, .sb-more:hover, .sb-back:hover { background-color: var(--hover); }
+  .arrow:not(:disabled):hover { background-color: var(--faint); border-color: var(--ink); }
+  .link:hover, .textbtn:hover { text-decoration-thickness: 2px; }
+  select:hover { border-bottom-color: var(--ink); cursor: pointer; }
+  .day-go:hover { stroke: var(--ink); stroke-opacity: 1; stroke-width: 2px; }
+}
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
 </style>
 
