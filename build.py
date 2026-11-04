@@ -10,6 +10,7 @@ head = '''<link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png?v=3">
 <meta name="theme-color" content="#26358f">
+<script>try{var t=JSON.parse(localStorage.getItem('yc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Yes Coach">
 <meta name="description" content="A free, ad-free workout tracker: log sets, plan your week, track your progress and what you eat.">
