@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-04 11:52Z">
+<meta name="yc-build" content="2026-11-04 12:49Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png?v=3">
@@ -114,6 +114,23 @@ html { scroll-padding-top: calc(var(--stick-h, 56px) + 0.75rem); }
 @media (max-width: 379px) { .appbar .tab { font-size: var(--t1); letter-spacing: 0.01em; } .tabs { gap: 0.25rem 0.5rem; } .ab-in { gap: 0.375rem; } .mark { width: 24px; } }
 .tab { background: none; border: 0; border-bottom: 3px solid transparent; min-height: 44px; padding: 0 0.125rem; font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-soft); cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; }
 .tab[aria-selected="true"], .tab[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+/* Phones: the tabs sit in a menu behind the hamburger, with the name of the current view next to the logo. */
+.menu-btn, .menu-cur { display: none; }
+.menu-btn { flex: none; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0; background: none; border: 0; border-bottom: 3px solid transparent; color: var(--ink); cursor: pointer; }
+.menu-btn[aria-expanded="true"] { border-bottom-color: var(--ink); }
+.menu-cur { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink); }
+@media (max-width: 719px) {
+  .ab-in { justify-content: flex-start; }
+  .menu-btn { display: inline-flex; margin-left: auto; }
+  .menu-cur { display: block; }
+  .tabs { display: none; position: absolute; left: 0; right: 0; top: 100%; z-index: 20; flex-direction: column; gap: 0; padding: 0.25rem max(16px, env(safe-area-inset-right, 0px)) 0.5rem max(16px, env(safe-area-inset-left, 0px)); background: var(--bg); border-bottom: 1px solid var(--line); box-shadow: 0 10px 24px rgba(16, 20, 43, 0.25); }
+  .tabs.open { display: flex; }
+  .appbar .tab { width: 100%; min-height: 48px; justify-content: flex-start; padding: 0 0.125rem; font-size: var(--t3); letter-spacing: 0.04em; border-bottom: 1px solid var(--line); }
+  .appbar .tab[aria-selected="true"] { border-bottom-color: var(--ink); }
+  .tab-gear::after { content: attr(aria-label); }
+}
+@media (max-width: 719px) { :root[data-theme="dark"] .tabs { background: var(--faint); } }
+@media (max-width: 719px) and (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tabs { background: var(--faint); } }
 .view[hidden] { display: none; }
 
 /* session bar */
@@ -750,14 +767,17 @@ body.typing .restbar { display: none; }
   <header class="appbar" id="appbar">
     <div class="in ab-in">
       <button type="button" class="mark-btn" id="mark" aria-label="Yes Coach! home"><svg class="mark" viewBox="0 0 52 40" aria-hidden="true"><g transform="translate(8 0) skewX(-14)"><rect x="0" y="12" width="7" height="16" fill="var(--logo-bar)"/><rect x="9" y="2" width="9" height="36" fill="var(--logo-bar)"/><rect x="20" y="12" width="7" height="16" fill="#ff8a65"/><rect x="29" y="2" width="9" height="36" fill="var(--logo-bar)"/></g></svg></button>
-      <nav class="tabs" role="tablist" aria-label="View">
+      <span class="menu-cur" id="menu-cur" aria-hidden="true"></span>
+      <nav class="tabs" role="tablist" aria-label="View" id="tabs-nav">
         <button class="tab" role="tab" type="button" id="tab-train" data-view="train" aria-selected="true">Train</button>
         <button class="tab" role="tab" type="button" id="tab-plan" data-view="plan" aria-selected="false">Plan</button>
         <button class="tab" role="tab" type="button" id="tab-exercises" data-view="exercises" aria-selected="false">Exercises</button>
         <button class="tab" role="tab" type="button" id="tab-progress" data-view="progress" aria-selected="false">Progress</button>
         <button class="tab" role="tab" type="button" id="tab-food" data-view="food" aria-selected="false">Food</button>
+        <button class="tab" role="tab" type="button" id="tab-feedback" data-view="feedback" aria-selected="false" hidden>Feedback &amp; Requests</button>
         <button class="tab tab-gear" role="tab" type="button" id="tab-settings" data-view="settings" aria-selected="false" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3.3h-4l-.3 2.6a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1l.3 2.6h4l.3-2.6a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg></button>
       </nav>
+      <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="tabs-nav" aria-label="Menu"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2.5H3zM3 10.75h18v2.5H3zM3 15.5h18V18H3z"/></svg></button>
     </div>
   </header>
   <div class="sbar" id="sbar" hidden>
@@ -965,6 +985,8 @@ body.typing .restbar { display: none; }
       </div>
     </div>
   </div>
+
+  <div class="view" id="v-feedback" hidden></div>
 
   <div class="view" id="v-settings" hidden>
     <div class="set-wrap in">
@@ -1337,13 +1359,16 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
 
   // ------------------------------------------------------------------ views
-  const VIEWS = ['home', 'train', 'plan', 'exercises', 'progress', 'food', 'settings'];
+  const VIEWS = ['home', 'train', 'plan', 'exercises', 'progress', 'food', 'feedback', 'settings'];
   const setView = (v) => {
     if (S.view !== v) { hideToast(); enter($('#v-' + v), 16 * Math.sign(VIEWS.indexOf(v) - VIEWS.indexOf(S.view))); }
     S.view = v;
     $$('[data-view]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.view === v)));
     if (v === 'home') $('#mark').setAttribute('aria-current', 'page'); else $('#mark').removeAttribute('aria-current');
     VIEWS.forEach((x) => { $('#v-' + x).hidden = x !== v; });
+    const cur = $('[data-view][aria-selected="true"]');
+    $('#menu-cur').textContent = cur ? cur.getAttribute('aria-label') || cur.textContent.trim() : '';
+    if (v === 'feedback' && window.YC_FEEDBACK) window.YC_FEEDBACK.show(); // the web app fills this view (tickets.js)
     if (v === 'home') renderHome();
     if (v === 'food') renderFood();
     if (v === 'exercises') renderExercises();
@@ -1356,6 +1381,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   $$('[data-view]').forEach((b) => b.addEventListener('click', () => { setView(b.dataset.view); window.scrollTo({ top: 0 }); }));
   $('#mark').addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); });
+  // phones: the hamburger opens and closes the list of tabs; choosing a tab, tapping elsewhere or Escape closes it
+  const setMenu = (on) => { $('#tabs-nav').classList.toggle('open', on); $('#menu-btn').setAttribute('aria-expanded', String(on)); };
+  $('#menu-btn').addEventListener('click', () => setMenu(!$('#tabs-nav').classList.contains('open')));
+  $$('[data-view]').forEach((b) => b.addEventListener('click', () => setMenu(false)));
+  $('#mark').addEventListener('click', () => setMenu(false));
+  document.addEventListener('click', (ev) => { if (!ev.target.closest('#appbar')) setMenu(false); });
+  document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && $('#tabs-nav').classList.contains('open')) { setMenu(false); $('#menu-btn').focus(); } });
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['2 Nov 2026', 'Real portion sizes', ['Dutch foods now offer RIVM\'s household measures: 1 beschuit (10 g), 1 snee (35 g), 1 glas (200 ml), 1 eetlepel and more, with 2 and 3 of them one tap away.', 'Portions: Portie-online versie 2026/2.0, RIVM, Bilthoven.']],
@@ -6266,7 +6298,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const boot = async () => {
     loadDrafts();
     const v = local.get('yc-view');
-    if ((VIEWS.includes(v) && v !== 'train') || v === 'export') setView(v === 'export' ? 'settings' : v);
+    if ((VIEWS.includes(v) && v !== 'train' && (v !== 'feedback' || window.YC_FEEDBACK)) || v === 'export') setView(v === 'export' ? 'settings' : v);
     const a = local.get('yc-active');
     if (a && a.date && a.tpl) S.active = a;
     let db = null, user = null;

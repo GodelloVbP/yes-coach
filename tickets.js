@@ -1,5 +1,5 @@
-// Feedback and requests: send a bug, an idea or feedback, follow it, and get told when it is done.
-// The owner sees and answers every ticket in the same place. Web only: it needs the account (window.YC_API from web.js).
+// Feedback & Requests: a tab where users send a bug, an idea or feedback, follow it, and get told when it is done.
+// The owner sees and answers every ticket in the same tab. Web only: it needs the account (window.YC_API from web.js).
 // Everything a user typed is shown with textContent, never as HTML.
 (() => {
   'use strict';
@@ -27,6 +27,15 @@
     feedback: 'What is on your mind?',
   };
   const DEFAULT_OUTCOME = { bug: 'fixed', feature: 'built', feedback: 'thanks' };
+  // one block per kind of ticket: what it is for, how it works, and what the list is called when it is empty
+  const GROUPS = [
+    { type: 'feature', title: 'My requested features', empty: 'No requests yet.',
+      text: 'Things you would like Yes Coach! to do. We tell you if we plan to build it, and you get a message when it is in the app.' },
+    { type: 'bug', title: 'My reported bugs', empty: 'No bug reports yet.',
+      text: 'Something that did not work. Tell us what you were doing and on which screen. You get a message when it is fixed.' },
+    { type: 'feedback', title: 'My feedback', empty: 'No feedback yet.',
+      text: 'What you like, what feels off, anything else. We read all of it. It shapes what we build next, even when we cannot answer each one.' },
+  ];
   const isFinal = (t) => t.status === 'resolved' || t.status === 'declined';
   const statusLabel = (t) => (t.status === 'resolved'
     ? { built: 'Built', fixed: 'Fixed', thanks: 'Thank you!' }[t.outcome]
@@ -47,7 +56,7 @@
   // ------------------------------------------------------------------ data
   const db = () => window.YC_API.sb;
   const run = (query) => window.YC_API.call(query);
-  const MY_COLS = 'id,type,title,body,status,outcome,resolution_note,created_at,resolved_at,user_seen_at';
+  const MY_COLS = 'id,type,title,body,first_name,status,outcome,resolution_note,created_at,resolved_at,user_seen_at';
   const version = () => { const m = $('meta[name="yc-build"]'); return (m && m.content) || 'dev'; };
   // sent with every ticket so a bug can be found: device and screen only, never training data
   const deviceInfo = () => ({
@@ -57,10 +66,10 @@
     lang: navigator.language,
     installed: matchMedia('(display-mode: standalone)').matches || navigator.standalone === true,
   });
-  const sendTicket = (type, title, body) => run(db().from('tickets').insert({ type, title, body, app_version: version(), context: deviceInfo() }).select('id'));
+  const sendTicket = (type, firstName, title, body) => run(db().from('tickets').insert({ type, first_name: firstName, title, body, app_version: version(), context: deviceInfo() }).select('id'));
   const sendReply = (id, body) => run(db().from('ticket_messages').insert({ ticket_id: id, author: 'user', body }));
 
-  // ------------------------------------------------------------------ cards shared by the user list and the owner list
+  // ------------------------------------------------------------------ cards shared by the user lists and the owner list
   const chip = (t) => h('span', 'chip ' + ({ needs_info: 'tk-ask', resolved: 'tk-done', declined: 'tk-no' }[t.status] || ''), statusLabel(t));
   const message = (label, text, author) => { const p = h('p', 'tk-msg ' + author); p.append(h('span', 'lab', label), text); return p; };
   // viewer is 'user' or 'admin': it decides what each side of the thread is called
@@ -97,11 +106,17 @@
   };
 
   // ------------------------------------------------------------------ the user: send something
+  let mine = [];
+  const lastName = () => (mine.find((t) => t.first_name) || {}).first_name || '';
   const newForm = (onSent) => {
     const form = h('form', 'tk-form');
     form.noValidate = true;
     form.hidden = true;
     const type = select(Object.entries(TYPES));
+    const name = h('input');
+    name.type = 'text';
+    name.maxLength = 40;
+    name.autocomplete = 'given-name';
     const title = h('input');
     title.type = 'text';
     title.maxLength = 120;
@@ -115,12 +130,13 @@
     type.addEventListener('change', () => { text.placeholder = HINT[type.value]; });
     form.addEventListener('submit', async (ev) => {
       ev.preventDefault();
+      if (!name.value.trim()) { msg.textContent = 'Add your first name, so we can thank you.'; name.focus(); return; }
       if (title.value.trim().length < 3) { msg.textContent = 'Add a few words as a title.'; title.focus(); return; }
       if (text.value.trim().length < 10) { msg.textContent = 'Tell us a bit more (at least 10 characters).'; text.focus(); return; }
       go.disabled = true;
       msg.textContent = 'Sending…';
       try {
-        await sendTicket(type.value, title.value.trim(), text.value.trim());
+        await sendTicket(type.value, name.value.trim(), title.value.trim(), text.value.trim());
         title.value = '';
         text.value = '';
         msg.textContent = '';
@@ -128,7 +144,8 @@
       } catch (e) { msg.textContent = problem(e); }
       go.disabled = false;
     });
-    form.append(field('What is it about?', type), field('In a few words', title), field('Tell us more', text), go, msg, textBtn('Cancel', () => { form.hidden = true; }));
+    form.append(field('What is it about?', type), field('Your first name', name), field('In a few words', title), field('Tell us more', text), go, msg, textBtn('Cancel', () => { form.hidden = true; }));
+    form.open = () => { form.hidden = false; if (!name.value) name.value = lastName(); $('select', form).focus(); };
     return form;
   };
   const replyForm = (t) => {
@@ -147,7 +164,6 @@
   };
 
   // ------------------------------------------------------------------ the user: follow what was sent
-  let mine = [];
   let loadedAt = 0;
   const summaryLine = () => {
     const done = mine.filter((t) => t.status === 'resolved' && t.outcome !== 'thanks').length;
@@ -157,17 +173,15 @@
   };
   const paintMine = () => {
     $('#tk-sum').textContent = mine.length ? summaryLine() : '';
-    paintCards($('#tk-list'), mine, (t, open) => card(t, open, 'user',
-      TYPES[t.type] + ' · sent ' + when(t.created_at) + (t.resolved_at ? ' · closed ' + when(t.resolved_at) : ''), (x) => (isFinal(x) ? h('span') : replyForm(x))),
-    'Nothing sent yet.');
+    GROUPS.forEach((g) => paintCards($('#tk-list-' + g.type), mine.filter((t) => t.type === g.type), (t, open) => card(t, open, 'user',
+      'Sent ' + when(t.created_at) + (t.resolved_at ? ' · closed ' + when(t.resolved_at) : ''), (x) => (isFinal(x) ? h('span') : replyForm(x))), g.empty));
   };
-  // a dot on the gear and a hint on the section when we are waiting for an answer
+  // a dot on the tab when we are waiting for an answer
   const paintDot = () => {
     const ask = mine.some((t) => t.status === 'needs_info');
-    const tab = $('#tab-settings');
+    const tab = $('#tab-feedback');
     tab.classList.toggle('tk-dot', ask);
-    tab.setAttribute('aria-label', ask ? 'Settings. You have a question in Feedback and requests.' : 'Settings');
-    ($('#h-tk .set-tog span') || $('#h-tk')).textContent = ask ? 'Feedback and requests (a question for you)' : 'Feedback and requests';
+    if (ask) { tab.title = 'You have a question'; tab.setAttribute('aria-description', 'You have a question'); } else { tab.removeAttribute('title'); tab.removeAttribute('aria-description'); }
   };
   const refresh = async (force) => {
     if (!force && Date.now() - loadedAt < 30000) return;
@@ -264,21 +278,24 @@
     return box;
   };
   const adminExtra = (t) => { const w = h('div', 'tk-owner'); w.append(adminReply(t), adminDecide(t)); return w; };
+  // who sent it first, then what and when, then what they used
   const adminInfo = (t) => {
     const c = t.context || {};
     const device = [c.screen && 'screen ' + c.screen, c.lang, c.installed ? 'installed app' : 'browser', c.ua].filter(Boolean).join(' · ');
-    return TYPES[t.type] + ' · sent ' + when(t.created_at) + ' · user ' + t.user_id.slice(0, 8) + ' · build ' + (t.app_version || '?') + ' · ' + device;
+    return [t.first_name || 'no name', t.user_email || 'no email', TYPES[t.type], 'sent ' + when(t.created_at), 'build ' + (t.app_version || '?'), device].join(' · ');
   };
   const paintAdmin = () => {
     const rows = all.filter(FILTERS[show]);
-    $('#tk-admin-sum').textContent = plural(rows.length, 'ticket') + ' shown, ' + all.filter(FILTERS.open).length + ' waiting.';
+    const waiting = all.filter(FILTERS.open).length;
+    $('#tk-bar-title').textContent = 'Tickets (owner)' + (waiting ? ' · ' + waiting + ' waiting' : '');
+    $('#tk-admin-sum').textContent = plural(rows.length, 'ticket') + ' shown.';
     paintCards($('#tk-admin-list'), rows, (t, open) => card(t, open, 'admin', adminInfo(t), adminExtra), 'Nothing here.');
   };
   const loadAdmin = async () => {
     try { all = await run(db().from('tickets').select('*').order('created_at', { ascending: false }).limit(200)); paintAdmin(); } catch (e) { $('#tk-admin-sum').textContent = 'Could not load tickets: ' + e.message; }
   };
 
-  // ------------------------------------------------------------------ the page
+  // ------------------------------------------------------------------ the tab
   const section = (id, title) => {
     const sec = document.createElement('section');
     sec.id = id;
@@ -288,51 +305,61 @@
     sec.append(head);
     return sec;
   };
-  const buildSection = () => {
-    const sec = section('tk', 'Feedback and requests');
+  const buildIntro = () => {
+    const sec = section('tk', 'Feedback & Requests');
     const state = liveNote();
     const form = newForm(() => { form.hidden = true; state.textContent = 'Sent. Thank you! You can follow it below.'; refresh(true); });
-    const open = skew('pop', 'Send something', () => { form.hidden = false; state.textContent = ''; $('select', form).focus(); });
     const row = h('div', 'foot-row');
-    row.append(open);
+    row.append(skew('pop', 'Send something', () => { state.textContent = ''; form.open(); }));
     const sum = h('p', 'note');
     sum.id = 'tk-sum';
-    const list = h('div', 'tk-list');
-    list.id = 'tk-list';
     sec.append(
-      h('p', 'note', 'Found a bug, want a feature, or have something to say? Send it here. If something is unclear we may reply right here in the app.'),
-      h('p', 'note', 'Your app version, device and screen size are sent along so we can find bugs. Never your training data.'),
-      row, state, form, h('span', 'lab', 'My requests'), sum, list);
+      h('p', 'note', 'Yes Coach! is free, has no ads and is built by one person. It gets better when people tell us what is broken and what is missing. Send a bug, a feature idea or feedback here. We read every one and tell you what happens with it. If something is unclear, we may reply right here in the app.'),
+      h('p', 'note', 'Saved with your message: your first name, the email you sign in with, the app version, and your device and screen size. Never your training data.'),
+      row, state, form, sum);
     return sec;
   };
+  const buildGroup = (g) => {
+    const sec = section('tk-' + g.type, g.title);
+    const list = h('div', 'tk-list');
+    list.id = 'tk-list-' + g.type;
+    sec.append(h('p', 'note', g.text), list);
+    return sec;
+  };
+  // the extra bar for the owner: every ticket, to read, answer and close
   const buildAdmin = () => {
-    const sec = section('tk-admin', 'Tickets (owner)');
+    const bar = h('details', 'tk-bar');
+    const head = h('summary');
+    head.id = 'tk-bar-title';
+    head.textContent = 'Tickets (owner)';
     const filter = select([['open', 'Waiting for me'], ['planned', 'Planned'], ['closed', 'Closed'], ['all', 'All']]);
     filter.addEventListener('change', () => { show = filter.value; paintAdmin(); });
     const sum = h('p', 'note');
     sum.id = 'tk-admin-sum';
     const list = h('div', 'tk-list');
     list.id = 'tk-admin-list';
-    sec.append(field('Show', filter), sum, list);
-    return sec;
-  };
-  // Home gets a way in, and Settings opens the section
-  const openSection = () => {
-    $('#tab-settings').click();
-    const sec = $('#tk');
-    const tog = $('.set-tog', sec);
-    if (tog && tog.getAttribute('aria-expanded') !== 'true') tog.click();
-    requestAnimationFrame(() => sec.scrollIntoView({ block: 'start' }));
+    const body = h('div', 'tk-bar-body');
+    body.append(field('Show', filter), sum, list);
+    bar.append(head, body);
+    return bar;
   };
   const style = () => {
     const css = h('style');
     css.textContent = `
-#tk, #tk-admin { scroll-margin-top: calc(var(--stick-h, 48px) + 8px); }
-#tab-settings.tk-dot { position: relative; }
-#tab-settings.tk-dot::after { content: ''; position: absolute; top: 6px; right: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--pop); border: 2px solid var(--bg); }
+#tab-feedback { position: relative; }
+#tab-feedback.tk-dot::after { content: ''; position: absolute; top: 6px; right: -6px; width: 10px; height: 10px; border-radius: 50%; background: var(--pop); border: 2px solid var(--bg); }
+@media (max-width: 639px) { #tab-feedback.tk-dot::after { top: 50%; right: 4px; margin-top: -5px; } }
+@media (max-width: 719px) { .appbar:has(#tab-feedback.tk-dot) .menu-btn { position: relative; } .appbar:has(#tab-feedback.tk-dot) .menu-btn::after { content: ''; position: absolute; top: 8px; right: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--pop); border: 2px solid var(--bg); } }
+#v-feedback section { scroll-margin-top: calc(var(--stick-h, 48px) + 8px); }
 .tk-form { display: flex; flex-direction: column; gap: 0.875rem; padding: 0.75rem; background: var(--faint); border-left: 4px solid var(--ink); align-items: flex-start; }
 .tk-form > .ed-f { width: 100%; }
 .tk-list { display: flex; flex-direction: column; }
+.tk-bar { border-bottom: 1px solid var(--line); margin-bottom: 1rem; }
+.tk-bar > summary { list-style: none; cursor: pointer; display: flex; align-items: center; min-height: 48px; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.tk-bar > summary::-webkit-details-marker { display: none; }
+.tk-bar > summary::after { content: '+'; margin-left: auto; font-size: var(--t4); line-height: 1; }
+.tk-bar[open] > summary::after { content: '\\2212'; }
+.tk-bar-body { display: flex; flex-direction: column; gap: 0.5rem; padding-bottom: 1rem; }
 .tk-card { border-bottom: 1px solid var(--line); }
 .tk-card > summary { list-style: none; cursor: pointer; display: flex; gap: 0.75rem; align-items: center; justify-content: space-between; min-height: 44px; padding-block: 0.5rem; font-weight: 600; }
 .tk-card > summary::-webkit-details-marker { display: none; }
@@ -358,17 +385,19 @@
     await window.claude.use('db'); // resolves once the user is signed in
     if (document.readyState === 'loading') await new Promise((r) => document.addEventListener('DOMContentLoaded', r));
     style();
-    const sec = buildSection();
-    const acct = $('#acct');
-    if (acct) acct.after(sec); else $('#v-settings .set-wrap').prepend(sec);
+    const wrap = h('div', 'set-wrap in');
+    wrap.append(buildIntro(), ...GROUPS.map(buildGroup));
+    $('#v-feedback').replaceChildren(wrap);
+    $('#tab-feedback').hidden = false;
     const row = $('#v-home .foot-row');
-    if (row) row.append(textBtn('Feedback and requests', openSection));
-    $('#tab-settings').addEventListener('click', () => refresh());
+    if (row) row.append(textBtn('Feedback & Requests', () => $('#tab-feedback').click()));
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') refresh(); });
     refresh(true);
     let owner = false;
     try { owner = (await run(db().rpc('is_admin'))) === true; } catch (e) { /* the database part is not installed yet */ }
-    if (owner) { sec.after(buildAdmin()); loadAdmin(); }
+    if (owner) { wrap.prepend(buildAdmin()); loadAdmin(); }
   };
+  // the app calls this when the tab is opened; before the tab is built there is nothing to refresh
+  window.YC_FEEDBACK = { show: () => { if ($('#tk-sum')) refresh(); } };
   init().catch(() => {});
 })();

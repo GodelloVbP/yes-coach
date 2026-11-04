@@ -2,7 +2,7 @@
 -- Run once in Supabase after schema.sql: SQL Editor, New query, paste, Run. Safe to run again.
 --
 -- Who can do what
---   A signed-in user:  send a ticket, read their own tickets and the thread, reply while the ticket is open,
+--   A signed-in user:  send a ticket (with their first name; their account email is saved with it), read their own tickets and the thread, reply while the ticket is open,
 --                      mark their own resolved/declined ticket as seen (the pop-up on entry).
 --   The owner:         everything else, through the admin_* functions below. Add yourself once, after you have
 --                      created your account in the app:
@@ -50,6 +50,10 @@ create table if not exists public.tickets (
   user_seen_at timestamptz, -- when the user dismissed the pop-up about the final status
   constraint outcome_only_when_resolved check ((status = 'resolved') = (outcome is not null))
 );
+-- Who sent it, added after the first release (safe to run again). The first name is typed by the user, to be thanked by name.
+-- The email is filled in by the database from the account (see tickets_fill below); a user can never set it.
+alter table public.tickets add column if not exists first_name text check (char_length(first_name) between 1 and 40);
+alter table public.tickets add column if not exists user_email text;
 create index if not exists tickets_user_idx on public.tickets (user_id, created_at desc);
 create index if not exists tickets_status_idx on public.tickets (status, created_at);
 create index if not exists tickets_dup_idx on public.tickets (duplicate_of);
@@ -57,7 +61,7 @@ create index if not exists tickets_dup_idx on public.tickets (duplicate_of);
 -- Supabase hands new tables to everyone by default; take that back, then give only what is needed.
 revoke all on public.tickets from anon, authenticated;
 grant select on public.tickets to authenticated;
-grant insert (type, title, body, app_version, context) on public.tickets to authenticated; -- user_id defaults to the caller
+grant insert (type, title, body, first_name, app_version, context) on public.tickets to authenticated; -- user_id defaults to the caller
 grant update (user_seen_at) on public.tickets to authenticated; -- the only column a user may change
 
 alter table public.tickets enable row level security;
@@ -68,6 +72,18 @@ create policy "send own" on public.tickets for insert to authenticated
 -- only a finished ticket has a pop-up to dismiss
 create policy "mark own seen" on public.tickets for update to authenticated
   using (user_id = (select auth.uid()) and status in ('resolved', 'declined')) with check (user_id = (select auth.uid()));
+
+-- Save the email of the account with the ticket, so the owner knows who they are talking to. It comes from the account, not from the form.
+create or replace function public.tickets_fill() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  new.user_email := (select email from auth.users where id = new.user_id);
+  return new;
+end $$;
+revoke all on function public.tickets_fill() from public, anon, authenticated;
+drop trigger if exists tickets_fill on public.tickets;
+create trigger tickets_fill before insert on public.tickets for each row execute function public.tickets_fill();
+update public.tickets t set user_email = u.email from auth.users u where u.id = t.user_id and t.user_email is null; -- tickets sent before this existed
 
 -- At most 5 tickets per user per day (the owner is exempt).
 create or replace function public.tickets_limit() returns trigger
