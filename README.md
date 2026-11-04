@@ -10,6 +10,8 @@ A free, ad-free workout tracker. Static site on GitHub Pages, accounts and data 
 | `web.js` | Sign-in screen and the storage layer (Supabase behind the app's data interface). |
 | `config.js` | Your Supabase project URL and public key, the app address and a contact email. |
 | `schema.sql` | The database: one table, row-level security, merge and delete-account functions. |
+| `tickets.sql` | Feedback and requests: tickets, thread, owner functions and their row-level security. Run after `schema.sql`. |
+| `tickets.js` | The Feedback and requests screens: send, follow, the "done" pop-up, and the owner's ticket list. |
 | `vendor/` | The Supabase client library, so the app has no runtime dependency on a CDN for it. |
 | `manifest.webmanifest`, `icon-*.png` | Install to home screen. |
 | `privacy.html` | Privacy page, linked from sign-in and Settings. |
@@ -21,6 +23,8 @@ A free, ad-free workout tracker. Static site on GitHub Pages, accounts and data 
    - Authentication → Sign In / Providers → Email: enabled; turn **Confirm email off** (the free plan sends only a few emails an hour; with it off, sign-up needs no email).
    - Authentication → URL Configuration: Site URL = your app address; add the same address under Redirect URLs.
    - Project Settings → API: copy the Project URL and the publishable key (`sb_publishable_…`, or the legacy `anon` key) into `config.js`. Never put the secret key anywhere in this app.
+   - Then run all of `tickets.sql` the same way. After you have created your own account in the app, make yourself the owner (this unlocks the ticket list in Settings):
+     `insert into public.admins (user_id) select id from auth.users where email = 'you@example.com';`
 2. **GitHub**: repository `yes-coach` (public). Push these files to `main`. Settings → Pages → Deploy from a branch → `main` / root.
 3. Fill in `appUrl` (for example `https://<you>.github.io/yes-coach/`) and `contactEmail` in `config.js`.
 4. Open the app, create your account, Settings → Backup and restore → pick your backup file.

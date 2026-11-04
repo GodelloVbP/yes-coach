@@ -110,6 +110,8 @@
     setTimeout(() => URL.revokeObjectURL(url), 4000);
     return Promise.resolve();
   };
+  // for the screens that talk to the database themselves (tickets.js); they wait for sign-in through window.claude.use
+  window.YC_API = { sb, call, uid: () => uid };
   // how many people have an account, for the Home page; null when it cannot be read
   window.YC_USERS = async () => { try { return await call(sb.rpc('user_count')); } catch (e) { return null; } };
   window.claude = {

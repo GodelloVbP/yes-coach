@@ -1,7 +1,8 @@
 """Build the web app (index.html) from the shared Yes Coach! source (src/yes-coach.html): adds the sign-in screen,
 the Supabase layer and the install metadata. The artifact keeps running from the same source unchanged."""
-import re, pathlib
+import re, pathlib, datetime
 HERE = pathlib.Path(__file__).parent
+build = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%MZ')  # sent along with every ticket
 src = (HERE / 'src' / 'yes-coach.html').read_text()
 brand = re.search(r'<h1 class="brand">.*?</h1>', src, re.S).group(0)
 
@@ -47,9 +48,9 @@ assert skel, 'unexpected start of the source'
 base_style = re.search(r'<style>.*?</style>', skel.group(1), re.S).group(0)
 out = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
        '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
-       + base_style + '\n<title>Yes Coach!</title>\n' + head + '</head><body class="signed-out">' + src[skel.end():])
+       + base_style + '\n<title>Yes Coach!</title>\n<meta name="yc-build" content="' + build + '">\n' + head + '</head><body class="signed-out">' + src[skel.end():])
 out = once(out, '<div class="stick" id="stick">', auth + '<div class="stick" id="stick">')
 out = once(out, '<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>',
-           '<script src="config.js"></script>\n<script src="vendor/supabase.js"></script>\n<script src="web.js"></script>\n<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>')
+           '<script src="config.js"></script>\n<script src="vendor/supabase.js"></script>\n<script src="web.js"></script>\n<script src="tickets.js"></script>\n<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>')
 (HERE / 'index.html').write_text(out)
 print('index.html', len(out) // 1000, 'kB')
