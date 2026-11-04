@@ -40,14 +40,14 @@
   const statusLabel = (t) => (t.status === 'resolved'
     ? { built: 'Built', fixed: 'Fixed', thanks: 'Thank you!' }[t.outcome]
     : { open: 'Received', needs_info: 'We have a question', planned: 'Planned', declined: 'Not planned' }[t.status]);
-  // the pop-up when a ticket is done: [first part, last part]; the owner's note goes in between
-  const POPUP = {
-    built: (t) => ['Your request "' + t.title + '" has been added to Yes Coach!', ' Thank you very much!'],
-    fixed: (t) => ['The bug you reported, "' + t.title + '", has been fixed.', ' Thank you very much!'],
-    thanks: (t) => ['We read your feedback "' + t.title + '". It helps us make Yes Coach! better.', ' Thank you very much!'],
-    declined: (t) => ['We looked at "' + t.title + '" and could not take it further.', ' Our apologies! If you would like to create a new ticket, feel free to. Happy training!'],
-  };
-  const popupText = (t) => { const [a, b] = POPUP[t.status === 'resolved' ? t.outcome : 'declined'](t); return a + (t.resolution_note ? ' ' + t.resolution_note : '') + b; };
+  // the pop-up when a ticket is done: what you sent, what we did with it, our note if any, a thank you
+  const KIND = { feature: 'feature request', bug: 'bug report', feedback: 'feedback' };
+  const POPUP_LABEL = { feature: 'Your request', bug: 'Your bug report', feedback: 'Your feedback' };
+  const VERB = { built: 'built', fixed: 'fixed', thanks: 'read' };
+  const verdict = (t) => (t.status === 'resolved'
+    ? 'Yes Coach! ' + (VERB[t.outcome] || 'handled') + ' your ' + KIND[t.type] + ' "' + t.title + '".'
+    : 'Yes Coach! could not take up your ' + KIND[t.type] + ' "' + t.title + '".');
+  const thanksLine = (t) => (t.status === 'declined' ? 'Our apologies! You are welcome to send a new one. ' : '') + 'Thank you very much for contributing!';
   const problem = (e) => (e.code === 'unavailable' ? 'No connection. Try again when you are online.'
     : /too_many_tickets/.test(e.message) ? 'You have sent 5 today, which is the daily limit. Try again tomorrow.'
     : /too_many_messages/.test(e.message) ? 'That is a lot of messages for one day. Try again tomorrow.'
@@ -215,7 +215,13 @@
     box.setAttribute('aria-labelledby', 'tk-pop-h');
     const head = h('h2');
     head.id = 'tk-pop-h';
-    const text = h('p', 'tk-pop-p');
+    const sent = h('div', 'tk-pop-sent');
+    const sentTitle = h('strong', 'tk-pop-st');
+    const sentBody = h('p', 'tk-pop-sb');
+    sent.append(sentTitle, sentBody);
+    const lead = h('p', 'tk-pop-p');
+    const note = h('p', 'tk-pop-note');
+    const tail = h('p', 'tk-pop-p');
     const count = h('span', 'tk-count');
     count.setAttribute('aria-live', 'polite');
     const viewed = new Set();
@@ -224,8 +230,14 @@
       i = n;
       const t = items[i];
       viewed.add(t.id);
-      head.textContent = t.status === 'resolved' ? 'Thank you!' : 'An update on your request';
-      text.textContent = popupText(t);
+      head.textContent = POPUP_LABEL[t.type] + ':';
+      sentTitle.textContent = t.title;
+      sentBody.textContent = t.body || '';
+      sentBody.hidden = !t.body;
+      lead.textContent = verdict(t);
+      note.textContent = t.resolution_note || '';
+      note.hidden = !t.resolution_note;
+      tail.textContent = thanksLine(t);
       count.textContent = (i + 1) + ' of ' + items.length;
       prev.disabled = i === 0;
       next.disabled = i === items.length - 1;
@@ -255,7 +267,7 @@
         f[(at + (ev.shiftKey ? -1 : 1) + f.length) % f.length].focus();
       }
     };
-    box.append(head, text);
+    box.append(head, sent, lead, note, tail);
     if (items.length > 1) box.append(nav);
     box.append(ok);
     wrap.append(box);
@@ -422,7 +434,11 @@
 .tk-msg .lab { display: block; }
 .tk-pop { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(16, 20, 43, 0.6); }
 .tk-pop-in { width: 100%; max-width: 26rem; max-height: 85vh; overflow: auto; display: flex; flex-direction: column; gap: 0.875rem; align-items: flex-start; padding: 1.25rem; background: var(--paper); border: 2px solid var(--ink); box-shadow: 0 8px 24px rgba(16, 20, 43, 0.35); }
-.tk-pop-p { margin: 0; overflow-wrap: anywhere; }
+.tk-pop-p, .tk-pop-note, .tk-pop-sb { margin: 0; overflow-wrap: anywhere; }
+.tk-pop-sent { display: flex; flex-direction: column; gap: 0.25rem; align-self: stretch; padding: 0.625rem 0.75rem; background: var(--faint); border: 2px solid var(--ctl); }
+.tk-pop-sb { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; color: var(--ink-soft); white-space: pre-wrap; }
+.tk-pop-note { align-self: stretch; padding-left: 0.75rem; border-left: 4px solid var(--pop); white-space: pre-wrap; }
+.tk-pop-in h2 { margin: 0; }
 .tk-nav { display: flex; align-items: center; gap: 0.75rem; align-self: stretch; justify-content: space-between; }
 .tk-count { font-family: var(--f-head); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
 .tk-nav .skew:disabled { opacity: 0.35; cursor: default; }`;
