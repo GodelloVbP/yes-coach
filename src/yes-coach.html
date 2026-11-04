@@ -45,6 +45,7 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
+html, body { overscroll-behavior-y: contain; } /* pulling down at the top must not reload the page and lose what you typed */
 [hidden] { display: none !important; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: var(--t2); line-height: 1.45; overflow-x: clip; }
 /* doodles behind every page: one line drawing, tinted with the ink color so it works in light and dark */
@@ -134,9 +135,13 @@ html { scroll-padding-top: calc(var(--stick-h, 56px) + 0.75rem); }
 .sb-menu button:hover, .sb-menu button:focus-visible { background: var(--faint); }
 .sb-datebox { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; padding-block: 0.5rem; background: var(--sbar); border-top: 1px solid var(--line); }
 .sb-datebox input { font: inherit; font-weight: 600; color: var(--ink); background: transparent; border: 0; border-bottom: 2px solid var(--ctl); min-height: 40px; }
-.resume { padding-top: 0.75rem; }
-.resume-btn { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 48px; padding: 0 1rem; background: var(--faint); border: 2px solid var(--ink); color: var(--ink); font-family: var(--f-head); font-size: var(--t3); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; }
-.resume-btn b { text-decoration: underline; text-underline-offset: 3px; }
+.resume { padding-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.resume[hidden] { display: none; }
+.resume-fin { flex: 1 1 auto; min-height: 48px; padding: 0 0.875rem; background: var(--paper); border: 2px solid var(--ctl); color: var(--ink); font-family: var(--f-head); font-size: var(--t2); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; }
+.resume-fin:active { background: var(--faint); }
+.resume-btn { flex: 1 1 16rem; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 48px; padding: 0 1rem; background: var(--faint); border: 2px solid var(--ink); color: var(--ink); font-family: var(--f-head); font-size: var(--t3); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; }
+.resume-btn b { text-decoration: underline; text-underline-offset: 3px; flex: none; }
+#resume-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* buttons: filled coral = the one primary action; outline = secondary */
 .skew { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; border: 2px solid var(--ctl); background: var(--paper); color: var(--ink); padding: 0 1.125rem; transform: skewX(-14deg); cursor: pointer; touch-action: manipulation; }
@@ -774,7 +779,7 @@ body.typing .restbar { display: none; }
     <div class="sb-menu" id="sb-menu" role="menu" aria-label="Session" hidden>
       <button type="button" role="menuitem" id="m-date">Change date</button>
       <button type="button" role="menuitem" id="m-day">Change day</button>
-      <button type="button" role="menuitem" id="m-finish">Finish session</button>
+      <button type="button" role="menuitem" id="m-finish">Finish day</button>
     </div>
     <div class="sb-datebox in" id="sb-datebox" hidden>
       <label class="lab" for="sess-date">Session date</label>
@@ -784,7 +789,7 @@ body.typing .restbar { display: none; }
     </div>
   </div>
 </div>
-<div class="resume in" id="resume" hidden><button type="button" class="resume-btn" id="resume-btn"><span id="resume-text"></span><b>Resume</b></button></div>
+<div class="resume in" id="resume" hidden><button type="button" class="resume-btn" id="resume-btn"><span id="resume-text"></span><b>Resume</b></button><button type="button" class="resume-fin" id="resume-fin">Finish day</button></div>
 
 <main>
   <div class="view" id="v-home" hidden>
@@ -1907,7 +1912,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     });
     copyRow.append(cp, cpMsg);
     const finRow = h('div', 'foot-row');
-    const fin = btn('skew', 'Finish session');
+    const fin = btn('skew', 'Finish day');
     fin.addEventListener('click', finishSession);
     finRow.append(fin, h('span', 'note', 'Ticked sets are already saved; finishing closes the day.'));
     foot.append(addRow, pk, gen, copyRow, cpBox, finRow);
@@ -2577,6 +2582,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#m-date').addEventListener('click', openDateBox);
   $('#m-day').addEventListener('click', () => { closeMenus(); closeSession(); });
   $('#m-finish').addEventListener('click', () => { closeMenus(); finishSession(); });
+  $('#resume-fin').addEventListener('click', finishSession);
   $('#sb-date-cancel').addEventListener('click', () => { $('#sb-datebox').hidden = true; $('#sb-date').focus(); });
   $('#sb-date-go').addEventListener('click', () => {
     const v = $('#sess-date').value;

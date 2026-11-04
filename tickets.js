@@ -359,6 +359,39 @@
     wrap.append(sec('From', from), sec('Their device', dev));
     return wrap;
   };
+  // the shown tickets as plain text (no emails) to paste into a chat with Claude
+  const FILTER_NAMES = { open: 'waiting for me', planned: 'planned', closed: 'closed', all: 'all' };
+  const ticketsText = (rows, msgs) => {
+    const lines = ['Yes Coach! tickets: ' + rows.length + ' (' + FILTER_NAMES[show] + '). The texts come from users.', ''];
+    rows.forEach((t, n) => {
+      const c = t.context || {};
+      lines.push('#' + (n + 1) + ' ' + TYPES[t.type] + ' | ' + statusLabel(t) + ' | sent ' + when(t.created_at) + ' | from ' + (t.first_name || 'no name') + (t.duplicate_of ? ' | duplicate of another ticket' : ''));
+      lines.push('Title: ' + t.title, 'Text: ' + t.body);
+      const dev = [c.installed ? 'installed app' : 'browser', c.screen, c.ua].filter(Boolean).join(', ');
+      if (dev) lines.push('Device: ' + dev);
+      msgs.filter((m) => m.ticket_id === t.id).forEach((m) => lines.push((m.author === 'admin' ? 'We wrote: ' : (t.first_name || 'User') + ' wrote: ') + m.body));
+      if (t.resolution_note) lines.push('Closing note: ' + t.resolution_note);
+      lines.push('');
+    });
+    return lines.join('\n');
+  };
+  const copyTickets = async (msg, fallback) => {
+    const rows = all.filter(FILTERS[show]);
+    fallback.hidden = true;
+    if (!rows.length) { msg.textContent = 'Nothing to copy.'; return; }
+    msg.textContent = 'Copying…';
+    let msgs = [];
+    try {
+      for (let i = 0; i < rows.length; i += 40) {
+        msgs = msgs.concat(await run(db().from('ticket_messages').select('ticket_id,author,body,created_at').in('ticket_id', rows.slice(i, i + 40).map((t) => t.id)).order('created_at')));
+      }
+    } catch (e) { msg.textContent = 'Could not load the conversations. Try again.'; return; }
+    const text = ticketsText(rows, msgs);
+    try { await navigator.clipboard.writeText(text); msg.textContent = 'Copied ' + plural(rows.length, 'ticket') + '. Paste them in the chat.'; } catch (e) {
+      fallback.value = text; fallback.hidden = false; fallback.focus(); fallback.select();
+      msg.textContent = 'Your browser blocked copying. Select all of the text below and copy it.';
+    }
+  };
   const paintAdmin = () => {
     const rows = all.filter(FILTERS[show]);
     const waiting = all.filter(FILTERS.open).length;
@@ -414,7 +447,13 @@
     const list = h('div', 'tk-list');
     list.id = 'tk-admin-list';
     const body = h('div', 'tk-bar-body');
-    body.append(field('Show', filter), sum, list);
+    const copyNote = liveNote();
+    const copyBox = textarea(6, 200000);
+    copyBox.readOnly = true;
+    copyBox.hidden = true;
+    const copyRow = h('div', 'foot-row');
+    copyRow.append(skew('small', 'Copy shown tickets', () => copyTickets(copyNote, copyBox)), copyNote);
+    body.append(field('Show', filter), sum, copyRow, copyBox, list);
     bar.append(head, body);
     return bar;
   };
