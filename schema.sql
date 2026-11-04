@@ -42,11 +42,21 @@ begin
   return r;
 end $$;
 
--- A user deletes their own account; their documents go with it (on delete cascade).
-create or replace function public.delete_me() returns void
-language sql security definer set search_path = public as $$
-  delete from auth.users where id = auth.uid();
+-- True when the request comes from an AI app the user connected (an OAuth token), not from the user's own sign-in.
+-- Supabase puts the app's id in the token as client_id. connector.sql uses this to keep connected apps in bounds.
+create or replace function public.is_oauth_client() returns boolean
+language sql stable set search_path = public as $$
+  select coalesce(auth.jwt() ->> 'client_id', '') <> '';
 $$;
+grant execute on function public.is_oauth_client() to authenticated;
+
+-- A user deletes their own account; their documents go with it (on delete cascade). A connected AI app cannot.
+create or replace function public.delete_me() returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  if public.is_oauth_client() then raise exception 'not allowed' using errcode = '42501'; end if;
+  delete from auth.users where id = auth.uid();
+end $$;
 revoke all on function public.delete_me() from public, anon;
 grant execute on function public.delete_me() to authenticated;
 grant execute on function public.yc_update(text, jsonb) to authenticated;
