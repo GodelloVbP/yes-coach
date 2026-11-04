@@ -17,6 +17,7 @@
   const liveNote = () => { const p = h('p', 'note'); p.setAttribute('aria-live', 'polite'); return p; };
   const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const when = (iso) => { const d = new Date(iso); return d.getDate() + ' ' + MON[d.getMonth()]; };
+  const whenAt = (iso) => { const d = new Date(iso); return when(iso) + ', ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
   const plural = (n, word) => n + ' ' + word + (n === 1 ? '' : 's');
 
   // ------------------------------------------------------------------ words
@@ -71,13 +72,17 @@
 
   // ------------------------------------------------------------------ cards shared by the user lists and the owner list
   const chip = (t) => h('span', 'chip ' + ({ needs_info: 'tk-ask', resolved: 'tk-done', declined: 'tk-no' }[t.status] || ''), statusLabel(t));
-  const message = (label, text, author) => { const p = h('p', 'tk-msg ' + author); p.append(h('span', 'lab', label), text); return p; };
+  const message = (label, text, author, at) => { const p = h('p', 'tk-msg ' + author); p.append(h('span', 'lab', label + (at ? ' · ' + whenAt(at) : '')), text); return p; };
+  // a labelled block inside an owner card
+  const sec = (title, ...kids) => { const d = h('div', 'tk-sec'); d.append(h('span', 'lab', title), ...kids); return d; };
   // viewer is 'user' or 'admin': it decides what each side of the thread is called
   const loadThread = async (t, box, viewer) => {
     try {
       const rows = await run(db().from('ticket_messages').select('id,author,body,created_at').eq('ticket_id', t.id).order('created_at'));
       box.dataset.state = 'done';
-      box.replaceChildren(...rows.map((m) => message(m.author === viewer ? 'You' : m.author === 'admin' ? 'Yes Coach!' : 'User', m.body, m.author)));
+      const them = viewer === 'admin' ? (t.first_name || 'User') : 'You';
+      const label = (m) => (m.author === 'admin' ? (viewer === 'admin' ? 'You' : 'Yes Coach!') : them);
+      box.replaceChildren(...(rows.length ? rows.map((m) => message(label(m), m.body, m.author, m.created_at)) : [h('p', 'note', 'No replies yet.')]));
     } catch (e) {
       delete box.dataset.state; // opening the card again retries
       box.replaceChildren(h('p', 'note', 'Could not load the conversation. Close this and open it again to retry.'));
@@ -90,9 +95,15 @@
     head.append(h('span', 'tk-title', t.title), chip(t));
     const thread = h('div', 'tk-thread');
     const body = h('div', 'tk-body');
-    body.append(h('p', 'note', info), h('p', 'tk-text', t.body));
-    if (t.resolution_note) body.append(message(viewer === 'admin' ? 'Note shown to the user' : 'Yes Coach!', t.resolution_note, 'admin'));
-    body.append(thread, extra(t));
+    if (viewer === 'admin') {
+      body.append(info, sec('Their message', h('p', 'tk-text', t.body)), sec('Conversation', thread));
+      if (t.resolution_note) body.append(sec('Your closing note, shown to them', message('You', t.resolution_note, 'admin', t.resolved_at)));
+    } else {
+      body.append(h('p', 'note', info), h('p', 'tk-text', t.body));
+      if (t.resolution_note) body.append(message('Yes Coach!', t.resolution_note, 'admin'));
+      body.append(thread);
+    }
+    body.append(extra(t));
     d.append(head, body);
     const ensure = () => { if (!thread.dataset.state) { thread.dataset.state = 'loading'; loadThread(t, thread, viewer); } };
     d.addEventListener('toggle', () => { if (d.open) ensure(); });
@@ -321,12 +332,20 @@
     box.append(field('Status', status), outcomeF, field('Note shown to the user, and to anyone whose request is a duplicate of this one', note), field('Duplicate of', dup), row, msg);
     return box;
   };
-  const adminExtra = (t) => { const w = h('div', 'tk-owner'); w.append(adminReply(t), adminDecide(t)); return w; };
-  // who sent it first, then what and when, then what they used
+  const adminExtra = (t) => { const w = h('div', 'tk-owner'); w.append(sec('Your reply', adminReply(t)), sec('Decision', adminDecide(t))); return w; };
+  // who it is from, then the device it came from, as two labelled blocks
   const adminInfo = (t) => {
     const c = t.context || {};
-    const device = [c.screen && 'screen ' + c.screen, c.lang, c.installed ? 'installed app' : 'browser', c.ua].filter(Boolean).join(' · ');
-    return [t.first_name || 'no name', t.user_email || 'no email', TYPES[t.type], 'sent ' + when(t.created_at), 'build ' + (t.app_version || '?'), device].join(' · ');
+    const row = (k, v) => { const r = h('div', 'tk-row'); r.append(h('span', 'tk-k', k), h('span', 'tk-v', v)); return r; };
+    const from = h('div', 'tk-rows');
+    from.append(row('Name', t.first_name || 'not given'), row('Email', t.user_email || 'unknown'), row('Type', TYPES[t.type]), row('Sent', whenAt(t.created_at)));
+    if (t.resolved_at) from.append(row('Closed', whenAt(t.resolved_at)));
+    const dev = h('div', 'tk-rows');
+    dev.append(row('Used', c.installed ? 'Installed app' : 'Browser'), row('Screen', [c.screen, c.viewport && '(window ' + c.viewport + ')'].filter(Boolean).join(' ') || 'unknown'),
+      row('Language', c.lang || 'unknown'), row('App build', t.app_version || 'unknown'), row('Browser', c.ua || 'unknown'));
+    const wrap = h('div', 'tk-info');
+    wrap.append(sec('From', from), sec('Their device', dev));
+    return wrap;
   };
   const paintAdmin = () => {
     const rows = all.filter(FILTERS[show]);
@@ -418,8 +437,17 @@
 .tk-reply > .ed-f, .tk-decide > .ed-f { width: 100%; }
 .tk-text, .tk-msg { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .tk-msg { padding: 0.5rem 0.75rem; background: var(--faint); border-left: 4px solid var(--ctl); }
-.tk-msg.admin { border-left-color: var(--pop); }
 .tk-msg .lab { display: block; }
+.tk-msg.user { background: var(--faint); }
+.tk-msg.admin { background: transparent; border: 2px solid var(--pop); border-left-width: 6px; margin-left: 1rem; }
+.tk-sec { display: flex; flex-direction: column; gap: 0.5rem; padding-top: 0.75rem; border-top: 2px solid var(--line); }
+.tk-sec > .lab { color: var(--ink-soft); }
+.tk-info { display: flex; flex-direction: column; gap: 0.75rem; }
+.tk-rows { display: flex; flex-direction: column; gap: 0.25rem; }
+.tk-row { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 0.5rem; }
+.tk-k { color: var(--ink-soft); }
+.tk-v { overflow-wrap: anywhere; user-select: text; }
+.tk-owner { gap: 0.75rem; }
 .tk-pop { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(16, 20, 43, 0.6); }
 .tk-pop-in { width: 100%; max-width: 26rem; max-height: 85vh; overflow: auto; display: flex; flex-direction: column; gap: 0.875rem; align-items: flex-start; padding: 1.25rem; background: var(--paper); border: 2px solid var(--ink); box-shadow: 0 8px 24px rgba(16, 20, 43, 0.35); }
 .tk-pop-p { margin: 0; overflow-wrap: anywhere; }
