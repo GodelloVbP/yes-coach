@@ -195,12 +195,16 @@
 
   // ------------------------------------------------------------------ the pop-up when something is done
   let popup = null;
-  const seen = new Set(); // tickets whose pop-up was closed in this visit, even if saving that is still on its way
+  const seen = new Set(); // tickets whose pop-up was closed in this visit, whether or not saving that has finished
+  // saving "seen" is best effort: if it fails the pop-up shows again next time
   const markSeen = (items) => {
+    if (!items.length) return;
     const now = new Date().toISOString();
     items.forEach((t) => { t.user_seen_at = now; seen.add(t.id); });
-    run(db().from('tickets').update({ user_seen_at: now }).in('id', items.map((t) => t.id))).catch(() => {}); // if this fails it shows again next time
+    run(db().from('tickets').update({ user_seen_at: now }).in('id', items.map((t) => t.id))).catch(() => {});
   };
+  // one pop-up for everything that is done: arrows and "2 of 5" when there is more than one.
+  // Only the tickets you actually saw count as seen; close early and the rest come back next visit.
   const showPopup = (items) => {
     if (popup || !items.length) return;
     const before = document.activeElement;
@@ -209,13 +213,53 @@
     box.setAttribute('role', 'dialog');
     box.setAttribute('aria-modal', 'true');
     box.setAttribute('aria-labelledby', 'tk-pop-h');
-    const head = h('h2', '', items.some((t) => t.status === 'resolved') ? 'Thank you!' : 'An update on your request');
+    const head = h('h2');
     head.id = 'tk-pop-h';
-    const close = () => { wrap.remove(); popup = null; document.removeEventListener('keydown', keys); markSeen(items); if (before && before.focus) before.focus(); };
+    const text = h('p', 'tk-pop-p');
+    const count = h('span', 'tk-count');
+    count.setAttribute('aria-live', 'polite');
+    const viewed = new Set();
+    let i = 0;
+    const show = (n) => {
+      i = n;
+      const t = items[i];
+      viewed.add(t.id);
+      head.textContent = t.status === 'resolved' ? 'Thank you!' : 'An update on your request';
+      text.textContent = popupText(t);
+      count.textContent = (i + 1) + ' of ' + items.length;
+      prev.disabled = i === 0;
+      next.disabled = i === items.length - 1;
+      if (document.activeElement && document.activeElement.disabled) ok.focus(); // the arrow you just used may be the last one
+    };
+    const close = () => {
+      wrap.remove(); popup = null; document.removeEventListener('keydown', keys);
+      items.forEach((t) => seen.add(t.id)); // not again during this visit, even the ones you skipped
+      markSeen(items.filter((t) => viewed.has(t.id)));
+      if (before && before.focus) before.focus();
+    };
+    const arrow = (label, glyph, step) => { const b = skew('small', glyph, () => { show(i + step); }); b.setAttribute('aria-label', label); return b; };
+    const prev = arrow('Previous', '←', -1);
+    const next = arrow('Next', '→', 1);
     const ok = skew('pop', 'Close', close);
-    const keys = (ev) => { if (ev.key === 'Escape') close(); else if (ev.key === 'Tab') { ev.preventDefault(); ok.focus(); } };
-    box.append(head, ...items.map((t) => h('p', 'tk-pop-p', popupText(t))), ok);
+    const nav = h('div', 'tk-nav');
+    nav.append(prev, count, next);
+    const focusable = () => [prev, next, ok].filter((b) => !b.disabled);
+    const keys = (ev) => {
+      if (ev.key === 'Escape') close();
+      else if (ev.key === 'ArrowLeft' && !prev.disabled) { show(i - 1); }
+      else if (ev.key === 'ArrowRight' && !next.disabled) { show(i + 1); }
+      else if (ev.key === 'Tab') {
+        const f = focusable();
+        const at = f.indexOf(document.activeElement);
+        ev.preventDefault();
+        f[(at + (ev.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+      }
+    };
+    box.append(head, text);
+    if (items.length > 1) box.append(nav);
+    box.append(ok);
     wrap.append(box);
+    show(0);
     document.body.append(wrap);
     document.addEventListener('keydown', keys);
     popup = wrap;
@@ -378,7 +422,10 @@
 .tk-msg .lab { display: block; }
 .tk-pop { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(16, 20, 43, 0.6); }
 .tk-pop-in { width: 100%; max-width: 26rem; max-height: 85vh; overflow: auto; display: flex; flex-direction: column; gap: 0.875rem; align-items: flex-start; padding: 1.25rem; background: var(--paper); border: 2px solid var(--ink); box-shadow: 0 8px 24px rgba(16, 20, 43, 0.35); }
-.tk-pop-p { margin: 0; overflow-wrap: anywhere; }`;
+.tk-pop-p { margin: 0; overflow-wrap: anywhere; }
+.tk-nav { display: flex; align-items: center; gap: 0.75rem; align-self: stretch; justify-content: space-between; }
+.tk-count { font-family: var(--f-head); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
+.tk-nav .skew:disabled { opacity: 0.35; cursor: default; }`;
     document.head.append(css);
   };
   const init = async () => {

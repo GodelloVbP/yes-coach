@@ -1,10 +1,11 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-04 12:49Z">
+<meta name="yc-build" content="2026-11-04 13:32Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png?v=3">
 <meta name="theme-color" content="#26358f">
+<script>try{var t=JSON.parse(localStorage.getItem('yc-theme'));if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Yes Coach">
 <meta name="description" content="A free, ad-free workout tracker: log sets, plan your week, track your progress and what you eat.">
@@ -995,6 +996,11 @@ body.typing .restbar { display: none; }
         <p class="note">Only added to the text you copy for an AI coach or trainer (Copy day and the export). Stored privately in your own account.</p>
         <div class="ed-fields" id="me-fields"></div>
         <span id="me-state" class="note" aria-live="polite"></span>
+      </section>
+      <section aria-labelledby="h-look" id="look">
+        <h2 id="h-look">Appearance</h2>
+        <p class="note">Auto follows your phone or computer. Your choice is saved on this device only.</p>
+        <div id="look-row"></div>
       </section>
       <section aria-labelledby="h-imp" id="imp">
         <h2 id="h-imp">Get a plan or import</h2>
@@ -2907,6 +2913,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       t.append(row);
     });
     t.hidden = false;
+    t.style.display = ''; // hideTips sets display none; without this the tip never returns after the first hide
     const b = box.getBoundingClientRect();
     let x = ev.clientX - b.left + 12;
     if (x + t.offsetWidth > b.width) x = ev.clientX - b.left - t.offsetWidth - 12;
@@ -6295,7 +6302,16 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#train-loading').hidden = false;
     $('#train-loading').textContent = msg;
   };
+  // light, dark, or auto (no attribute: the page follows the device); saved on this device
+  const THEMES = [['auto', 'Auto'], ['light', 'Light'], ['dark', 'Dark']];
+  const themeNow = () => { const t = local.get('yc-theme'); return t === 'light' || t === 'dark' ? t : 'auto'; };
+  const applyTheme = (t) => { if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; };
+  const paintTheme = () => {
+    $('#look-row').replaceChildren(radioTabs('Appearance', THEMES, themeNow(), (k) => { local.set('yc-theme', k === 'auto' ? null : k); applyTheme(k); paintTheme(); }));
+  };
   const boot = async () => {
+    applyTheme(themeNow());
+    paintTheme();
     loadDrafts();
     const v = local.get('yc-view');
     if ((VIEWS.includes(v) && v !== 'train' && (v !== 'feedback' || window.YC_FEEDBACK)) || v === 'export') setView(v === 'export' ? 'settings' : v);

@@ -953,6 +953,11 @@ body.typing .restbar { display: none; }
         <div class="ed-fields" id="me-fields"></div>
         <span id="me-state" class="note" aria-live="polite"></span>
       </section>
+      <section aria-labelledby="h-look" id="look">
+        <h2 id="h-look">Appearance</h2>
+        <p class="note">Auto follows your phone or computer. Your choice is saved on this device only.</p>
+        <div id="look-row"></div>
+      </section>
       <section aria-labelledby="h-imp" id="imp">
         <h2 id="h-imp">Get a plan or import</h2>
         <p class="note">Your coach builds a plan and brings your history over from another app, right here in Yes Coach.</p>
@@ -2860,6 +2865,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       t.append(row);
     });
     t.hidden = false;
+    t.style.display = ''; // hideTips sets display none; without this the tip never returns after the first hide
     const b = box.getBoundingClientRect();
     let x = ev.clientX - b.left + 12;
     if (x + t.offsetWidth > b.width) x = ev.clientX - b.left - t.offsetWidth - 12;
@@ -6248,7 +6254,16 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#train-loading').hidden = false;
     $('#train-loading').textContent = msg;
   };
+  // light, dark, or auto (no attribute: the page follows the device); saved on this device
+  const THEMES = [['auto', 'Auto'], ['light', 'Light'], ['dark', 'Dark']];
+  const themeNow = () => { const t = local.get('yc-theme'); return t === 'light' || t === 'dark' ? t : 'auto'; };
+  const applyTheme = (t) => { if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; };
+  const paintTheme = () => {
+    $('#look-row').replaceChildren(radioTabs('Appearance', THEMES, themeNow(), (k) => { local.set('yc-theme', k === 'auto' ? null : k); applyTheme(k); paintTheme(); }));
+  };
   const boot = async () => {
+    applyTheme(themeNow());
+    paintTheme();
     loadDrafts();
     const v = local.get('yc-view');
     if ((VIEWS.includes(v) && v !== 'train' && (v !== 'feedback' || window.YC_FEEDBACK)) || v === 'export') setView(v === 'export' ? 'settings' : v);
