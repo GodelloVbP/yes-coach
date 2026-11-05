@@ -121,7 +121,7 @@ def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, l
     ctx.route('**/*', lambda r: r.continue_() if r.request.url.startswith('http://localhost') else (EXTERNAL.append(r.request.url), r.abort()))  # nothing else leaves the machine
     ctx.route(SUPA + '/**', be.handle)
     page = ctx.new_page(); errors = []
-    page.on('pageerror', lambda e: errors.append(str(e)))
+    page.on('pageerror', lambda e: errors.append(str(e) + ' @ ' + str(getattr(e, 'stack', ''))[:600]))
     page.on('console', lambda m: errors.append('CSP: ' + m.text) if 'Content Security Policy' in m.text else None)
     page.on('dialog', lambda d: d.dismiss())
     page.goto(BASE + '#home')  # signed-in users open on Train; #home keeps the old tests on the page they were written for
