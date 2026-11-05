@@ -108,6 +108,11 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   const names = list.body.result.tools.map((t) => t.name);
   ok(names.length === 10 && !names.some((x) => /delete|remove|session/.test(x) && x !== 'get_sessions'), 'tool list: ' + names);
   ok(list.body.result.tools.every((t) => t.inputSchema.type === 'object' && t.annotations && t.description && t.title && t.annotations.title === t.title && t.name.length <= 64 && (t.annotations.readOnlyHint === true || typeof t.annotations.destructiveHint === 'boolean')), 'schemas, titles, hints');
+  const toolNames = list.body.result.tools.map((t) => t.name);
+  ok(list.body.result.tools.every((t) => !toolNames.some((n) => n !== t.name && (t.description + JSON.stringify(t.inputSchema)).includes(n))), 'descriptions do not mention other tools');
+  ok(list.body.result.tools.every((t) => !/\b(always|never|must|should|instruction|ignore|before calling|call this)/i.test(t.description)), 'descriptions are plain, no directives');
+  const init = (await rpc('tok-anna', 'initialize', {})).body.result.instructions;
+  ok(!/\b(call|first|never|must|should)\b/i.test(init), 'server instructions are descriptive: ' + init);
   ok(list.body.result.tools.filter((t) => t.annotations.destructiveHint === true).map((t) => t.name).sort().join() === 'answer_note,save_training_day,set_schedule', 'overwriting tools are destructive');
   ok(list.body.result.tools.filter((t) => t.annotations.readOnlyHint).length === 6, 'read-only hints');
   ok((await rpc('tok-anna', 'tools/call', { name: 'zzz' })).body.error.code === -32602, 'unknown tool');
