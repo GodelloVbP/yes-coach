@@ -564,7 +564,8 @@ td.nowrap { white-space: nowrap; }
 /* rest timer: 64 px, owns the bottom; hidden while the keyboard is open */
 .restbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 8; background: var(--ink); color: var(--bg); padding-bottom: env(safe-area-inset-bottom, 0px); }
 .rest-in { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: var(--rest-h); }
-.rest-l { display: flex; align-items: baseline; gap: 0.75rem; min-width: 0; }
+.rest-l { display: flex; align-items: baseline; gap: 0.75rem; min-width: 0; flex: 1; align-self: stretch; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.rest-l:active { opacity: 0.7; }
 .restbar .lab { color: inherit; opacity: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rest-t { font-family: var(--f-head); font-size: var(--t4); font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
 .rest-acts { display: flex; gap: 0.5rem; }
@@ -1346,7 +1347,7 @@ body.fin-open { overflow: hidden; }
 <div class="toast" id="toast" hidden role="status" aria-live="polite"><div class="in toast-in"><button class="skew small" type="button" id="toast-undo"><span>Undo</span></button><span id="toast-text"></span></div></div>
 <div class="restbar" id="restbar" hidden role="timer" aria-live="off">
   <div class="in rest-in">
-    <div class="rest-l"><span class="rest-t" id="rest-t">0:00</span><span class="lab" id="rest-lab">Rest</span></div>
+    <button class="rest-l" type="button" id="rest-go" aria-label="Back to the exercise"><span class="rest-t" id="rest-t">0:00</span><span class="lab" id="rest-lab">Rest</span></button>
     <div class="rest-acts"><button class="skew small" type="button" id="rest-add"><span>+15 s</span></button><button class="skew small" type="button" id="rest-skip"><span>Skip</span></button></div>
   </div>
 </div>
@@ -3560,7 +3561,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
 
   // ---- session bar actions
   $('#sb-back').addEventListener('click', () => { hideToast(); S.away = true; closeMenus(); renderTrain(); window.scrollTo({ top: 0 }); });
-  $('#resume-btn').addEventListener('click', () => { S.away = false; if (S.view !== 'train') setView('train'); renderTrain(); window.scrollTo({ top: 0 }); });
+  const resumeSession = () => { S.away = false; if (S.view !== 'train') setView('train'); renderTrain(); window.scrollTo({ top: 0 }); };
+  $('#resume-btn').addEventListener('click', resumeSession);
   $('#sb-more').addEventListener('click', (ev) => {
     ev.stopPropagation();
     const m = $('#sb-menu');
@@ -6200,8 +6202,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
 
 
   // ------------------------------------------------------------------ rest timer
-  const REST = { ends: 0, label: '', timer: 0, rang: false, audio: null };
-  const saveRest = () => local.set('yc-rest', REST.ends ? { ends: REST.ends, label: REST.label } : null);
+  const REST = { ends: 0, label: '', ex: null, timer: 0, rang: false, audio: null };
+  const saveRest = () => local.set('yc-rest', REST.ends ? { ends: REST.ends, label: REST.label, ex: REST.ex } : null);
   const fmtClock = (ms) => { const t = Math.round(Math.abs(ms) / 1000); return Math.floor(t / 60) + ':' + pad2(t % 60); };
   const beep = () => {
     try {
@@ -6244,6 +6246,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     } catch (e2) { REST.audio = null; }
     REST.ends = Date.now() + secs * 1000;
     REST.label = e.name || item.ex;
+    REST.ex = item.ex;
     REST.rang = false;
     saveRest();
     clearInterval(REST.timer);
@@ -6257,6 +6260,15 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     paintRest();
   };
   $('#rest-skip').addEventListener('click', stopRest);
+  // tapping the timer goes back to the exercise it was started on, from any screen
+  $('#rest-go').addEventListener('click', () => {
+    if (!S.active) return;
+    if (!inSessionView()) resumeSession();
+    const there = REST.ex && sessionItems().some((i) => i.ex === REST.ex);
+    if (!there) return;
+    if (focusOn()) goExercise(REST.ex);
+    else { const it = R && R.items[REST.ex]; if (it && it.el) it.el.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+  });
   $('#rest-add').addEventListener('click', () => {
     if (!REST.ends) return;
     REST.ends = Math.max(REST.ends, Date.now()) + 15000;
@@ -6265,7 +6277,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     paintRest();
   });
   const savedRest = local.get('yc-rest');
-  if (savedRest && savedRest.ends > Date.now() - 5 * 60000) { REST.ends = savedRest.ends; REST.label = savedRest.label; REST.rang = savedRest.ends < Date.now(); REST.timer = setInterval(paintRest, 250); }
+  if (savedRest && savedRest.ends > Date.now() - 5 * 60000) { REST.ends = savedRest.ends; REST.label = savedRest.label; REST.ex = savedRest.ex || null; REST.rang = savedRest.ends < Date.now(); REST.timer = setInterval(paintRest, 250); }
 
   // ------------------------------------------------------------------ keep the screen on while a session is open
   let lock = null;
