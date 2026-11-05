@@ -64,6 +64,7 @@ h2 { font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-s
 .lab { font-size: var(--t1); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
 .lab .note { font-family: var(--f-body); font-size: var(--t1); text-transform: none; letter-spacing: 0; }
 .textbtn { background: none; border: 0; padding: 0 0.25rem; min-height: 44px; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-weight: 600; font-size: var(--t2); }
+.conn-url { flex: 1 1 14rem; min-width: 0; box-sizing: border-box; min-height: 44px; padding: 0 0.6rem; border: 2px solid var(--ink); border-radius: 0; background: transparent; color: var(--ink); font: inherit; font-size: var(--t2); }
 .link { background: none; border: 0; padding: 0.25rem 0; color: var(--ink); text-decoration: underline; cursor: pointer; font-size: var(--t2); font-weight: 600; }
 
 /* sticky top: save bar + one bar (app bar or session bar, never both) */
@@ -991,7 +992,9 @@ body.typing .restbar { display: none; }
       </section>
       <section aria-labelledby="h-conn" id="conn" hidden>
         <h2 id="h-conn">Connected AI apps</h2>
-        <p class="note">AI apps you allowed to read your data and change your plan, such as Claude. Disconnect one and it loses access straight away.</p>
+        <p class="note">Connect your own Claude: in Claude open Customize, Connectors, Add custom connector, paste this address, then Connect and Allow. <a class="link" href="connect.html">Step by step</a></p>
+        <div class="foot-row"><input type="text" id="conn-url" class="conn-url" readonly aria-label="Connector address"><button class="skew small" type="button" id="conn-copy"><span>Copy</span></button></div>
+        <p class="note">AI apps you allowed to read your data and change your plan. Disconnect one and it loses access straight away.</p>
         <div id="conn-list"></div>
         <span id="conn-state" class="note" aria-live="polite"></span>
       </section>
@@ -6314,6 +6317,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     try { r = await sb.auth.oauth.listGrants(); } catch (e) { return; }
     if (!r || r.error || !Array.isArray(r.data)) return; // the connector is not switched on: show nothing
     $('#conn').hidden = false;
+    const url = (window.YC_CONFIG && window.YC_CONFIG.supabaseUrl || '') + '/functions/v1/mcp';
+    $('#conn-url').value = url;
+    $('#conn-copy').onclick = async () => {
+      let done = false;
+      try { await navigator.clipboard.writeText(url); done = true; } catch (e) { $('#conn-url').select(); try { done = document.execCommand('copy'); } catch (e2) { done = false; } }
+      $('#conn-state').textContent = done ? 'Copied.' : 'Press and hold the address to copy it.';
+    };
     const box = $('#conn-list');
     if (!r.data.length) { box.replaceChildren(h('p', 'note', 'None connected.')); return; }
     box.replaceChildren(...r.data.map((g) => {

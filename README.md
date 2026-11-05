@@ -12,6 +12,7 @@ A free, ad-free workout tracker. Static site on GitHub Pages, accounts and data 
 | `schema.sql` | The database: one table, row-level security, merge and delete-account functions. |
 | `tickets.sql` | Feedback & Requests tab: tickets, thread, owner functions and their row-level security. Run after `schema.sql`. |
 | `connector.sql` | Run last. Keeps a connected AI app inside its bounds in the database itself. |
+| `connect.html` | Public setup and usage page for the connector (the directory listing links to it). |
 | `consent.html` | The screen where a person allows or denies an AI app (the connector's sign-in step). |
 | `supabase/functions/mcp/` | The connector: an MCP server, one file, deployed as a Supabase Edge Function. `supabase/tests/mcp.test.mjs` tests it. |
 | `tickets.js` | The Feedback & Requests tab: send, follow, the "done" pop-up, and the owner's ticket bar. |
