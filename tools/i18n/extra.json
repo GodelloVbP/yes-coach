@@ -992,5 +992,47 @@
   "de": "Schalte es unter Mehr, Eintragen aus. Den Schritt pro Übung stellst du im Plan-Editor ein.",
   "fr": "Désactive-le dans Plus, Saisie. Règle le palier par exercice dans l’éditeur du plan.",
   "it": "Disattivalo in Altro, Registrazione. Imposta il salto per esercizio nell’editor del piano."
+ },
+ "+ Warm-up": {
+  "nl": "+ Opwarmen",
+  "es": "+ Calentamiento",
+  "de": "+ Aufwärmen",
+  "fr": "+ Échauffement",
+  "it": "+ Riscaldamento"
+ },
+ "Add warm-up sets automatically from 40 kg": {
+  "nl": "Voeg vanaf 40 kg automatisch opwarmsets toe",
+  "es": "Añadir series de calentamiento automáticamente desde 40 kg",
+  "de": "Ab 40 kg automatisch Aufwärmsätze hinzufügen",
+  "fr": "Ajouter automatiquement des séries d’échauffement dès 40 kg",
+  "it": "Aggiungi automaticamente serie di riscaldamento da 40 kg"
+ },
+ "Warm-up sets": {
+  "nl": "Opwarmsets",
+  "es": "Series de calentamiento",
+  "de": "Aufwärmsätze",
+  "fr": "Séries d’échauffement",
+  "it": "Serie di riscaldamento"
+ },
+ "Tap + Warm-up on an exercise for a ramp to your working weight: the empty bar, then about half, 70% and 85% of it. It appears from 40 kg.": {
+  "nl": "Tik op + Opwarmen bij een oefening voor een opbouw naar je werkgewicht: de lege stang, dan ongeveer de helft, 70% en 85% ervan. De knop verschijnt vanaf 40 kg.",
+  "es": "Toca + Calentamiento en un ejercicio para una subida hasta tu peso de trabajo: la barra vacía, luego más o menos la mitad, el 70 % y el 85 %. Aparece desde 40 kg.",
+  "de": "Tippe bei einer Übung auf + Aufwärmen für eine Steigerung zum Arbeitsgewicht: die leere Stange, dann etwa die Hälfte, 70 % und 85 %. Der Knopf erscheint ab 40 kg.",
+  "fr": "Touche + Échauffement sur un exercice pour une montée jusqu’à ta charge de travail : la barre à vide, puis environ la moitié, 70 % et 85 %. Le bouton apparaît dès 40 kg.",
+  "it": "Tocca + Riscaldamento su un esercizio per una salita fino al peso di lavoro: il bilanciere vuoto, poi circa la metà, il 70% e l’85%. Compare da 40 kg."
+ },
+ "Warm-ups do not count as working sets and do not change your suggested weight.": {
+  "nl": "Opwarmsets tellen niet mee als werksets en veranderen je voorgestelde gewicht niet.",
+  "es": "Los calentamientos no cuentan como series de trabajo y no cambian tu peso sugerido.",
+  "de": "Aufwärmsätze zählen nicht als Arbeitssätze und ändern dein vorgeschlagenes Gewicht nicht.",
+  "fr": "Les échauffements ne comptent pas comme séries de travail et ne changent pas ton poids suggéré.",
+  "it": "I riscaldamenti non contano come serie di lavoro e non cambiano il peso suggerito."
+ },
+ "Want it every time? Tick Add warm-up sets automatically in the plan editor.": {
+  "nl": "Elke keer? Vink Voeg automatisch opwarmsets toe aan in de plan-editor.",
+  "es": "¿Quieres que sea siempre? Marca Añadir series de calentamiento automáticamente en el editor del plan.",
+  "de": "Jedes Mal? Setze im Plan-Editor den Haken bei Aufwärmsätze automatisch hinzufügen.",
+  "fr": "À chaque fois ? Coche Ajouter automatiquement des séries d’échauffement dans l’éditeur du plan.",
+  "it": "Ogni volta? Spunta Aggiungi automaticamente serie di riscaldamento nell’editor del piano."
  }
 }

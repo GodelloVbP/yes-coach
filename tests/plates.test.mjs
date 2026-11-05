@@ -1,7 +1,7 @@
 // Plate maths. Run: node tests/plates.test.mjs
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
-const { plan, PLATES, BARS } = createRequire(import.meta.url)('../plates.js');
+const { plan, PLATES, BARS, warmups } = createRequire(import.meta.url)('../plates.js');
 let n = 0;
 const ok = (cond, msg) => { assert.ok(cond, msg); n += 1; };
 const eq = (a, b, msg) => { assert.deepEqual(a, b, msg); n += 1; };
@@ -45,4 +45,14 @@ for (const total of [20, 22.5, 25, 47.5, 87.5, 102.5, 137.5, 182.5, 200, 227.5])
   ok(p.exact, total + ' kg builds');
   eq(20 + 2 * p.side.reduce((a, b) => a + b, 0), total, total + ' kg adds up');
 }
+// warm-up ramp
+const ramp = (t, b) => warmups(t, b).map((w) => w.load + 'x' + w.reps).join(' ');
+eq(ramp(100, 20), '20x10 50x5 70x3 85x1', '100 kg ramp');
+eq(ramp(60, 20), '20x10 30x5 42.5x3 50x1', '60 kg ramp rounds to 2.5');
+eq(ramp(40, 20), '20x10 27.5x3 35x1', '40 kg: 50% is the bar, so it is skipped');
+eq(ramp(39.5, 20), '', 'under 40 kg: none');
+eq(ramp(100, null), '50x5 70x3 85x1', 'no bar: starts at 50%');
+eq(ramp(100, 15), '15x10 50x5 70x3 85x1', 'bar of 15');
+eq(ramp('x', 20), '', 'junk gives none');
+ok(warmups(200, 20).every((w, i, a) => !i || w.load > a[i - 1].load), 'always climbing');
 console.log(n + ' checks passed');
