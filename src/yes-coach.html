@@ -667,6 +667,24 @@ body.typing .restbar { display: none; }
 .hm-app { display: flex; align-items: center; gap: 0.75rem; }
 .hm-app img { width: 3.5rem; height: 3.5rem; border-radius: 0.75rem; box-shadow: 0 1px 6px rgba(10, 14, 40, 0.25); }
 .hm-app b { font-family: var(--f-head); text-transform: uppercase; letter-spacing: 0.04em; }
+.fin { position: fixed; inset: 0; z-index: 85; overflow-y: auto; background: var(--bg); }
+.fin-in { max-width: 34rem; margin: 0 auto; padding: 1.25rem 1rem 2rem; display: flex; flex-direction: column; gap: 1rem; }
+.fin-date { margin: 0; font-family: var(--f-head); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+.fin-h { margin: 0; font-family: var(--f-head); font-weight: 800; text-transform: uppercase; font-size: clamp(2.25rem, 9vw, 3.25rem); line-height: 1; }
+.fin-tiles { display: flex; gap: 0.75rem; padding: 0 0.375rem; }
+.fin-t { --ang-bg: var(--faint); --ang-bd: var(--faint); flex: 1; min-width: 0; padding: 0.75rem 0.875rem; display: flex; flex-direction: column; gap: 0.125rem; }
+.fin-t b { font-family: var(--f-head); font-weight: 800; font-size: clamp(1.4rem, 6vw, 2rem); line-height: 1; white-space: nowrap; }
+.fin-t span { font-size: var(--t1); font-weight: 600; color: var(--ink-soft); }
+.fin-sub { margin: 0.5rem 0 0; font-family: var(--f-head); font-weight: 800; text-transform: uppercase; font-size: 1.5rem; }
+.fin-prs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.fin-prs li { display: flex; align-items: center; gap: 0.625rem; min-height: 44px; }
+.fin-prs .pr { position: static; flex: none; }
+.fin-prs .fin-d { margin-left: auto; color: var(--ink-soft); font-weight: 600; }
+.fin-img canvas { display: block; width: 100%; max-width: min(22rem, 62vw); height: auto; margin: 0 auto; border: 2px solid var(--line); }
+.fin-acts { display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 0.75rem 0.375rem calc(0.75rem + env(safe-area-inset-bottom)); position: sticky; bottom: 0; background: var(--bg); border-top: 1px solid var(--line); }
+.fin-acts .skew { flex: 1 1 8rem; }
+.fin-status { min-height: 1.4em; margin: 0; }
+body.fin-open { overflow: hidden; }
 .ydlg { position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(10, 14, 40, 0.55); }
 .ydlg .confirm { width: min(100%, 26rem); background: var(--paper); border: 2px solid var(--ink); }
 .hm .foot-row { justify-content: center; }
@@ -1587,6 +1605,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['5 Nov 2026', 'Finish screen and share picture', ["When you finish a day you now see how it went: time, working sets, volume and any new personal records.", "Share it as a picture, with or without the weights and your note. Nothing leaves your phone until you share it."]],
     ['5 Nov 2026', 'Warm-up sets', ["Tap + Warm-up on an exercise for a ramp to your working weight: the empty bar, then about half, 70% and 85% of it. It appears from 40 kg.", "Warm-ups do not count as working sets and do not change your suggested weight.", "Want it every time? Tick Add warm-up sets automatically in the plan editor."]],
     ['5 Nov 2026', 'Suggested next weight', ["Each exercise now shows the weight to try next, worked out from your last sessions. When every set reached the reps, it goes up a step.", "A line under the exercise says why. Tap Use last time to see last time’s numbers instead.", "Turn it off in Settings, Logging. Set the step per exercise in the plan editor."]],
     ['5 Nov 2026', 'Plate calculator', ["On barbell exercises, the Plates button shows which plates go on each side of the bar. If your plates cannot make the weight, it offers the nearest two.", "Set your bar (20, 15 or 10 kg) and the plates you own in Settings, Logging."]],
@@ -1727,6 +1746,144 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     document.addEventListener('keydown', onKey);
     document.body.append(wrap);
     box.go.focus();
+  };
+
+  // ---- the finished day: the numbers, the records, and a picture to share
+  const daySummary = () => {
+    const a = S.active;
+    const doc = a ? S.sessions[SID()] : null;
+    if (!doc) return null;
+    const done = Object.values(doc.sets || {}).filter((st) => st && !st.removed && isDone(st));
+    const work = done.filter(countsAsWork);
+    if (!work.length) return null;
+    const order = sessionItems().map((i) => i.ex);
+    const exIds = [...new Set(work.map((st) => st.ex))].sort((x, y) => (order.indexOf(x) < 0 ? 99 : order.indexOf(x)) - (order.indexOf(y) < 0 ? 99 : order.indexOf(y)));
+    let volume = 0;
+    let hasVol = false;
+    const lines = exIds.map((ex) => {
+      const e = S.exercises[ex] || {};
+      const sets = work.filter((st) => st.ex === ex);
+      const unit = e.unit || 'kg';
+      sets.forEach((st) => { if (unit === 'kg' && st.load != null && st.reps != null) { volume += st.load * st.reps * (e.load_basis === 'per_side' ? 2 : 1); hasVol = true; } });
+      const score = (st) => (unit === 'assist' ? -(st.load == null ? 1e9 : st.load) * 1000 + (st.reps || 0) : unit === 'bw' || st.load == null || st.load <= 0 ? (st.reps || 0) : epley(st.load, Math.min(st.reps || 0, 15)));
+      const best = unit === 'min' ? null : sets.reduce((x, y) => (score(y) > score(x) ? y : x));
+      const prSets = sets.filter((st) => isPR(ex, st));
+      const shown = prSets.length ? prSets.reduce((x, y) => (score(y) > score(x) ? y : x)) : best;
+      const mins = sets.reduce((t, st) => t + (Number(st.minutes) || 0), 0);
+      return { ex, name: e.name || exName(ex), n: sets.length, pr: prSets.length > 0, detail: unit === 'min' ? num(mins) + ' min' : perfLabel(shown, e), kgDetail: unit !== 'min' && shown.load != null && unit !== 'bw' };
+    });
+    // the working window: from the first tick to the last one
+    const ticks = done.map((st) => st.ticked_at || st.at).filter((t) => t > 1e12);
+    const start = doc.started_at && ticks.length ? Math.min(doc.started_at, ...ticks) : ticks.length ? Math.min(...ticks) : null;
+    const minutes = start ? (Math.max(...ticks) - start) / 60000 : null;
+    return {
+      name: (S.templates[a.tpl] || {}).name || 'Session', date: a.date, sets: work.length, volume: hasVol ? volume : null,
+      minutes: minutes != null && minutes >= 5 && minutes < 300 ? minutes : null, lines, note: doc.note || '',
+    };
+  };
+  const T = (x) => (window.YC_I18N && window.YC_I18N.t(x)) || x;
+  const shareData = (sum) => {
+    const lang = window.YC_I18N ? window.YC_I18N.current() : 'en';
+    let date = sum.date;
+    try { date = new Intl.DateTimeFormat(lang, { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(sum.date + 'T12:00:00Z')); } catch (e) { /* the plain date */ }
+    return {
+      title: sum.name, date, minutes: sum.minutes, sets: sum.sets, volume: sum.volume, note: sum.note,
+      lines: sum.lines.map((l) => ({ name: l.name, detail: l.detail, sets: T(l.n === 1 ? '1 set' : l.n + ' sets'), pr: l.pr })),
+      words: { time: T('Time'), sets: T('Working sets'), volume: T('Volume'), pr: T('PR'), more: T('+ {0} more'), tagline: T('Free. No ads.') },
+    };
+  };
+  const showFinish = (sum, after) => {
+    const wrap = h('div', 'fin');
+    wrap.setAttribute('role', 'dialog');
+    wrap.setAttribute('aria-modal', 'true');
+    wrap.setAttribute('aria-labelledby', 'fin-h');
+    const inn = h('div', 'fin-in');
+    const dateTxt = (() => { try { return new Intl.DateTimeFormat(window.YC_I18N ? window.YC_I18N.current() : 'en', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(sum.date + 'T12:00:00Z')); } catch (e) { return sum.date; } })();
+    const head = h('h2', 'fin-h', sum.name + ' done');
+    head.id = 'fin-h';
+    inn.append(h('p', 'fin-date', dateTxt), head);
+    const tiles = h('div', 'fin-tiles');
+    const tile = (big, label) => { const t = h('div', 'fin-t angled'); t.append(h('b', '', big), h('span', '', label)); tiles.append(t); };
+    if (sum.minutes != null) tile(window.YC_SHARE ? window.YC_SHARE.duration(sum.minutes) : Math.round(sum.minutes) + ' min', 'Time');
+    tile(String(sum.sets), 'Working sets');
+    if (sum.volume != null) tile(Math.round(sum.volume).toLocaleString('en').replace(/,/g, ' ') + ' kg', 'Volume');
+    inn.append(tiles);
+    const prs = sum.lines.filter((l) => l.pr);
+    if (prs.length) {
+      inn.append(h('h3', 'fin-sub', prs.length === 1 ? 'New personal record' : 'New personal records'));
+      const ul = h('ul', 'fin-prs');
+      prs.forEach((l) => { const li = h('li'); li.append(h('span', 'pr', 'PR'), h('b', '', l.name), h('span', 'fin-d', l.detail)); ul.append(li); });
+      inn.append(ul);
+    }
+    // the picture
+    const opts = { weights: local.get('yc-share-w') !== false, note: local.get('yc-share-n') === true };
+    let blob = null;
+    let seq = 0;
+    const cvWrap = h('div', 'fin-img');
+    const status = h('p', 'note fin-status');
+    status.setAttribute('role', 'status');
+    const acts = h('div', 'fin-acts');
+    const done = btn('skew pop', 'Done');
+    done.id = 'fin-done';
+    const close = () => { wrap.remove(); document.removeEventListener('keydown', onKey); document.body.classList.remove('fin-open'); after(); };
+    const onKey = (e) => { if (e.key === 'Escape') close(); };
+    if (window.YC_SHARE) {
+      const toggles = h('div', 'settings fin-opts');
+      const mk = (id, text, on, key) => {
+        const l = h('label'); const c = h('input'); c.type = 'checkbox'; c.id = id; c.checked = on;
+        c.addEventListener('change', () => { opts[key] = c.checked; local.set(key === 'weights' ? 'yc-share-w' : 'yc-share-n', c.checked); draw(); });
+        l.append(c, document.createTextNode(' ' + text)); toggles.append(l);
+      };
+      mk('fin-w', 'Show weights on the picture', opts.weights, 'weights');
+      if (sum.note) mk('fin-n', 'Show my note on the picture', opts.note, 'note');
+      const draw = () => {
+        const mine = ++seq;
+        window.YC_SHARE.render(shareData(sum), opts).then((cv) => {
+          if (mine !== seq) return;
+          cv.id = 'fin-canvas';
+          cv.setAttribute('role', 'img');
+          cv.setAttribute('aria-label', 'Picture of your day to share');
+          cvWrap.replaceChildren(cv);
+          return window.YC_SHARE.toBlob(cv).then((b) => { if (mine === seq) blob = b; });
+        }).catch(() => { status.textContent = 'The picture could not be made.'; });
+      };
+      const file = () => new File([blob], 'yes-coach-' + sum.date + '.png', { type: 'image/png' });
+      const canShare = () => { try { return !!(blob && navigator.canShare && navigator.canShare({ files: [file()] })); } catch (e) { return false; } };
+      const canShareNow = !!(navigator.canShare && navigator.share);
+      const go = btn('skew solid', canShareNow ? 'Share picture' : 'Save picture');
+      go.id = 'fin-share';
+      go.addEventListener('click', async () => {
+        if (!blob) { status.textContent = 'One moment, the picture is still being made.'; return; }
+        if (canShare()) {
+          try { await navigator.share({ files: [file()], title: sum.name }); status.textContent = ''; return; } catch (e) { if (e && e.name === 'AbortError') return; }
+        }
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = 'yes-coach-' + sum.date + '.png';
+        document.body.append(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+        status.textContent = 'Saved to your downloads.';
+      });
+      acts.append(go);
+      if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+        const cp = btn('skew', 'Copy picture');
+        cp.id = 'fin-copy';
+        cp.addEventListener('click', async () => {
+          if (!blob) return;
+          try { await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); status.textContent = 'Picture copied.'; } catch (e) { status.textContent = 'Could not copy the picture.'; }
+        });
+        acts.append(cp);
+      }
+      inn.append(cvWrap, toggles, status);
+      draw();
+    }
+    acts.append(done);
+    inn.append(acts);
+    done.addEventListener('click', close);
+    wrap.append(inn);
+    document.addEventListener('keydown', onKey);
+    document.body.classList.add('fin-open');
+    document.body.append(wrap);
+    done.focus({ preventScroll: true });
   };
 
   // ---- put Yes Coach! on the home screen: one tap where the browser allows it, otherwise a short sheet with the logo and the steps
@@ -2078,10 +2235,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const finishSession = () => {
     const a = S.active;
     if (!a) return;
+    const sum = daySummary();
     if (S.sessions[SID()]) queueWrite(SID(), { finished_at: Date.now() });
     const day = { name: (S.templates[a.tpl] || {}).name || 'Session', date: a.date };
     closeSession();
-    connInfo().then((c) => { if (c.apps.length) askClaudeReview(day); }).catch(() => {});
+    const after = () => connInfo().then((c) => { if (c.apps.length) askClaudeReview(day); }).catch(() => {});
+    if (sum) showFinish(sum, after); else after();
   };
 
   // the session doc of a day when it belongs to that training day (a date can hold another day's workout)
