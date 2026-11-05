@@ -16,7 +16,9 @@ head = '''<link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Yes Coach">
 <meta name="description" content="A free, ad-free workout tracker: log sets, plan your week, track your progress and what you eat.">
 <style>
-body.signed-out #stick, body.signed-out main, body.signed-out #resume, body.signed-out #restbar { display: none !important; }
+body.signed-out #stick, body.signed-out #resume, body.signed-out #restbar { display: none !important; }
+body.signed-out.authing main, body.signed-out:not(.authing) #auth { display: none !important; }
+body:not(.signed-out) .hm-login, body.signed-out #hm-trainrow, body.signed-out #hm-claude, body.signed-out #hm-claude-panel, body.signed-out #hm-ticket { display: none !important; }
 .auth { padding-block: 2rem 3rem; display: flex; flex-direction: column; gap: 1rem; max-width: 26rem; }
 .auth h2 { font-size: var(--t4); }
 .au-form { display: flex; flex-direction: column; gap: 0.875rem; }
@@ -30,13 +32,13 @@ auth = f'''<section class="auth in" id="auth" hidden aria-labelledby="au-h">
   {brand}
   <h2 id="au-h">Sign in</h2>
   <p class="note">A free, ad-free workout tracker. Your account keeps your log and plan in sync between your devices.</p>
-  <p class="hm-users" id="au-users" hidden></p>
   <form id="au-form" class="au-form" novalidate>
     <label class="ed-f" id="au-email-f"><span class="lab">Email</span><input id="au-email" type="email" autocomplete="email" inputmode="email"></label>
     <label class="ed-f" id="au-pass-f"><span class="lab">Password</span><input id="au-pass" type="password" autocomplete="current-password"></label>
     <div id="au-cap" translate="no"></div>
     <button class="skew pop big" type="submit" id="au-go"><span>Sign in</span></button>
     <p class="note" id="au-msg" aria-live="polite"></p>
+    <div class="foot-row"><button class="textbtn" type="button" id="au-back">Back to the home page</button></div>
     <div class="foot-row"><button class="textbtn" type="button" id="au-alt"></button><button class="textbtn" type="button" id="au-forgot">Forgot password?</button></div>
   </form>
   <p class="note"><a class="link" href="privacy.html">Privacy</a></p>

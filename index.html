@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-nEGB1RHd4H/Ti640tq26ytOOI/SiO/HDnUn2kYsJOi0=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-05 11:41Z">
+<meta name="yc-build" content="2026-11-05 11:46Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -12,7 +12,9 @@
 <meta name="apple-mobile-web-app-title" content="Yes Coach">
 <meta name="description" content="A free, ad-free workout tracker: log sets, plan your week, track your progress and what you eat.">
 <style>
-body.signed-out #stick, body.signed-out main, body.signed-out #resume, body.signed-out #restbar { display: none !important; }
+body.signed-out #stick, body.signed-out #resume, body.signed-out #restbar { display: none !important; }
+body.signed-out.authing main, body.signed-out:not(.authing) #auth { display: none !important; }
+body:not(.signed-out) .hm-login, body.signed-out #hm-trainrow, body.signed-out #hm-claude, body.signed-out #hm-claude-panel, body.signed-out #hm-ticket { display: none !important; }
 .auth { padding-block: 2rem 3rem; display: flex; flex-direction: column; gap: 1rem; max-width: 26rem; }
 .auth h2 { font-size: var(--t4); }
 .au-form { display: flex; flex-direction: column; gap: 0.875rem; }
@@ -829,13 +831,13 @@ body.typing .restbar { display: none; }
       </h1>
   <h2 id="au-h">Sign in</h2>
   <p class="note">A free, ad-free workout tracker. Your account keeps your log and plan in sync between your devices.</p>
-  <p class="hm-users" id="au-users" hidden></p>
   <form id="au-form" class="au-form" novalidate>
     <label class="ed-f" id="au-email-f"><span class="lab">Email</span><input id="au-email" type="email" autocomplete="email" inputmode="email"></label>
     <label class="ed-f" id="au-pass-f"><span class="lab">Password</span><input id="au-pass" type="password" autocomplete="current-password"></label>
     <div id="au-cap" translate="no"></div>
     <button class="skew pop big" type="submit" id="au-go"><span>Sign in</span></button>
     <p class="note" id="au-msg" aria-live="polite"></p>
+    <div class="foot-row"><button class="textbtn" type="button" id="au-back">Back to the home page</button></div>
     <div class="foot-row"><button class="textbtn" type="button" id="au-alt"></button><button class="textbtn" type="button" id="au-forgot">Forgot password?</button></div>
   </form>
   <p class="note"><a class="link" href="privacy.html">Privacy</a></p>
@@ -888,7 +890,9 @@ body.typing .restbar { display: none; }
       <h2 class="sr-only" id="h-home">Yes Coach! home</h2>
       <p class="hm-tag">Log your sets, plan your week, see your progress. Free, no ads, and it works on every device.</p>
       <p class="hm-users" id="hm-users" hidden></p>
-      <div class="foot-row"><button class="skew pop" type="button" id="hm-train"><span>Today's training</span></button></div>
+      <div class="foot-row" id="hm-trainrow"><button class="skew pop" type="button" id="hm-train"><span>Today's training</span></button></div>
+      <div class="foot-row hm-login"><button class="skew pop big" type="button" id="hm-login"><span>Sign in</span></button></div>
+      <div class="foot-row hm-login"><button class="textbtn" type="button" id="hm-signup">New here? Create an account</button></div>
       <div class="foot-row hm-side">
         <button class="skew small" type="button" id="hm-install" aria-expanded="false" aria-controls="hm-install-panel" hidden><span>Put on home screen</span></button>
         <button class="skew small" type="button" id="hm-claude" aria-expanded="false" aria-controls="hm-claude-panel" hidden><span>Connect to Claude</span></button>
@@ -906,6 +910,7 @@ body.typing .restbar { display: none; }
         <li>Your data is never sold or passed on to third parties.</li>
         <li>Your data is yours: export it with one click.</li>
       </ul>
+      <p class="hm-p"><a class="link" href="privacy.html">Privacy page</a></p>
       <h2>What you get</h2>
       <ul class="hm-checks">
         <li>300+ exercises, plus your own</li>

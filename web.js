@@ -143,9 +143,20 @@
     $('#au-email-f').hidden = mode === 'newpass';
     $('#au-pass-f').hidden = mode === 'reset';
     $('#au-forgot').hidden = mode !== 'in';
+    $('#au-back').hidden = mode === 'newpass';
     $('#au-pass').autocomplete = mode === 'in' ? 'current-password' : 'new-password';
     say('');
   };
+  // signed out, people see Home first; the sign-in form opens from its buttons
+  const openAuth = () => {
+    $('#auth').hidden = false;
+    document.body.classList.add('authing');
+    YC_CAPTCHA.mount($('#au-cap'));
+    window.scrollTo({ top: 0 });
+  };
+  $('#hm-login').addEventListener('click', () => { mode = 'in'; paint(); openAuth(); $('#au-email').focus(); });
+  $('#hm-signup').addEventListener('click', () => { mode = 'up'; paint(); openAuth(); $('#au-email').focus(); });
+  $('#au-back').addEventListener('click', () => { document.body.classList.remove('authing'); window.scrollTo({ top: 0 }); });
   $('#au-alt').addEventListener('click', () => { mode = mode === 'in' ? 'up' : 'in'; paint(); });
   $('#au-forgot').addEventListener('click', () => { mode = 'reset'; paint(); });
   $('#au-form').addEventListener('submit', async (ev) => {
@@ -220,7 +231,7 @@
     started = true;
     uid = user.id;
     email = user.email || '';
-    document.body.classList.remove('signed-out');
+    document.body.classList.remove('signed-out', 'authing');
     $('#auth').hidden = true;
     try { await resync(); } catch (e) { /* the app shows what it can; writes retry */ }
     startSync();
@@ -228,14 +239,11 @@
     resolveSignedIn();
   };
   sb.auth.onAuthStateChange((event, session) => {
-    if (event === 'PASSWORD_RECOVERY') { mode = 'newpass'; paint(); $('#auth').hidden = false; document.body.classList.add('signed-out'); return; }
+    if (event === 'PASSWORD_RECOVERY') { mode = 'newpass'; paint(); $('#auth').hidden = false; document.body.classList.add('signed-out'); openAuth(); return; }
     if (session && mode !== 'newpass') start(session.user);
   });
   sb.auth.getSession().then(({ data }) => {
     if (data && data.session && mode !== 'newpass') start(data.session.user);
-    else if (!started) {
-      $('#auth').hidden = false; paint(); YC_CAPTCHA.mount($('#au-cap'));
-      window.YC_USERS().then((n) => { if (n) { const u = $('#au-users'); u.textContent = n === 1 ? '1 person trains with Yes Coach!' : n + ' people train with Yes Coach!'; u.hidden = false; } });
-    }
+    else if (!started) { $('#auth').hidden = false; paint(); }
   });
 })();
