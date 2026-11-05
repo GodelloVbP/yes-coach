@@ -4,5 +4,5 @@ window.YC_CONFIG = {
   supabaseUrl: 'https://qazvzhhoalkyyasakphs.supabase.co',
   supabaseAnonKey: 'sb_publishable_xm8P_yz9T-96YfcI2doESw_FOhLtALt',
   appUrl: 'https://godellovbp.github.io/yes-coach/',
-  contactEmail: '', // add before the public launch (privacy page)
+  contactEmail: 'stijesiebelink@gmail.com', // shown on the privacy page
 };
