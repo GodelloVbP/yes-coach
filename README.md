@@ -15,6 +15,7 @@ A free, ad-free workout tracker. Static site on GitHub Pages, accounts and data 
 | `connect.html` | Public setup and usage page for the connector (the directory listing links to it). |
 | `consent.html` | The screen where a person allows or denies an AI app (the connector's sign-in step). |
 | `supabase/functions/mcp/` | The connector: an MCP server, one file, deployed as a Supabase Edge Function. `supabase/tests/mcp.test.mjs` tests it. |
+| `demo.js` | The sample workout: a small plan and two earlier sessions. `web.js` loads them into memory when the page is opened with `?demo` (the "See a sample workout" buttons on the start page). Nothing is written to the database or the device. |
 | `tickets.js` | The Feedback & Requests tab: send, follow, the "done" pop-up, and the owner's ticket bar. |
 | `vendor/` | The Supabase client library and d3 (charts), so the app has no runtime dependency on a CDN. |
 | `fonts/` | Barlow and Barlow Condensed (SIL Open Font License), served from this site instead of Google Fonts. |

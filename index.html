@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-B23M5zfRouFLJ+ozq/yRI3LRixvCG+eTwdQJSkHmRm8=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-ZBg15Ui6u7pCtfgzhySn0YlZYgc2gvtiuvCkXwRkzm4=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-05 15:12Z">
+<meta name="yc-build" content="2026-11-05 15:55Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -647,11 +647,12 @@ body.typing .restbar { display: none; }
 .wz-err:empty { display: none; }
 .wz-items { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.125rem; font-weight: 500; }
 .hm { padding-block: 0.75rem 3rem; display: flex; flex-direction: column; gap: 1rem; max-width: 64rem; }
-.hm .brand svg { width: min(100%, 20rem); }
-.hm-tag { font-size: var(--t3); font-weight: 500; text-align: center; text-wrap: balance; max-width: 34rem; margin-inline: auto; }
+.hm-tag { margin: 0; font-size: var(--t3); font-weight: 500; text-wrap: balance; max-width: 34rem; }
 .hm-bar { position: relative; display: flex; align-items: center; justify-content: space-between; min-height: 56px; }
 body:not(.signed-out) .hm-bar { display: none; }
-.hm-logo svg { width: 44px; height: 34px; display: block; }
+.hm-logo svg { height: 36px; width: auto; max-width: 11rem; display: block; }
+.hm-bar-end { display: flex; align-items: center; gap: 0.5rem; }
+.hm-signin { min-height: 44px; padding-inline: 0.75rem; font-weight: 700; font-size: var(--t2); }
 .hm-chip { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0 0.75rem; font: inherit; font-size: var(--t2); font-weight: 700; color: var(--ink); background: var(--paper); border: 2px solid var(--ctl); border-radius: 999px; cursor: pointer; }
 .hm-chip[hidden] { display: none; }
 .hm-chip .flag { flex: none; }
@@ -660,31 +661,45 @@ body:not(.signed-out) .hm-bar { display: none; }
 .hm-pop { position: absolute; z-index: 20; top: 100%; right: 0; width: min(22rem, 100%); padding: 0.5rem; background: var(--paper); border: 2px solid var(--ink); box-shadow: 0 6px 24px rgba(10, 14, 40, 0.25); }
 .hm-pop[hidden] { display: none; }
 .hm-pop .lang-list { grid-template-columns: 1fr 1fr; }
-.hm-hero { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding-block: 0.5rem 1rem; }
-.hm-hero .foot-row { width: 100%; }
-.hm-hero .skew.big { min-height: 64px; width: min(100%, 22rem); }
-.hm-h { display: flex; flex-direction: column; align-items: center; margin: 0.5rem 0 0; font-family: var(--f-head); font-weight: 800; text-transform: uppercase; font-size: clamp(2rem, 9vw, 3.5rem); line-height: 1.05; text-align: center; }
-.hm-h span:last-child { color: var(--pop); }
+.hm-hero { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; padding-block: 0.5rem 1rem; }
+.hm-copy { display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center; }
+.hm-copy .foot-row, .hm-ctas { width: 100%; }
+.hm-kick { margin: 0; font-family: var(--f-head); font-weight: 700; font-size: var(--t3); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
+.hm-h { margin: 0; font-family: var(--f-head); font-weight: 800; text-transform: uppercase; font-size: clamp(2.5rem, 11vw, 4rem); line-height: 1.02; text-wrap: balance; }
+.hm-ctas { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+.hm-ctas .skew.big, .hm-copy .skew.big { min-height: 64px; width: min(100%, 22rem); }
+.hm-trust { margin: 0; font-size: var(--t2); font-weight: 600; color: var(--ink-soft); }
+.hm-import { margin: 0; font-size: var(--t2); font-weight: 500; text-wrap: balance; max-width: 30rem; }
+.hm-live { margin: 0; width: min(100%, 19rem); display: flex; flex-direction: column; gap: 0.75rem; }
+.hm-frame { position: relative; aspect-ratio: 585 / 880; overflow: hidden; border: 2px solid var(--line); background: var(--paper); }
+.hm-frame img { position: absolute; inset: 0 auto auto 0; width: 100%; height: auto; display: block; }
+.hm-pin { position: absolute; left: var(--x); top: var(--y); transform: translate(-50%, -50%); width: 1.25rem; height: 1.25rem; display: grid; place-items: center; border-radius: 50%; background: var(--ink); color: var(--bg); border: 2px solid var(--bg); font-family: var(--f-head); font-weight: 800; font-size: 0.8125rem; line-height: 1; }
+.hm-legend { margin: 0; padding: 0; list-style: none; counter-reset: pin; display: flex; flex-direction: column; gap: 0.375rem; font-size: var(--t2); font-weight: 600; }
+.hm-legend li { counter-increment: pin; display: flex; gap: 0.625rem; align-items: baseline; }
+.hm-legend li::before { content: counter(pin); flex: none; width: 1.375rem; height: 1.375rem; display: grid; place-items: center; border-radius: 50%; background: var(--ink); color: var(--bg); font-family: var(--f-head); font-weight: 800; font-size: 0.8125rem; transform: translateY(0.1875rem); }
+.hm-final { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding-block: 2rem 0.5rem; text-align: center; }
+.hm-final h2 { margin: 0; text-wrap: balance; }
 .hm-shots { list-style: none; margin: 0.5rem 0; padding: 0 0 0.5rem; display: grid; grid-auto-flow: column; grid-auto-columns: min(72%, 17rem); gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; justify-content: start; }
 .hm-shots li { scroll-snap-align: center; }
 .hm-shots figure { margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
 .hm-shots img { display: block; width: 100%; height: auto; border: 2px solid var(--line); background: var(--faint); }
 .hm-shots figcaption { font-size: var(--t2); font-weight: 600; color: var(--ink-soft); text-wrap: balance; }
-.hm-cards { list-style: none; margin: 0; padding: 0 0.375rem; display: grid; grid-template-columns: 1fr; gap: 1rem; }
+.hm-cards { list-style: none; margin: 0; padding: 0 0.375rem; overflow-x: clip; display: grid; grid-template-columns: 1fr; gap: 1rem; }
 .hm-cards li { --ang-bg: var(--faint); --ang-bd: var(--faint); padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 0.375rem; }
-.hm-cards li:first-child { --ang-bg: var(--pop); --ang-bd: var(--pop); color: var(--on-pop); }
 .hm-cards h3 { margin: 0; font-family: var(--f-head); font-weight: 800; text-transform: uppercase; font-size: 1.25rem; letter-spacing: 0.02em; }
 .hm-cards p { margin: 0; font-weight: 500; line-height: 1.45; }
 @media (min-width: 40rem) {
-  .hm-shots { grid-auto-flow: row; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-columns: auto; overflow: visible; }
+  .hm-shots { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-columns: auto; overflow: visible; }
   .hm-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .hm-cards li:first-child, .hm-cards li:last-child { grid-column: span 2; }
 }
 @media (min-width: 64rem) {
-  .hm-cards { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-  .hm-cards li { grid-column: span 2; }
-  .hm-cards li:first-child { grid-column: span 6; }
-  .hm-cards li:nth-child(n+5) { grid-column: span 3; }
+  .hm-hero { display: grid; grid-template-columns: minmax(0, 1fr) 19rem; align-items: center; gap: 4rem; padding-block: 2rem 2.5rem; }
+  .hm-copy { align-items: flex-start; text-align: left; }
+  .hm-copy .foot-row { justify-content: flex-start; }
+  .hm-ctas { align-items: flex-start; }
+  .hm-h { font-size: clamp(3.5rem, 5.6vw, 5rem); }
+  .hm-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .hm-shots { max-width: 44rem; margin-inline: auto; }
 }
 .news { padding-block: 1.25rem 3rem; display: flex; flex-direction: column; gap: 0.75rem; }
 .news .textbtn { align-self: flex-start; }
@@ -1036,40 +1051,60 @@ body.fin-open { overflow: hidden; }
     <section class="hm in" aria-labelledby="h-home">
       <div class="hm-bar">
         <span class="hm-logo" id="hm-logo" aria-hidden="true"></span>
-        <button class="hm-chip" type="button" id="hm-chip" aria-haspopup="true" aria-expanded="false" aria-controls="hm-lang-wrap" title="Language" hidden></button>
+        <div class="hm-bar-end">
+          <button class="textbtn hm-signin hm-login" type="button" id="hm-login" data-auth="in">Sign in</button>
+          <button class="hm-chip" type="button" id="hm-chip" aria-haspopup="true" aria-expanded="false" aria-controls="hm-lang-wrap" title="Language" hidden></button>
+        </div>
         <div class="hm-pop" id="hm-lang-wrap" hidden>
           <div id="hm-lang" class="lang-list" role="radiogroup" aria-label="Language"></div>
         </div>
       </div>
       <div class="hm-hero">
-        <h1 class="brand" id="hm-brand"></h1>
-        <h2 class="hm-h" id="h-home"><span>Log your sets.</span><span>Plan your week.</span><span>See your progress.</span></h2>
-        <p class="hm-tag">Free, no ads, on every device. It suggests your next weight, and your own AI can coach you.</p>
-        <div class="foot-row" id="hm-trainrow"><button class="skew pop big" type="button" id="hm-train"><span>Today's training</span></button></div>
-        <div class="foot-row hm-login"><button class="skew pop big" type="button" id="hm-login"><span>Sign in</span></button></div>
-        <div class="foot-row hm-login"><button class="skew small" type="button" id="hm-signup"><span>Create an account</span></button></div>
-        <p class="hm-users" id="hm-users" hidden></p>
+        <div class="hm-copy">
+          <p class="hm-kick">Free strength-training tracker</p>
+          <h1 class="hm-h" id="h-home">Know what to lift next.</h1>
+          <p class="hm-tag">Log your sets, see your last session, and get a suggested next weight, with the reason behind it.</p>
+          <div class="foot-row" id="hm-trainrow"><button class="skew pop big" type="button" id="hm-train"><span>Today's training</span></button></div>
+          <div class="hm-ctas hm-login">
+            <button class="skew pop big" type="button" id="hm-signup" data-auth="up"><span>Start tracking free</span></button>
+            <button class="skew small" type="button" id="hm-demo" data-demo><span>See a sample workout</span></button>
+          </div>
+          <p class="hm-trust">Free. No ads. Your history stays exportable.</p>
+          <p class="hm-import hm-login">Already tracking elsewhere? Bring your history from Strong, Hevy or FitNotes.</p>
+          <p class="hm-users" id="hm-users" hidden></p>
+        </div>
+        <figure class="hm-live">
+          <div class="hm-frame">
+            <img src="shots/log.webp" width="585" height="1266" decoding="async" alt="Logging a set: the weight you did last time, the suggested next weight and the reason for it">
+            <span class="hm-pin" style="--x: 3.5%; --y: 44.3%" aria-hidden="true">1</span>
+            <span class="hm-pin" style="--x: 19.3%; --y: 95.2%" aria-hidden="true">2</span>
+          </div>
+          <ol class="hm-legend">
+            <li>The next weight, with the reason.</li>
+            <li>Last time's numbers beside each set.</li>
+          </ol>
+        </figure>
       </div>
       <ul class="hm-shots" aria-label="Screenshots">
-        <li><figure><img src="shots/log.webp" width="585" height="1266" loading="lazy" decoding="async" alt="Logging a set: the weight you did last time, the suggested next weight and the reason for it"><figcaption>Log a set. Last time and the next weight are right there.</figcaption></figure></li>
         <li><figure><img src="shots/train.webp" width="585" height="1266" loading="lazy" decoding="async" alt="The week as seven blocks, with today's training day ready to start"><figcaption>Your week at a glance.</figcaption></figure></li>
         <li><figure><img src="shots/finish.webp" width="585" height="1266" loading="lazy" decoding="async" alt="The finish screen: time, working sets, volume and new personal records"><figcaption>Finish a day: time, volume and new records.</figcaption></figure></li>
       </ul>
       <h2>What makes it different</h2>
       <ul class="hm-cards">
-        <li class="angled"><h3>Your own AI as a coach</h3><p>Connect Claude with the connector, or paste a request into any AI chat. It builds your plan and reviews your sessions. Your data stays in your account.</p></li>
         <li class="angled"><h3>Next weight, with the reason</h3><p>After each session the app suggests the next load and reps, and says why.</p></li>
+        <li class="angled"><h3>Bring your history</h3><p>Import from Strong, Hevy and FitNotes. 300+ exercises, plus your own.</p></li>
         <li class="angled"><h3>A week you can see</h3><p>Seven blocks, one tap to start. Supersets, warm-ups and a plate calculator are built in.</p></li>
         <li class="angled"><h3>Progress you can share</h3><p>Records, estimated strength and trends. Finish a day and share it as a picture.</p></li>
+        <li class="angled"><h3>Bring your own AI</h3><p>Already use Claude? Connect it to your account to review your sessions and adjust your plan, or paste a request into any AI chat. You allow it first and can disconnect any time.</p></li>
         <li class="angled"><h3>Food and nutrients</h3><p>A food tracker with Dutch (RIVM) and USDA food data.</p></li>
-        <li class="angled"><h3>Bring your history</h3><p>Import from Strong, Hevy and FitNotes. 300+ exercises, plus your own.</p></li>
       </ul>
       <h2>Free and private</h2>
       <ul class="hm-checks">
         <li>100% free. Forever.</li>
         <li>No ads.</li>
         <li>No tracking.</li>
-        <li>Your data is never sold or passed on to third parties.</li>
+        <li>Your data is never sold or used for advertising.</li>
+        <li>Optional AI connections only with your permission.</li>
         <li>Your data is yours: export it with one click.</li>
       </ul>
       <p class="hm-p"><a class="link" href="privacy.html">Privacy page</a></p>
@@ -1082,6 +1117,13 @@ body.fin-open { overflow: hidden; }
       <h2>Made with you</h2>
       <p class="hm-p">Yes Coach! is built with the people who use it. Want to see something in the app? Found a bug? Just have feedback? Send a ticket from inside the app. It goes straight to me, and I aim to fix or build it within 24 hours.</p>
       <div class="foot-row"><button class="skew small" type="button" id="hm-ticket" hidden><span>Send a ticket</span></button></div>
+      <div class="hm-final hm-login">
+        <h2>Make your next workout easier to follow.</h2>
+        <div class="hm-ctas">
+          <button class="skew pop big" type="button" data-auth="up"><span>Start tracking free</span></button>
+          <button class="skew small" type="button" data-demo><span>See a sample workout</span></button>
+        </div>
+      </div>
     </section>
   </div>
 
@@ -1369,6 +1411,7 @@ body.fin-open { overflow: hidden; }
 <script src="plates.js"></script>
 <script src="progression.js"></script>
 <script src="share.js"></script>
+<script src="demo.js"></script>
 <script src="web.js"></script>
 <script src="tickets.js"></script>
 <script src="vendor/d3.min.js"></script>
@@ -1482,9 +1525,15 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     restored: false,
   };
   // this device's small stores (drafts, unsaved writes, open session, rest timer, last tab); storage can be off, so never throw
+  // The sample workout (web.js, ?demo) keeps these in memory: nothing of it may stay on the device or reach a real account later.
+  const memory = new Map();
+  if (window.YC_DEMO) { try { const t = localStorage.getItem('yc-theme'); if (t != null) memory.set('yc-theme', t); } catch (e) { /* no stored theme */ } }
+  const store = window.YC_DEMO
+    ? { getItem: (k) => (memory.has(k) ? memory.get(k) : null), setItem: (k, v) => { memory.set(k, v); }, removeItem: (k) => { memory.delete(k); } }
+    : { getItem: (k) => localStorage.getItem(k), setItem: (k, v) => localStorage.setItem(k, v), removeItem: (k) => localStorage.removeItem(k) };
   const local = {
-    get: (k) => { try { const v = localStorage.getItem(k); if (v == null) return null; try { return JSON.parse(v); } catch (e) { return v; } } catch (e) { return null; } },
-    set: (k, v) => { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } },
+    get: (k) => { try { const v = store.getItem(k); if (v == null) return null; try { return JSON.parse(v); } catch (e) { return v; } } catch (e) { return null; } },
+    set: (k, v) => { try { if (v == null) store.removeItem(k); else store.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } },
   };
   // a plain deep copy: the store hands out frozen objects, and patches must not share references
   const clone = (o) => (o == null ? o : JSON.parse(JSON.stringify(o)));
@@ -1684,6 +1733,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['5 Nov 2026', 'Sample workout', ["Try the app without an account: See a sample workout on the start page opens a plan with two earlier sessions, so you can log a set and see the suggested next weight. Nothing is saved.", "The start page now opens with what Yes Coach! does best: knowing what to lift next."]],
     ['5 Nov 2026', 'New start page', ["The start page for visitors now shows the app on three screens and what makes it different. Pick your language with the button at the top.", "This list of changes moved to More, under What's new."]],
     ['5 Nov 2026', 'Supersets', ["Pair two exercises that you do back to back. In the plan editor, open an exercise and tick Superset with the next exercise.", "While you train, ticking a set takes you straight to the other exercise. The rest timer starts after the last one of the round."]],
     ['5 Nov 2026', 'Progress: records and estimated strength', ["Progress now opens with your sessions, working sets and lifts tracked for the period you picked.", "A lift gets a PR tag when its latest session beat everything before it. Lifts in kg show their estimated one-rep max."]],
@@ -2031,10 +2081,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#hm-ticket').addEventListener('click', () => { setView('feedback'); window.scrollTo({ top: 0 }); });
 
   const renderHome = () => {
-    const brand = $('#hm-brand');
-    if (!brand.childElementCount) brand.append($('#pickday .brand svg').cloneNode(true));
     const logo = $('#hm-logo');
-    if (!logo.childElementCount) logo.append($('#mark svg').cloneNode(true));
+    if (!logo.childElementCount) logo.append($('#pickday .brand svg').cloneNode(true));
     paintInstall();
     paintHomeConn();
     paintHomeLang();
@@ -7704,7 +7752,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     local.set('yc-view', null);
     // signed in: straight to Train. The landing page is for people without an account (the web build shows it until they sign in).
     let hasAccount = true;
-    try { hasAccount = !window.YC_WEB || Object.keys(localStorage).some((k) => /^sb-.+-auth-token$/.test(k)); } catch (e) { hasAccount = !window.YC_WEB; }
+    try { hasAccount = !window.YC_WEB || !!window.YC_DEMO || Object.keys(localStorage).some((k) => /^sb-.+-auth-token$/.test(k)); } catch (e) { hasAccount = !window.YC_WEB || !!window.YC_DEMO; }
     const hashView = location.hash.slice(1); // index.html#progress opens that page; #home opens the landing page
     setView(VIEWS.includes(hashView) ? hashView : hasAccount ? 'train' : 'home');
     const a = local.get('yc-active');

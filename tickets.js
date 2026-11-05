@@ -3,7 +3,7 @@
 // Everything a user typed is shown with textContent, never as HTML.
 (() => {
   'use strict';
-  if (!window.YC_WEB) return;
+  if (!window.YC_WEB || window.YC_DEMO) return; // the sample workout has no account to send a ticket from
 
   // ------------------------------------------------------------------ small helpers
   const $ = (s, r) => (r || document).querySelector(s);

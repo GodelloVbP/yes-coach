@@ -4,7 +4,12 @@
   'use strict';
   const cfg = window.YC_CONFIG || {};
   window.YC_WEB = true;
+  // ?demo opens a sample workout that lives in memory only (demo.js). A signed-in browser never enters it.
+  const signedInBefore = (() => { try { return Object.keys(localStorage).some((k) => /^sb-.+-auth-token$/.test(k)); } catch (e) { return false; } })();
+  const DEMO = !signedInBefore && /[?&]demo(?:[=&]|$)/.test(location.search) && typeof window.YC_DEMO_DOCS === 'function';
+  window.YC_DEMO = DEMO;
   const $ = (s) => document.querySelector(s);
+  const $$ = (s) => Array.from(document.querySelectorAll(s));
   const sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
   let uid = null;
   let email = '';
@@ -67,6 +72,7 @@
     const p = strip(full);
     return {
       get: async () => {
+        if (DEMO) return { exists: cache.has(p), data: () => clone(cache.get(p)) };
         const rows = await call(sb.from('docs').select('data').eq('path', p).limit(1));
         if (rows.length) cache.set(p, rows[0].data);
         return { exists: rows.length > 0, data: () => clone(rows.length ? rows[0].data : undefined) };
@@ -74,15 +80,18 @@
       set: async (d) => {
         cache.set(p, clone(d));
         notify();
+        if (DEMO) return;
         try { await call(sb.from('docs').upsert({ user_id: uid, path: p, data: d, updated_at: new Date().toISOString() }, { onConflict: 'user_id,path' })); } catch (e) { resync().catch(() => {}); throw e; }
       },
       update: async (patch) => {
         if (cache.has(p)) { cache.set(p, merge(clone(cache.get(p)), clone(patch))); notify(); }
+        if (DEMO) { if (cache.has(p)) return cache.get(p); const err = new Error('not found'); err.code = 'not-found'; throw err; }
         try { const d = await call(sb.rpc('yc_update', { p_path: p, p_patch: patch })); cache.set(p, d); } catch (e) { resync().catch(() => {}); throw e; }
       },
       delete: async () => {
         cache.delete(p);
         notify();
+        if (DEMO) return;
         try { await call(sb.from('docs').delete().eq('path', p)); } catch (e) { resync().catch(() => {}); throw e; }
       },
       onSnapshot: (cb, onErr) => listen('doc', p, cb, onErr),
@@ -115,7 +124,7 @@
     return Promise.resolve();
   };
   // for the screens that talk to the database themselves (tickets.js); they wait for sign-in through window.claude.use
-  window.YC_API = { sb, call, uid: () => uid };
+  if (!DEMO) window.YC_API = { sb, call, uid: () => uid };
   // how many people have an account, for the Home page; null when it cannot be read
   window.YC_USERS = async () => { try { return await call(sb.rpc('user_count')); } catch (e) { return null; } };
   window.claude = {
@@ -157,8 +166,9 @@
     YC_CAPTCHA.mount($('#au-cap'));
     window.scrollTo({ top: 0 });
   };
-  $('#hm-login').addEventListener('click', () => { mode = 'in'; paint(); openAuth(); $('#au-email').focus(); });
-  $('#hm-signup').addEventListener('click', () => { mode = 'up'; paint(); openAuth(); $('#au-email').focus(); });
+  // every "Sign in" and "Start tracking free" button on the start page carries data-auth="in" or "up"
+  $$('[data-auth]').forEach((b) => b.addEventListener('click', () => { mode = b.dataset.auth; paint(); openAuth(); $('#au-email').focus(); }));
+  $$('[data-demo]').forEach((b) => b.addEventListener('click', () => { location.href = location.pathname + '?demo'; }));
   $('#au-back').addEventListener('click', () => { document.body.classList.remove('authing'); window.scrollTo({ top: 0 }); });
   $('#au-alt').addEventListener('click', () => { mode = mode === 'in' ? 'up' : 'in'; paint(); });
   $('#au-forgot').addEventListener('click', () => { mode = 'reset'; paint(); });
@@ -233,6 +243,24 @@
 
   // ------------------------------------------------------------------ start
   let started = false;
+  // the sample workout has no account: a bar on top says so and leads to sign-up
+  const demoBar = () => {
+    const bar = document.createElement('div');
+    bar.id = 'demo-bar';
+    bar.setAttribute('role', 'status');
+    const msg = document.createElement('span');
+    msg.textContent = 'Sample workout. Nothing here is saved.';
+    const go = document.createElement('button');
+    go.type = 'button';
+    go.textContent = 'Create an account';
+    go.addEventListener('click', () => { try { sessionStorage.setItem('yc-open-signup', '1'); } catch (e) { /* the sign-up button is one tap away */ } location.href = location.pathname; });
+    bar.append(msg, go);
+    const css = document.createElement('style');
+    css.textContent = '#demo-bar{display:flex;align-items:center;justify-content:space-between;gap:0.25rem 0.75rem;flex-wrap:wrap;padding:0.375rem max(16px,env(safe-area-inset-left,0px));background:var(--ink);color:var(--bg);font-size:var(--t2);font-weight:600}'
+      + '#demo-bar button{font:inherit;font-weight:700;color:inherit;background:none;border:2px solid currentColor;min-height:32px;padding:0 0.75rem;cursor:pointer}';
+    document.head.append(css);
+    $('#stick').prepend(bar);
+  };
   const start = async (user) => {
     if (started || !user) return;
     started = true;
@@ -240,17 +268,32 @@
     email = user.email || '';
     document.body.classList.remove('signed-out', 'authing');
     $('#auth').hidden = true;
-    try { await resync(); } catch (e) { /* the app shows what it can; writes retry */ }
-    startSync();
-    accountSection();
+    if (DEMO) {
+      window.YC_DEMO_DOCS().forEach(([path, data]) => cache.set(path, data));
+      demoBar();
+    } else {
+      try { await resync(); } catch (e) { /* the app shows what it can; writes retry */ }
+      startSync();
+      accountSection();
+    }
     resolveSignedIn();
   };
-  sb.auth.onAuthStateChange((event, session) => {
-    if (event === 'PASSWORD_RECOVERY') { mode = 'newpass'; paint(); $('#auth').hidden = false; document.body.classList.add('signed-out'); openAuth(); return; }
-    if (session && mode !== 'newpass') start(session.user);
-  });
-  sb.auth.getSession().then(({ data }) => {
-    if (data && data.session && mode !== 'newpass') start(data.session.user);
-    else if (!started) { $('#auth').hidden = false; paint(); }
-  });
+  if (DEMO) start({ id: 'demo', email: '' });
+  else {
+    sb.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') { mode = 'newpass'; paint(); $('#auth').hidden = false; document.body.classList.add('signed-out'); openAuth(); return; }
+      if (session && mode !== 'newpass') start(session.user);
+    });
+    sb.auth.getSession().then(({ data }) => {
+      if (data && data.session && mode !== 'newpass') start(data.session.user);
+      else if (!started) {
+        $('#auth').hidden = false;
+        paint();
+        // "Create an account" in the sample workout comes back here and goes straight to the form
+        let again = false;
+        try { again = sessionStorage.getItem('yc-open-signup') === '1'; sessionStorage.removeItem('yc-open-signup'); } catch (e) { again = false; }
+        if (again) { mode = 'up'; paint(); openAuth(); }
+      }
+    });
+  }
 })();

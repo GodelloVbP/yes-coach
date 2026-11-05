@@ -113,8 +113,9 @@ class Backend:
 
 def serve(port=PORT):
     """The built site on 127.0.0.1:<port>, until .shutdown(). Binding happens here, so the page can be opened right away."""
-    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=REPO)
-    handler.log_message = lambda *a, **k: None
+    class Quiet(http.server.SimpleHTTPRequestHandler):
+        def log_message(self, *args): pass
+    handler = functools.partial(Quiet, directory=REPO)
     srv = http.server.ThreadingHTTPServer(('127.0.0.1', port), handler)
     threading.Thread(target=srv.serve_forever, daemon=True).start()
     return srv

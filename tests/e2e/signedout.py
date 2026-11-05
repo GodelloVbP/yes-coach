@@ -24,7 +24,7 @@ def make(pw, reject_captcha=False, block_cf=False, no_key=False, signed_in=False
     if signed_in:
         sess = {'access_token': JWT, 'token_type': 'bearer', 'expires_in': 3600, 'expires_at': 4102444800, 'refresh_token': 'r', 'user': USER}
         ctx.add_init_script("localStorage.setItem('sb-qazvzhhoalkyyasakphs-auth-token', %s)" % json.dumps(json.dumps(sess)))
-    log = {'auth': [], 'cf': [], 'other': [], 'errors': []}
+    log = {'auth': [], 'cf': [], 'other': [], 'rest': [], 'errors': []}
     hd = {'access-control-allow-origin': '*', 'access-control-allow-headers': '*', 'access-control-allow-methods': '*'}
     def supa(route):
         r = route.request; u = r.url.replace(SB, '')
@@ -41,6 +41,7 @@ def make(pw, reject_captcha=False, block_cf=False, no_key=False, signed_in=False
             if '/user' in u: return j(USER)
             return j({})
         if u.startswith('/rest/v1/rpc/user_count'): return j(users)
+        if u.startswith('/rest/v1/'): log['rest'].append((r.method, u))
         return j([])
     ctx.route('**/*', lambda r: r.continue_() if r.request.url.startswith('http://127.0.0.1') else (log['other'].append(r.request.url), r.abort()))
     ctx.route(SB + '/**', supa)

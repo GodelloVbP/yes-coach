@@ -1489,5 +1489,131 @@
   "de": "Diese Liste der Änderungen ist jetzt unter Mehr, bei Neuigkeiten.",
   "fr": "Cette liste des changements se trouve maintenant dans Plus, sous Nouveautés.",
   "it": "Questo elenco di modifiche ora è in Altro, sotto Novità."
+ },
+ "Free strength-training tracker": {
+  "nl": "Gratis krachttrainingstracker",
+  "de": "Kostenloser Krafttraining-Tracker",
+  "fr": "Suivi de musculation gratuit",
+  "es": "Seguimiento de fuerza gratis",
+  "it": "Tracker di allenamento gratuito"
+ },
+ "Know what to lift next.": {
+  "nl": "Weet wat je hierna tilt.",
+  "de": "Immer wissen, was du als Nächstes hebst.",
+  "fr": "Sache quelle charge soulever ensuite.",
+  "es": "Sabe qué levantar a continuación.",
+  "it": "Sai cosa sollevare dopo."
+ },
+ "Log your sets, see your last session, and get a suggested next weight, with the reason behind it.": {
+  "nl": "Log je sets, zie je vorige training en krijg een voorgesteld volgend gewicht, met de reden erbij.",
+  "de": "Trage deine Sätze ein, sieh dein letztes Training und erhalte ein vorgeschlagenes nächstes Gewicht, mit der Begründung dazu.",
+  "fr": "Note tes séries, revois ta dernière séance et reçois une charge suivante suggérée, avec la raison.",
+  "es": "Registra tus series, mira tu última sesión y recibe un siguiente peso sugerido, con el motivo.",
+  "it": "Registra le tue serie, rivedi l’ultima sessione e ricevi un prossimo peso suggerito, con il motivo."
+ },
+ "Start tracking free": {
+  "nl": "Begin gratis",
+  "de": "Kostenlos loslegen",
+  "fr": "Commencer gratuitement",
+  "es": "Empieza gratis",
+  "it": "Inizia gratis"
+ },
+ "See a sample workout": {
+  "nl": "Bekijk een voorbeeldtraining",
+  "de": "Beispieltraining ansehen",
+  "fr": "Voir une séance d’exemple",
+  "es": "Ver un entrenamiento de ejemplo",
+  "it": "Vedi un allenamento di esempio"
+ },
+ "Free. No ads. Your history stays exportable.": {
+  "nl": "Gratis. Geen advertenties. Je geschiedenis blijft te exporteren.",
+  "de": "Kostenlos. Keine Werbung. Dein Verlauf bleibt exportierbar.",
+  "fr": "Gratuit. Sans publicité. Ton historique reste exportable.",
+  "es": "Gratis. Sin anuncios. Tu historial sigue siendo exportable.",
+  "it": "Gratis. Senza pubblicità. Il tuo storico resta esportabile."
+ },
+ "Already tracking elsewhere? Bring your history from Strong, Hevy or FitNotes.": {
+  "nl": "Houd je al ergens anders bij? Neem je geschiedenis mee uit Strong, Hevy of FitNotes.",
+  "de": "Du trackst schon woanders? Bring deinen Verlauf aus Strong, Hevy oder FitNotes mit.",
+  "fr": "Tu suis déjà ailleurs ? Apporte ton historique depuis Strong, Hevy ou FitNotes.",
+  "es": "¿Ya registras en otra app? Trae tu historial de Strong, Hevy o FitNotes.",
+  "it": "Tieni già traccia altrove? Porta il tuo storico da Strong, Hevy o FitNotes."
+ },
+ "The next weight, with the reason.": {
+  "nl": "Het volgende gewicht, met de reden.",
+  "de": "Das nächste Gewicht, mit Begründung.",
+  "fr": "La charge suivante, avec la raison.",
+  "es": "El siguiente peso, con el motivo.",
+  "it": "Il prossimo peso, con il motivo."
+ },
+ "Last time's numbers beside each set.": {
+  "nl": "De cijfers van de vorige keer naast elke set.",
+  "de": "Die Zahlen vom letzten Mal neben jedem Satz.",
+  "fr": "Les chiffres de la dernière fois à côté de chaque série.",
+  "es": "Los números de la última vez junto a cada serie.",
+  "it": "I numeri dell’ultima volta accanto a ogni serie."
+ },
+ "Bring your own AI": {
+  "nl": "Neem je eigen AI mee",
+  "de": "Bring deine eigene KI mit",
+  "fr": "Apporte ta propre IA",
+  "es": "Trae tu propia IA",
+  "it": "Porta la tua AI"
+ },
+ "Already use Claude? Connect it to your account to review your sessions and adjust your plan, or paste a request into any AI chat. You allow it first and can disconnect any time.": {
+  "nl": "Gebruik je al Claude? Koppel het aan je account om je trainingen te laten beoordelen en je plan aan te passen, of plak een verzoek in een willekeurige AI-chat. Jij geeft eerst toestemming en kunt de koppeling altijd verbreken.",
+  "de": "Nutzt du schon Claude? Verbinde es mit deinem Konto, damit es deine Trainings auswertet und deinen Plan anpasst, oder füge eine Anfrage in einen beliebigen KI-Chat ein. Du erlaubst es zuerst und kannst die Verbindung jederzeit trennen.",
+  "fr": "Tu utilises déjà Claude ? Connecte-le à ton compte pour qu’il passe en revue tes séances et ajuste ton plan, ou colle une demande dans n’importe quel chat IA. Tu autorises d’abord, et tu peux te déconnecter à tout moment.",
+  "es": "¿Ya usas Claude? Conéctalo a tu cuenta para que revise tus sesiones y ajuste tu plan, o pega una petición en cualquier chat de IA. Tú lo permites primero y puedes desconectarlo cuando quieras.",
+  "it": "Usi già Claude? Collegalo al tuo account perché riveda le tue sessioni e adatti il tuo piano, oppure incolla una richiesta in una qualsiasi chat AI. Prima lo autorizzi tu e puoi scollegarlo quando vuoi."
+ },
+ "Your data is never sold or used for advertising.": {
+  "nl": "Je gegevens worden nooit verkocht of voor reclame gebruikt.",
+  "de": "Deine Daten werden nie verkauft oder für Werbung genutzt.",
+  "fr": "Tes données ne sont jamais vendues ni utilisées pour de la publicité.",
+  "es": "Tus datos nunca se venden ni se usan para publicidad.",
+  "it": "I tuoi dati non vengono mai venduti né usati per la pubblicità."
+ },
+ "Optional AI connections only with your permission.": {
+  "nl": "Optionele AI-koppelingen alleen met jouw toestemming.",
+  "de": "Optionale KI-Verbindungen nur mit deiner Erlaubnis.",
+  "fr": "Les connexions IA optionnelles se font uniquement avec ton accord.",
+  "es": "Las conexiones de IA opcionales solo con tu permiso.",
+  "it": "Le connessioni AI facoltative solo con il tuo permesso."
+ },
+ "Make your next workout easier to follow.": {
+  "nl": "Maak je volgende training makkelijker te volgen.",
+  "de": "Mach dein nächstes Training leichter nachzuvollziehen.",
+  "fr": "Rends ta prochaine séance plus facile à suivre.",
+  "es": "Haz que tu próximo entrenamiento sea más fácil de seguir.",
+  "it": "Rendi il tuo prossimo allenamento più facile da seguire."
+ },
+ "Sample workout. Nothing here is saved.": {
+  "nl": "Voorbeeldtraining. Er wordt hier niets opgeslagen.",
+  "de": "Beispieltraining. Hier wird nichts gespeichert.",
+  "fr": "Séance d’exemple. Rien n’est enregistré ici.",
+  "es": "Entrenamiento de ejemplo. Aquí no se guarda nada.",
+  "it": "Allenamento di esempio. Qui non viene salvato nulla."
+ },
+ "Sample workout": {
+  "nl": "Voorbeeldtraining",
+  "de": "Beispieltraining",
+  "fr": "Séance d’exemple",
+  "es": "Entrenamiento de ejemplo",
+  "it": "Allenamento di esempio"
+ },
+ "Try the app without an account: See a sample workout on the start page opens a plan with two earlier sessions, so you can log a set and see the suggested next weight. Nothing is saved.": {
+  "nl": "Probeer de app zonder account: Bekijk een voorbeeldtraining op de startpagina opent een plan met twee eerdere trainingen, zodat je een set kunt loggen en het voorgestelde volgende gewicht ziet. Er wordt niets opgeslagen.",
+  "de": "Probiere die App ohne Konto aus: Beispieltraining ansehen auf der Startseite öffnet einen Plan mit zwei früheren Trainings, damit du einen Satz loggen und das vorgeschlagene nächste Gewicht sehen kannst. Es wird nichts gespeichert.",
+  "fr": "Essaie l’appli sans compte : Voir une séance d’exemple sur la page d’accueil ouvre un plan avec deux séances précédentes, pour que tu puisses noter une série et voir la charge suivante suggérée. Rien n’est enregistré.",
+  "es": "Prueba la app sin cuenta: Ver un entrenamiento de ejemplo en la página de inicio abre un plan con dos sesiones anteriores, para que registres una serie y veas el siguiente peso sugerido. No se guarda nada.",
+  "it": "Prova l’app senza account: Vedi un allenamento di esempio nella pagina iniziale apre un piano con due sessioni precedenti, così puoi registrare una serie e vedere il prossimo peso suggerito. Non viene salvato nulla."
+ },
+ "The start page now opens with what Yes Coach! does best: knowing what to lift next.": {
+  "nl": "De startpagina begint nu met waar Yes Coach! het best in is: weten wat je hierna tilt.",
+  "de": "Die Startseite beginnt jetzt mit dem, was Yes Coach! am besten kann: wissen, was du als Nächstes hebst.",
+  "fr": "La page d’accueil commence maintenant par ce que Yes Coach! fait de mieux : savoir quelle charge soulever ensuite.",
+  "es": "La página de inicio ahora empieza por lo que mejor hace Yes Coach!: saber qué levantar a continuación.",
+  "it": "La pagina iniziale ora parte da ciò che Yes Coach! sa fare meglio: sapere cosa sollevare dopo."
  }
 }
