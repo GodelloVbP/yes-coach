@@ -1,14 +1,7 @@
 """The signed-out start page: header chip, hero, screenshots, feature cards, counter threshold; the changelog under More."""
 import re, os, sys
-src = open(str(__import__('pathlib').Path(__file__).resolve().parent / 'e2e_captcha.py')).read().split('def until(pg')[0]
-__file__ = str(__import__('pathlib').Path(__file__).resolve().parent / 'e2e_captcha.py')
-exec(src)
-
-def until(pg, expr, timeout=8000):
-    for _ in range(timeout // 100):
-        if pg.evaluate(expr): return
-        pg.wait_for_timeout(100)
-    raise AssertionError('timeout: ' + expr)
+from playwright.sync_api import sync_playwright
+from signedout import *
 
 with sync_playwright() as pw:
     # ---- signed out, phone
@@ -73,4 +66,4 @@ with sync_playwright() as pw:
     ok(pg.is_hidden('#hm-chip') and pg.is_hidden('#hm-login'), 'signed in: no header chip and no sign-in on Home')
     ok(not log['errors'] and not log['other'], 'signed in: no errors: %s %s' % (log['errors'], log['other']))
     br.close()
-print(n, 'landing checks passed')
+print(passed(), 'landing checks passed')

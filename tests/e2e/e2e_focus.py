@@ -1,8 +1,7 @@
 """Logging on a phone shows one exercise at a time: chips with set counts, Next / Finish bar, All exercises, Last time column."""
-import subprocess, time, datetime
+import time, datetime
 from playwright.sync_api import sync_playwright
 from harness import *
-from harness import EXTERNAL
 
 passed = failed = 0
 def check(name, cond, extra=''):
@@ -44,8 +43,7 @@ def open_day(page):
 def vis(page, sel): return page.is_visible(sel)
 def tick(page, key): page.locator('.set:has(#f-%s-load) .set-tick' % key).click()
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)
@@ -102,6 +100,6 @@ try:
         errs = session(pw, be, ALICE, wide, width=1280); check('no page errors (wide)', not errs, errs)
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
-    server.terminate()
+    server.shutdown()
 print('passed', passed, 'failed', failed)
 raise SystemExit(1 if failed else 0)

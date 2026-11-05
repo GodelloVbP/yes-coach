@@ -1,8 +1,7 @@
 """The suggested next weight: the prefilled value, the line that says why, the way back to last time, the switch, and what a ticked set remembers."""
-import subprocess, time, datetime
+import time, datetime
 from playwright.sync_api import sync_playwright
 from harness import *
-from harness import EXTERNAL
 
 passed = failed = 0
 def check(name, cond, extra=''):
@@ -53,8 +52,7 @@ def sug_text(page):
     loc = page.locator('.ex:not(.off) .ex-sug')
     return (loc.first.text_content() or '').strip() if loc.count() and loc.first.is_visible() else ''
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- 1. every set reached the reps: one step up, with the reason, and a way back
@@ -155,6 +153,6 @@ try:
 
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
-    server.terminate()
+    server.shutdown()
 print('passed', passed, 'failed', failed)
 raise SystemExit(1 if failed else 0)

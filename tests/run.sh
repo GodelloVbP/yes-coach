@@ -8,6 +8,7 @@ check() { # check <name> <command...>
   echo "== $name"
   "$@" || failed="$failed $name"
 }
+check build-current python3 build.py --check
 check build python3 build.py
 check merge node tests/merge.test.mjs
 check plates node tests/plates.test.mjs

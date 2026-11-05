@@ -1,9 +1,7 @@
-import json, subprocess, threading, http.server, functools, sys
+import json, sys
 from playwright.sync_api import sync_playwright
-ROOT=str(__import__('pathlib').Path(__file__).resolve().parents[2])
-H=functools.partial(http.server.SimpleHTTPRequestHandler, directory=ROOT)
-H.log_message=lambda *a,**k: None
-srv=http.server.ThreadingHTTPServer(('127.0.0.1',8765),H); threading.Thread(target=srv.serve_forever,daemon=True).start()
+from harness import serve, launch
+srv=serve()
 SB='https://qazvzhhoalkyyasakphs.supabase.co'
 n=0
 STUB="window.turnstile={render(b,o){setTimeout(()=>o.callback('TOKEN-1'),20);return 1},reset(){}};"
@@ -18,7 +16,7 @@ user={'id':'u1','aud':'authenticated','email':'a@b.nl','app_metadata':{},'user_m
 def run(already=False, bad_pw=False, invalid=False):
     log=[]
     with sync_playwright() as p:
-        b=p.chromium.launch(executable_path='/usr/bin/google-chrome',args=['--no-sandbox'])
+        b=launch(p)
         pg=b.new_page()
         def auth(route):
             u=route.request.url; m=route.request.method
@@ -46,11 +44,11 @@ def start(**k):
     return pg,b,log
 # 1 no id
 with sync_playwright() as p:
-    b=p.chromium.launch(executable_path='/usr/bin/google-chrome',args=['--no-sandbox']); pg=b.new_page()
+    b=launch(p); pg=b.new_page()
     pg.goto('http://127.0.0.1:8765/consent.html'); ok('Nothing to connect' in pg.inner_text('#msg'),'no id msg'); ok(pg.is_hidden('#login') and pg.is_hidden('#ask'),'no forms'); b.close()
 # 2 sign in then approve
 with sync_playwright() as p:
-    b=p.chromium.launch(executable_path='/usr/bin/google-chrome',args=['--no-sandbox']); pg=b.new_page()
+    b=launch(p); pg=b.new_page()
     def mk(pg,bad=False,already=False,invalid=False,log=None,dest='https://claude.ai/api/mcp/auth_callback'):
         def auth(route):
             u=route.request.url; m=route.request.method

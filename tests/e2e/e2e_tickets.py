@@ -1,8 +1,7 @@
 """End-to-end check of the tickets screens: the real built app in headless Chrome, Supabase faked in memory."""
-import subprocess, time, datetime, json
+import time, datetime, json
 from playwright.sync_api import sync_playwright
 from harness import *
-from harness import EXTERNAL
 
 passed = failed = 0
 def check(name, cond, extra=''):
@@ -34,8 +33,7 @@ def send_form(page, title, text, name=None, kind=None):
     page.fill('#tk form textarea', text)
     page.click('#tk form button[type=submit]')
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- 1. the tab, the three sections, sending a ticket with a first name
@@ -357,12 +355,12 @@ try:
             page.click('#look-row >> text=Light'); check('light applies over a dark system', attr() == 'light' and bg() == 'rgb(255, 255, 255)', bg())
             page.click('#look-row >> text=Auto'); check('auto removes the override', attr() == 'auto' and page.evaluate("localStorage.getItem('yc-theme')") is None)
         for scheme in ('dark', 'light'):
-            br = pw.chromium.launch(executable_path='/usr/bin/google-chrome', args=['--no-sandbox'])
+            br = launch(pw)
             if scheme == 'dark':
                 ctx = br.new_context(viewport={'width': 1000, 'height': 900}, color_scheme='dark')
                 sess = {'access_token': jwt(ALICE), 'token_type': 'bearer', 'expires_in': 3600, 'expires_at': 4102444800, 'refresh_token': 'r', 'user': {'id': ALICE, 'email': EMAILS[ALICE], 'aud': 'authenticated', 'role': 'authenticated'}}
                 ctx.add_init_script("if (!sessionStorage.getItem('seeded')) { localStorage.setItem('yc-lang', 'en'); localStorage.setItem('sb-qazvzhhoalkyyasakphs-auth-token', %s); sessionStorage.setItem('seeded', '1'); }" % json.dumps(json.dumps(sess)))
-                ctx.route('**/*', lambda r: r.continue_() if r.request.url.startswith('http://localhost') else r.abort()); ctx.route(SUPA + '/**', be.handle)
+                ctx.route('**/*', lambda r: r.continue_() if r.request.url.startswith(LOCAL) else r.abort()); ctx.route(SUPA + '/**', be.handle)
                 page = ctx.new_page(); errs = []; page.on('pageerror', lambda e: errs.append(str(e))); page.goto(BASE)
                 try:
                     # a dark system with no choice made: auto follows it
@@ -666,6 +664,6 @@ try:
             errs = session(pw, Backend(), ALICE, csp_de, width=390, csp=True, lang='de', home=True); check('policy on: no violations with a translation', not errs, errs)
     check('nothing left the site except Supabase (no fonts, CDNs or analytics)', not [u for u in EXTERNAL if not u.startswith('data:') and not u.startswith(SUPA)], sorted(set(EXTERNAL))[:5])
 finally:
-    server.terminate()
+    server.shutdown()
 print('passed %d, failed %d' % (passed, failed))
 sys.exit(1 if failed else 0)

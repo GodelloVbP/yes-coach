@@ -1,6 +1,7 @@
 """Build the web app (index.html) from the shared Yes Coach! source (src/yes-coach.html): adds the sign-in screen,
-the Supabase layer and the install metadata. The artifact keeps running from the same source unchanged."""
-import re, pathlib, datetime, hashlib, base64
+the Supabase layer and the install metadata. The artifact keeps running from the same source unchanged.
+`python3 build.py --check` writes nothing and exits 1 when a built file is out of date (the build time is ignored)."""
+import re, sys, pathlib, datetime, hashlib, base64
 HERE = pathlib.Path(__file__).parent
 build = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%MZ')  # sent along with every ticket
 src = (HERE / 'src' / 'yes-coach.html').read_text()
@@ -77,8 +78,17 @@ def harden(html, connect, cap=False):
     block = '<!--sec--><meta http-equiv="Content-Security-Policy" content="%s">%s<!--/sec-->' % (policy, GUARD)
     return once(html, '<meta charset="utf-8">', '<meta charset="utf-8">' + block)
 out = harden(out, True, True)
+stale = []
+def emit(path, text):
+    if '--check' not in sys.argv:
+        path.write_text(text)
+        return
+    unstamp = lambda t: re.sub(r'<meta name="yc-build" content="[^"]*">', '', t)
+    if not path.exists() or unstamp(path.read_text()) != unstamp(text): stale.append(path.name)
 for page, connect in (('consent.html', True), ('connect.html', False), ('privacy.html', False)):
-    f = HERE / page
-    f.write_text(harden(f.read_text(), connect, page == 'consent.html'))
-(HERE / 'index.html').write_text(out)
+    emit(HERE / page, harden((HERE / page).read_text(), connect, page == 'consent.html'))
+emit(HERE / 'index.html', out)
+if '--check' in sys.argv:
+    print('out of date, run python3 build.py:' if stale else 'built files are current', ', '.join(stale))
+    sys.exit(1 if stale else 0)
 print('index.html', len(out) // 1000, 'kB')

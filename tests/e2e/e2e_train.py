@@ -1,8 +1,7 @@
 """The Train page: the week as seven blocks, the day sheet under them (start, move, remove, add a day to a rest day)."""
-import subprocess, time, datetime
+import time, datetime
 from playwright.sync_api import sync_playwright
 from harness import *
-from harness import EXTERNAL
 
 passed = failed = 0
 def check(name, cond, extra=''):
@@ -43,8 +42,7 @@ def until(fn, secs=6):
 def blk(page, i): return page.locator('.wk-blk[data-date="%s"]' % date_at(i))
 def planned(page, i): return 'drag' in (blk(page, i).get_attribute('class') or '')
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)
@@ -92,6 +90,6 @@ try:
         errs = session(pw, be, ALICE, s2, width=1280); check('no page errors (train, wide)', not errs, errs)
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
-    server.terminate()
+    server.shutdown()
 print('passed', passed, 'failed', failed)
 raise SystemExit(1 if failed else 0)

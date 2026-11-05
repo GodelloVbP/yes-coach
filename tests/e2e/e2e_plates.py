@@ -1,8 +1,7 @@
 """The plate calculator: a Plates button on barbell exercises, the plates for a load, the nearest loads, the bar, and the settings."""
-import subprocess, time, datetime
+import time, datetime
 from playwright.sync_api import sync_playwright
 from harness import *
-from harness import EXTERNAL
 
 passed = failed = 0
 def check(name, cond, extra=''):
@@ -31,8 +30,7 @@ def seed(be):
 
 def root(be): return next(d['data'] for d in be.docs if d['path'] == 'yc')
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)
@@ -85,6 +83,6 @@ try:
         errs = session(pw, be, ALICE, s2, width=390); check('no page errors (settings)', not errs, errs)
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
-    server.terminate()
+    server.shutdown()
 print('passed', passed, 'failed', failed)
 raise SystemExit(1 if failed else 0)

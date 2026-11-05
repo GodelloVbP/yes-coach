@@ -1,10 +1,13 @@
 """Shared pieces of the end-to-end tests: the real built app in headless Chrome with Supabase faked in memory."""
-import json, base64, subprocess, time, uuid, datetime, urllib.parse, sys
+import json, base64, uuid, datetime, urllib.parse, sys, os, threading, http.server, functools
 from playwright.sync_api import sync_playwright
 
 import pathlib
 REPO = str(pathlib.Path(__file__).resolve().parents[2])
-BASE = 'http://localhost:8765/index.html'
+PORT = 8765
+BASE = 'http://127.0.0.1:%d/index.html' % PORT
+LOCAL = ('http://127.0.0.1', 'http://localhost')  # the only places a page may load from
+CHROME = os.environ.get('CHROME', '/usr/bin/google-chrome')
 SUPA = 'https://qazvzhhoalkyyasakphs.supabase.co'
 ALICE, OWNER = '11111111-1111-1111-1111-111111111111', '44444444-4444-4444-4444-444444444444'
 EMAILS = {ALICE: 'alice@example.com', OWNER: 'owner@example.com'}
@@ -108,17 +111,27 @@ class Backend:
                 return empty(201)
         return ok({'message': 'unhandled ' + path}, 404)
 
-EXTERNAL = []  # every request that tried to leave localhost and the Supabase stand-in
+def serve(port=PORT):
+    """The built site on 127.0.0.1:<port>, until .shutdown(). Binding happens here, so the page can be opened right away."""
+    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=REPO)
+    handler.log_message = lambda *a, **k: None
+    srv = http.server.ThreadingHTTPServer(('127.0.0.1', port), handler)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    return srv
+
+def launch(pw):
+    return pw.chromium.launch(executable_path=CHROME, args=['--no-sandbox'])
+
+EXTERNAL = []  # every request that tried to leave this machine and the Supabase stand-in
 
 def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, lang='en'):
-    br = pw.chromium.launch(executable_path='/usr/bin/google-chrome', args=['--no-sandbox'])
+    br = launch(pw)
     ctx = br.new_context(device_scale_factor=float(__import__('os').environ.get('DSF', '1')), viewport={'width': width, 'height': 900}, permissions=['clipboard-read', 'clipboard-write'], bypass_csp=not csp, **({'user_agent': ua} if ua else {}))
     sess = {'access_token': jwt(uid), 'token_type': 'bearer', 'expires_in': 3600, 'expires_at': 4102444800, 'refresh_token': 'r',
             'user': {'id': uid, 'email': EMAILS[uid], 'aud': 'authenticated', 'role': 'authenticated'}}
     ctx.add_init_script("localStorage.setItem('sb-qazvzhhoalkyyasakphs-auth-token', %s)" % json.dumps(json.dumps(sess)))
     if lang: ctx.add_init_script("if (!sessionStorage.getItem('lang-init')) { localStorage.setItem('yc-lang', %s); sessionStorage.setItem('lang-init', '1'); }" % json.dumps(lang))
-    ctx.route(SUPA + '/**', be.handle)
-    ctx.route('**/*', lambda r: r.continue_() if r.request.url.startswith('http://localhost') else (EXTERNAL.append(r.request.url), r.abort()))  # nothing else leaves the machine
+    ctx.route('**/*', lambda r: r.continue_() if r.request.url.startswith(LOCAL) else (EXTERNAL.append(r.request.url), r.abort()))  # nothing else leaves the machine
     ctx.route(SUPA + '/**', be.handle)
     page = ctx.new_page(); errors = []
     page.on('pageerror', lambda e: errors.append(str(e) + ' @ ' + str(getattr(e, 'stack', ''))[:600]))

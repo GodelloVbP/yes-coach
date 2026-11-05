@@ -1,8 +1,7 @@
 """Supersets: the plan editor toggle, the chip on the card, no rest inside a round, rest after it."""
-import subprocess, time, datetime
+import time, datetime
 from playwright.sync_api import sync_playwright
 from harness import *
-from harness import EXTERNAL
 
 passed = failed = 0
 def check(name, cond, extra=''):
@@ -47,8 +46,7 @@ def start_day(page):
     page.wait_for_timeout(300)
 
 rest_shown = lambda page: page.get_attribute('#restbar', 'hidden') is None
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- 1. the plan editor
@@ -113,6 +111,6 @@ try:
 
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
-    server.terminate()
+    server.shutdown()
 print('passed', passed, 'failed', failed)
 raise SystemExit(1 if failed else 0)

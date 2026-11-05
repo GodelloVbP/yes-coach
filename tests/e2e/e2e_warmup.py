@@ -1,8 +1,7 @@
 """Warm-up sets: the button, the ramp, the rows in front, the last-time column, and the automatic option."""
-import subprocess, time, datetime
+import time, datetime
 from playwright.sync_api import sync_playwright
 from harness import *
-from harness import EXTERNAL
 
 passed = failed = 0
 def check(name, cond, extra=''):
@@ -47,8 +46,7 @@ def open_day(page):
 val = lambda page, k: (page.input_value('#f-bench_%s' % k))
 warm_btn = lambda page: page.locator('.ex:not(.off) .ex-warm')
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- 1. the button and the ramp (100 kg last time, so 102.5 suggested)
@@ -112,6 +110,6 @@ try:
         errs = session(pw, be, ALICE, s5, width=1280); check('no page errors (desktop)', not errs, errs)
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
-    server.terminate()
+    server.shutdown()
 print('passed', passed, 'failed', failed)
 raise SystemExit(1 if failed else 0)

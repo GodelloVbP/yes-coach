@@ -1,8 +1,7 @@
 """Progress: the summary tiles, the PR badge on a lift whose latest session beat the rest, and the estimated one-rep max."""
-import subprocess, time, datetime
+import time, datetime
 from playwright.sync_api import sync_playwright
 from harness import *
-from harness import EXTERNAL
 
 passed = failed = 0
 def check(name, cond, extra=''):
@@ -24,8 +23,7 @@ def seed(be):
         for i, (l, r) in enumerate(sets): s['%s_%d' % (ex, i + 1)] = {'ex': ex, 'n': i + 1, 'kind': 'work', 'reps': r, 'load': l, 'done': True, 'at': i + 1}
     for d, sets in byd.items(): be.docs.append({'path': 'yc/sessions/' + d, 'data': {'date': d, 'template': None, 'sets': sets, 'split': 'Push'}})
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         for width in (390, 1280):
@@ -47,6 +45,6 @@ try:
             errs = session(pw, be, ALICE, s1, width=width); check('no page errors (%d)' % width, not errs, errs)
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
-    server.terminate()
+    server.shutdown()
 print('passed', passed, 'failed', failed)
 raise SystemExit(1 if failed else 0)

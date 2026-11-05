@@ -1,8 +1,7 @@
 """End-to-end check of logging a workout: tick, untick, correct a done set, a save that fails and is retried, and a draft that survives a reload."""
-import subprocess, time, datetime
+import time, datetime
 from playwright.sync_api import sync_playwright
 from harness import *
-from harness import EXTERNAL
 
 passed = failed = 0
 def check(name, cond, extra=''):
@@ -53,8 +52,7 @@ def start_day(page):
 def tick(page, key):
     page.locator('.set:has(#f-%s-load) .set-tick' % key).click()
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- 1. tick, untick, correct
@@ -113,6 +111,6 @@ try:
         # ---- 4. nothing left the machine
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
-    server.terminate()
+    server.shutdown()
 print('passed', passed, 'failed', failed)
 raise SystemExit(1 if failed else 0)

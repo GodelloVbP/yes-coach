@@ -1,8 +1,7 @@
 """The finish screen: numbers, records, the share picture, its switches, sharing and saving."""
-import subprocess, time, datetime
+import time, datetime
 from playwright.sync_api import sync_playwright
 from harness import *
-from harness import EXTERNAL
 
 passed = failed = 0
 def check(name, cond, extra=''):
@@ -46,8 +45,7 @@ def log(page, key, load, reps):
 def finish(page):
     page.locator('button.skew:visible', has_text='Finish day').first.click()
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- 1. numbers, records, the picture, saving
@@ -120,6 +118,6 @@ try:
         errs = session(pw, be, ALICE, s4, width=1280); check('no page errors (desktop)', not errs, errs)
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
-    server.terminate()
+    server.shutdown()
 print('passed', passed, 'failed', failed)
 raise SystemExit(1 if failed else 0)
