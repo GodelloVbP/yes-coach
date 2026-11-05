@@ -1034,5 +1034,173 @@
   "de": "Jedes Mal? Setze im Plan-Editor den Haken bei Aufwärmsätze automatisch hinzufügen.",
   "fr": "À chaque fois ? Coche Ajouter automatiquement des séries d’échauffement dans l’éditeur du plan.",
   "it": "Ogni volta? Spunta Aggiungi automaticamente serie di riscaldamento nell’editor del piano."
+ },
+ "Time": {
+  "nl": "Tijd",
+  "es": "Tiempo",
+  "de": "Zeit",
+  "fr": "Durée",
+  "it": "Tempo"
+ },
+ "Working sets": {
+  "nl": "Werksets",
+  "es": "Series de trabajo",
+  "de": "Arbeitssätze",
+  "fr": "Séries de travail",
+  "it": "Serie di lavoro"
+ },
+ "PR": {
+  "nl": "PR",
+  "es": "PR",
+  "de": "PR",
+  "fr": "PR",
+  "it": "PR"
+ },
+ "+ {0} more": {
+  "nl": "+ {0} meer",
+  "es": "+ {0} más",
+  "de": "+ {0} weitere",
+  "fr": "+ {0} de plus",
+  "it": "+ {0} altri"
+ },
+ "Free. No ads.": {
+  "nl": "Gratis. Geen advertenties.",
+  "es": "Gratis. Sin anuncios.",
+  "de": "Kostenlos. Keine Werbung.",
+  "fr": "Gratuit. Sans pub.",
+  "it": "Gratis. Senza pubblicità."
+ },
+ "Done": {
+  "nl": "Klaar",
+  "es": "Hecho",
+  "de": "Fertig",
+  "fr": "Terminé",
+  "it": "Fatto"
+ },
+ "Save picture": {
+  "nl": "Afbeelding opslaan",
+  "es": "Guardar imagen",
+  "de": "Bild speichern",
+  "fr": "Enregistrer l’image",
+  "it": "Salva immagine"
+ },
+ "Share picture": {
+  "nl": "Afbeelding delen",
+  "es": "Compartir imagen",
+  "de": "Bild teilen",
+  "fr": "Partager l’image",
+  "it": "Condividi immagine"
+ },
+ "Copy picture": {
+  "nl": "Afbeelding kopiëren",
+  "es": "Copiar imagen",
+  "de": "Bild kopieren",
+  "fr": "Copier l’image",
+  "it": "Copia immagine"
+ },
+ "Show weights on the picture": {
+  "nl": "Toon gewichten op de afbeelding",
+  "es": "Mostrar pesos en la imagen",
+  "de": "Gewichte im Bild zeigen",
+  "fr": "Afficher les poids sur l’image",
+  "it": "Mostra i pesi sull’immagine"
+ },
+ "Show my note on the picture": {
+  "nl": "Toon mijn notitie op de afbeelding",
+  "es": "Mostrar mi nota en la imagen",
+  "de": "Meine Notiz im Bild zeigen",
+  "fr": "Afficher ma note sur l’image",
+  "it": "Mostra la mia nota sull’immagine"
+ },
+ "New personal record": {
+  "nl": "Nieuw persoonlijk record",
+  "es": "Nuevo récord personal",
+  "de": "Neuer persönlicher Rekord",
+  "fr": "Nouveau record personnel",
+  "it": "Nuovo record personale"
+ },
+ "New personal records": {
+  "nl": "Nieuwe persoonlijke records",
+  "es": "Nuevos récords personales",
+  "de": "Neue persönliche Rekorde",
+  "fr": "Nouveaux records personnels",
+  "it": "Nuovi record personali"
+ },
+ "{0} done": {
+  "nl": "{0} klaar",
+  "es": "{0} hecho",
+  "de": "{0} fertig",
+  "fr": "{0} terminé",
+  "it": "{0} fatto"
+ },
+ "1 set": {
+  "nl": "1 set",
+  "es": "1 serie",
+  "de": "1 Satz",
+  "fr": "1 série",
+  "it": "1 serie"
+ },
+ "Saved to your downloads.": {
+  "nl": "Opgeslagen in je downloads.",
+  "es": "Guardada en tus descargas.",
+  "de": "In deinen Downloads gespeichert.",
+  "fr": "Enregistrée dans tes téléchargements.",
+  "it": "Salvata nei download."
+ },
+ "Picture copied.": {
+  "nl": "Afbeelding gekopieerd.",
+  "es": "Imagen copiada.",
+  "de": "Bild kopiert.",
+  "fr": "Image copiée.",
+  "it": "Immagine copiata."
+ },
+ "Could not copy the picture.": {
+  "nl": "De afbeelding kon niet worden gekopieerd.",
+  "es": "No se pudo copiar la imagen.",
+  "de": "Das Bild konnte nicht kopiert werden.",
+  "fr": "Impossible de copier l’image.",
+  "it": "Impossibile copiare l’immagine."
+ },
+ "One moment, the picture is still being made.": {
+  "nl": "Een moment, de afbeelding wordt nog gemaakt.",
+  "es": "Un momento, la imagen se está creando.",
+  "de": "Einen Moment, das Bild wird noch erstellt.",
+  "fr": "Un instant, l’image est en cours de création.",
+  "it": "Un momento, l’immagine è ancora in preparazione."
+ },
+ "The picture could not be made.": {
+  "nl": "De afbeelding kon niet worden gemaakt.",
+  "es": "No se pudo crear la imagen.",
+  "de": "Das Bild konnte nicht erstellt werden.",
+  "fr": "L’image n’a pas pu être créée.",
+  "it": "Non è stato possibile creare l’immagine."
+ },
+ "Picture of your day to share": {
+  "nl": "Afbeelding van je dag om te delen",
+  "es": "Imagen de tu día para compartir",
+  "de": "Bild deines Tages zum Teilen",
+  "fr": "Image de ta journée à partager",
+  "it": "Immagine della tua giornata da condividere"
+ },
+ "Finish screen and share picture": {
+  "nl": "Afsluitscherm en afbeelding om te delen",
+  "es": "Pantalla final e imagen para compartir",
+  "de": "Abschlussbildschirm und Bild zum Teilen",
+  "fr": "Écran de fin et image à partager",
+  "it": "Schermata finale e immagine da condividere"
+ },
+ "When you finish a day you now see how it went: time, working sets, volume and any new personal records.": {
+  "nl": "Als je een dag afsluit, zie je nu hoe het ging: tijd, werksets, volume en nieuwe persoonlijke records.",
+  "es": "Al terminar un día ves cómo fue: tiempo, series de trabajo, volumen y los nuevos récords personales.",
+  "de": "Wenn du einen Tag beendest, siehst du jetzt, wie er lief: Zeit, Arbeitssätze, Volumen und neue persönliche Rekorde.",
+  "fr": "Quand tu termines une journée, tu vois maintenant comment elle s’est passée : durée, séries de travail, volume et nouveaux records personnels.",
+  "it": "Quando finisci un giorno vedi come è andato: tempo, serie di lavoro, volume ed eventuali nuovi record personali."
+ },
+ "Share it as a picture, with or without the weights and your note. Nothing leaves your phone until you share it.": {
+  "nl": "Deel het als afbeelding, met of zonder de gewichten en je notitie. Er verlaat niets je telefoon voordat je deelt.",
+  "es": "Compártelo como imagen, con o sin los pesos y tu nota. Nada sale de tu teléfono hasta que lo compartes.",
+  "de": "Teile es als Bild, mit oder ohne Gewichte und deine Notiz. Nichts verlässt dein Handy, bevor du teilst.",
+  "fr": "Partage-le en image, avec ou sans les poids et ta note. Rien ne quitte ton téléphone avant que tu partages.",
+  "it": "Condividilo come immagine, con o senza i pesi e la tua nota. Nulla lascia il telefono finché non condividi."
  }
 }
