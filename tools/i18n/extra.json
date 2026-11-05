@@ -579,5 +579,82 @@
   "de": "Unter Mehr findest du deine Einstellungen in Gruppen, dazu Übungen, Feedback und Wünsche und Neuigkeiten.",
   "fr": "Dans Plus, tes réglages sont rangés en groupes, avec Exercices, Retours et demandes, et Nouveautés.",
   "it": "In Altro trovi le impostazioni in gruppi, più Esercizi, Feedback e richieste e Novità."
+ },
+ "Tap a day to see or change it. Drag a planned day to another date to move it.": {
+  "nl": "Tik op een dag om hem te bekijken of te wijzigen. Sleep een geplande dag naar een andere datum om hem te verplaatsen.",
+  "es": "Toca un día para verlo o cambiarlo. Arrastra un día planificado a otra fecha para moverlo.",
+  "de": "Tippe auf einen Tag, um ihn anzusehen oder zu ändern. Ziehe einen geplanten Tag auf ein anderes Datum, um ihn zu verschieben.",
+  "fr": "Touche un jour pour le voir ou le modifier. Fais glisser un jour prévu vers une autre date pour le déplacer.",
+  "it": "Tocca un giorno per vederlo o modificarlo. Trascina un giorno pianificato su un'altra data per spostarlo."
+ },
+ "{0}Tap a day to see or change it. Drag a planned day to another date to move it.": {
+  "nl": "{0}Tik op een dag om hem te bekijken of te wijzigen. Sleep een geplande dag naar een andere datum om hem te verplaatsen.",
+  "es": "{0}Toca un día para verlo o cambiarlo. Arrastra un día planificado a otra fecha para moverlo.",
+  "de": "{0}Tippe auf einen Tag, um ihn anzusehen oder zu ändern. Ziehe einen geplanten Tag auf ein anderes Datum, um ihn zu verschieben.",
+  "fr": "{0}Touche un jour pour le voir ou le modifier. Fais glisser un jour prévu vers une autre date pour le déplacer.",
+  "it": "{0}Tocca un giorno per vederlo o modificarlo. Trascina un giorno pianificato su un'altra data per spostarlo."
+ },
+ "Move to": {
+  "nl": "Verplaats naar",
+  "es": "Mover a",
+  "de": "Verschieben auf",
+  "fr": "Déplacer vers",
+  "it": "Sposta a"
+ },
+ "Choose a day": {
+  "nl": "Kies een dag",
+  "es": "Elige un día",
+  "de": "Tag wählen",
+  "fr": "Choisis un jour",
+  "it": "Scegli un giorno"
+ },
+ "Rest. Nothing is planned.": {
+  "nl": "Rust. Er staat niets gepland.",
+  "es": "Descanso. No hay nada planificado.",
+  "de": "Ruhetag. Nichts geplant.",
+  "fr": "Repos. Rien de prévu.",
+  "it": "Riposo. Niente in programma."
+ },
+ "Choose a training day": {
+  "nl": "Kies een trainingsdag",
+  "es": "Elige un día de entrenamiento",
+  "de": "Trainingstag wählen",
+  "fr": "Choisis un jour d'entraînement",
+  "it": "Scegli un giorno di allenamento"
+ },
+ "Train on this day": {
+  "nl": "Train op deze dag",
+  "es": "Entrenar este día",
+  "de": "An diesem Tag trainieren",
+  "fr": "S'entraîner ce jour-là",
+  "it": "Allenati in questo giorno"
+ },
+ "Look back or correct": {
+  "nl": "Terugkijken of corrigeren",
+  "es": "Revisar o corregir",
+  "de": "Ansehen oder korrigieren",
+  "fr": "Revoir ou corriger",
+  "it": "Rivedi o correggi"
+ },
+ "Train, week at a glance": {
+  "nl": "Training, de week in één oogopslag",
+  "es": "Entrenar, la semana de un vistazo",
+  "de": "Training, die Woche auf einen Blick",
+  "fr": "Entraînement, la semaine d'un coup d'œil",
+  "it": "Allenamento, la settimana a colpo d'occhio"
+ },
+ "The week is now seven blocks. Tap a day to see it, start it, move it to another day or remove it for this week.": {
+  "nl": "De week bestaat nu uit zeven blokken. Tik op een dag om hem te bekijken, te starten, naar een andere dag te verplaatsen of voor deze week weg te halen.",
+  "es": "La semana ahora son siete bloques. Toca un día para verlo, empezarlo, moverlo a otro día o quitarlo de esta semana.",
+  "de": "Die Woche besteht jetzt aus sieben Blöcken. Tippe auf einen Tag, um ihn anzusehen, zu starten, auf einen anderen Tag zu verschieben oder für diese Woche zu entfernen.",
+  "fr": "La semaine est maintenant faite de sept blocs. Touche un jour pour le voir, le commencer, le déplacer vers un autre jour ou le retirer de cette semaine.",
+  "it": "La settimana ora è fatta di sette blocchi. Tocca un giorno per vederlo, iniziarlo, spostarlo su un altro giorno o toglierlo da questa settimana."
+ },
+ "Tap a rest day to put a training day on it.": {
+  "nl": "Tik op een rustdag om er een trainingsdag op te zetten.",
+  "es": "Toca un día de descanso para poner un día de entrenamiento.",
+  "de": "Tippe auf einen Ruhetag, um einen Trainingstag darauf zu legen.",
+  "fr": "Touche un jour de repos pour y mettre un jour d'entraînement.",
+  "it": "Tocca un giorno di riposo per metterci un giorno di allenamento."
  }
 }

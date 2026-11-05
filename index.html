@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-iudIKtVyaLu1z7inber45C1ph44qtL33BabdiGt7h+0=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-NiZgdqxaNLm7rk1+5fkLVBObmu9EXSG67sysPlq45AI=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-05 12:54Z">
+<meta name="yc-build" content="2026-11-05 12:57Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -433,16 +433,39 @@ td.nowrap { white-space: nowrap; }
 .bar { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
 .wk-nav { display: flex; align-items: center; gap: 0.25rem; }
 .arrow { font-family: var(--f-head); width: 44px; height: 44px; font-size: var(--t4); line-height: 1; font-weight: 700; background: none; border: 2px solid var(--ctl); color: var(--ink); cursor: pointer; }
-.wk-rows { display: flex; flex-direction: column; border-top: 2px solid var(--ink); }
-.wk-row { display: grid; grid-template-columns: 3.25rem minmax(0, 1fr); gap: 0.5rem; align-items: center; border-bottom: 1px solid var(--line); min-height: 52px; }
-.wk-row.today { box-shadow: inset 4px 0 0 var(--ink); }
-.wk-row.today .wk-lab { padding-left: 0.5rem; }
-.wk-lab { display: flex; flex-direction: column; line-height: 1.1; padding-block: 0.25rem; }
-.wk-wd { font-family: var(--f-head); font-size: var(--t1); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
-.wk-row.today .wk-wd::after { content: "today"; display: block; color: var(--ink); }
-.wk-dn { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; font-variant-numeric: tabular-nums; }
-.wk-slot { display: flex; flex-wrap: wrap; gap: 0.375rem 0.5rem; align-items: center; padding-block: 0.25rem; }
-.wk-slot:empty::before { content: "Rest"; color: var(--ink-soft); font-weight: 500; }
+.wk-rows { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.25rem; padding-inline: 0.375rem; }
+.wk-day { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; min-width: 0; }
+.wk-wd { font-family: var(--f-head); font-size: var(--t1); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+.wk-day.is-today .wk-wd { color: var(--ink); }
+.wk-blk { --ang-bd: var(--line); width: 100%; max-width: 3.5rem; min-height: 52px; padding: 0; border: 0; background: none; color: var(--ink); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.05; }
+.wk-blk[data-k] { --ang-bd: var(--g); }
+.wk-blk .n { font-family: var(--f-head); font-size: var(--t4); font-weight: 700; font-variant-numeric: tabular-nums; }
+.wk-blk .m { font-family: var(--f-head); font-size: var(--t1); font-weight: 700; min-height: 1em; }
+.wk-blk.done { --ang-bg: var(--ink); --ang-bd: var(--ink); color: var(--bg); }
+.wk-blk.done[data-k] { --ang-bg: var(--g); --ang-bd: var(--g); color: var(--on-g); }
+.wk-blk.is-today::before { border-width: 3px; border-color: var(--pop); }
+.wk-blk[aria-pressed="true"]::before { box-shadow: 0 0 0 2px var(--ink); }
+.wk-blk:focus-visible { outline: 3px solid var(--pop); outline-offset: 3px; }
+.wk-blk.warn::before { border-color: var(--warn); }
+.wk-blk.drag { cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+.wk-blk.dragging { opacity: 0.3; }
+.wk-blk.ghost { position: fixed; z-index: 50; pointer-events: none; margin: 0; box-shadow: 0 8px 20px rgba(38, 53, 143, 0.35); cursor: grabbing; }
+.wk-day.over .wk-blk::before { outline: 2px dashed var(--ink); outline-offset: 3px; }
+.wk-sheet { margin-top: 0.75rem; padding: 0.75rem 1rem 1rem; background: var(--faint); border-left: 4px solid var(--ink); display: flex; flex-direction: column; gap: 0.625rem; }
+.wk-sheet h3 { margin: 0; font-family: var(--f-head); font-size: var(--t4); font-weight: 800; text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.05; }
+.wk-sheet .wk-sess { display: flex; flex-direction: column; gap: 0.375rem; padding-top: 0.625rem; border-top: 1px solid var(--line); }
+.wk-sheet .wk-sess[data-k] { border-top-color: var(--g); }
+.wk-sheet .wk-name { font-family: var(--f-head); font-size: var(--t4); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+.wk-sheet .wk-sess[data-k] .wk-name { color: var(--g); }
+.wk-sheet .wk-acts { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: flex-end; padding-inline: 0.375rem; }
+.wk-sheet .wk-acts .wk-start { flex: 1 1 100%; }
+.wk-sheet .wk-acts .wk-remove { flex: 1 1 8rem; }
+.wk-sheet .wk-acts label.wk-mv { flex: 1 1 8rem; }
+.wk-sheet .note { margin: 0; }
+.wk-sheet h3 { padding-bottom: 0.5rem; }
+.wk-sheet label.wk-mv { display: flex; flex-direction: column; gap: 0.125rem; font-size: var(--t2); font-weight: 600; color: var(--ink-soft); }
+.wk-sheet label.wk-mv select { font: inherit; font-weight: 600; color: var(--ink); background: transparent; border: 0; border-bottom: 2px solid var(--ctl); min-height: 44px; }
+.wk-act .confirm { flex: 1 1 100%; }
 .pill { font-family: var(--f-head); min-height: 40px; font-size: var(--t2); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 0 0.75rem; transform: skewX(-14deg); border: 2px solid var(--ctl); background: var(--paper); color: var(--ink); cursor: pointer; }
 .pill > span { display: inline-block; transform: skewX(14deg); }
 .pill.done { background: var(--ink); border-color: var(--ink); color: var(--bg); }
@@ -499,7 +522,6 @@ body.typing .restbar { display: none; }
 /* fixed brand colours in both themes: orange with blue letters, blue with orange letters */
 .wk-start { background: #ff8a65; color: #26358f; border-color: #ff8a65; }
 .wk-remove { background: #26358f; color: #ff8a65; border-color: #6f79bf; }
-.wk-row.over { background: var(--faint); outline: 2px dashed var(--ink); outline-offset: -2px; }
 .sm-days { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.25rem 0.375rem 0.5rem; }
 .sm-preview { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1rem 2rem; }
 .sm-week { display: flex; flex-direction: column; border-top: 2px solid var(--ink); }
@@ -977,6 +999,7 @@ body.typing .restbar { display: none; }
         <div class="bar"><h2 id="h-week"></h2><div class="wk-nav"><button type="button" class="arrow" id="wk-prev" aria-label="Previous week">&#8249;</button><button type="button" class="arrow" id="wk-next" aria-label="Next week">&#8250;</button></div></div>
         <p class="note" id="wk-hint">Drag a planned day to another date to move it. Tap it to start it or remove it.</p>
         <div class="wk-rows" id="wk-rows"></div>
+        <div class="wk-sheet" id="wk-sheet" aria-live="polite"></div>
         <div class="wk-warns" id="wk-warns" aria-live="polite"></div>
         <div class="foot-row"><button class="skew small" type="button" id="btn-cal"><span>Add to calendar</span></button></div>
         <div class="cal-panel" id="cal-panel" hidden></div>
@@ -1540,6 +1563,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['5 Nov 2026', 'Train, week at a glance', ["The week is now seven blocks. Tap a day to see it, start it, move it to another day or remove it for this week.", "Tap a rest day to put a training day on it."]],
     ['5 Nov 2026', 'New menu', ["Yes Coach! now opens straight on Train when you are signed in.", "Phone: the five main pages sit in a bar at the bottom. On a wide screen they sit in a bar on the left.", "More holds your settings in groups, plus Exercises, Feedback and Requests, and What's new."]],
     ['5 Nov 2026', "Yes Coach! now speaks your language", ["Choose Dutch, English, Spanish, German, French or Italian the first time you open it. Change it any time in Settings, under Languages.", "The app is originally in English and the translations are AI-generated, so some may be wrong. Found one? Report it in the form."]],
     ['5 Nov 2026', 'Plan, simpler', ['Put a day in your week right where you edit it: tap the weekdays on the day itself. Delete is now in plain sight at the bottom.', 'New look for dropdown lists, and more room between the parts of Plan.', 'Progress charts now show the weights you lifted by default. The estimated strength chart is one tap away and says it is an estimate.']],
@@ -5695,15 +5719,24 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     ? 'Chest/shoulder and back work on ' + isoDow(a) + ' ' + dm(a) + ' and ' + isoDow(b) + ' ' + dm(b) + ' with no rest day between. Leave a rest day between them.'
     : 'Two ' + KIND_WORD[why] + ' days in a row on ' + isoDow(a) + ' ' + dm(a) + ' and ' + isoDow(b) + ' ' + dm(b) + '. Give those muscles a day to recover.');
 
-  // The panel under a planned day: start it, or remove it from this week (with a confirm). Moving is by drag only.
-  const weekAct = (ws, d, pl) => {
+  // The day sheet under the week blocks: what is on the selected day, with Start, Move to and Remove for a planned one,
+  // and a way to put a training day on an empty date.
+  const sheetSession = (ws, d, pl, dates) => {
     const t = S.templates[pl.tpl];
-    const box = h('div', 'wk-act');
+    const box = h('div', 'wk-sess wk-act');
+    box.dataset.k = kindKey(pl.tpl);
     box.setAttribute('role', 'group');
     box.setAttribute('aria-label', t.name + ', ' + isoDow(d) + ' ' + dm(d));
-    const showButtons = () => {
-      const start = btn('skew wk-start', 'Start day');
-      start.addEventListener('click', () => { S.wkOpen = null; openSession(d, pl.tpl); });
+    const show = () => {
+      box.classList.remove('confirm');
+      const acts = h('div', 'wk-acts');
+      const start = btn('skew pop wk-start', 'Start day');
+      start.addEventListener('click', () => openSession(d, pl.tpl));
+      const sel = h('select');
+      sel.append(Object.assign(h('option', '', 'Choose a day'), { value: '' }));
+      dates.filter((x) => x !== d).forEach((x) => sel.append(Object.assign(h('option', '', isoDow(x) + ' ' + dm(x)), { value: x })));
+      sel.addEventListener('change', () => { if (sel.value) saveMove(ws, pl.key, sel.value); });
+      const mv = h('label', 'wk-mv'); mv.append(h('span', '', 'Move to'), sel);
       const rm = btn('skew wk-remove', 'Remove session');
       rm.addEventListener('click', () => {
         box.classList.add('confirm');
@@ -5712,21 +5745,56 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
           text: 'Remove ' + t.name + ' from ' + isoDow(d) + ' ' + dm(d) + '? Your plan stays the same. Only this week changes.',
           yes: 'Remove', keep: 'Keep', danger: true,
           onYes: () => {
-            S.wkOpen = null;
             const prev = ((S.weeks[ws] || {}).moves || {})[pl.key]; // where it was moved to before, so Undo puts it back exactly there
             saveMove(ws, pl.key, 'skip');
             showToast(t.name + ' removed from this week.', () => saveMove(ws, pl.key, prev));
           },
-          onKeep: showButtons,
+          onKeep: show,
         }, box);
         box.go.focus();
       });
-      box.classList.remove('confirm');
-      box.setAttribute('role', 'group');
-      box.replaceChildren(start, rm);
+      acts.append(start, mv, rm);
+      box.replaceChildren(h('div', 'wk-name', t.name), h('p', 'note', [t.focus || '', (t.items || []).length + ' exercises'].filter(Boolean).join(' · ')), acts);
     };
-    showButtons();
+    show();
     return box;
+  };
+  const renderSheet = (ws, d, model) => {
+    const sheet = $('#wk-sheet');
+    const { byDate, dates } = model;
+    sheet.replaceChildren(h('h3', '', isoDow(d) + ' ' + dm(d) + (d === today() ? ' · today' : '')));
+    byDate[d].done.forEach((s) => {
+      const t = S.templates[s.template];
+      const box = h('div', 'wk-sess');
+      box.dataset.k = kindKey(s.template);
+      box.append(h('div', 'wk-name', '✓ ' + (t ? t.name : s.split || 'Session')), h('p', 'note', setsDone(s) + ' sets logged.'));
+      if (t) {
+        const open = btn('skew small wk-open', 'Look back or correct');
+        open.addEventListener('click', () => openSession(d, s.template));
+        const acts = h('div', 'wk-acts'); acts.append(open); box.append(acts);
+      }
+      sheet.append(box);
+    });
+    byDate[d].planned.forEach((pl) => sheet.append(sheetSession(ws, d, pl, dates)));
+    if (!byDate[d].done.length && !byDate[d].planned.length) {
+      sheet.append(h('p', 'note', 'Rest. Nothing is planned.'));
+      const ts = templatesSorted();
+      if (ts.length) {
+        const sel = h('select');
+        sel.append(Object.assign(h('option', '', 'Choose a training day'), { value: '' }));
+        ts.forEach((t) => sel.append(Object.assign(h('option', '', t.name), { value: t.id })));
+        sel.addEventListener('change', () => {
+          if (!sel.value) return;
+          const wk = clone(S.weeks[ws] || {});
+          const adds = wk.adds || {};
+          adds[d] = (adds[d] || []).concat(sel.value);
+          saveWeek(ws, { moves: wk.moves, adds });
+          renderWeek();
+        });
+        const lab = h('label', 'wk-mv'); lab.append(h('span', '', 'Train on this day'), sel);
+        const acts = h('div', 'wk-acts'); acts.append(lab); sheet.append(acts);
+      }
+    }
   };
   const renderWeek = () => {
     if (!S.weekStart) S.weekStart = mondayOf(today());
@@ -5734,51 +5802,37 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const dates = WEEKDAYS.map((_, i) => addDays(ws, i));
     const sc = activeSchedule();
     $('#h-week').textContent = dm(dates[0]) + ' – ' + dm(dates[6]);
-    $('#wk-hint').textContent = (sc ? 'Planned from your schedule. ' : 'Planned days follow each day\'s weekday. ') + 'Drag a planned day to another date to move it. Tap it to start it or remove it.';
-    const { byDate, moves } = weekModel(ws);
+    $('#wk-hint').textContent = (sc ? 'Planned from your schedule. ' : 'Planned days follow each day\'s weekday. ') + 'Tap a day to see or change it. Drag a planned day to another date to move it.';
+    const model = weekModel(ws);
+    const { byDate } = model;
     const kinds = {};
     dates.forEach((d) => { kinds[d] = new Set(byDate[d].done.map((s) => kindOf(s.template, s.split)).concat(byDate[d].planned.map((p) => kindOf(p.tpl)))); });
     const quiet = new Set((S.weeks[ws] || {}).quiet || []);
     const pairs = spacingWarnings(dates, kinds).filter((p) => !quiet.has(warnKey(p)));
     const warnDays = new Set(pairs.flatMap((p) => [p[0], p[1]]));
+    if (!S.wkSel || !dates.includes(S.wkSel)) S.wkSel = dates.includes(today()) ? today() : (dates.find((d) => byDate[d].planned.length || byDate[d].done.length) || dates[0]);
     const box = $('#wk-rows');
     box.replaceChildren();
     dates.forEach((d) => {
-      const row = h('div', 'wk-row' + (d === today() ? ' today' : ''));
-      row.dataset.date = d;
-      const lab = h('div', 'wk-lab');
-      lab.append(h('span', 'wk-wd', isoDow(d)), h('span', 'wk-dn', String(Number(d.slice(8)))));
-      const slot = h('div', 'wk-slot');
-      let act = null;
-      byDate[d].done.forEach((s) => {
-        const t = S.templates[s.template];
-        const p = btn('pill done' + (warnDays.has(d) ? ' warn' : ''), '✓ ' + (t ? t.name : s.split || 'Session'), 'Open ' + (t ? t.name : 'session') + ' on ' + dm(d));
-        p.dataset.k = kindKey(s.template);
-        p.addEventListener('click', () => { if (t) openSession(d, s.template); });
-        slot.append(p);
-      });
-      byDate[d].planned.forEach((pl) => {
-        const t = S.templates[pl.tpl];
-        const p = btn('pill drag' + (warnDays.has(d) ? ' warn' : ''), t.name, t.name + ', planned ' + isoDow(d) + '. Tap for start or remove, drag to move it to another day.');
-        const isOpen = !!S.wkOpen && S.wkOpen.key === pl.key && S.wkOpen.date === d;
-        p.setAttribute('aria-expanded', String(isOpen));
-        p.dataset.key = pl.key;
-        p.dataset.k = kindKey(pl.tpl);
-        p.addEventListener('pointerdown', (ev) => startDrag(ev, p, ws, pl.key, d));
-        p.addEventListener('click', () => {
-          if (p.dataset.dragged) { delete p.dataset.dragged; return; }
-          S.wkOpen = isOpen ? null : { key: pl.key, date: d };
-          renderWeek();
-          const go = $('#wk-rows .wk-start');
-          if (go) go.focus();
-        });
-        slot.append(p);
-        if (isOpen) act = weekAct(ws, d, pl);
-      });
-      row.append(lab, slot);
-      if (act) row.append(act);
-      box.append(row);
+      const col = h('div', 'wk-day' + (d === today() ? ' is-today' : ''));
+      col.dataset.date = d;
+      const done = byDate[d].done, planned = byDate[d].planned;
+      const first = done[0] ? done[0].template : (planned[0] ? planned[0].tpl : null);
+      const isDone = done.length > 0 && !planned.length;
+      const b = h('button', 'wk-blk angled' + (isDone ? ' done' : '') + (d === today() ? ' is-today' : '') + (warnDays.has(d) ? ' warn' : '') + (planned.length ? ' drag' : ''));
+      b.type = 'button';
+      b.dataset.date = d;
+      if (first && S.templates[first]) b.dataset.k = kindKey(first);
+      b.setAttribute('aria-pressed', String(d === S.wkSel));
+      const what = [].concat(done.map((s) => (S.templates[s.template] ? S.templates[s.template].name : 'session') + ' done'), planned.map((p) => S.templates[p.tpl].name + ' planned'));
+      b.setAttribute('aria-label', isoDow(d) + ' ' + dm(d) + (d === today() ? ', today' : '') + ', ' + (what.length ? what.join(', ') : 'rest'));
+      b.append(h('span', 'n', String(Number(d.slice(8)))), h('span', 'm', isDone ? '✓' : (planned.length ? '•' : '')));
+      b.addEventListener('click', () => { if (b.dataset.dragged) { delete b.dataset.dragged; return; } S.wkSel = d; renderWeek(); const bb = $('#wk-rows .wk-blk[data-date="' + d + '"]'); if (bb) bb.focus(); });
+      if (planned.length) b.addEventListener('pointerdown', (ev) => startDrag(ev, b, ws, planned[0].key, d));
+      col.append(h('span', 'wk-wd', isoDow(d)), b);
+      box.append(col);
     });
+    renderSheet(ws, S.wkSel, model);
     $('#wk-warns').replaceChildren(...pairs.map((p) => {
       const row = h('div', 'wk-warn');
       const x = plainBtn('icon', '✕', 'Hide this notice: ' + warnText(p), () => {
@@ -5808,7 +5862,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     try { el.setPointerCapture(ev.pointerId); } catch (e) { /* capture is best effort */ }
   };
   const rowAt = (x, y) => {
-    const hit = document.elementsFromPoint(x, y).find((n) => n.classList && n.classList.contains('wk-row'));
+    const hit = document.elementsFromPoint(x, y).find((n) => n.classList && n.classList.contains('wk-day'));
     return hit || null;
   };
   document.addEventListener('pointermove', (ev) => {
@@ -5852,7 +5906,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   document.addEventListener('pointerup', (ev) => endDrag(ev, false));
   document.addEventListener('pointercancel', (ev) => endDrag(ev, true));
-  const stepWeek = (n) => { S.wkOpen = null; S.weekStart = addDays(S.weekStart || mondayOf(today()), 7 * n); renderWeek(); enter($('#wk-rows'), 16 * n); };
+  const stepWeek = (n) => { S.wkSel = null; S.weekStart = addDays(S.weekStart || mondayOf(today()), 7 * n); renderWeek(); enter($('#wk-rows'), 16 * n); };
   $('#wk-prev').addEventListener('click', () => stepWeek(-1));
   $('#wk-next').addEventListener('click', () => stepWeek(1));
 
