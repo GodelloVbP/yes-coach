@@ -1202,5 +1202,40 @@
   "de": "Teile es als Bild, mit oder ohne Gewichte und deine Notiz. Nichts verlässt dein Handy, bevor du teilst.",
   "fr": "Partage-le en image, avec ou sans les poids et ta note. Rien ne quitte ton téléphone avant que tu partages.",
   "it": "Condividilo come immagine, con o senza i pesi e la tua nota. Nulla lascia il telefono finché non condividi."
+ },
+ "Lifts tracked": {
+  "nl": "Gevolgde oefeningen",
+  "es": "Ejercicios seguidos",
+  "de": "Verfolgte Übungen",
+  "fr": "Exercices suivis",
+  "it": "Esercizi monitorati"
+ },
+ "Sessions": {
+  "nl": "Trainingen",
+  "es": "Sesiones",
+  "de": "Einheiten",
+  "fr": "Séances",
+  "it": "Sessioni"
+ },
+ "Progress: records and estimated strength": {
+  "nl": "Voortgang: records en geschatte kracht",
+  "es": "Progreso: récords y fuerza estimada",
+  "de": "Fortschritt: Rekorde und geschätzte Kraft",
+  "fr": "Progrès : records et force estimée",
+  "it": "Progressi: record e forza stimata"
+ },
+ "Progress now opens with your sessions, working sets and lifts tracked for the period you picked.": {
+  "nl": "Voortgang opent nu met je trainingen, werksets en gevolgde oefeningen over de gekozen periode.",
+  "es": "Progreso empieza ahora con tus sesiones, series de trabajo y ejercicios seguidos del periodo elegido.",
+  "de": "Fortschritt beginnt jetzt mit deinen Einheiten, Arbeitssätzen und verfolgten Übungen im gewählten Zeitraum.",
+  "fr": "Progrès s’ouvre maintenant sur tes séances, séries de travail et exercices suivis de la période choisie.",
+  "it": "Progressi si apre ora con sessioni, serie di lavoro ed esercizi monitorati del periodo scelto."
+ },
+ "A lift gets a PR tag when its latest session beat everything before it. Lifts in kg show their estimated one-rep max.": {
+  "nl": "Een oefening krijgt een PR-label als je laatste training alles ervoor versloeg. Oefeningen in kg tonen hun geschatte one-rep max.",
+  "es": "Un ejercicio recibe la etiqueta PR cuando su última sesión superó todo lo anterior. Los ejercicios en kg muestran su 1RM estimado.",
+  "de": "Eine Übung bekommt ein PR-Label, wenn ihr letztes Training alles davor übertroffen hat. Übungen in kg zeigen ihr geschätztes Einerwiederholungsmaximum.",
+  "fr": "Un exercice reçoit l’étiquette PR quand sa dernière séance a dépassé tout le reste. Les exercices en kg affichent leur 1RM estimé.",
+  "it": "Un esercizio riceve il tag PR quando l’ultima sessione ha superato tutto il resto. Gli esercizi in kg mostrano il massimale stimato."
  }
 }

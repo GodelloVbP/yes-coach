@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-BAukn6qXvhVDwCP5Sh+2m5zibyphH2kjU08FURRa5xY=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-s37cFpvb7Uihk6lj2RQDV+wtduayXmeaIiBrtO7Kr3Q=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-05 13:51Z">
+<meta name="yc-build" content="2026-11-05 14:00Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -442,6 +442,13 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .plist { display: flex; flex-direction: column; }
 .prow { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 0.125rem 0.75rem; align-items: center; width: 100%; min-height: 56px; padding: 0.5rem 0.25rem; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; color: var(--ink); cursor: pointer; }
 .prow:hover { background: var(--faint); }
+.p-tiles { display: flex; gap: 0.75rem; padding: 0.25rem 0.375rem 0; }
+.p-tile { --ang-bg: var(--faint); --ang-bd: var(--faint); flex: 1; min-width: 0; padding: 0.5rem 0.875rem; display: flex; flex-direction: column; gap: 0.125rem; }
+.p-tile b { font-family: var(--f-head); font-weight: 800; font-size: 2rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.p-tile span { font-size: var(--t1); font-weight: 600; color: var(--ink-soft); }
+.p-tiles[hidden] { display: none; }
+.prow .p-pr { display: inline-block; vertical-align: 0.1em; padding: 0 0.375rem; background: var(--pop); color: var(--on-pop); font-size: var(--t1); letter-spacing: 0.04em; transform: skewX(-14deg); }
+.prow .p-e1 { display: block; font-size: var(--t1); font-weight: 600; color: var(--ink-soft); }
 .prow[aria-expanded="true"] { background: var(--faint); }
 .prow .p-name { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.1; }
 .prow .p-line { grid-column: 1; font-size: var(--t2); font-weight: 500; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
@@ -1112,6 +1119,7 @@ body.fin-open { overflow: hidden; }
         <div class="seg" role="radiogroup" aria-label="Period" id="prange"></div>
       </div>
       <p class="p-total" id="take">Loading your progress…</p>
+      <div class="p-tiles" id="p-tiles" hidden></div>
       <div class="p-grid" id="p-grid">
         <section class="p-sec" aria-labelledby="h-plist">
           <div class="p-head"><h2 id="h-plist">Your lifts</h2><span class="p-count" id="plist-count"></span></div>
@@ -1661,6 +1669,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['5 Nov 2026', 'Progress: records and estimated strength', ["Progress now opens with your sessions, working sets and lifts tracked for the period you picked.", "A lift gets a PR tag when its latest session beat everything before it. Lifts in kg show their estimated one-rep max."]],
     ['5 Nov 2026', 'Finish screen and share picture', ["When you finish a day you now see how it went: time, working sets, volume and any new personal records.", "Share it as a picture, with or without the weights and your note. Nothing leaves your phone until you share it."]],
     ['5 Nov 2026', 'Warm-up sets', ["Tap + Warm-up on an exercise for a ramp to your working weight: the empty bar, then about half, 70% and 85% of it. It appears from 40 kg.", "Warm-ups do not count as working sets and do not change your suggested weight.", "Want it every time? Tick Add warm-up sets automatically in the plan editor."]],
     ['5 Nov 2026', 'Suggested next weight', ["Each exercise now shows the weight to try next, worked out from your last sessions. When every set reached the reps, it goes up a step.", "A line under the exercise says why. Tap Use last time to see last time’s numbers instead.", "Turn it off in Settings, Logging. Set the step per exercise in the plan editor."]],
@@ -3972,6 +3981,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const fillTotals = (rows, lifts) => {
     const t = totals(rows.filter(inGroup), rangeFrom());
     $('#p-days-sec').hidden = !t.sessions;
+    const tiles = $('#p-tiles');
+    tiles.replaceChildren();
+    tiles.hidden = !t.sessions;
+    [[t.sessions, 'Sessions'], [t.sets, 'Working sets'], [lifts.length, 'Lifts tracked']].forEach(([n, label]) => { const el = h('div', 'p-tile angled'); el.append(h('b', '', String(n)), h('span', '', label)); tiles.append(el); });
     $('#take').textContent = t.sessions ? '' : rows.length ? 'No ' + (S.ptab === 'All' ? '' : S.ptab.toLowerCase() + ' ') + 'sessions in ' + rangeWord() + '. Pick a longer period.' : 'No sessions logged yet. Your progress shows up here after your first ticked set.';
     if (!t.sessions) return;
     drawDays(rows);
@@ -4046,7 +4059,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const first = series[0];
       const latest = series[series.length - 1];
       const tr = trendOf(series, pf);
+      // a record: the latest session beat everything before it, in this exercise and measure
+      const all = bestSeries(id);
+      const before = all.filter((p) => p.date < latest.date).map((p) => pf.val(p)).filter((v) => v != null);
+      const lv = pf.val(latest);
+      const pr = lv != null && before.length > 0 && (pf.lower ? lv < Math.min(...before) : lv > Math.max(...before));
       rows.push({
+        pr, e1rm: (e.unit || 'kg') === 'kg' && latest.est != null ? latest.est : null,
         id, exercise: e.name, group: groupOf(e.group), unit: e.unit || 'kg', measure: MEASURE_WORD(e), sessions: series.length, series,
         firstLabel: first.label, firstDate: first.date, latestLabel: latest.label, latestDate: latest.date, bestLabel: bestOf(series, pf).label,
         changeLabel: tr ? tr.label : '', trend: tr ? tr.trend : null,
@@ -4100,8 +4119,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       b.setAttribute('aria-expanded', String(open));
       const line = h('span', 'p-line');
       line.append('Latest ', h('b', '', r.latestLabel), ' · ' + plural(r.sessions, 'session'));
-      b.append(h('span', 'p-name', r.exercise), line, spark(r), h('span', 'p-ch' + (r.trend ? ' ' + r.trend : ''), r.trend ? TREND_MARK[r.trend] + r.changeLabel : ''));
-      b.setAttribute('aria-label', r.exercise + '. Latest best set ' + r.latestLabel + (r.sessions > 1 ? ', best ' + r.bestLabel + ', trend ' + TREND_WORD[r.trend] + ' ' + r.changeLabel + ' over ' + r.sessions + ' sessions' : ', one session in this period') + '. ' + (open ? 'Hide' : 'Show') + ' chart');
+      const nm = h('span', 'p-name', r.exercise);
+      if (r.pr) { const pb = h('span', 'p-pr', 'PR'); pb.title = 'Personal record'; nm.append(' ', pb); }
+      if (r.e1rm != null) line.append(h('span', 'p-e1', 'e1RM ' + num(r.e1rm) + ' kg'));
+      b.append(nm, line, spark(r), h('span', 'p-ch' + (r.trend ? ' ' + r.trend : ''), r.trend ? TREND_MARK[r.trend] + r.changeLabel : ''));
+      b.setAttribute('aria-label', r.exercise + (r.pr ? ', new personal record' : '') + '. Latest best set ' + r.latestLabel + (r.e1rm != null ? ', estimated one-rep max ' + num(r.e1rm) + ' kg' : '') + (r.sessions > 1 ? ', best ' + r.bestLabel + ', trend ' + TREND_WORD[r.trend] + ' ' + r.changeLabel + ' over ' + r.sessions + ' sessions' : ', one session in this period') + '. ' + (open ? 'Hide' : 'Show') + ' chart');
       b.addEventListener('click', () => { S.picked = open ? null : r.exercise; drawList(all); });
       box.append(b);
       if (open) {
