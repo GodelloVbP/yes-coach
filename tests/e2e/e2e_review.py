@@ -1,6 +1,6 @@
 """The review after a finished day: the text sent to Claude (connector) or copied for any AI, Copy day and the full export.
 They share one brief: a critical stance, the five judgements (sets, notes, the plan of the day, the whole week, missing muscle groups), a self-check."""
-import time, datetime, urllib.parse
+import time, datetime, urllib.parse, re
 from playwright.sync_api import sync_playwright
 from harness import *
 
@@ -47,8 +47,8 @@ def finish(page): page.locator('button.skew:visible', has_text='Finish day').fir
 def clip(page): return page.evaluate('navigator.clipboard.readText()')
 
 # the brief every route carries
-BRIEF = ['critical review, not encouragement', 'Every statement needs a number', 'did every set reach the planned reps', 'Planned exercises that were not done', 'My notes outrank progression',
-         'Judge the plan of each day', 'Judge the whole week every time', 'missing or neglected', 'rear delts, calves, hamstrings', 'Review yourself once', 'Self-check: ']
+BRIEF = ['critical review, not encouragement', 'gives the number and the date; advice and questions do not need one', 'Did every set reach the planned reps', 'Planned exercises that were not done', 'My notes outrank progression',
+         "judge the plan of today's day fully", 'Judge the whole week every time', 'missing or neglected', 'rear delts, calves, hamstrings', 'If no day trains legs', 'Review yourself once', 'Self-check: ']
 
 server = serve()
 try:
@@ -73,19 +73,22 @@ try:
         check('the address carries the same text as the clipboard', q == GOT['clip'], (len(q), len(GOT['clip'])))
         t = GOT['clip']
         for phrase in BRIEF: check('connector text has: ' + phrase, phrase in t)
-        check('it says where to read: tools, the exact from date and the exercise ids', all(x in t for x in ('get_overview', 'get_exercise_history', 'get_plan', 'get_notes', 'with from ' + FROM, 'exercise_id bench')), t[:900])
-        check('it says nothing changes before agreement, and that notes may be answered', 'Change nothing yet' in t and 'answer_note' in t and 'save_training_day' in t)
+        check('it says where to read: the tools with the right arguments, the exact from date and the exercise ids', all(x in t for x in ('get_overview', 'get_exercise_history with limit 8', 'get_plan', 'get_notes with only_waiting false and limit 30', 'get_sessions with from ' + FROM + ' and limit 60', 'exercise_id bench')), t[:1200])
+        check('it says nothing changes before agreement, that notes may be answered, and how to write safely', 'Do not change my plan yet' in t and 'answer_note' in t and 'pass the day\'s id from get_plan' in t and 'set_schedule' in t)
+        check('it carries what the rule suggested for today and next time', "The app's rule suggested 80 kg × 8 (Same weight again" in t and ' next time' in t, t[t.find('Bench press (exercise_id'):][:600])
+        check('the units are explained', 'pin is a machine stack number' in t and 'x kg each (y kg total)' in t)
         check('it carries what the app saw today with last time, and the skipped exercises', 'Did 8 @ 82.5 kg' in t and 'Last time' in t and 'Overhead press (exercise_id ohp): plan 3 × 8. Not done' in t, t)
         check('it carries the lifter\'s note about the shoulder', 'Right shoulder pinches on the way down' in t)
         check('it carries the app\'s count per body part, with the group that is missing', 'counted by the app' in t and 'Legs: none logged' in t and 'Core: none logged' in t)
-        import re
-        check('the count is per week with plural days', re.search(r'Chest: [\d.]+ sets a week, [\d.]+ days? a week', t) is not None, t[-900:])
+        check('the count is per week with plural days', re.search(r'Chest: [\d.]+ sets a week \(\d+ in \d+ weeks?\), [\d.]+ days? a week', t) is not None, t[-900:])
         check('the profile is there', 'goal: gain muscle' in t and 'trains in a gym' in t)
         check('units: plan changes use the exercise\'s own unit', 'own unit (kg, pin or kg assist)' in t)
         # Copy day: the same brief, with the data in the text
         c = GOT['copyday']
         for phrase in BRIEF: check('Copy day has: ' + phrase, phrase in c)
         check('Copy day has the data and no tool instructions', 'Right shoulder pinches' in c and 'Training days (the whole plan)' in c and 'Legs: none logged' in c and 'get_overview' not in c and 'I will make the changes myself' in c)
+        check('Copy day has the rule\'s suggestion, the weekly totals and what a rolling week means', "The app's rule suggested 80 kg × 8" in c and re.search(r'sets a week \(\d+ in \d+ weeks?\)', c) and 'each day comes round' in c, c[-1500:])
+        check('Copy day leaves out the order of one exercise', 'Order I did them in' not in c)
 
         # ---- 2. not connected: the same review through the clipboard
         be = Backend(); seed(be); be.grants = []
@@ -98,6 +101,7 @@ try:
         errs = session(pw, be, ALICE, s2, width=1000); check('no page errors (paste)', not errs, errs)
         check('the finish screen says it copied the review', 'Review request copied' in GOT['status'], GOT['status'])
         for phrase in BRIEF: check('pasted text has: ' + phrase, phrase in GOT['paste'])
+        check('pasted text carries the PR flag from the finish screen', 'The app flagged a PR on this exercise.' in GOT['paste'])
 
         # ---- 3. a day with nothing logged has nothing to review
         be = Backend(); seed(be); be.grants = CONNECTED
@@ -114,7 +118,7 @@ try:
             GOT['export'] = page.evaluate("document.querySelector('#ex-out').value")
         errs = session(pw, be, ALICE, s4, width=1000); check('no page errors (export)', not errs, errs)
         e = GOT['export']
-        for phrase in ('critical review, not encouragement', 'My notes outrank progression', 'Judge the plan of every training day', 'Judge the whole week every time', 'Review yourself once', 'Self-check: ', 'counted by the app', 'Right shoulder pinches'):
+        for phrase in ('critical review, not encouragement', 'My notes outrank progression', 'Judge the plan of every training day, one by one', 'Judge the whole week every time', 'Review yourself once', 'Self-check: ', 'counted by the app', 'Right shoulder pinches'):
             check('export has: ' + phrase, phrase in e)
         check('export no longer calls the lifter "himself"', 'himself' not in e)
 finally:

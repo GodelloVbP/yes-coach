@@ -551,20 +551,22 @@ try:
             be.docs.append({'path': 'yc', 'data': {'app': 'yes-coach', 'schema': 1, 'intro_seen': True}})
             be.docs.append({'path': 'yc/exercises/bench', 'data': {'name': 'Bench press', 'group': 'Chest', 'category': 'strength', 'unit': 'kg', 'better': 'higher'}})
             be.docs.append({'path': 'yc/templates/push', 'data': {'name': 'Push day', 'order': 1, 'weekday': 'Mon', 'kind': 'Push', 'focus': 'Chest', 'items': [{'ex': 'bench', 'order': 1, 'sets': 3, 'reps': 8, 'target': '', 'rest_s': 90, 'note': None}]}})
+            today = datetime.date.today().isoformat()  # a day with a logged set: a day with nothing in it has nothing to review
+            be.docs.append({'path': 'yc/sessions/' + today, 'data': {'date': today, 'template': 'push', 'sets': {'bench_1': {'ex': 'bench', 'n': 1, 'kind': 'work', 'reps': 8, 'load': 60, 'done': True, 'at': 1}}}})
             return be
         def fin_claude(page):
             page.evaluate("localStorage.setItem('yc-active', JSON.stringify({date: new Date().toISOString().slice(0, 10), tpl: 'push'}))"); page.reload(); page.wait_for_selector('#resume-fin', state='visible')
             page.evaluate("window.__opened = []; window.open = (u) => { window.__opened.push(u); return null; }; 0")
-            page.click('#resume-fin'); page.wait_for_selector('#claude-review-go')
-            check('asks: Send day to Coach Claude for review?', 'Send day to Coach Claude for review?' in page.inner_text('.ydlg'))
+            page.click('#resume-fin'); page.wait_for_selector('#fin-done'); page.click('#fin-done'); page.wait_for_selector('#claude-review-go')
+            check('asks for a critical review from Claude', 'Get a critical review from Claude?' in page.inner_text('.ydlg') and 'Push day' in page.inner_text('.ydlg'))
             check('focus is on the Send button', page.evaluate("document.activeElement.id") == 'claude-review-go')
             page.click('.ydlg >> text=Not now'); check('Not now closes it', page.locator('.ydlg').count() == 0)
             page.evaluate("localStorage.setItem('yc-active', JSON.stringify({date: new Date().toISOString().slice(0, 10), tpl: 'push'}))"); page.reload(); page.wait_for_selector('#resume-fin', state='visible')
             page.evaluate("window.__opened = []; window.open = (u) => { window.__opened.push(u); return null; }; 0")
-            page.click('#resume-fin'); page.wait_for_selector('#claude-review-go'); page.keyboard.press('Escape'); check('Escape closes it', page.locator('.ydlg').count() == 0)
+            page.click('#resume-fin'); page.wait_for_selector('#fin-done'); page.click('#fin-done'); page.wait_for_selector('#claude-review-go'); page.keyboard.press('Escape'); check('Escape closes it', page.locator('.ydlg').count() == 0)
             page.evaluate("localStorage.setItem('yc-active', JSON.stringify({date: new Date().toISOString().slice(0, 10), tpl: 'push'}))"); page.reload(); page.wait_for_selector('#resume-fin', state='visible')
             page.evaluate("window.__opened = []; window.open = (u) => { window.__opened.push(u); return null; }; 0")
-            page.click('#resume-fin'); page.wait_for_selector('#claude-review-go'); page.click('#claude-review-go'); page.wait_for_timeout(300)
+            page.click('#resume-fin'); page.wait_for_selector('#fin-done'); page.click('#fin-done'); page.wait_for_selector('#claude-review-go'); page.click('#claude-review-go'); page.wait_for_timeout(300)
             u = page.evaluate('window.__opened[0]') or ''
             check('Send opens Claude with the request', u.startswith('https://claude.ai/new?q=') and 'Push day' in urllib.parse.unquote(u) and 'connector' in urllib.parse.unquote(u), u)
             check('request is also on the clipboard', 'Push day' in page.evaluate('navigator.clipboard.readText()'))

@@ -1826,9 +1826,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       text: 'Get a critical review from Claude? It reads ' + day.name + ' through your connector and judges your sets, your notes, this day\'s plan, your whole week and the muscle groups you miss. It changes nothing until you say so.',
       yes: 'Send to Claude', keep: 'Not now', yesId: 'claude-review-go',
       onYes: async () => {
-        // the full text always goes to the clipboard; the address carries it when it fits, else a shorter one that leaves the numbers to the connector
+        // the full text always goes to the clipboard; the address carries it when it fits, else a shorter one that leaves what the connector can count to the connector
         const full = reviewPrompt(day);
-        const url = [full, reviewPrompt(day, true)].map((p) => 'https://claude.ai/new?q=' + encodeURIComponent(p)).find((u) => u.length <= REVIEW_URL_MAX);
+        const url = [full, reviewPrompt(day, 1), reviewPrompt(day, 2)].map((p) => 'https://claude.ai/new?q=' + encodeURIComponent(p)).find((u) => u.length <= REVIEW_URL_MAX);
         try { window.open(url || 'https://claude.ai/new', '_blank', 'noopener,noreferrer'); } catch (e) { /* copied below */ }
         const ok = await copyPlain(full);
         close();
@@ -1979,7 +1979,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       if (!status.isConnected) inn.insertBefore(status, acts);
       const ai = btn('skew', 'Review with my AI');
       ai.id = 'fin-ai';
-      ai.addEventListener('click', async () => { status.textContent = (await copyPlain(dayText(sum.sid, sum.tpl))) ? 'Review request copied. Paste it into your AI chat.' : 'Could not copy. Use Copy day on the training screen next time.'; });
+      ai.addEventListener('click', async () => { status.textContent = (await copyPlain(dayText(sum.sid, sum.tpl, sum.lines.filter((l) => l.pr).map((l) => l.ex)))) ? 'Review request copied. Paste it into your AI chat.' : 'Could not copy. Use Copy day on the training screen next time.'; });
       acts.insertBefore(ai, done);
     }).catch(() => {});
     acts.append(done);
@@ -2526,23 +2526,26 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return window.YC_PROGRESSION.defaultInc({ inc: e.inc, unit: e.unit, load_basis: e.load_basis, equipment: lib && lib.equipment, name: e.name, group: lib ? lib.group : e.group });
   };
   // ignoreOff: the line under the name still needs the suggestion when today's switch to "last time" is on
-  const progFor = (item, ignoreOff) => {
+  // what the rule in progression.js makes of the sessions before `before`, for a day that is `asOf`
+  const suggestAt = (item, before, asOf) => {
     const P = window.YC_PROGRESSION;
-    if (!P || !S.active || !item.planned || !progOn() || (!ignoreOff && sugOffFor(item))) return null;
+    const e = S.exercises[item.ex] || {};
+    if (!P || e.unit === 'min') return null;
+    const history = [];
+    for (const s of sessionsSorted()) {
+      if (s.date >= before) continue;
+      const sets = workSets(s, item.ex).sort((a, b) => a.n - b.n);
+      if (sets.length) history.push({ date: s.date, sets: sets.map((st) => ({ n: st.n, load: st.load, reps: st.reps, rir: st.rir, kind: st.kind || 'work' })) });
+      if (history.length >= 4) break;
+    }
+    return P.suggest({ unit: e.unit || 'kg', reps: item.reps, sets: item.sets, inc: incFor(item.ex), uw: unitWord(e), today: asOf, target: item.target, targetAt: item.target_at, history });
+  };
+  // ignoreOff: the line under the name still needs the suggestion when today's switch to "last time" is on
+  const progFor = (item, ignoreOff) => {
+    if (!window.YC_PROGRESSION || !S.active || !item.planned || !progOn() || (!ignoreOff && sugOffFor(item))) return null;
     const ck = 'prog|' + item.ex + '|' + (item.reps || '') + '|' + (item.target || '') + '|' + (item.target_at || '') + '|' + item.sets + '|' + S.active.date;
     if (lastCache && lastCache.has(ck)) return lastCache.get(ck);
-    const e = S.exercises[item.ex] || {};
-    let r = null;
-    if (e.unit !== 'min') {
-      const history = [];
-      for (const s of sessionsSorted()) {
-        if (s.date >= S.active.date) continue;
-        const sets = workSets(s, item.ex).sort((a, b) => a.n - b.n);
-        if (sets.length) history.push({ date: s.date, sets: sets.map((st) => ({ n: st.n, load: st.load, reps: st.reps, rir: st.rir, kind: st.kind || 'work' })) });
-        if (history.length >= 4) break;
-      }
-      r = P.suggest({ unit: e.unit || 'kg', reps: item.reps, sets: item.sets, inc: incFor(item.ex), uw: unitWord(e), today: S.active.date, target: item.target, targetAt: item.target_at, history });
-    }
+    const r = suggestAt(item, S.active.date, S.active.date);
     if (lastCache) lastCache.set(ck, r);
     return r;
   };
@@ -5328,26 +5331,27 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   // ---- the review brief: the same rules behind every route to an AI (the connector review, Copy day, the full export)
   const BRIEF = {
-    stance: 'You are my strength coach. I want a critical review, not encouragement. If my plan, my choices or my numbers are poor, say so and why. Every statement needs a number from my data and a date. No flattery, no filler, no generic tips. Never state a set, record or trend that is not in my data.',
-    sets: 'Today\'s sets, one line per exercise, with numbers (reps × load, and last time): did every set reach the planned reps? A drop of more than 2 reps between sets means the load was too heavy or the rest too short. Is the load sensible against my recent best sets (estimated one-rep max in the history)? Compare it with last time and with the app\'s suggestion (the app adds one step when every set reached the top of the rep range, holds the weight otherwise, and lowers it after three short sessions in a row or a break of four weeks). Reps in reserve where logged: 0 to 1 on most sets is the limit, 4 or more is too light. Planned exercises that were not done: say what that did to the week\'s volume and ask why unless my notes say. Check every PR the app flagged against the history. Anything that looks like a typo (a load or rep count far outside my history, 0 reps, 825 for 82.5): name it, ask, and do not build on it. Then give the exact load and reps for next time.',
-    notes: 'My notes outrank progression. Read today\'s and the last two weeks. Pain, a tweak or "felt off": do not raise the load there, offer a substitute or a lighter variation, and say plainly when sharp or lasting pain should be seen by a professional. Do not diagnose.',
-    dayPlan: 'Judge the plan of each day you look at, every time, also when nothing went wrong: the order (heavy compound lifts first, a lagging muscle early), sets and reps for my goal, rest times, two exercises doing the same job, supersets, session length against my profile, exercises against the equipment where I train.',
-    week: 'Judge the whole week every time. Per muscle group: working sets a week, days a week, rest between sessions. Push against pull, quads against hamstrings and glutes, vertical against horizontal pushing and pulling. Training days against my profile. Plan days that are not in the weekly schedule. Guideline, not law: 10 to 20 hard sets per muscle group a week suits most people who want to grow, 6 to 10 maintains, and twice a week beats once; judge by my goal. Name every muscle group that is missing or neglected, also the ones Yes Coach! does not tag (rear delts, calves, hamstrings, glutes, forearms, lower back, core), and give each one exercise that fits where I train and the day it goes on. Say what is overdone too.',
-    self: 'Review yourself once before you answer. Draft the answer, then check it: does every claim carry a number and a date? Did you judge all five parts (sets, notes, the plan of the day, the whole week, missing muscle groups)? Does any advice contradict my notes, injuries or equipment? Did you praise anything the numbers do not support? Are the loads realistic jumps (dumbbells 2 kg, barbell 2.5 kg, a machine one pin)? Is change 1 really the most important? Fix what fails, send only the corrected answer, and end with one line "Self-check: ..." naming what you changed or are unsure about.',
-    dayFormat: 'Answer in this order: Verdict (2 to 3 sentences: the one thing that matters most). Today\'s sets. Notes. This day\'s plan. The whole week: a short table (muscle group, sets a week, days a week, verdict), then the missing and overdone groups. Plan changes: numbered, at most 5, most important first; each with day, exercise, sets × reps, load in the exercise\'s own unit (kg, pin or kg assist) and a short reason. Questions: at most 3, only if the answer changes your advice. About 700 words, the table not counted.',
-    write: 'Change nothing yet. After your list I will say which changes to apply; then use save_training_day (it replaces the whole exercise list of a day: start from get_plan and keep every unchanged exercise exactly), set_schedule or create_exercise. Leave target_kg empty unless you have a reason to override the app\'s suggested weight. One exception: answer each waiting note with answer_note, in 1 to 3 plain sentences.',
-    paste: 'I will make the changes myself, so be exact about exercise, sets, reps and load.',
+    stance: 'You are my strength coach. I want a critical review, not encouragement. If my plan, my choices or my numbers are poor, say so and why. Every claim about my past training gives the number and the date; advice and questions do not need one. Say what is working, with its numbers, as briefly as what is not. No flattery, no filler, no generic tips. Never state a set, record or trend that is not in my data.',
+    sets: 'Today\'s sets, one line per exercise, with numbers (reps × load, and last time). Did every set reach the planned reps? A drop of more than 2 reps between sets points to a load that was too heavy, rest that was too short, or something that hurt: check my notes before you blame the load. Is the load sensible against my recent best sets (estimate one-rep max as load × (1 + reps / 30))? Compare my load with what the app\'s rule suggested for today, printed with the exercise, and say whether you agree with the rule\'s call (the rule: every set at the top of the rep range adds one step, a miss holds the weight, three short sessions in a row or four weeks away lowers it). Reps in reserve, if logged: about 1 to 3 on compound lifts and 0 to 2 on isolation lifts is right; 4 or more is too light; 0 on every set of a heavy compound is too hard. Planned exercises that were not done: say what that did to the week\'s volume and check whether a note explains it. Check any PR the app flagged against the history. Anything that looks like a typo (a load or rep count far outside my history, 0 reps, 825 for 82.5, a dumbbell load that does not fit my barbell lifts): name it, ask, and do not build on it. Then give the exact load and reps for next time.',
+    notes: 'My notes outrank progression. Pain, a tweak or "felt off": do not raise the load there, offer a substitute or a lighter variation, and say plainly when sharp or lasting pain should be seen by a professional. Do not diagnose.',
+    dayPlan: (all) => (all ? 'Judge the plan of every training day, one by one, also when nothing went wrong' : 'Always judge the plan of today\'s day fully, also when nothing went wrong')
+      + ': the order (heavy compound lifts first, a lagging muscle early), sets and reps for my goal, rest times (the same rest on everything is a finding), two exercises doing the same job, supersets, the equipment where I train, and the length (sets × (rest + 45 s) + 5 min) against my session length.' + (all ? '' : ' Judge every other day in one line.'),
+    week: 'Judge the whole week every time. Per muscle group: working sets a week, days a week, rest between sessions. Push against pull, quads against hamstrings and glutes, vertical against horizontal pushing and pulling; split biceps from triceps and side delts from rear delts by exercise name. Training days against my profile. Plan days that are not in the weekly schedule. Guideline, not law: 10 to 20 hard sets per muscle group a week suits most people who want to grow, 6 to 10 maintains, and twice a week beats once; judge by my goal. Name every muscle group that is missing or neglected in one short ranked line (also the ones Yes Coach! does not tag: rear delts, calves, hamstrings, glutes, forearms, lower back, core). Put the 1 to 3 that matter most into the numbered changes, each with an exercise that fits where I train and the day it goes on; list the rest as "later". If no day trains legs, say so and propose the smallest fix. Say what is overdone too.',
+    self: 'Review yourself once before you answer. Draft the answer, then check it: does every claim about my past training carry its number and date? Did you judge all five parts (sets, notes, the plan of today\'s day, the whole week, missing muscle groups)? Does any advice contradict my notes, injuries or equipment? Did you praise anything the numbers do not support, or hide a real improvement? Are the loads realistic jumps for the equipment? Is change 1 really the most important? Fix what fails, send only the corrected answer, and end with one line "Self-check: ..." naming what you changed or are unsure about.',
+    dayFormat: 'Answer in this order: Verdict (2 to 3 sentences: the one thing that matters most). Today\'s sets. Notes. This day\'s plan. The whole week: a short table (muscle group, sets a week, days a week, verdict), then the missing and overdone groups. Plan changes: numbered, at most 5, most important first; each with day, exercise, sets × reps, the load as advice in the exercise\'s own unit (kg, pin or kg assist) and a short reason. Questions: at most 3, only if the answer changes your advice. About 800 words, the table and the Self-check line not counted.',
+    write: 'Do not change my plan yet. Once your review is drafted, answer each waiting note with answer_note (1 to 3 plain sentences, consistent with the review) and say that you did; that is the only write allowed before I approve. After I say which changes to apply, use save_training_day (pass the day\'s id from get_plan or it creates a duplicate; it replaces the whole exercise list, so keep every unchanged exercise exactly), set_schedule (it replaces the whole schedule, and a new day is only in the week once the schedule lists it) or create_exercise. Set target_kg only to override the app\'s suggested weight.',
+    paste: 'I will make the changes myself, so be exact about exercise, sets, reps and the load in its own unit.',
   };
   // the review of one finished day. connector: the AI reads the data itself, so the text is the rules plus the app's own numbers;
   // paste: for any AI chat, so dayText adds the data. The five judgements and the self-check are the same in both.
   const dayRules = (mode, name, from) => {
     const o = [BRIEF.stance, ''];
     if (mode === 'connector') {
-      o.push('I just finished "' + name + '" in Yes Coach!, a workout tracker. Read my data with my Yes Coach! connector: get_overview first (goal, days per week, session length, where I train, the schedule, waiting notes), then get_sessions with from ' + from + ' (every ticked set with reps, load, type, reps in reserve and notes; warm-ups are not performance), get_exercise_history for each exercise from today (ids below), get_plan (all days and the schedule) and get_notes. The numbers below come from the app; trust the tools over them. If a tool fails or an exercise has fewer than 3 sessions, say so and lower your confidence instead of guessing.');
+      o.push('I just finished "' + name + '" in Yes Coach!, a workout tracker. Read my data with my Yes Coach! connector: get_overview (profile, schedule, how many notes wait), get_notes with only_waiting false and limit 30, get_sessions with from ' + from + ' and limit 60 (every ticked set with reps, load, type, reps in reserve and notes; warm-ups are not performance), get_plan (all days, with the exercise ids), and get_exercise_history with limit 8 for each exercise from today (ids below): it returns only the best set and estimated one-rep max per session, so use get_sessions for set-by-set detail. The numbers below come from the app; trust the tools over them. If a tool fails or an exercise has fewer than 3 sessions, say so and lower your confidence instead of guessing. Units: kg is the total weight (bar and both dumbbells counted), pin is a machine stack number, kg assist is help on an assisted machine (lower is better). For dumbbells write "x kg each (y kg total)".');
     } else {
       o.push('Review this workout ("' + name + '") from Yes Coach!, a workout tracker. Everything you need is below: today\'s sets with last time, my notes, every training day, the weekly schedule and my last four weeks per body part. If something you need is missing, say what instead of guessing.');
     }
-    o.push('', 'Judge all of this, in this order:', '- ' + BRIEF.sets, '- ' + BRIEF.notes, '- ' + BRIEF.dayPlan, '- ' + BRIEF.week, '', BRIEF.dayFormat, '', mode === 'connector' ? BRIEF.write : BRIEF.paste, '', BRIEF.self, '');
+    o.push('', 'Judge all of this, in this order:', '- ' + BRIEF.sets, '- ' + BRIEF.notes, '- ' + BRIEF.dayPlan(false), '- ' + BRIEF.week, '', BRIEF.dayFormat, '', mode === 'connector' ? BRIEF.write : BRIEF.paste, '', BRIEF.self, '');
     return o;
   };
   // what the app can count exactly, so the AI does not have to: working sets per body part over the last four weeks
@@ -5359,7 +5363,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const from = addDays(to, -27);
     const weeks = Math.max(1, Math.min(4, Math.ceil((dayNum(to) - Math.max(dayNum(from), dayNum(all[0].date)) + 1) / 7)));
     const rows = all.filter((r) => isWork(r) && r.date >= from && r.date <= to);
-    const o = ['## My body parts, counted by the app (working sets, warm-ups left out, ' + (weeks === 4 ? 'past 4 weeks' : 'the ' + plural(weeks, 'week') + ' since I started') + ')'];
+    const o = ['## My body parts, counted by the app (average per week over ' + (weeks === 4 ? 'the past 4 weeks' : 'the ' + plural(weeks, 'week') + ' since my first session') + ', totals in brackets; working sets only, warm-ups left out)'];
     PGROUPS.filter((g) => g !== 'Other' || rows.some((r) => r.group === 'Other')).forEach((g) => {
       const rs = rows.filter((r) => r.group === g);
       if (!rs.length) { o.push('- ' + g + ': none logged.'); return; }
@@ -5368,7 +5372,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       rs.forEach((r) => by.set(r.exercise, (by.get(r.exercise) || 0) + 1));
       const top = [...by.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([n, c]) => n + ' ' + c).join(', ');
       const last = Math.round(dayNum(to) - dayNum([...days].sort().pop()));
-      o.push('- ' + g + ': ' + num(Math.round(rs.length / weeks * 10) / 10) + ' sets a week, ' + dayRate(days.size / weeks) + ' a week, last ' + (last === 0 ? 'today' : last + (last === 1 ? ' day' : ' days') + ' ago') + '. Sets by exercise: ' + top + '.');
+      o.push('- ' + g + ': ' + num(Math.round(rs.length / weeks * 10) / 10) + ' sets a week (' + rs.length + ' in ' + plural(weeks, 'week') + '), ' + dayRate(days.size / weeks) + ' a week, last ' + (last === 0 ? 'today' : last + (last === 1 ? ' day' : ' days') + ' ago') + '. Sets by exercise: ' + top + '.');
     });
     o.push('Yes Coach! tags only Chest, Back, Shoulders, Arms, Legs and Core, so rear delts, calves, hamstrings and glutes show up only through the exercise names.', '');
     return o;
@@ -5385,7 +5389,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   // the plan as written, every training day, and the schedule
   const trainingDayLines = () => {
-    const o = ['## Training days (the whole plan)', '', scheduleSummary(), ''];
+    const o = ['## Training days (the whole plan)', '', scheduleSummary()];
+    const sc = activeSchedule();
+    if (sc && sc.enabled && sc.mode !== 'fixed' && (sc.days || []).length && (sc.rotation || []).length) o.push('Rolling means the days repeat in order on those weekdays: ' + plural(sc.days.length, 'training weekday') + ' for ' + plural(sc.rotation.length, 'day') + ', so each day comes round ' + num(Math.round(sc.days.length / sc.rotation.length * 10) / 10) + ' times a week on average.');
+    o.push('');
     templatesSorted().forEach((t) => {
       o.push('### ' + t.name + (t.weekday || t.focus ? ' (' + [t.weekday, t.focus].filter(Boolean).join(', ') + ')' : ''));
       (t.items || []).forEach((it) => o.push('- ' + exName(it.ex) + ': ' + it.sets + ' x ' + it.reps + (it.target ? ' at ' + withUnit(it.target, unitWord(S.exercises[it.ex])) : '')));
@@ -5399,6 +5406,16 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const recent = new Map(progressRows(addDays(today(), -91)).map((r) => [r.id, r]));
     const rows = progressRows('').filter((r) => r.sessions >= 2 && exIds.includes(r.id));
     return rows.length ? ['## Trend of today\'s exercises', ''].concat(rows.map((r) => progressLine(r, recent.get(r.id))), ['']) : [];
+  };
+  // what the rule behind the suggested weight made of this exercise for the day, and what it will suggest next time
+  const suggestionText = (it, date) => {
+    if (!it.planned || !progOn()) return '';
+    const e = S.exercises[it.ex] || {};
+    const uw = unitWord(e);
+    const fmt = (r) => (r ? (r.load != null ? num(r.load) + (uw ? ' ' + uw : '') + ' × ' + num(r.reps) : num(r.reps) + ' reps') + ' (' + r.reason + ')' : '');
+    const then = fmt(suggestAt(it, date, date));
+    const next = fmt(suggestAt(it, addDays(date, 1), date));
+    return then || next ? 'The app\'s rule suggested ' + (then || 'nothing') + ' for today' + (next ? ' and suggests ' + next + ' next time' : '') + '.' : '';
   };
   // today as compact lines, for the connector prompt (dayText has the long form for pasting)
   const todayLines = (sid, tplId, stats) => {
@@ -5414,7 +5431,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const last = lastSetsForRaw(it.ex, date);
       const n = S.notes[date + '_' + it.ex];
       o.push('- ' + e.name + ' (exercise_id ' + it.ex + '): ' + (it.planned ? 'plan ' + it.sets + ' × ' + (it.reps || '?') + (it.target ? ' @ ' + withUnit(it.target, uw) : '') : 'added today') + '. ' + (sets.length ? 'Did ' + fmtSets(sets, e.unit || 'kg', uw) + (rir.length ? ' (reps in reserve ' + rir.join('/') + ')' : '') : 'Not done') + '.'
-        + (last ? ' Last time (' + dm(last.date) + '): ' + fmtSets(last.sets, e.unit || 'kg', uw) + '.' : '') + (stats && stats.prs.includes(it.ex) ? ' The app flagged a PR.' : '') + (n && n.text ? ' My note: ' + String(n.text).replace(/\s+/g, ' ').trim() + '.' : ''));
+        + (last ? ' Last time (' + dm(last.date) + '): ' + fmtSets(last.sets, e.unit || 'kg', uw) + '.' : '') + (sets.length ? ' ' + suggestionText(it, date) : '') + (stats && stats.prs.includes(it.ex) ? ' The app flagged a PR.' : '') + (n && n.text ? ' My note: ' + String(n.text).replace(/\s+/g, ' ').trim() + '.' : ''));
     });
     const g = S.notes[date + '_general'];
     if (g && g.text) o.push('- Session note: ' + String(g.text).replace(/\s+/g, ' ').trim());
@@ -5422,12 +5439,14 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return o;
   };
   // everything sent to Claude after a finished day, through the connector
-  const reviewPrompt = (day, lean) => {
+  // level 0: everything; 1: without the body-part counts; 2: the rules and who I am only (the connector supplies the data)
+  const reviewPrompt = (day, level = 0) => {
     const t = S.templates[day.tpl] || {};
     const out = dayRules('connector', day.name, addDays(today(), -27));
     if (profileLine() || exportCtx.trim()) out.push('About me: ' + [profileLine(), exportCtx.trim() ? 'Notes: ' + exportCtx.trim().replace(/\s+/g, ' ') : ''].filter(Boolean).join('. '), '');
     if (t.focus) out.push('Day focus: ' + t.focus, '');
-    if (!lean) { out.push.apply(out, todayLines(day.sid, day.tpl, day.stats)); out.push.apply(out, recentNotesLines()); out.push.apply(out, bodyPartFacts()); }
+    if (level < 2) { out.push.apply(out, todayLines(day.sid, day.tpl, day.stats)); out.push.apply(out, recentNotesLines()); }
+    if (level < 1) out.push.apply(out, bodyPartFacts());
     return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
   };
   const buildExportText = () => {
@@ -5436,8 +5455,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     out.push(BRIEF.stance, '');
     out.push('Below is everything Yes Coach!, a workout tracker, has on me: my profile and injury notes, the plan, my last four weeks per body part, my progress per exercise, my notes and the whole training log. Read it all, then judge, in this order:');
     out.push('- Progression per body part, from the numbers: what moved, what stalled, what went backwards, and the likely reason. Use the trend lines and the log, not impressions.');
-    out.push('- ' + BRIEF.notes.replace('Read today\'s and the last two weeks.', 'Read all of them, newest first.'));
-    out.push('- ' + BRIEF.dayPlan.replace('each day you look at', 'every training day, one by one'));
+    out.push('- ' + BRIEF.notes + ' Read all of my notes, newest first.');
+    out.push('- ' + BRIEF.dayPlan(true));
     out.push('- ' + BRIEF.week);
     out.push('- Exercise order: for the latest days, was the order I did the exercises in the right one for that day, and why? The log lists each day in the order I did them. Say what order each day should use.');
     out.push('- Spot data that looks wrong (typos, loads far outside my history, 0 reps, a day logged twice) and say so instead of building on it.');
@@ -5501,7 +5520,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return out.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
   };
   // one workout as text for an AI or a trainer: plan, every set with its unit, last time, notes
-  const dayText = (sid, tplId) => {
+  const dayText = (sid, tplId, prs = []) => {
     const date = dateOf(sid);
     const t = S.templates[tplId] || {};
     const doc = S.sessions[sid] || { sets: {} };
@@ -5525,25 +5544,26 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       sets.forEach((st) => out.push('- ' + setText(st, e)));
       const last = lastSetsForRaw(it.ex, date);
       if (last) out.push('Last time (' + isoDow(last.date) + ' ' + dm(last.date) + '): ' + fmtSets(last.sets, e.unit || 'kg', uw));
+      const sg = sets.length ? suggestionText(it, date) : '';
+      if (sg) out.push(sg);
+      if (prs.includes(it.ex)) out.push('The app flagged a PR on this exercise.');
       if (it.note) out.push('Plan note: ' + it.note);
       const n = S.notes[date + '_' + it.ex];
       if (n && n.text) out.push('My note: ' + String(n.text).replace(/\s+/g, ' ').trim());
       out.push('');
     });
     const doneSets = Object.values(doc.sets || {}).filter((st) => st && isDone(st)).sort((a, b) => (a.order || 0) - (b.order || 0) || a.n - b.n);
-    if (doneSets.length) {
-      const nm = (id) => (S.exercises[id] || { name: exName(id) }).name;
-      const done = doneOrder(doneSets);
+    const done = doneOrder(doneSets);
+    const nm = (id) => (S.exercises[id] || { name: exName(id) }).name;
+    if (done.length > 1) {
       out.push('## Order I did them in');
       out.push('The plan has: ' + ((t.items || []).map((it, i) => (i + 1) + '. ' + nm(it.ex)).join(', ') || 'no exercises') + '.');
       out.push('I did them in this order (times are when I ticked the first and last set of each):');
       done.forEach((r, i) => out.push((i + 1) + '. ' + nm(r.ex) + ', ' + clock(r.first) + (r.last - r.first >= 60000 ? ' to ' + clock(r.last) : '')));
-      const skipped = items.filter((it) => !done.some((r) => r.ex === it.ex)).map((it) => nm(it.ex));
-      if (skipped.length) out.push('Not done: ' + skipped.join(', ') + '.');
-      const removed = (t.items || []).filter((it) => doc.skipped && doc.skipped[it.ex]).map((it) => nm(it.ex));
-      if (removed.length) out.push('Removed from today on purpose (not skipped by accident): ' + removed.join(', ') + '.');
       out.push('');
     }
+    const removed = (t.items || []).filter((it) => doc.skipped && doc.skipped[it.ex]).map((it) => nm(it.ex));
+    if (removed.length) out.push('Removed from today on purpose (not skipped by accident): ' + removed.join(', ') + '.', '');
     const g = S.notes[date + '_general'];
     if (g && g.text) out.push('## Session note', String(g.text).trim(), '');
     if (doc.note) out.push('## Note', String(doc.note).trim(), '');
