@@ -469,7 +469,7 @@ try:
             check('taking a taken day replaces it and says so', docdata(be, 'yc')['schedule']['week']['Mon'] == 'pull' and 'Push is no longer on Mon' in page.inner_text('#toast'), page.inner_text('#toast'))
             page.click('#toast-undo'); page.wait_for_timeout(200)
             check('undo puts Push back on Monday', docdata(be, 'yc')['schedule']['week']['Mon'] == 'push', docdata(be, 'yc'))
-            page.click('.pw-inweek .pk-chip >> text=Fri')
+            page.click('.pw-inweek .pk-chip >> text=Fri'); page.wait_for_timeout(300)
             check('tapping an on chip takes it out of the week', docdata(be, 'yc')['schedule']['week'].get('Fri') == '')
             check('delete is visible without opening anything', page.is_visible('#ed-delete') and page.inner_text('#ed-delete').lower() == 'delete this day')
             gap = page.evaluate("(() => { const a = document.querySelector('.pw-daymore').getBoundingClientRect(); const b = document.querySelector('#ed-delete').getBoundingClientRect(); return b.top - a.bottom; })()")
