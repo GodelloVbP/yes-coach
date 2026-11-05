@@ -9,6 +9,35 @@
     get() { try { return localStorage.getItem(KEY); } catch (e) { return null; } },
     set(v) { try { localStorage.setItem(KEY, v); } catch (e) { /* private mode: the choice lasts until the page closes */ } },
   };
+  // small inline flags (emoji flags do not show on Windows)
+  const NS = 'http://www.w3.org/2000/svg';
+  const FLAGS = {
+    nl: [['#AE1C28', 0, 0, 60, 14], ['#FFFFFF', 0, 14, 60, 13], ['#21468B', 0, 27, 60, 13]],
+    de: [['#000000', 0, 0, 60, 14], ['#DD0000', 0, 14, 60, 13], ['#FFCE00', 0, 27, 60, 13]],
+    fr: [['#0055A4', 0, 0, 20, 40], ['#FFFFFF', 20, 0, 20, 40], ['#EF4135', 40, 0, 20, 40]],
+    it: [['#009246', 0, 0, 20, 40], ['#FFFFFF', 20, 0, 20, 40], ['#CE2B37', 40, 0, 20, 40]],
+    es: [['#AA151B', 0, 0, 60, 10], ['#F1BF00', 0, 10, 60, 20], ['#AA151B', 0, 30, 60, 10]],
+  };
+  const flag = (code) => {
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 60 40');
+    svg.setAttribute('width', '27');
+    svg.setAttribute('height', '18');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+    svg.setAttribute('class', 'flag');
+    const add = (tag, attrs) => { const e = document.createElementNS(NS, tag); Object.keys(attrs).forEach((k) => e.setAttribute(k, attrs[k])); svg.append(e); };
+    if (code === 'en') {
+      add('rect', { width: 60, height: 40, fill: '#012169' });
+      add('path', { d: 'M0 0L60 40M60 0L0 40', stroke: '#FFFFFF', 'stroke-width': 7 });
+      add('path', { d: 'M0 0L60 40M60 0L0 40', stroke: '#C8102E', 'stroke-width': 2.5 });
+      add('path', { d: 'M30 0V40M0 20H60', stroke: '#FFFFFF', 'stroke-width': 11 });
+      add('path', { d: 'M30 0V40M0 20H60', stroke: '#C8102E', 'stroke-width': 6.5 });
+    } else (FLAGS[code] || []).forEach(([fill, x, y, w, h]) => add('rect', { x, y, width: w, height: h, fill }));
+    add('rect', { x: 0.5, y: 0.5, width: 59, height: 39, fill: 'none', stroke: 'rgba(0,0,0,.3)', 'stroke-width': 1 });
+    return svg;
+  };
+
   const valid = (c) => LANGS.some((l) => l[0] === c);
   let lang = store.get();
   if (!valid(lang)) lang = null;
@@ -212,7 +241,7 @@
       + '.yl-box{width:min(100%,24rem);background:var(--paper,#fff);color:var(--ink,#26358f);border:2px solid var(--ink,#26358f);padding:1.25rem;display:flex;flex-direction:column;gap:.875rem;max-height:100%;overflow:auto}'
       + '.yl-box h2{font-family:var(--f-head,inherit);font-size:1.5rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;line-height:1.15;margin:0}'
       + '.yl-box p{margin:0;font-weight:500;color:var(--ink-soft,#5c6378)}'
-      + '.yl-b{min-height:52px;font:inherit;font-size:1.125rem;font-weight:700;text-align:left;padding:0 1rem;color:var(--ink,#26358f);background:var(--paper,#fff);border:2px solid var(--ctl,#6873b6);cursor:pointer;border-radius:0}'
+      + '.yl-b{display:flex;align-items:center;gap:.75rem;min-height:52px;font:inherit;font-size:1.125rem;font-weight:700;text-align:left;padding:0 1rem;color:var(--ink,#26358f);background:var(--paper,#fff);border:2px solid var(--ctl,#6873b6);cursor:pointer;border-radius:0}'
       + '.yl-b:hover,.yl-b:focus-visible{border-color:var(--ink,#26358f);outline:none;background:var(--faint,#eef0fb)}'
       + '.yl-b[data-guess]{border-color:var(--ink,#26358f)}';
     document.head.append(css);
@@ -234,7 +263,9 @@
       b.type = 'button';
       b.className = 'yl-b';
       b.lang = code;
-      b.textContent = name;
+      const label = document.createElement('span');
+      label.textContent = name;
+      b.append(flag(code), label);
       if (code === guess) { b.dataset.guess = '1'; first = b; }
       b.addEventListener('click', () => { store.set(code); location.reload(); });
       box.append(b);
@@ -251,6 +282,7 @@
     langs: LANGS.map(([code, name, english]) => ({ code, name, english })),
     current: () => lang,
     t: (x) => translate(String(x)),
+    flag,
     set: (code) => { if (!valid(code) || code === lang) return; store.set(code); location.reload(); },
   };
 })();

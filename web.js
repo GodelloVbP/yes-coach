@@ -171,9 +171,11 @@
     let res;
     let captchaToken;
     if (mode !== 'newpass') {
-      try { captchaToken = await YC_CAPTCHA.get(); } catch (e) {
+      const slow = setTimeout(() => say('Tick the box above to continue.'), 3000);
+      try { captchaToken = await YC_CAPTCHA.get(); clearTimeout(slow); } catch (e) {
+        clearTimeout(slow);
         go.disabled = false;
-        say('The human check could not run. Turn off content blockers for this site and try again.', true);
+        say(e && e.message === 'captcha-timeout' ? 'The human check did not finish. Reload the page and try again.' : 'The human check could not run. Turn off content blockers for this site and try again.', true);
         YC_CAPTCHA.mount($('#au-cap'));
         return;
       }
