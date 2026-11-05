@@ -950,6 +950,14 @@ body.fin-open { overflow: hidden; }
 .swaprow, .prow, .kmenu button, .sb-menu button, .set-tick { transition: background-color 0.15s, transform 0.2s cubic-bezier(0.3, 1.7, 0.5, 1); }
 .swaprow:active, .prow:active, .kmenu button:active, .sb-menu button:active { background: var(--faint); }
 .set-tick.pop > span { animation: tick-pop 0.32s ease-out; }
+/* a new personal record hits: the PR tag slams down, the row takes the blow; on the finish screen the records slide in one after another */
+@keyframes pr-slam { 0% { transform: translateX(-2.5rem) scale(2.8) rotate(-10deg); opacity: 0; } 50% { transform: none; opacity: 1; } 68% { transform: scale(0.88) rotate(1.5deg); } 84% { transform: scale(1.08) rotate(-1deg); } 100% { transform: none; } }
+@keyframes pr-hit { 0% { background-color: var(--press); } 15% { transform: translateX(-6px); } 30% { transform: translateX(5px); } 45% { transform: translateX(-3px); } 60% { transform: translateX(2px); } 100% { transform: none; background-color: transparent; } }
+@keyframes pr-slide { from { transform: translateX(-110%); opacity: 0; } }
+.pr.slam { animation: pr-slam 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+.set.pr-hit { animation: pr-hit 0.6s ease-out 0.2s; }
+.fin-prs li { animation: pr-slide 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) both; animation-delay: calc(0.35s + var(--i, 0) * 0.15s); }
+.fin-prs .pr { animation: pr-slam 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) both; animation-delay: calc(0.55s + var(--i, 0) * 0.15s); }
 /* ---- feedback on every control. Press: shows at once, fades out slowly, so even a quick tap is seen. Hover: mouse only. ---- */
 :root { --press: color-mix(in srgb, var(--ink) 16%, transparent); --hover: color-mix(in srgb, var(--ink) 8%, transparent); }
 .set-tog, summary, .prow, .xl-row, .seg-b, .fd-hit, .pw-tap, .swaprow, .kmenu button, .sb-menu button, .mark-btn, .sb-more, .arrow, select { transition: background-color 0.3s ease-out, border-color 0.15s, color 0.15s, transform 0.18s cubic-bezier(0.3, 1.7, 0.5, 1); }
@@ -1896,7 +1904,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (prs.length) {
       inn.append(h('h3', 'fin-sub', prs.length === 1 ? 'New personal record' : 'New personal records'));
       const ul = h('ul', 'fin-prs');
-      prs.forEach((l) => { const li = h('li'); li.append(h('span', 'pr', 'PR'), h('b', '', l.name), h('span', 'fin-d', l.detail)); ul.append(li); });
+      prs.forEach((l, i) => { const li = h('li'); li.style.setProperty('--i', Math.min(i, 6)); li.append(h('span', 'pr', 'PR'), h('b', '', l.name), h('span', 'fin-d', l.detail)); ul.append(li); });
       inn.append(ul);
     }
     // the picture
@@ -3321,7 +3329,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     }
     paintSession();
     const t = R && R.sets[refs.key] ? R.sets[refs.key].tick : refs.tick;
-    if (t.getAttribute('aria-pressed') === 'true') { t.classList.remove('pop'); void t.offsetWidth; t.classList.add('pop'); }
+    if (t.getAttribute('aria-pressed') === 'true') {
+      t.classList.remove('pop'); void t.offsetWidth; t.classList.add('pop');
+      const row = R && R.sets[refs.key] ? R.sets[refs.key].row : null;
+      const tag = row && row.querySelector('.pr');
+      if (tag) { [tag, row].forEach((el, i) => { const c = i ? 'pr-hit' : 'slam'; el.classList.remove(c); void el.offsetWidth; el.classList.add(c); }); }
+    }
   };
 
   // keep the screen responsive before the server confirms
