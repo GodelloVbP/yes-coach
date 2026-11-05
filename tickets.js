@@ -464,9 +464,6 @@
     const css = h('style');
     css.textContent = `
 #tab-feedback { position: relative; }
-#tab-feedback.tk-dot::after { content: ''; position: absolute; top: 6px; right: -6px; width: 10px; height: 10px; border-radius: 50%; background: var(--pop); border: 2px solid var(--bg); }
-@media (max-width: 639px) { #tab-feedback.tk-dot::after { top: 50%; right: 4px; margin-top: -5px; } }
-@media (max-width: 719px) { .appbar:has(#tab-feedback.tk-dot) .menu-btn { position: relative; } .appbar:has(#tab-feedback.tk-dot) .menu-btn::after { content: ''; position: absolute; top: 8px; right: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--pop); border: 2px solid var(--bg); } }
 #v-feedback section { scroll-margin-top: calc(var(--stick-h, 48px) + 8px); }
 .tk-form { display: flex; flex-direction: column; gap: 0.875rem; padding: 0.75rem; background: var(--faint); border-left: 4px solid var(--ink); align-items: flex-start; }
 .tk-form > .ed-f { width: 100%; }

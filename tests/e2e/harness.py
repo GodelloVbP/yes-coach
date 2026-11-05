@@ -124,7 +124,7 @@ def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, l
     page.on('pageerror', lambda e: errors.append(str(e)))
     page.on('console', lambda m: errors.append('CSP: ' + m.text) if 'Content Security Policy' in m.text else None)
     page.on('dialog', lambda d: d.dismiss())
-    page.goto(BASE)
+    page.goto(BASE + '#home')  # signed-in users open on Train; #home keeps the old tests on the page they were written for
     if not home:
         page.wait_for_selector('#v-home', state='visible')  # the app opens on Home
         try: page.click('#hm-train', timeout=4000)

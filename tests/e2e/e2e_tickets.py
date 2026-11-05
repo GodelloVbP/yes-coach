@@ -14,13 +14,17 @@ def card_of(page, title, root='#tk-admin-list'):
     return page.locator(root + ' .tk-card').filter(has=page.locator('.tk-title', has_text=title))
 
 def go(page, tab):
-    if not page.is_visible('#tab-' + tab): page.click('#menu-btn')
-    page.click('#tab-' + tab)
+    if tab in ('feedback', 'exercises'):
+        page.click('#tab-settings'); page.click('#more-' + tab)
+    else: page.click('#tab-' + tab)
 
 def open_feedback(page):
-    page.wait_for_selector('#tab-feedback:not([hidden])')
-    page.click('#tab-feedback')
+    page.wait_for_selector('#tab-feedback:not([hidden])', state='attached')
+    page.click('#tab-settings'); page.click('#more-feedback')
     page.wait_for_selector('#v-feedback #tk', state='visible')
+
+def logo(page):
+    page.locator('#mark:visible, #mark2:visible').first.click()
 
 def send_form(page, title, text, name=None, kind=None):
     page.click('#tk >> text=Send something')
@@ -78,7 +82,7 @@ try:
         be = Backend()
         tk = be.ticket(ALICE, title='Night mode', status='needs_info'); be.message(tk['id'], 'user', 'It is too bright at night'); be.message(tk['id'], 'admin', 'Which screen is too bright?')
         def s2(page):
-            page.wait_for_selector('#tab-feedback.tk-dot')
+            page.wait_for_selector('#tab-feedback.tk-dot', state='attached')
             check('tab label mentions the question', 'question' in (page.get_attribute('#tab-feedback', 'title') or ''))
             open_feedback(page)
             check('status chip', 'We have a question' in page.text_content('#tk-list-feature .chip'))
@@ -154,7 +158,7 @@ try:
         for n in range(3): be.ticket(ALICE, title='T%d' % n, status='resolved', outcome='built', resolved_at=now())
         def s3d(page):
             page.wait_for_selector('.tk-pop'); page.click('.tk-pop >> text=Close'); page.wait_for_selector('.tk-pop', state='detached'); page.wait_for_timeout(300)
-            open_feedback(page); page.click('#menu-btn') if False else None
+            open_feedback(page)
             page.evaluate("document.dispatchEvent(new Event('visibilitychange'))"); page.wait_for_timeout(500)
             check('skipped ones do not pop up again this visit', page.query_selector('.tk-pop') is None)
         errs = session(pw, be, ALICE, s3d)
@@ -291,50 +295,48 @@ try:
         # ---- 8. Home link opens the tab
         be = Backend()
         def s10(page):
-            page.wait_for_selector('#tab-feedback:not([hidden])'); page.click('#mark')
+            page.wait_for_selector('#tab-feedback:not([hidden])', state='attached'); logo(page)
             page.click('#hm-ticket')
             page.wait_for_selector('#tk', state='visible')
             check('home link opens the tab', page.get_attribute('#tab-feedback', 'aria-selected') == 'true')
-            page.reload(); page.wait_for_selector('#v-home', state='visible')
-            check('app opens on Home after reload', page.is_visible('#v-home') and page.get_attribute('#tab-feedback', 'aria-selected') != 'true')
+            page.goto(BASE); page.wait_for_selector('#v-train', state='visible')
+            check('signed in, the app opens on Train after reload', page.is_visible('#v-train') and page.get_attribute('#tab-feedback', 'aria-selected') != 'true')
         errs = session(pw, be, ALICE, s10); check('no page errors (home link)', not errs, errs)
 
-        # ---- 9. header: desktop shows tabs, phones get the hamburger
+        # ---- 9. navigation: a sidebar from 1024px, a bottom bar below it; More holds the rest
         be = Backend()
         def desk(page):
-            page.wait_for_selector('#tab-feedback:not([hidden])')
-            bx = page.locator('#tab-plan').bounding_box(); page.mouse.move(2, 2); page.wait_for_timeout(250)
-            before = page.evaluate("getComputedStyle(document.querySelector('#tab-plan')).borderBottomColor")
-            page.mouse.move(bx['x'] + 10, bx['y'] + 10); page.wait_for_timeout(300)
-            check('desktop: hovering a tab changes it', page.evaluate("getComputedStyle(document.querySelector('#tab-plan')).borderBottomColor") != before)
-            check('desktop: no hamburger', not page.is_visible('#menu-btn'))
-            check('desktop: tabs visible', page.is_visible('#tab-feedback') and page.is_visible('#tab-settings'))
-            check('desktop: header does not overflow %d' % page.viewport_size['width'], page.evaluate("document.documentElement.scrollWidth <= innerWidth"), page.evaluate('[document.documentElement.scrollWidth, innerWidth, document.querySelector("#tabs-nav").getBoundingClientRect().right]'))
-        for w in (720, 768, 1024): check('desktop %d' % w, True); errs = session(pw, be, ALICE, desk, width=w); check('no errors desk %d' % w, not errs, errs)
+            page.wait_for_selector('#tab-feedback:not([hidden])', state='attached')
+            check('wide: sidebar on the left', page.evaluate("(() => { const r = document.querySelector('#tabs-nav').getBoundingClientRect(); return r.left === 0 && r.top === 0 && r.width < 300 && r.height >= innerHeight - 1; })()"))
+            check('wide: five main entries visible', all(page.is_visible('#tab-' + t) for t in ('train', 'plan', 'progress', 'food', 'settings')))
+            check('wide: sub entries are not in the bar', not page.is_visible('#tab-feedback') and not page.is_visible('#tab-exercises'))
+            page.wait_for_timeout(600)
+            check('wide: no horizontal overflow', page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
+        for w in (1024, 1280): errs = session(pw, be, ALICE, desk, width=w); check('no errors wide %d' % w, not errs, errs)
         def phone(page):
             page.wait_for_selector('#tab-feedback', state='attached'); page.wait_for_timeout(300)
-            check('phone: hamburger shown', page.is_visible('#menu-btn'))
-            check('phone: tabs hidden until opened', not page.is_visible('#tab-feedback'))
+            check('phone: bottom bar at the bottom', page.evaluate("(() => { const r = document.querySelector('#tabs-nav').getBoundingClientRect(); return Math.abs(r.bottom - innerHeight) < 1 && r.left === 0 && r.right <= innerWidth + 0.5; })()"))
+            check('phone: five entries', all(page.is_visible('#tab-' + t) for t in ('train', 'plan', 'progress', 'food', 'settings')))
+            check('phone: no hamburger', page.query_selector('#menu-btn') is None)
+            check('phone: Train is selected on start', page.get_attribute('#tab-train', 'aria-selected') == 'true' and page.is_visible('#v-train'))
             check('phone: no horizontal overflow', page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
-            check('phone: hamburger has no dot without a question', page.evaluate("getComputedStyle(document.querySelector('#menu-btn'), '::after').content") in ('none', 'normal'))
-            page.click('#menu-btn')
-            check('phone: menu opens', page.get_attribute('#menu-btn', 'aria-expanded') == 'true' and page.is_visible('#tab-feedback') and page.is_visible('#tab-settings'))
-            check('phone: menu fits the screen', page.evaluate("(() => { const r = document.querySelector('#tabs-nav').getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth + 0.5; })()"))
-            bx = page.locator('#tab-plan').bounding_box(); page.mouse.move(bx['x'] + 30, bx['y'] + 10); page.mouse.down(); page.wait_for_timeout(150)
-            check('phone: a pressed menu row shows it', page.evaluate("getComputedStyle(document.querySelector('#tab-plan')).backgroundColor") not in ('rgba(0, 0, 0, 0)', 'transparent'))
-            page.mouse.move(2, 600); page.mouse.up()
-            page.keyboard.press('Escape')
-            check('phone: escape closes', page.get_attribute('#menu-btn', 'aria-expanded') == 'false' and not page.is_visible('#tab-feedback'))
-            page.click('#menu-btn'); page.click('#tab-feedback'); page.wait_for_selector('#tk', state='visible')
-            check('phone: choosing a tab closes the menu and shows it', not page.is_visible('#tab-feedback') and 'feedback' in page.inner_text('#menu-cur').lower(), page.inner_text('#menu-cur'))
-            page.click('#menu-btn'); page.click('#tab-settings')
-            check('phone: gear reachable as Settings', page.is_visible('#v-settings'))
+            check('phone: no dot without a question', page.evaluate("getComputedStyle(document.querySelector('#tab-settings .nav-dot')).display") == 'none')
+            page.click('#tab-settings'); page.wait_for_selector('#more-feedback', state='visible')
+            check('phone: More lists Exercises and Feedback', page.is_visible('#more-exercises') and page.is_visible('#more-feedback'))
+            check('phone: More stays marked in the bar', page.get_attribute('#tab-settings', 'aria-selected') == 'true')
+            page.click('#more-feedback'); page.wait_for_selector('#tk', state='visible')
+            check('phone: Feedback opens, bar still shows More', 'feedback' in page.inner_text('#menu-cur').lower() and 'in-more' in (page.get_attribute('#tab-settings', 'class') or ''), page.inner_text('#menu-cur'))
+            page.click('#tab-plan'); page.wait_for_selector('#v-plan', state='visible')
+            check('phone: switching tabs works', page.get_attribute('#tab-plan', 'aria-selected') == 'true')
         be2 = Backend(); be2.ticket(ALICE, title='Q', status='needs_info')
         def dot(page):
             page.wait_for_selector('#tab-feedback.tk-dot', state='attached')
-            check('phone: hamburger shows the dot', page.evaluate("getComputedStyle(document.querySelector('#menu-btn'), '::after').content") == '""')
+            check('phone: a dot on More', page.evaluate("getComputedStyle(document.querySelector('#tab-settings .nav-dot')).display") != 'none')
+            page.click('#tab-settings'); page.wait_for_selector('#more-feedback', state='visible')
+            check('phone: a dot on the Feedback row', page.evaluate("getComputedStyle(document.querySelector('#more-feedback .nav-dot')).display") != 'none')
         errs = session(pw, be2, ALICE, dot, width=390); check('no errors dot', not errs, errs)
         for w in (360, 375, 390, 414, 430): errs = session(pw, be, ALICE, phone, width=w); check('no errors phone %d' % w, not errs, errs)
+
         # ---- 10. theme: auto, light, dark; saved on this device; applied before the app loads
         be = Backend()
         def theme(page):

@@ -74,6 +74,7 @@ with sync_playwright() as pw:
     br, pg, log = make(pw); pg.goto(BASE)
     pg.wait_for_selector('#hm-login', state='visible')
     ok(pg.is_visible('#hm-login') and pg.is_hidden('#hm-train') and pg.is_hidden('#hm-ticket') and pg.is_hidden('#hm-claude'), 'signed out: Home with a sign-in button, no train/ticket/Claude buttons')
+    ok(pg.is_visible('#v-home') and pg.is_hidden('#tabs-nav') and pg.is_hidden('#appbar'), 'signed out: opens on the landing page with no navigation bar')
     ok(pg.is_hidden('#au-email') and pg.is_hidden('#stick'), 'signed out: sign-in form and tab bar are not showing')
     until(pg, "document.querySelector('#hm-users').hidden === false")
     ok('7' in pg.inner_text('#hm-users'), 'signed out: Home shows the user count: ' + pg.inner_text('#hm-users'))
@@ -122,7 +123,7 @@ with sync_playwright() as pw:
     ok(not [x for x in log['auth'] if x[0] == '/auth/v1/token'], 'no request to Supabase without a token')
     br.close()
     # 5 signed in: Cloudflare is never contacted
-    br, pg, log = make(pw, signed_in=True); pg.goto(BASE); pg.wait_for_selector('#v-home', state='visible'); pg.wait_for_timeout(600)
+    br, pg, log = make(pw, signed_in=True); pg.goto(BASE + '#home'); pg.wait_for_selector('#v-home', state='visible'); pg.wait_for_timeout(600)
     ok(not log['cf'], 'signed in: no contact with Cloudflare: %s' % log['cf'])
     br.close()
     # 6 no site key: no widget, no Cloudflare, sign-in still works
