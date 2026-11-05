@@ -656,5 +656,61 @@
   "de": "Tippe auf einen Ruhetag, um einen Trainingstag darauf zu legen.",
   "fr": "Touche un jour de repos pour y mettre un jour d'entraînement.",
   "it": "Tocca un giorno di riposo per metterci un giorno di allenamento."
+ },
+ "Next: {0}": {
+  "nl": "Volgende: {0}",
+  "es": "Siguiente: {0}",
+  "de": "Weiter: {0}",
+  "fr": "Suivant : {0}",
+  "it": "Prossimo: {0}"
+ },
+ "All exercises": {
+  "nl": "Alle oefeningen",
+  "es": "Todos los ejercicios",
+  "de": "Alle Übungen",
+  "fr": "Tous les exercices",
+  "it": "Tutti gli esercizi"
+ },
+ "One at a time": {
+  "nl": "Eén per keer",
+  "es": "Uno a uno",
+  "de": "Eine nach der anderen",
+  "fr": "Un à la fois",
+  "it": "Uno alla volta"
+ },
+ "Next exercise": {
+  "nl": "Volgende oefening",
+  "es": "Siguiente ejercicio",
+  "de": "Nächste Übung",
+  "fr": "Exercice suivant",
+  "it": "Esercizio successivo"
+ },
+ "Finish": {
+  "nl": "Afronden",
+  "es": "Terminar",
+  "de": "Beenden",
+  "fr": "Terminer",
+  "it": "Termina"
+ },
+ "Logging, one exercise at a time": {
+  "nl": "Loggen, één oefening per keer",
+  "es": "Registrar, un ejercicio a la vez",
+  "de": "Eintragen, eine Übung nach der anderen",
+  "fr": "Saisir, un exercice à la fois",
+  "it": "Registrare, un esercizio alla volta"
+ },
+ "On a phone you now see one exercise at a time. Tap an exercise at the top to jump to it, or tap Next at the bottom.": {
+  "nl": "Op een telefoon zie je nu één oefening per keer. Tik bovenaan op een oefening om erheen te gaan, of onderaan op Volgende.",
+  "es": "En el móvil ahora ves un ejercicio a la vez. Toca un ejercicio arriba para ir a él, o toca Siguiente abajo.",
+  "de": "Auf dem Handy siehst du jetzt eine Übung nach der anderen. Tippe oben auf eine Übung, um dorthin zu springen, oder unten auf Weiter.",
+  "fr": "Sur téléphone, tu vois maintenant un exercice à la fois. Touche un exercice en haut pour y aller, ou touche Suivant en bas.",
+  "it": "Sul telefono ora vedi un esercizio alla volta. Tocca un esercizio in alto per andarci, o tocca Prossimo in basso."
+ },
+ "Each set shows what you did last time. Prefer the old list? Tap All exercises.": {
+  "nl": "Elke set toont wat je de vorige keer deed. Liever de oude lijst? Tik op Alle oefeningen.",
+  "es": "Cada serie muestra lo que hiciste la última vez. ¿Prefieres la lista de antes? Toca Todos los ejercicios.",
+  "de": "Jeder Satz zeigt, was du letztes Mal gemacht hast. Lieber die alte Liste? Tippe auf Alle Übungen.",
+  "fr": "Chaque série montre ce que tu as fait la dernière fois. Tu préfères l'ancienne liste ? Touche Tous les exercices.",
+  "it": "Ogni serie mostra cosa hai fatto l'ultima volta. Preferisci la vecchia lista? Tocca Tutti gli esercizi."
  }
 }

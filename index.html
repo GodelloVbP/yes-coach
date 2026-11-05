@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-NiZgdqxaNLm7rk1+5fkLVBObmu9EXSG67sysPlq45AI=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-WlUD3TI84dewixmBTyym/auwQ0aAER4EdyU9wOoVraE=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-05 12:57Z">
+<meta name="yc-build" content="2026-11-05 13:12Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -154,6 +154,43 @@ body:not(.in-session) .restbar { bottom: calc(var(--nav-h) + env(safe-area-inset
 body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; }
 .set-wrap > section.fold { border-bottom: 1px solid var(--line); }
 .view[hidden] { display: none; }
+
+/* one exercise at a time on phones: chips, the card, a Next / Finish bar */
+:root { --fb-h: 80px; }
+.chips-wrap { display: none; }
+.focusbar { display: none; }
+.set-last { display: none; }
+@media (max-width: 63.99rem) {
+  .chips-wrap { display: block; position: sticky; top: 0; z-index: 6; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .chips { display: flex; align-items: center; gap: 0.625rem; overflow-x: auto; padding: 0.625rem 1.25rem; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .fchip { --ang-bd: var(--line); flex: none; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 52px; padding: 6px 18px; border: 0; background: none; color: var(--ink); cursor: pointer; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; text-align: left; max-width: 14rem; }
+  .fchip > span:first-child { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fchip small { font-family: var(--f-body, inherit); font-size: var(--t1); font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--ink-soft); }
+  .fchip[aria-current="true"] { --ang-bg: var(--ink); --ang-bd: var(--ink); color: var(--bg); }
+  .fchip[aria-current="true"] small { color: inherit; opacity: 0.85; }
+  .fchip.is-done:not([aria-current="true"]) { --ang-bd: var(--ink); }
+  .fchip:focus-visible, .focus-toggle:focus-visible { outline: 3px solid var(--pop); outline-offset: 3px; }
+  .focus-toggle { flex: none; display: flex; min-height: 44px; align-items: center; padding: 0 0.5rem; white-space: nowrap; background: none; border: 0; color: var(--ink); font-weight: 700; text-decoration: underline; cursor: pointer; font-size: var(--t2); }
+  .chips-wrap.all { position: static; border-bottom: 0; }
+  .chips-wrap.all .fchip { display: none; }
+  #session.focus .ex.off { display: none; }
+  #session.focus .ex { border-bottom: 0; }
+  .focusbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9; background: var(--bg); border-top: 2px solid var(--ink); padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px)); gap: 12px; }
+  body.in-session.focus-on .focusbar { display: flex; }
+  body.typing .focusbar { display: none; }
+  .focusbar .skew { min-height: 56px; font-size: var(--t4); }
+  .focusbar .next { flex: 1; min-width: 0; }
+  .focusbar .next span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+  body.in-session.focus-on .restbar { bottom: calc(var(--fb-h) + env(safe-area-inset-bottom, 0px)); padding-bottom: 0; }
+  body.in-session.focus-on main { padding-bottom: calc(var(--fb-h) + env(safe-area-inset-bottom, 0px) + 1rem); }
+  body.in-session.focus-on.resting main { padding-bottom: calc(var(--fb-h) + var(--rest-h) + env(safe-area-inset-bottom, 0px) + 1rem); }
+  #session.focus .set-last { display: block; align-self: center; font-family: var(--f-head); font-size: var(--t2); font-weight: 700; color: var(--ink-soft); text-align: center; line-height: 1.05; white-space: nowrap; }
+  #session.focus .set { grid-template-columns: 2.75rem 3.75rem minmax(0, 1fr) minmax(0, 1.25fr) 3.5rem; }
+  #session.focus .set.one { grid-template-columns: 2.75rem 3.75rem minmax(0, 1fr) 3.5rem; }
+  #session.focus .set.rir { grid-template-columns: 2.75rem 3.75rem minmax(0, 1fr) minmax(0, 1.25fr) 3rem 3.5rem; }
+  #session.focus .set.rir.one { grid-template-columns: 2.75rem 3.75rem minmax(0, 1fr) 3rem 3.5rem; }
+}
 
 /* session bar */
 .sbar { background: var(--sbar); border-bottom: 1px solid var(--ctl); position: relative; }
@@ -1563,6 +1600,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['5 Nov 2026', 'Logging, one exercise at a time', ["On a phone you now see one exercise at a time. Tap an exercise at the top to jump to it, or tap Next at the bottom.", "Each set shows what you did last time. Prefer the old list? Tap All exercises."]],
     ['5 Nov 2026', 'Train, week at a glance', ["The week is now seven blocks. Tap a day to see it, start it, move it to another day or remove it for this week.", "Tap a rest day to put a training day on it."]],
     ['5 Nov 2026', 'New menu', ["Yes Coach! now opens straight on Train when you are signed in.", "Phone: the five main pages sit in a bar at the bottom. On a wide screen they sit in a bar on the left.", "More holds your settings in groups, plus Exercises, Feedback and Requests, and What's new."]],
     ['5 Nov 2026', "Yes Coach! now speaks your language", ["Choose Dutch, English, Spanish, German, French or Italian the first time you open it. Change it any time in Settings, under Languages.", "The app is originally in English and the translations are AI-generated, so some may be wrong. Found one? Report it in the form."]],
@@ -2123,6 +2161,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const doc = localDoc(sid);
     doc.added = Object.assign({}, doc.added || {}, { [id]: on });
     if (on && doc.skipped && doc.skipped[id]) doc.skipped = Object.assign({}, doc.skipped, { [id]: false });
+    if (on && R) R.cur = id;
     paintSession();
   };
 
@@ -2293,10 +2332,87 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       bn.append(go);
       box.append(bn);
     }
-    box.append(body, foot);
+    const chipsWrap = h('div', 'chips-wrap');
+    chipsWrap.id = 'sess-chips';
+    const chips = h('div', 'chips');
+    chips.setAttribute('role', 'group');
+    chips.setAttribute('aria-label', 'Exercises');
+    const tog = h('button', 'focus-toggle');
+    tog.type = 'button';
+    tog.id = 'focus-toggle';
+    tog.addEventListener('click', () => { local.set('yc-focus', focusOn() ? 'all' : 'one'); paintFocus(); window.scrollTo({ top: 0 }); });
+    chipsWrap.append(chips);
+    chips.append(tog);
+    const fbar = h('div', 'focusbar');
+    fbar.id = 'focusbar';
+    fbar.setAttribute('role', 'group');
+    fbar.setAttribute('aria-label', 'Next exercise');
+    box.append(chipsWrap, body, foot, fbar);
     renderItems();
     paintSession();
   };
+
+  // ---- one exercise at a time on phones: a layer over the cards, not a second screen
+  const phoneMQ = window.matchMedia('(max-width: 63.99rem)');
+  const focusOn = () => phoneMQ.matches && local.get('yc-focus') !== 'all';
+  const curItem = () => {
+    const items = sessionItems();
+    if (!items.length) return null;
+    if (!R.cur || !items.some((i) => i.ex === R.cur)) {
+      const open = items.find((i) => { const keys = Object.keys(R.sets).filter((k) => R.sets[k].item.ex === i.ex); return !keys.length || !keys.every((k) => isDone(storedSet(k))); });
+      R.cur = (open || items[0]).ex;
+    }
+    return items.find((i) => i.ex === R.cur);
+  };
+  const goExercise = (ex) => { R.cur = ex; paintFocus(); window.scrollTo({ top: 0 }); const c = $('#sess-chips .fchip[aria-current="true"]'); if (c && c.scrollIntoView) c.scrollIntoView({ inline: 'center', block: 'nearest' }); };
+  const paintFocus = () => {
+    if (!R || !S.active) return;
+    const box = $('#session');
+    const items = sessionItems();
+    const on = focusOn();
+    const cur = curItem();
+    box.classList.toggle('focus', on);
+    document.body.classList.toggle('focus-on', on && !!cur && inSessionView());
+    items.forEach((i) => { const it = R.items[i.ex]; if (it && it.el) it.el.classList.toggle('off', on && i.ex !== R.cur); });
+    const wrap = $('#sess-chips');
+    if (!wrap) return;
+    wrap.classList.toggle('all', !on);
+    $('#focus-toggle').textContent = on ? 'All exercises' : 'One at a time';
+    $('#focus-toggle').setAttribute('aria-pressed', String(!on));
+    const chips = wrap.querySelector('.chips');
+    chips.querySelectorAll('.fchip').forEach((c) => c.remove());
+    items.forEach((i) => {
+      const keys = Object.keys(R.sets).filter((k) => R.sets[k].item.ex === i.ex);
+      const d = keys.filter((k) => isDone(storedSet(k))).length;
+      const b = h('button', 'fchip angled' + (keys.length && d === keys.length ? ' is-done' : ''));
+      b.type = 'button';
+      b.dataset.ex = i.ex;
+      b.setAttribute('aria-current', String(i.ex === R.cur));
+      b.append(h('span', '', exName(i.ex)), h('small', '', d + '/' + keys.length));
+      b.setAttribute('aria-label', exName(i.ex) + ', ' + d + ' of ' + keys.length + ' sets done');
+      b.addEventListener('click', () => goExercise(i.ex));
+      chips.insertBefore(b, $('#focus-toggle'));
+    });
+    const bar = $('#focusbar');
+    bar.replaceChildren();
+    const at = items.findIndex((i) => i.ex === R.cur);
+    const nx = items[at + 1];
+    if (nx) {
+      const n = btn('skew pop next', 'Next: ' + exName(nx.ex));
+      n.id = 'focus-next';
+      n.addEventListener('click', () => goExercise(nx.ex));
+      const f = btn('skew', 'Finish');
+      f.id = 'focus-finish';
+      f.addEventListener('click', finishSession);
+      bar.append(n, f);
+    } else {
+      const f = btn('skew pop next', 'Finish day');
+      f.id = 'focus-finish';
+      f.addEventListener('click', finishSession);
+      bar.append(f);
+    }
+  };
+  phoneMQ.addEventListener('change', () => { if (R && S.active) paintFocus(); });
 
   const itemsSig = () => sessionItems().map((i) => i.ex + ':' + rowCount(i)).join('|') + '|' + showRir();
 
@@ -2495,6 +2611,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     numBtn.setAttribute('aria-haspopup', 'menu');
     numBtn.setAttribute('aria-expanded', 'false');
     row.append(numBtn);
+    const lastSet = (() => { const l = lastSetsFor(item.ex, S.active.date); const st = l && l.sets[n - 1]; return st ? fmtSet(st, unit, '') : ''; })();
+    const lastEl = h('span', 'set-last', lastSet || '–');
+    lastEl.setAttribute('aria-hidden', 'true');
+    row.append(lastEl);
     const refs = { key, item, n, unit, row, num: numBtn, flds: {}, needReps: false };
     const mkField = (field, unitTxt, label) => {
       const f = h('label', 'fld');
@@ -2907,6 +3027,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     paintItemState();
     paintBar();
     paintNotes();
+    paintFocus();
   };
   const paintTickFlags = () => {
     if (R && S.active && R.sid === SID()) {
@@ -6974,6 +7095,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     });
     S.rootRef.collection('sessions').onSnapshot((snap) => {
       const m = toMap(snap);
+      Object.entries(m).forEach(([id, doc]) => { if (doc && !doc.date) doc.date = id; }); // a day's doc is named by its date, so one written without the field still sorts and compares
       S.onServer = new Set(Object.keys(m));
       // keep optimistic local edits for sets still in the queue
       new Set([...Object.keys(Q), ...Object.keys(HOLD)]).forEach((d) => {
