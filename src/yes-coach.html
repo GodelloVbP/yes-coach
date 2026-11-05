@@ -1188,6 +1188,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const Q = {}; // date -> {patch, sets:Set(keys), running, error}
   const deepMerge = (a, b) => {
     Object.keys(b).forEach((k) => {
+      if (k === '__proto__' || k === 'constructor' || k === 'prototype') return; // a crafted key must never reach Object.prototype
       const v = b[k];
       if (v && typeof v === 'object' && !Array.isArray(v) && a[k] && typeof a[k] === 'object' && !Array.isArray(a[k])) deepMerge(a[k], v);
       else a[k] = v;

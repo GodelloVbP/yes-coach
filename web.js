@@ -17,6 +17,7 @@
   const clone = (o) => (o === undefined ? undefined : JSON.parse(JSON.stringify(o)));
   const merge = (a, b) => {
     Object.keys(b).forEach((k) => {
+      if (k === '__proto__' || k === 'constructor' || k === 'prototype') return; // a crafted key must never reach Object.prototype
       const v = b[k];
       if (v && typeof v === 'object' && !Array.isArray(v) && a[k] && typeof a[k] === 'object' && !Array.isArray(a[k])) merge(a[k], v);
       else a[k] = v;

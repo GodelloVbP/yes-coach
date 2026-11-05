@@ -291,6 +291,7 @@ const rpcErr = (id: Json, code: number, message: string) => ({ jsonrpc: '2.0', i
 export const createHandler = (env: Env, f: typeof fetch = fetch) => {
   const seen = new Map<string, { id: string; until: number }>(); // token -> user, so a busy chat does not ask Supabase every time
   const who = async (token: string): Promise<string | null> => {
+    if (token.length > 4096 || token.split('.').length !== 3) return null; // not a JWT: no need to ask Supabase
     const hit = seen.get(token);
     if (hit && hit.until > Date.now()) return hit.id;
     const r = await f(env.url + '/auth/v1/user', { headers: { apikey: env.anonKey, authorization: 'Bearer ' + token } }).catch(() => null);
@@ -332,9 +333,11 @@ export const createHandler = (env: Env, f: typeof fetch = fetch) => {
     const token = (req.headers.get('authorization') || '').replace(/^Bearer\s+/i, '');
     const userId = token ? await who(token) : null;
     if (!userId) return reply(rpcErr(null, -32001, 'Sign in required'), 401, { 'www-authenticate': 'Bearer resource_metadata="' + env.publicUrl + '/.well-known/oauth-protected-resource"' });
+    if (Number(req.headers.get('content-length') || 0) > 200000) return reply(rpcErr(null, -32600, 'Request too large'), 413);
     let body: Json;
-    try { body = await req.json(); } catch (e) { return reply(rpcErr(null, -32700, 'Parse error'), 400); }
+    try { const raw = await req.text(); if (raw.length > 200000) return reply(rpcErr(null, -32600, 'Request too large'), 413); body = JSON.parse(raw); } catch (e) { return reply(rpcErr(null, -32700, 'Parse error'), 400); }
     const db = database(env, token, userId, f);
+    if (Array.isArray(body) && body.length > 20) return reply(rpcErr(null, -32600, 'Too many requests in one batch'), 400);
     if (Array.isArray(body)) {
       const out = (await Promise.all(body.map((m) => rpc(db, m)))).filter((x) => x !== null);
       return out.length ? reply(out) : reply(null, 202);
