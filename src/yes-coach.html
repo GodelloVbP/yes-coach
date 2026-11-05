@@ -989,6 +989,12 @@ body.typing .restbar { display: none; }
         <p class="note">Auto follows your phone or computer. Your choice is saved on this device only.</p>
         <div id="look-row"></div>
       </section>
+      <section aria-labelledby="h-conn" id="conn" hidden>
+        <h2 id="h-conn">Connected AI apps</h2>
+        <p class="note">AI apps you allowed to read your data and change your plan, such as Claude. Disconnect one and it loses access straight away.</p>
+        <div id="conn-list"></div>
+        <span id="conn-state" class="note" aria-live="polite"></span>
+      </section>
       <section aria-labelledby="h-imp" id="imp">
         <h2 id="h-imp">Get a plan or import</h2>
         <p class="note">Your coach builds a plan and brings your history over from another app, right here in Yes Coach.</p>
@@ -1363,7 +1369,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (v === 'exercises') renderExercises();
     if (v === 'plan' && S.ready) renderPlan();
     if (v === 'progress') renderProgress();
-    if (v === 'settings') { foldSettings(); paintExport(); paintImport(); if (S.ready) paintMe(); }
+    if (v === 'settings') { foldSettings(); paintExport(); paintImport(); paintConn(); if (S.ready) paintMe(); }
     if (v === 'train' && S.ready) renderTrain();
     if (S.ready) paintChrome();
     local.set('yc-view', v);
@@ -6299,6 +6305,30 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     S.failed = true;
     $('#train-loading').hidden = false;
     $('#train-loading').textContent = msg;
+  };
+  // AI apps the person allowed through the Yes Coach! connector (web only; Supabase keeps the list)
+  const paintConn = async () => {
+    const sb = window.YC_API && window.YC_API.sb;
+    if (!sb || !sb.auth || !sb.auth.oauth || !sb.auth.oauth.listGrants) return;
+    let r;
+    try { r = await sb.auth.oauth.listGrants(); } catch (e) { return; }
+    if (!r || r.error || !Array.isArray(r.data)) return; // the connector is not switched on: show nothing
+    $('#conn').hidden = false;
+    const box = $('#conn-list');
+    if (!r.data.length) { box.replaceChildren(h('p', 'note', 'None connected.')); return; }
+    box.replaceChildren(...r.data.map((g) => {
+      const c = g.client || {};
+      const row = h('div', 'foot-row');
+      const b = h('button', 'skew small', null); b.type = 'button'; b.append(h('span', '', 'Disconnect'));
+      b.setAttribute('aria-label', 'Disconnect ' + (c.name || 'this app'));
+      b.onclick = async () => {
+        b.disabled = true; $('#conn-state').textContent = '';
+        let d; try { d = await sb.auth.oauth.revokeGrant({ clientId: c.id }); } catch (e) { d = { error: e }; }
+        if (d && d.error) { b.disabled = false; $('#conn-state').textContent = 'That did not go through. Try again.'; } else paintConn();
+      };
+      row.append(h('span', 'note', c.name || 'An app'), b);
+      return row;
+    }));
   };
   // light, dark, or auto (no attribute: the page follows the device); saved on this device
   const THEMES = [['auto', 'Auto'], ['light', 'Light'], ['dark', 'Dark']];

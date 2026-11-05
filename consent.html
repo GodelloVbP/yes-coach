@@ -1,0 +1,104 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Yes Coach! connect an AI</title>
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+:root { --bg: #fff; --ink: #26358f; --soft: #56619f; --line: #c4c9e6; --card: #f4f5fc; --bad: #b3261e; color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root { --bg: #10142b; --ink: #e3e6fa; --soft: #a1a8d4; --line: #333b6b; --card: #181d3d; --bad: #ff8a80; color-scheme: dark; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 "Helvetica Neue", Arial, sans-serif; }
+main { max-width: 34rem; margin: 0 auto; padding: 2rem max(16px, env(safe-area-inset-right, 0px)) 3rem max(16px, env(safe-area-inset-left, 0px)); }
+h1, h2 { font-family: "Arial Narrow", "Roboto Condensed", sans-serif; text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.15; }
+h1 { font-size: 1.6rem; } h2 { font-size: 1rem; margin: 1.6rem 0 0.4rem; }
+p, li { color: var(--soft); } a { color: var(--ink); }
+.who { background: var(--card); border: 1px solid var(--line); padding: 0.8rem 1rem; margin: 1rem 0; color: var(--ink); }
+.who b { display: block; font-size: 1.15rem; overflow-wrap: anywhere; }
+ul { padding-left: 1.2rem; margin: 0.3rem 0; }
+label { display: block; margin: 0.8rem 0 0.2rem; color: var(--soft); font-size: 0.9rem; }
+input { box-sizing: border-box; width: 100%; font: inherit; padding: 0.6rem; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+.row { display: flex; gap: 0.7rem; flex-wrap: wrap; margin-top: 1.4rem; }
+button { font: inherit; font-family: "Arial Narrow", "Roboto Condensed", sans-serif; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.7rem 1.3rem; border: 2px solid var(--ink); background: var(--ink); color: var(--bg); cursor: pointer; }
+button.ghost { background: transparent; color: var(--ink); }
+button:hover { filter: brightness(1.15); } button:active { transform: translateY(1px); } button:disabled { opacity: 0.5; cursor: default; }
+.err { color: var(--bad); min-height: 1.4em; }
+[hidden] { display: none !important; }
+</style></head><body><main>
+<p><a href="./">‹ Yes Coach!</a></p>
+<h1>Connect an AI</h1>
+
+<p id="msg">One moment.</p>
+
+<form id="login" hidden>
+  <p>Sign in to your Yes Coach! account to continue.</p>
+  <label for="em">Email</label><input id="em" type="email" autocomplete="username" required>
+  <label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password" required>
+  <p class="err" id="login-err" role="alert"></p>
+  <div class="row"><button type="submit" id="login-go">Sign in</button></div>
+</form>
+
+<section id="ask" hidden>
+  <div class="who"><span>An app wants to connect to your Yes Coach! account:</span><b id="client">An app</b><small id="client-uri"></small></div>
+  <p>Signed in as <b id="me"></b>.</p>
+  <h2>If you allow it, it can</h2>
+  <ul>
+    <li>read your plan, exercises, logged sessions, progress and notes, and your About you details (age, weight and so on)</li>
+    <li>change your training days and weekly schedule, add exercises, and answer your notes</li>
+  </ul>
+  <h2>It can not</h2>
+  <ul>
+    <li>change or delete anything you logged in a session</li>
+    <li>delete your plan, exercises or account</li>
+  </ul>
+  <p>What it reads goes to that AI and is handled under its own privacy terms. Only allow this if you just started it yourself from your AI app. You can disconnect it any time in Settings, Connected AI apps.</p>
+  <p class="err" id="ask-err" role="alert"></p>
+  <div class="row"><button type="button" id="ok">Allow</button><button type="button" class="ghost" id="no">Deny</button></div>
+</section>
+
+<script src="config.js"></script>
+<script src="vendor/supabase.js"></script>
+<script>
+(() => {
+  const cfg = window.YC_CONFIG;
+  const $ = (s) => document.querySelector(s);
+  const sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } });
+  const id = new URLSearchParams(location.search).get('authorization_id');
+  const say = (t) => { $('#msg').textContent = t; $('#msg').hidden = !t; };
+  const show = (name) => { ['#login', '#ask'].forEach((s) => { $(s).hidden = s !== name; }); };
+  const go = (d) => { if (d && d.redirect_url) { say('Taking you back to the app.'); show(null); location.assign(d.redirect_url); return true; } return false; };
+
+  async function ask() {
+    const { data, error } = await sb.auth.oauth.getAuthorizationDetails(id);
+    if (error || !data) { say('This request is not valid any more. Start the connection again from your AI app.'); show(null); return; }
+    if (go(data)) return; // already allowed before
+    const c = data.client || {};
+    $('#client').textContent = c.name || 'An app';
+    $('#client-uri').textContent = c.uri ? String(c.uri) : '';
+    const s = (await sb.auth.getSession()).data.session;
+    $('#me').textContent = (s && s.user && s.user.email) || '';
+    say(''); show('#ask');
+  }
+  async function decide(allow) {
+    ['#ok', '#no'].forEach((b) => { $(b).disabled = true; });
+    $('#ask-err').textContent = '';
+    const r = allow ? await sb.auth.oauth.approveAuthorization(id, { skipBrowserRedirect: true }) : await sb.auth.oauth.denyAuthorization(id, { skipBrowserRedirect: true });
+    if (r.error || !go(r.data)) { $('#ask-err').textContent = 'That did not go through. Start again from your AI app.'; ['#ok', '#no'].forEach((b) => { $(b).disabled = false; }); }
+  }
+
+  $('#ok').onclick = () => decide(true);
+  $('#no').onclick = () => decide(false);
+  $('#login').onsubmit = async (e) => {
+    e.preventDefault();
+    $('#login-go').disabled = true; $('#login-err').textContent = '';
+    const r = await sb.auth.signInWithPassword({ email: $('#em').value.trim(), password: $('#pw').value });
+    $('#login-go').disabled = false;
+    if (r.error) { $('#login-err').textContent = 'Email or password is not right.'; return; }
+    ask();
+  };
+
+  (async () => {
+    if (!id) { say('Nothing to connect here. Start from your AI app: add Yes Coach! as a connector.'); return; }
+    const s = (await sb.auth.getSession()).data.session;
+    if (s) ask(); else { say(''); show('#login'); }
+  })();
+})();
+</script>
+</main></body></html>
