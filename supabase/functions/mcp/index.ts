@@ -344,7 +344,7 @@ export const createHandler = (env: Env, f: typeof fetch = fetch) => {
   };
 };
 
-if (typeof Deno !== 'undefined' && Deno.serve && (import.meta as Json).main) {
+if (typeof Deno !== 'undefined' && Deno.serve) {
   const url = Deno.env.get('SUPABASE_URL') as string;
   Deno.serve(createHandler({ url, anonKey: (Deno.env.get('YC_ANON_KEY') || Deno.env.get('SUPABASE_ANON_KEY')) as string, publicUrl: Deno.env.get('MCP_PUBLIC_URL') || url + '/functions/v1/mcp' }));
 }
