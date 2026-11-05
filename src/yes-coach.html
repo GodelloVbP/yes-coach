@@ -2669,7 +2669,27 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     }
     return items.find((i) => i.ex === R.cur);
   };
-  const goExercise = (ex) => { R.cur = ex; paintFocus(); window.scrollTo({ top: 0 }); const c = $('#sess-chips .fchip[aria-current="true"]'); if (c && c.scrollIntoView) c.scrollIntoView({ inline: 'center', block: 'nearest' }); };
+  const motion = () => (window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
+  // land on the work: the top of the card, or further down when the first open set would sit low on the screen
+  const scrollToWork = (ex) => {
+    const k = Object.keys(R.sets).find((key) => R.sets[key].item.ex === ex && !isDone(storedSet(key)));
+    const row = k && R.sets[k].row;
+    let y = 0;
+    if (row) { const at = row.getBoundingClientRect().top + window.scrollY; if (at > window.innerHeight * 0.6) y = at - window.innerHeight * 0.4; }
+    window.scrollTo({ top: y, behavior: motion() });
+  };
+  // the new card slides in from the side you are moving towards
+  const goExercise = (ex) => {
+    const ids = sessionItems().map((i) => i.ex);
+    const dir = Math.sign(ids.indexOf(ex) - ids.indexOf(R.cur));
+    R.cur = ex;
+    paintFocus();
+    const it = R.items[ex];
+    if (dir && it && it.el && motion() === 'smooth') enter(it.el, 28 * dir);
+    const c = $('#sess-chips .fchip[aria-current="true"]');
+    if (c && c.scrollIntoView) c.scrollIntoView({ inline: 'center', block: 'nearest' });
+    scrollToWork(ex);
+  };
   const paintFocus = () => {
     if (!R || !S.active) return;
     const box = $('#session');
