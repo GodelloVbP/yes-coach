@@ -107,7 +107,8 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   const list = await rpc('tok-anna', 'tools/list');
   const names = list.body.result.tools.map((t) => t.name);
   ok(names.length === 10 && !names.some((x) => /delete|remove|session/.test(x) && x !== 'get_sessions'), 'tool list: ' + names);
-  ok(list.body.result.tools.every((t) => t.inputSchema.type === 'object' && t.annotations && t.description), 'schemas');
+  ok(list.body.result.tools.every((t) => t.inputSchema.type === 'object' && t.annotations && t.description && t.title && t.annotations.title === t.title && t.name.length <= 64 && (t.annotations.readOnlyHint === true || typeof t.annotations.destructiveHint === 'boolean')), 'schemas, titles, hints');
+  ok(list.body.result.tools.filter((t) => t.annotations.destructiveHint === true).map((t) => t.name).sort().join() === 'answer_note,save_training_day,set_schedule', 'overwriting tools are destructive');
   ok(list.body.result.tools.filter((t) => t.annotations.readOnlyHint).length === 6, 'read-only hints');
   ok((await rpc('tok-anna', 'tools/call', { name: 'zzz' })).body.error.code === -32602, 'unknown tool');
 }
