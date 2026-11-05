@@ -712,5 +712,19 @@
   "de": "Jeder Satz zeigt, was du letztes Mal gemacht hast. Lieber die alte Liste? Tippe auf Alle Übungen.",
   "fr": "Chaque série montre ce que tu as fait la dernière fois. Tu préfères l'ancienne liste ? Touche Tous les exercices.",
   "it": "Ogni serie mostra cosa hai fatto l'ultima volta. Preferisci la vecchia lista? Tocca Tutti gli esercizi."
+ },
+ "Logging on a big screen": {
+  "nl": "Loggen op een groot scherm",
+  "es": "Registrar en una pantalla grande",
+  "de": "Eintragen auf einem großen Bildschirm",
+  "fr": "Saisir sur un grand écran",
+  "it": "Registrare su uno schermo grande"
+ },
+ "On a computer, logging has three columns: the menu, your exercises, and the sets of the one you are on.": {
+  "nl": "Op een computer heeft loggen drie kolommen: het menu, je oefeningen en de sets van de oefening waar je mee bezig bent.",
+  "es": "En un ordenador, el registro tiene tres columnas: el menú, tus ejercicios y las series del que estás haciendo.",
+  "de": "Am Computer hat das Eintragen drei Spalten: das Menü, deine Übungen und die Sätze der aktuellen Übung.",
+  "fr": "Sur ordinateur, la saisie a trois colonnes : le menu, tes exercices et les séries de celui en cours.",
+  "it": "Su computer, la registrazione ha tre colonne: il menu, i tuoi esercizi e le serie di quello in corso."
  }
 }

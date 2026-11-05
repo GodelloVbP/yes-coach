@@ -92,8 +92,13 @@ try:
         be = Backend(); seed(be)
         def wide(page):
             open_day(page)
-            check('wide: every exercise is on the page', vis(page, '#f-bench_1-load') and vis(page, '#f-row_1-load') and vis(page, '#f-curl_1-load'))
-            check('wide: no chips and no Next bar', not vis(page, '.fchip') and not vis(page, '#focusbar'))
+            check('wide: a list of exercises on the left, one card on the right', page.locator('.fchip').count() == 3 and vis(page, '#f-bench_1-load') and not vis(page, '#f-row_1-load'))
+            check('wide: no Next bar and no toggle', not vis(page, '#focusbar') and not vis(page, '#focus-toggle'))
+            check('wide: the list sits left of the card', page.evaluate("(() => { const a = document.querySelector('.fchip').getBoundingClientRect(), b = document.querySelector('#session .ex:not(.off)').getBoundingClientRect(); return a.right <= b.left + 1; })()"))
+            check('wide: note and Add exercise sit under the list', page.evaluate("(() => { const a = document.querySelector('.fchip').getBoundingClientRect(), f = document.querySelector('#session .sess-foot').getBoundingClientRect(); return f.left < a.right && f.top >= a.bottom - 1; })()"))
+            page.click('.fchip >> nth=1')
+            check('wide: picking an exercise shows it', vis(page, '#f-row_1-load') and not vis(page, '#f-bench_1-load'))
+            check('wide: no horizontal overflow', page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
         errs = session(pw, be, ALICE, wide, width=1280); check('no page errors (wide)', not errs, errs)
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:

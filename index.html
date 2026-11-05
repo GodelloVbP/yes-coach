@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-WlUD3TI84dewixmBTyym/auwQ0aAER4EdyU9wOoVraE=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-bXyNygneX9Vszxd/3XQm+nf4J+TqH468JEwhp68k2DQ=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-05 13:12Z">
+<meta name="yc-build" content="2026-11-05 13:19Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -155,27 +155,31 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .set-wrap > section.fold { border-bottom: 1px solid var(--line); }
 .view[hidden] { display: none; }
 
-/* one exercise at a time on phones: chips, the card, a Next / Finish bar */
+/* one exercise at a time: chips and a Next / Finish bar on phones, a list beside the card on wide screens */
 :root { --fb-h: 80px; }
-.chips-wrap { display: none; }
 .focusbar { display: none; }
 .set-last { display: none; }
+.fchip { --ang-bd: var(--line); flex: none; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 52px; padding: 6px 18px; border: 0; background: none; color: var(--ink); cursor: pointer; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; text-align: left; max-width: 14rem; }
+.fchip > span:first-child { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fchip small { font-family: var(--f-body, inherit); font-size: var(--t1); font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--ink-soft); }
+.fchip[aria-current="true"] { --ang-bg: var(--ink); --ang-bd: var(--ink); color: var(--bg); }
+.fchip[aria-current="true"] small { color: inherit; opacity: 0.85; }
+.fchip.is-done:not([aria-current="true"]) { --ang-bd: var(--ink); }
+.fchip:focus-visible, .focus-toggle:focus-visible { outline: 3px solid var(--pop); outline-offset: 3px; }
+.focus-toggle { flex: none; display: flex; min-height: 44px; align-items: center; padding: 0 0.5rem; white-space: nowrap; background: none; border: 0; color: var(--ink); font-weight: 700; text-decoration: underline; cursor: pointer; font-size: var(--t2); }
+#session.focus .ex.off { display: none; }
+#session.focus .ex { border-bottom: 0; }
+#session.focus .set-last { display: block; align-self: center; font-family: var(--f-head); font-size: var(--t2); font-weight: 700; color: var(--ink-soft); text-align: center; line-height: 1.05; white-space: nowrap; }
+#session.focus .set { grid-template-columns: 2.75rem 3.75rem minmax(0, 1fr) minmax(0, 1.25fr) 3.5rem; }
+#session.focus .set.one { grid-template-columns: 2.75rem 3.75rem minmax(0, 1fr) 3.5rem; }
+#session.focus .set.rir { grid-template-columns: 2.75rem 3.75rem minmax(0, 1fr) minmax(0, 1.25fr) 3rem 3.5rem; }
+#session.focus .set.rir.one { grid-template-columns: 2.75rem 3.75rem minmax(0, 1fr) 3rem 3.5rem; }
 @media (max-width: 63.99rem) {
   .chips-wrap { display: block; position: sticky; top: 0; z-index: 6; background: var(--bg); border-bottom: 1px solid var(--line); }
   .chips { display: flex; align-items: center; gap: 0.625rem; overflow-x: auto; padding: 0.625rem 1.25rem; scrollbar-width: none; }
   .chips::-webkit-scrollbar { display: none; }
-  .fchip { --ang-bd: var(--line); flex: none; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 52px; padding: 6px 18px; border: 0; background: none; color: var(--ink); cursor: pointer; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; text-align: left; max-width: 14rem; }
-  .fchip > span:first-child { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .fchip small { font-family: var(--f-body, inherit); font-size: var(--t1); font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--ink-soft); }
-  .fchip[aria-current="true"] { --ang-bg: var(--ink); --ang-bd: var(--ink); color: var(--bg); }
-  .fchip[aria-current="true"] small { color: inherit; opacity: 0.85; }
-  .fchip.is-done:not([aria-current="true"]) { --ang-bd: var(--ink); }
-  .fchip:focus-visible, .focus-toggle:focus-visible { outline: 3px solid var(--pop); outline-offset: 3px; }
-  .focus-toggle { flex: none; display: flex; min-height: 44px; align-items: center; padding: 0 0.5rem; white-space: nowrap; background: none; border: 0; color: var(--ink); font-weight: 700; text-decoration: underline; cursor: pointer; font-size: var(--t2); }
   .chips-wrap.all { position: static; border-bottom: 0; }
   .chips-wrap.all .fchip { display: none; }
-  #session.focus .ex.off { display: none; }
-  #session.focus .ex { border-bottom: 0; }
   .focusbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9; background: var(--bg); border-top: 2px solid var(--ink); padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px)); gap: 12px; }
   body.in-session.focus-on .focusbar { display: flex; }
   body.typing .focusbar { display: none; }
@@ -185,11 +189,18 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
   body.in-session.focus-on .restbar { bottom: calc(var(--fb-h) + env(safe-area-inset-bottom, 0px)); padding-bottom: 0; }
   body.in-session.focus-on main { padding-bottom: calc(var(--fb-h) + env(safe-area-inset-bottom, 0px) + 1rem); }
   body.in-session.focus-on.resting main { padding-bottom: calc(var(--fb-h) + var(--rest-h) + env(safe-area-inset-bottom, 0px) + 1rem); }
-  #session.focus .set-last { display: block; align-self: center; font-family: var(--f-head); font-size: var(--t2); font-weight: 700; color: var(--ink-soft); text-align: center; line-height: 1.05; white-space: nowrap; }
-  #session.focus .set { grid-template-columns: 2.75rem 3.75rem minmax(0, 1fr) minmax(0, 1.25fr) 3.5rem; }
-  #session.focus .set.one { grid-template-columns: 2.75rem 3.75rem minmax(0, 1fr) 3.5rem; }
-  #session.focus .set.rir { grid-template-columns: 2.75rem 3.75rem minmax(0, 1fr) minmax(0, 1.25fr) 3rem 3.5rem; }
-  #session.focus .set.rir.one { grid-template-columns: 2.75rem 3.75rem minmax(0, 1fr) 3rem 3.5rem; }
+}
+@media (min-width: 64rem) {
+  #session.focus { display: grid; grid-template-columns: 23rem minmax(0, 1fr); grid-template-rows: auto 1fr; align-items: start; }
+  #session.focus > .ahead { grid-column: 1 / -1; grid-row: 1; }
+  #session.focus .chips-wrap { grid-column: 1; grid-row: 2; position: sticky; top: 0; padding: 1rem 1rem 0 0.75rem; border-right: 1px solid var(--line); }
+  #session.focus .chips { display: flex; flex-direction: column; gap: 0.5rem; }
+  #session.focus .fchip { width: calc(100% - 1rem); max-width: none; margin-inline: 0.5rem; min-height: 60px; }
+  #session.focus .focus-toggle { display: none; }
+  #session.focus .sess-body { grid-column: 2; grid-row: 2 / span 2; max-width: none; margin: 0; padding: 1rem 2.5rem 2rem; }
+  #session.focus .sess-foot { grid-column: 1; grid-row: 3; position: static; max-width: none; margin: 0; padding: 1rem 1rem 2rem 1.25rem; border-top: 0; border-right: 1px solid var(--line); min-height: 0; }
+  #session.focus .ex .ex-name { font-size: var(--t5); }
+  #session.focus .set { min-height: 64px; }
 }
 
 /* session bar */
@@ -1600,6 +1611,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['5 Nov 2026', 'Logging on a big screen', ["On a computer, logging has three columns: the menu, your exercises, and the sets of the one you are on."]],
     ['5 Nov 2026', 'Logging, one exercise at a time', ["On a phone you now see one exercise at a time. Tap an exercise at the top to jump to it, or tap Next at the bottom.", "Each set shows what you did last time. Prefer the old list? Tap All exercises."]],
     ['5 Nov 2026', 'Train, week at a glance', ["The week is now seven blocks. Tap a day to see it, start it, move it to another day or remove it for this week.", "Tap a rest day to put a training day on it."]],
     ['5 Nov 2026', 'New menu', ["Yes Coach! now opens straight on Train when you are signed in.", "Phone: the five main pages sit in a bar at the bottom. On a wide screen they sit in a bar on the left.", "More holds your settings in groups, plus Exercises, Feedback and Requests, and What's new."]],
@@ -2354,7 +2366,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
 
   // ---- one exercise at a time on phones: a layer over the cards, not a second screen
   const phoneMQ = window.matchMedia('(max-width: 63.99rem)');
-  const focusOn = () => phoneMQ.matches && local.get('yc-focus') !== 'all';
+  const focusOn = () => !phoneMQ.matches || local.get('yc-focus') !== 'all';
   const curItem = () => {
     const items = sessionItems();
     if (!items.length) return null;
