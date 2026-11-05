@@ -496,7 +496,6 @@
 .tk-text, .tk-msg { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .tk-msg { padding: 0.5rem 0.75rem; background: var(--faint); border-left: 4px solid var(--ctl); }
 .tk-msg .lab { display: block; }
-.tk-msg.user { background: var(--faint); }
 .tk-msg.admin { background: transparent; border: 2px solid var(--pop); border-left-width: 6px; margin-left: 1rem; }
 .tk-sec { display: flex; flex-direction: column; gap: 0.5rem; padding-top: 0.75rem; border-top: 2px solid var(--line); }
 .tk-sec > .lab { color: var(--ink-soft); }

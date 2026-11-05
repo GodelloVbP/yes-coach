@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-/2R7/kwUYZ3nCRkTqUMo33VaCfxPvcOFBuxemEk9vyE=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-B23M5zfRouFLJ+ozq/yRI3LRixvCG+eTwdQJSkHmRm8=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-05 14:50Z">
+<meta name="yc-build" content="2026-11-05 15:12Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -81,7 +81,7 @@ button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent
 .in { max-width: 46rem; margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .in.wide { max-width: 72rem; }
 .note { font-size: var(--t2); color: var(--ink-soft); line-height: 1.5; font-weight: 500; }
-.hd, h2, .tab, .skew, .lab, .num-big, .ex-name, .set-n, .pk-name, .pk-chip, .pk-gh, .pk-go, .day-wd, .day-name, .chip, th, .sb-day, .sb-date, .sb-count, .sb-back, .icon { font-family: var(--f-head); }
+h2, .tab, .skew, .lab, .ex-name, .set-n, .pk-name, .pk-chip, .pk-gh, .pk-go, .day-wd, .day-name, .chip, th, .sb-day, .sb-date, .sb-count, .sb-back, .icon { font-family: var(--f-head); }
 h2 { font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.15; text-wrap: balance; }
 .lab { font-size: var(--t1); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
 .lab .note { font-family: var(--f-body); font-size: var(--t1); text-transform: none; letter-spacing: 0; }
@@ -101,12 +101,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* jumps to a section land below the sticky top bar, with a little air */
 html { scroll-padding-top: calc(var(--stick-h, 56px) + 0.75rem); }
 /* the save warning floats under the top bar and never pushes the page */
-.savebar { position: absolute; top: 100%; left: 0; right: 0; box-shadow: 0 6px 16px rgba(16, 20, 43, 0.25); }
+.savebar { position: absolute; top: 100%; left: 0; right: 0; background: var(--warn); color: #fff; box-shadow: 0 6px 16px rgba(16, 20, 43, 0.25); }
 .savebar > div { display: flex; align-items: center; gap: 0.75rem; justify-content: space-between; padding-block: 0.5rem; font-weight: 600; }
-.savebar.pending { background: var(--faint); color: var(--ink); }
-.savebar.error { background: var(--warn); color: #fff; }
-:root[data-theme="dark"] .savebar.error { color: #10142b; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .savebar.error { color: #10142b; } }
+:root[data-theme="dark"] .savebar { color: #10142b; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .savebar { color: #10142b; } }
 .savebar button { background: none; border: 2px solid currentColor; min-height: 36px; padding: 0 0.875rem; cursor: pointer; font-weight: 700; color: inherit; }
 .appbar { position: relative; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); box-shadow: 0 1px 3px rgba(16, 20, 43, 0.14), 0 6px 22px rgba(16, 20, 43, 0.20); }
 :root[data-theme="dark"] .appbar { background: var(--faint); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), 0 8px 26px rgba(0, 0, 0, 0.75); }
@@ -549,12 +547,6 @@ td.nowrap { white-space: nowrap; }
 .wk-sheet label.wk-mv { display: flex; flex-direction: column; gap: 0.125rem; font-size: var(--t2); font-weight: 600; color: var(--ink-soft); }
 .wk-sheet label.wk-mv select { font: inherit; font-weight: 600; color: var(--ink); background: transparent; border: 0; border-bottom: 2px solid var(--ctl); min-height: 44px; }
 .wk-act .confirm { flex: 1 1 100%; }
-.pill { font-family: var(--f-head); min-height: 40px; font-size: var(--t2); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 0 0.75rem; transform: skewX(-14deg); border: 2px solid var(--ctl); background: var(--paper); color: var(--ink); cursor: pointer; }
-.pill > span { display: inline-block; transform: skewX(14deg); }
-.pill.done { background: var(--ink); border-color: var(--ink); color: var(--bg); }
-.pill.warn { border-color: var(--warn); box-shadow: 0 0 0 2px var(--warn); }
-.mover { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; padding: 0.5rem 0; }
-.mover select { font: inherit; font-weight: 600; color: var(--ink); background: transparent; border: 0; border-bottom: 2px solid var(--ctl); min-height: 40px; }
 .wk-warns { display: flex; flex-direction: column; gap: 0.375rem; }
 .wk-warn { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; color: var(--warn); font-weight: 600; }
 .wk-warns .wk-warn .icon { flex: none; color: inherit; margin-top: -0.25rem; }
@@ -564,23 +556,19 @@ td.nowrap { white-space: nowrap; }
 .editor { padding-block: 1.25rem 3rem; display: flex; flex-direction: column; gap: 1rem; }
 .ed-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 0.75rem 1rem; }
 .ed-f { display: flex; flex-direction: column; gap: 0.125rem; min-width: 0; }
-.ed-f input, .ed-f select, .sm-frow select, #sm-add, .cal-panel select, .cal-panel input { font: inherit; font-size: var(--t2); font-weight: 600; color: var(--ink); background: transparent; border: 0; border-bottom: 2px solid var(--ctl); min-height: 40px; padding: 0.25rem 0; min-width: 0; width: 100%; }
+.ed-f input, .ed-f select, .cal-panel select, .cal-panel input { font: inherit; font-size: var(--t2); font-weight: 600; color: var(--ink); background: transparent; border: 0; border-bottom: 2px solid var(--ctl); min-height: 40px; padding: 0.25rem 0; min-width: 0; width: 100%; }
 .ed-f input:focus, .ed-f select:focus { outline: none; border-bottom-color: var(--ink); box-shadow: 0 1px 0 var(--ink); }
 .ed-items { display: flex; flex-direction: column; border-top: 2px solid var(--ink); }
 .ed-item { padding-block: 0.75rem; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.5rem; }
 .ed-top { display: flex; align-items: center; gap: 0.5rem; justify-content: space-between; }
 .ed-top > :first-child { min-width: 0; }
 .ed-name { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.1; overflow-wrap: anywhere; }
-.ed-btns { display: flex; gap: 0.25rem; align-items: center; flex: none; }
-.ed-btns .gap { width: 16px; }
 .ed-row { display: grid; grid-template-columns: 4rem 6rem minmax(0, 1fr) 5rem; gap: 0.5rem 0.75rem; }
-.ed-row.note-row { grid-template-columns: minmax(0, 1fr); }
 .ed-status { min-height: 1.25rem; font-size: var(--t1); color: var(--ink-soft); font-weight: 500; }
 .confirm { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.75rem; background: var(--faint); border-left: 4px solid var(--ink); }
 .danger-zone { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
 @media (max-width: 420px) {
   .ed-row { grid-template-columns: 3.5rem 5rem minmax(0, 1fr); }
-  .ed-row .ed-rest { grid-column: 1 / -1; }
 }
 
 /* rest timer: 64 px, owns the bottom; hidden while the keyboard is open */
@@ -596,9 +584,6 @@ body.resting main { padding-bottom: calc(var(--rest-h) + 16px); }
 body.typing .restbar { display: none; }
 
 /* drag and drop + schedule maker */
-.pill.drag { cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
-.pill.dragging { opacity: 0.3; }
-.pill.ghost { position: fixed; z-index: 50; pointer-events: none; margin: 0; box-shadow: 0 8px 20px rgba(38, 53, 143, 0.35); cursor: grabbing; }
 .wk-act { grid-column: 2; display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.25rem 0.75rem 0.75rem 0.5rem; }
 .wk-act .skew { flex: 1 1 7rem; min-height: 44px; font-size: var(--t2); white-space: nowrap; }
 .wk-act .confirm { flex: 1 1 100%; }
@@ -606,17 +591,7 @@ body.typing .restbar { display: none; }
 .wk-start { background: #ff8a65; color: #26358f; border-color: #ff8a65; }
 .wk-remove { background: #26358f; color: #ff8a65; border-color: #6f79bf; }
 .sm-days { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.25rem 0.375rem 0.5rem; }
-.sm-preview { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1rem 2rem; }
-.sm-week { display: flex; flex-direction: column; border-top: 2px solid var(--ink); }
-.sm-row { display: grid; grid-template-columns: 4rem minmax(0, 1fr); gap: 0.5rem; padding-block: 0.375rem; border-bottom: 1px solid var(--line); align-items: baseline; }
-.sm-row.bad { box-shadow: inset 4px 0 0 var(--warn); padding-left: 0.5rem; }
-.sm-day { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 .sm-msg { font-weight: 600; color: var(--ink); }
-.sm-modes { margin-top: 0.25rem; }
-.sm-fixed { display: flex; flex-direction: column; border-top: 2px solid var(--ink); }
-.sm-frow { display: grid; grid-template-columns: 3.5rem minmax(0, 1fr); align-items: center; gap: 0.75rem; padding-block: 0.25rem; border-bottom: 1px solid var(--line); }
-.sm-empty { padding-block: 0.75rem; }
-.sm-save { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; }
 
 /* undo toast hangs under the top bar, clear of the keyboard and the rest bar */
 .toast { position: fixed; left: 0; right: 0; top: var(--stick-h, 48px); z-index: 11; background: var(--ink); color: var(--bg); box-shadow: 0 6px 16px rgba(16, 20, 43, 0.25); }
@@ -638,9 +613,6 @@ body.typing .restbar { display: none; }
 .swaprow[data-k] .day-wd { color: var(--g); }
 .today[data-k] { border-left-color: var(--g); }
 .today[data-k] .t-head { color: var(--g); }
-.pill[data-k] { border-color: var(--g); }
-.pill.done[data-k] { background: var(--g); border-color: var(--g); color: var(--on-g); }
-.sm-day[data-k] { color: var(--g); }
 .ex[data-g] { border-left: 4px solid var(--g); padding-left: 12px; }
 .chip.grp { border-color: var(--g); }
 #sbar[data-k] .sb-line i { background: var(--g); }
@@ -674,7 +646,6 @@ body.typing .restbar { display: none; }
 .wz-err { color: var(--warn); font-weight: 600; }
 .wz-err:empty { display: none; }
 .wz-items { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.125rem; font-weight: 500; }
-.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .hm { padding-block: 0.75rem 3rem; display: flex; flex-direction: column; gap: 1rem; max-width: 64rem; }
 .hm .brand svg { width: min(100%, 20rem); }
 .hm-tag { font-size: var(--t3); font-weight: 500; text-align: center; text-wrap: balance; max-width: 34rem; margin-inline: auto; }
@@ -724,7 +695,6 @@ body:not(.signed-out) .hm-bar { display: none; }
 .lang-opt .flag { flex: none; }
 .lang-name { flex: 1; }
 .lang-opt[aria-checked="true"]::after { content: "✓"; font-family: var(--f-head); color: var(--pop); }
-.hm-lang { display: flex; flex-direction: column; gap: 0.5rem; }
 .hm-side { gap: 0.75rem; }
 .hm-p { font-size: var(--t3); font-weight: 500; line-height: 1.5; max-width: 40rem; }
 .hm-checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
@@ -848,14 +818,9 @@ body.fin-open { overflow: hidden; }
 .fd-day h2 { font-size: var(--t3); min-width: 12rem; text-align: center; }
 .fd-day .icon[disabled] { opacity: 0.3; cursor: default; }
 .fd-meter { display: flex; flex-direction: column; gap: 0.5rem; }
-.fd-kcal { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
-.fd-kcal b { font-family: var(--f-head); font-size: var(--t5); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
-.fd-kcal span { font-weight: 600; color: var(--ink-soft); }
 .fd-bar { height: 12px; background: var(--faint); border: 1px solid var(--line); position: relative; overflow: hidden; }
 .fd-bar i { position: absolute; inset: 0 auto 0 0; background: var(--ink); transition: width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .fd-bar.over i { background: var(--pop); }
-.fd-macros { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; font-weight: 600; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
-.fd-macros b { color: var(--ink); }
 /* add food: search, pick one result, then a card for that one food */
 .fd-find { position: relative; }
 .fd-card { display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem; background: var(--paper); border: 2px solid var(--ink); border-left-width: 6px; }
@@ -897,7 +862,6 @@ body.fin-open { overflow: hidden; }
 .fd-bub.plain { color: var(--ink); background: var(--faint); }
 .fd-bub.mine { color: var(--ink); background: var(--faint); border: 1px solid var(--ctl); }
 .fd-mini { font-size: var(--t1); color: var(--ink-soft); font-weight: 500; font-variant-numeric: tabular-nums; }
-.fd-tag { display: inline-block; font-family: var(--f-head); font-weight: 700; letter-spacing: 0.06em; font-size: 0.75rem; padding: 0 0.375rem; margin-right: 0.375rem; border: 1px solid var(--ctl); color: var(--ink); text-transform: uppercase; }
 .fd-credit { padding: 0.375rem 0.75rem; font-size: var(--t1); color: var(--ink-soft); }
 .fd-credit.fd-src { margin: 0.375rem 0 0; padding: 0; line-height: 1.35; }
 .fd-amount { display: flex; flex-direction: column; gap: 0.5rem; }
@@ -925,7 +889,7 @@ body.fin-open { overflow: hidden; }
 .fd-sug ul { margin: 0.375rem 0 0; padding-left: 1.1rem; color: var(--ink-soft); font-size: var(--t2); font-weight: 500; display: flex; flex-direction: column; gap: 0.125rem; }
 .privacy { padding: 0.75rem; background: var(--faint); border-left: 4px solid var(--ink); font-weight: 500; }
 /* native selects look the same everywhere: flat underline, our own chevron */
-.ed-f select, .sm-frow select, #sm-add, .cal-panel select, .mover select, .sel { -webkit-appearance: none; appearance: none; border-radius: 0; background-color: transparent; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%236f79bf' stroke-width='2.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 4px center; padding-right: 26px; }
+.ed-f select, .cal-panel select, .sel { -webkit-appearance: none; appearance: none; border-radius: 0; background-color: transparent; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%236f79bf' stroke-width='2.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 4px center; padding-right: 26px; }
 /* Plan: the week's day settings, and room between the blocks (the old rows sat flush against each other) */
 .pw-inweek { display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; }
 .pw-inweek .pw-days { padding-inline: 0.375rem; }
@@ -938,13 +902,13 @@ body.fin-open { overflow: hidden; }
 .danger-zone .skew { align-self: flex-start; }
 /* dropdowns: our own list, the browser's select stays underneath for value, forms and fallback */
 .ysel { position: relative; display: inline-flex; min-width: 0; max-width: 100%; vertical-align: bottom; }
-.ed-f .ysel, .sm-frow .ysel, .cal-panel .ysel { display: flex; width: 100%; }
+.ed-f .ysel, .cal-panel .ysel { display: flex; width: 100%; }
 .pw-acts .ysel { max-width: 12rem; }
 .xl-add .ysel { min-width: 10rem; }
 .xr-card .xl-add .ysel { min-width: 0; flex: 1 1 7rem; }
 .ysel-native { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
 .ysel-btn { width: 100%; min-height: 40px; font: inherit; font-weight: 600; color: var(--ink); text-align: left; background-color: transparent; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%236f79bf' stroke-width='2.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 4px center; border: 0; border-bottom: 2px solid var(--ctl); border-radius: 0; padding: 0.25rem 26px 0.25rem 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
-.ed-f .ysel-btn, .sm-frow .ysel-btn, .cal-panel .ysel-btn { font-size: var(--t2); }
+.ed-f .ysel-btn, .cal-panel .ysel-btn { font-size: var(--t2); }
 .ysel-btn[aria-expanded="true"], .ysel-btn:focus-visible { border-bottom-color: var(--ink); box-shadow: 0 1px 0 var(--ink); outline: none; }
 .ysel-btn[disabled] { opacity: 0.5; cursor: default; }
 .ysel-pop { position: fixed; z-index: 70; box-sizing: border-box; overflow-y: auto; overscroll-behavior: contain; background: var(--paper); border: 2px solid var(--ink); box-shadow: 0 8px 22px rgba(10, 14, 40, 0.22); }
@@ -963,12 +927,12 @@ body.fin-open { overflow: hidden; }
 @keyframes rise { from { transform: translateY(100%); } }
 @keyframes tick-pop { 0% { transform: skewX(8deg) scale(0.3); } 60% { transform: skewX(8deg) scale(1.3); } 100% { transform: skewX(8deg) scale(1); } }
 .enter { animation: enter 0.22s cubic-bezier(0.2, 0.8, 0.2, 1); }
-.sb-menu, .kmenu, .toast, .pk, .cal-panel, .sb-datebox, .ex-rm, .ex-ms, .wk-act, .swap, .resume, .imp-out { animation: drop 0.18s ease-out; }
+.sb-menu, .kmenu, .toast, .pk, .cal-panel, .sb-datebox, .ex-rm, .ex-ms, .wk-act, .swap, .resume { animation: drop 0.18s ease-out; }
 .restbar { animation: rise 0.2s ease-out; }
 .tab, .icon, .arrow, .link, .textbtn, .sb-back, .sb-more, .sb-date, .resume-btn, .set-n { transition: transform 0.18s cubic-bezier(0.3, 1.7, 0.5, 1), background-color 0.15s, color 0.15s, border-color 0.15s; }
 .tab:active, .icon:not(:disabled):active, .arrow:active, .link:active, .textbtn:active, .sb-back:active, .sb-more:active, .sb-date:active, .resume-btn:active, .set-n:active { transform: scale(0.92); transition-duration: 0.06s; }
-.skew, .pill, .pk-chip, .pk-go { transition: transform 0.2s cubic-bezier(0.3, 1.7, 0.5, 1), background-color 0.15s, color 0.15s, border-color 0.15s; }
-.skew:not([disabled]):active, .pill:active, .pk-chip:active, .pk-go:not([disabled]):active { transform: skewX(-14deg) scale(0.93); transition-duration: 0.06s; }
+.skew, .pk-chip, .pk-go { transition: transform 0.2s cubic-bezier(0.3, 1.7, 0.5, 1), background-color 0.15s, color 0.15s, border-color 0.15s; }
+.skew:not([disabled]):active, .pk-chip:active, .pk-go:not([disabled]):active { transform: skewX(-14deg) scale(0.93); transition-duration: 0.06s; }
 .swaprow, .prow, .kmenu button, .sb-menu button, .set-tick { transition: background-color 0.15s, transform 0.2s cubic-bezier(0.3, 1.7, 0.5, 1); }
 .swaprow:active, .prow:active, .kmenu button:active, .sb-menu button:active { background: var(--faint); }
 .set-tick.pop > span { animation: tick-pop 0.32s ease-out; }
@@ -987,7 +951,7 @@ body.fin-open { overflow: hidden; }
   .skew:not([disabled]):hover { border-color: var(--ink); }
   .skew:not([disabled]):not(.pop):not(.solid):hover { background-color: var(--faint); }
   .skew.solid:not([disabled]):hover { opacity: 0.88; }
-  .pill:hover, .pk-chip:hover { border-color: var(--ink); }
+  .pk-chip:hover { border-color: var(--ink); }
   .pk-chip:not([aria-pressed="true"]):hover { background-color: var(--faint); }
   .tab:not([aria-selected="true"]):not([aria-pressed="true"]):hover { color: var(--ink); border-bottom-color: var(--ctl); }
   .set-tog:hover, summary:hover, .mark-btn:hover, .sb-more:hover, .sb-back:hover { background-color: var(--hover); }
@@ -1026,7 +990,7 @@ body.fin-open { overflow: hidden; }
   <p class="note"><a class="link" href="privacy.html">Privacy</a></p>
 </section>
 <div class="stick" id="stick">
-  <div class="savebar" id="savebar" hidden role="status" aria-live="polite"><div class="in"><span id="save-text"></span><button type="button" id="save-retry" hidden>Retry</button></div></div>
+  <div class="savebar" id="savebar" hidden role="status" aria-live="polite"><div class="in"><span id="save-text"></span><button type="button" id="save-retry">Retry</button></div></div>
   <header class="appbar" id="appbar">
     <div class="in ab-in">
       <button type="button" class="mark-btn" id="mark" aria-label="Yes Coach! home"><svg class="mark" viewBox="0 0 52 40" aria-hidden="true"><g transform="translate(8 0) skewX(-14)"><rect x="0" y="12" width="7" height="16" fill="var(--logo-bar)"/><rect x="9" y="2" width="9" height="36" fill="var(--logo-bar)"/><rect x="20" y="12" width="7" height="16" fill="#ff8a65"/><rect x="29" y="2" width="9" height="36" fill="var(--logo-bar)"/></g></svg></button>
@@ -1506,7 +1470,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
 
   // ------------------------------------------------------------------ state
   const S = {
-    db: null, uid: null, rootRef: null, ready: false, failed: false,
+    rootRef: null, ready: false,
     root: null, exercises: {}, templates: {}, sessions: {}, notes: {},
     loaded: { root: false, exercises: false, templates: false, sessions: false, notes: false, weeks: false, food: false },
     weeks: {}, editing: null, metric: 'load', weekStart: null,
@@ -1609,9 +1573,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     // quiet while saving; only a failure shows, so you know sets are waiting on this phone
     if (!err) { bar.hidden = true; if (n || notes) paintTickFlags(); return; }
     bar.hidden = false;
-    bar.classList.add('error');
     $('#save-text').textContent = (n ? n + (n === 1 ? ' set' : ' sets') : 'Changes') + ' not saved. ' + (Object.values(Q).some((q) => q.error === 'offline') ? 'No connection. They are kept on this phone and retry when signal is back.' : 'Saving failed; kept on this phone.');
-    $('#save-retry').hidden = false;
     paintTickFlags();
   };
   $('#save-retry').addEventListener('click', retryAll);
@@ -1645,7 +1607,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (typeof v === 'boolean') return v;
     return !!((S.root && S.root.nutrition && (S.root.nutrition.kcal || S.root.nutrition.protein)) || Object.values(S.food || {}).some((d) => Object.values((d && d.entries) || {}).some((e) => e && e.kcal != null)));
   };
-  const setShowCal = (on) => saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { show_calories: !!on }) }).catch(() => {});
+  const setShowCal = (on) => saveSetting({ show_calories: !!on });
   const sessionsSorted = () => Object.values(S.sessions).sort((a, b) => (a.date < b.date ? 1 : -1));
   let lastCache = null;
   const lastSetsFor = (ex, beforeDate) => {
@@ -1886,7 +1848,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
 
   // ---- the finished day: the numbers, the records, and a picture to share
-  const daySummary = () => {
+  const daySummary = () => withLast(daySummaryNow);
+  const daySummaryNow = () => {
     const a = S.active;
     const doc = a ? S.sessions[SID()] : null;
     if (!doc) return null;
@@ -2909,7 +2872,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const sel = h('select');
     sel.id = 'set-bar';
     lib.BARS.forEach((b) => { const o = h('option', '', b + ' kg'); o.value = String(b); if (b === cfg.bar) o.selected = true; sel.append(o); });
-    sel.addEventListener('change', () => saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { plate_bar: Number(sel.value) }) }).catch(() => {}));
+    sel.addEventListener('change', () => saveSetting({ plate_bar: Number(sel.value) }));
     const lab = h('label', '', 'Bar for the plate calculator');
     lab.append(sel);
     const fs = h('fieldset');
@@ -2921,7 +2884,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       cb.addEventListener('change', () => {
         const on = [...fs.querySelectorAll('input:checked')].map((x) => Number(x.value));
         if (!on.length) { cb.checked = true; return; } // at least one plate
-        saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { plates: on }) }).catch(() => {});
+        saveSetting({ plates: on });
       });
       l.append(cb, ' ' + p + ' kg');
       fs.append(l);
@@ -3105,7 +3068,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         label: 'Confirm measure change',
         text: 'Measure ' + ex.name + ' in ' + measureName(toV).toLowerCase() + ' instead of ' + measureName(measureOf(ex)).toLowerCase() + '? This applies to every day that uses it. Logged sets keep their numbers, Progress starts a new trend, and the reps and target in your plan stay as they are until you edit them.',
         yes: 'Switch', keep: 'Keep',
-        onYes: () => { applyMeasure(item.ex, toV).then(() => { renderItems(); paintSession(); }).catch(() => showToast('Not saved. Check your connection.', null)); },
+        onYes: () => { applyMeasure(item.ex, toV).then(() => { renderItems(); paintSession(); }).catch(() => notSaved()); },
         onKeep: () => { setOpen(msBtn, msBox, false); msBtn.focus(); },
       }, msBox);
       setOpen(msBtn, msBox, true);
@@ -3121,7 +3084,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       rev.addEventListener('click', async () => {
         rev.disabled = true;
         let id = null;
-        try { id = await ensureReverse(item.ex); } catch (e) { rev.disabled = false; showToast('Not saved. Check your connection.', null); return; }
+        try { id = await ensureReverse(item.ex); } catch (e) { rev.disabled = false; notSaved(); return; }
         addToSession(id, true);
         showToast(exName(id) + ' added below.', () => addToSession(id, false));
         requestAnimationFrame(() => { const it = R && R.items[id]; if (it && it.el) it.el.scrollIntoView({ block: 'center', behavior: 'smooth' }); });
@@ -3238,7 +3201,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const was = inp.dataset.clr;
     delete inp.dataset.clr;
     if (inp.value.trim() === '') inp.value = was;
-    paintRow(refs);
+    withLast(() => paintRow(refs));
   };
   const onField = (refs, f, inp) => {
     delete inp.dataset.clr;
@@ -3252,8 +3215,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (Object.keys(d).length) ds[refs.key] = d; else delete ds[refs.key];
     if (f === 'reps') refs.needReps = false;
     saveDrafts();
-    paintRow(refs);
-    paintItemState();
+    withLast(() => { paintRow(refs); paintItemState(); });
   };
 
   // ---- set type menu (a deliberate second tap, so a stray touch cannot turn a set into a warm-up)
@@ -3585,10 +3547,15 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       }
     });
   };
+  // the per-paint cache of last sessions, suggestions and records; also used for the repaint of one row while typing
+  const withLast = (fn) => {
+    if (lastCache) return fn();
+    lastCache = new Map();
+    try { return fn(); } finally { lastCache = null; }
+  };
   const paintSession = () => {
     if (!R || !S.active) return;
-    lastCache = new Map();
-    try { paintSessionNow(); } finally { lastCache = null; }
+    withLast(paintSessionNow);
   };
   const paintSessionNow = () => {
     if (itemsSig() !== R.sig) renderItems();
@@ -4302,7 +4269,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const fresh = h('div', 'foot-row');
     const setTrend = (since) => {
       S.exercises[row.id] = Object.assign({}, e, { trend_since: since });
-      S.rootRef.collection('exercises').doc(row.id).update({ trend_since: since }).catch(() => showToast('Not saved. Check your connection.', null));
+      S.rootRef.collection('exercises').doc(row.id).update({ trend_since: since }).catch(() => notSaved());
       drawList();
     };
     if (e.trend_since) {
@@ -4442,7 +4409,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ------------------------------------------------------------------ exercises: the whole library plus your own, and suggestions
   const XL_TABS = ['All', 'Chest', 'Back', 'Shoulders', 'Arms', 'Legs', 'Core', 'Cardio and more'];
   const xlTabOf = (g) => { const b = LIB_GROUP[g] || g; return XL_TABS.includes(b) ? b : 'Cardio and more'; };
-  const XL = { tab: 'All', sort: 'group', open: null, sig: '', rsig: '' };
+  const XL = { tab: 'All', sort: 'group', sig: '', rsig: '' };
   // the list only changes with your exercises and sessions; suggestions also follow your plan
   const xlSig = () => XL.sort + '|' + Object.keys(S.exercises).length + '|' + Object.keys(S.sessions).length;
   const recSig = () => Object.keys(S.exercises).length + '|' + Object.keys(S.sessions).length + '|' + Object.values(S.templates).map((t) => (t.items || []).length).join();
@@ -4760,7 +4727,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const use = btn('skew small', same ? 'These are your targets' : tg.kcal || tg.protein ? 'Use these instead' : 'Use these as my targets');
       use.disabled = same;
       use.addEventListener('click', () => {
-        saveRoot({ nutrition: { kcal: cal ? sg.kcal : tg.kcal || null, protein: sg.protein } }).catch(() => showToast('Not saved. Check your connection.', null));
+        saveRoot({ nutrition: { kcal: cal ? sg.kcal : tg.kcal || null, protein: sg.protein } }).catch(() => notSaved());
         renderFood();
         showToast(cal ? 'Targets set: ' + big(sg.kcal) + ' kcal and ' + sg.protein + ' g protein.' : 'Protein target set: ' + sg.protein + ' g a day.', null);
       });
@@ -4799,7 +4766,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     try {
       if (had) await foodRef(date).update({ entries: { [id]: entry } });
       else await foodRef(date).set({ date, entries: { [id]: entry } });
-    } catch (err) { showToast('Not saved. Check your connection.', null); }
+    } catch (err) { notSaved(); }
     return id;
   };
   const removeFood = (id, date = S.fday) => {
@@ -6232,21 +6199,33 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
 
   // ------------------------------------------------------------------ records and estimated 1RM
   const epley = (load, reps) => Math.round(load * (1 + reps / 30) * 10) / 10;
-  const priorSets = (ex) => Object.values(S.sessions).filter((s) => !(S.active && s.date >= S.active.date)).flatMap((s) => workSets(s, ex));
+  // What the sessions before today hold for one exercise: the numbers a set must beat to be a record. One pass, kept for the paint.
+  const priorStats = (ex) => {
+    const ck = 'pr|' + ex;
+    if (lastCache && lastCache.has(ck)) return lastCache.get(ck);
+    const r = { n: 0, maxReps: 0, minLoad: Infinity, maxLoad: -Infinity, maxEst: -Infinity };
+    Object.values(S.sessions).forEach((s) => {
+      if (S.active && s.date >= S.active.date) return;
+      workSets(s, ex).forEach((p) => {
+        r.n += 1;
+        r.maxReps = Math.max(r.maxReps, p.reps || 0);
+        if (p.load != null) { r.minLoad = Math.min(r.minLoad, p.load); r.maxLoad = Math.max(r.maxLoad, p.load); }
+        if (p.load != null && p.reps != null && p.reps <= 10) r.maxEst = Math.max(r.maxEst, epley(p.load, p.reps));
+      });
+    });
+    if (lastCache) lastCache.set(ck, r);
+    return r;
+  };
   const isPR = (ex, st) => {
     if (!st || !countsAsWork(st)) return false;
     const e = S.exercises[ex] || {};
-    const prev = priorSets(ex);
-    if (!prev.length) return false;
-    if (e.unit === 'bw') return st.reps != null && st.reps > Math.max(...prev.map((p) => p.reps || 0));
-    if (e.unit === 'assist') { const ls = prev.map((p) => p.load).filter((v) => v != null); return st.load != null && ls.length > 0 && st.load < Math.min(...ls); }
+    const prev = priorStats(ex);
+    if (!prev.n) return false;
+    if (e.unit === 'bw') return st.reps != null && st.reps > prev.maxReps;
+    if (e.unit === 'assist') return st.load != null && prev.minLoad < Infinity && st.load < prev.minLoad;
     if (e.unit === 'kg' || e.unit === 'stack') {
-      const ls = prev.map((p) => p.load).filter((v) => v != null);
-      if (st.load != null && ls.length && st.load > Math.max(...ls)) return true;
-      if (e.unit === 'kg' && st.load != null && st.reps != null && st.reps <= 10) {
-        const es = prev.filter((p) => p.load != null && p.reps != null && p.reps <= 10).map((p) => epley(p.load, p.reps));
-        return es.length > 0 && epley(st.load, st.reps) > Math.max(...es);
-      }
+      if (st.load != null && prev.maxLoad > -Infinity && st.load > prev.maxLoad) return true;
+      if (e.unit === 'kg' && st.load != null && st.reps != null && st.reps <= 10) return prev.maxEst > -Infinity && epley(st.load, st.reps) > prev.maxEst;
     }
     return false;
   };
@@ -6770,7 +6749,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const inWeek = (m) => new Set(m.mode === 'fixed' ? Object.values(m.week).filter(Boolean) : m.rotation);
   const saveSched = (m, msg) => {
     const sc = m.mode === 'fixed' ? { enabled: true, mode: 'fixed', week: m.week } : { enabled: true, mode: 'rotation', days: m.days, rotation: m.rotation };
-    saveRoot({ schedule: sc }).catch(() => showToast('Not saved. Check your connection.', null));
+    saveRoot({ schedule: sc }).catch(() => notSaved());
     if (msg) showToast(msg, null);
     renderEditor();
   };
@@ -6976,7 +6955,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (prev && !sameSchedule(prev, cur)) {
       const back = h('div', 'pw-note');
       back.append(h('span', '', 'Before your last new plan: ' + scheduleSummary(prev) + ' '), plainBtn('textbtn', 'Bring it back', null, () => {
-        saveRoot({ schedule: prev }).then(() => { showToast('Your previous week is back.', () => { saveRoot({ schedule: cur }); renderEditor(); }); renderEditor(); }).catch(() => showToast('Not saved. Check your connection.', null));
+        saveRoot({ schedule: prev }).then(() => { showToast('Your previous week is back.', () => { saveRoot({ schedule: cur }); renderEditor(); }); renderEditor(); }).catch(() => notSaved());
       }));
       box.append(back);
     }
@@ -7006,7 +6985,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
           if (was === id) { mm.week[w] = ''; saveSched(mm); return; }
           mm.week[w] = id;
           const sc = { enabled: true, mode: 'fixed', week: mm.week };
-          saveRoot({ schedule: sc }).catch(() => showToast('Not saved. Check your connection.', null));
+          saveRoot({ schedule: sc }).catch(() => notSaved());
           if (was && S.templates[was]) showToast(S.templates[was].name + ' is no longer on ' + w + '.', () => { saveRoot({ schedule: { enabled: true, mode: 'fixed', week: before } }); renderEditor(); });
           renderEditor();
         });
@@ -7040,7 +7019,6 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     nm.setAttribute('aria-label', 'Name of this day');
     nm.addEventListener('input', () => { d.name = nm.value || 'Day'; saveTemplate(); $('#editor .bar h2').textContent = d.name; });
     box.append(nm);
-    const m = schedModel();
     box.append(inWeekBlock(ED.id));
     const list = h('div', 'pw-items');
     const commitOrder = () => { d.items.forEach((y, k) => { y.order = k + 1; }); saveTemplate(true); };
@@ -7130,7 +7108,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
           const v = inc.value === '' ? null : Number(inc.value);
           const upd = v != null && v > 0 ? { inc: v } : { inc: null };
           S.exercises[it.ex] = Object.assign({}, e, upd);
-          S.rootRef.collection('exercises').doc(it.ex).update(upd).catch(() => showToast('Not saved. Check your connection.', null));
+          S.rootRef.collection('exercises').doc(it.ex).update(upd).catch(() => notSaved());
         });
         f.append(edField('Rest (seconds)', rest), edField('Measured as (every day with ' + e.name + ')', ms), edField('Weight step when you go up', inc));
         const nf = edField('Note', note);
@@ -7163,7 +7141,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         ac.addEventListener('change', () => {
           const upd = { warmup: ac.checked ? true : null };
           S.exercises[it.ex] = Object.assign({}, S.exercises[it.ex], upd);
-          S.rootRef.collection('exercises').doc(it.ex).update(upd).catch(() => showToast('Not saved. Check your connection.', null));
+          S.rootRef.collection('exercises').doc(it.ex).update(upd).catch(() => notSaved());
         });
         al.append(ac, document.createTextNode(' Add warm-up sets automatically from 40 kg'));
         wr.append(al);
@@ -7319,11 +7297,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const paintSettings = () => { const cb = $('#set-rir'); cb.checked = showRir(); $('#set-prog').checked = progOn(); $('#set-cal').checked = showCal(); if (S.view === 'settings') { paintMe(); if (!$('#set-plates').contains(document.activeElement)) buildPlateSettings(); } };
   $('#set-cal').addEventListener('change', () => { setShowCal($('#set-cal').checked); });
   $('#set-prog').addEventListener('change', () => {
-    saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { progress_suggest: $('#set-prog').checked }) }).catch(() => {});
+    saveSetting({ progress_suggest: $('#set-prog').checked });
     if (R) paintSession();
   });
   $('#set-rir').addEventListener('change', () => {
-    saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { show_rir: $('#set-rir').checked }) }).catch(() => {});
+    saveSetting({ show_rir: $('#set-rir').checked });
     if (R) R.sig = '';
   });
 
@@ -7348,6 +7326,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     clearTimeout(toastTimer);
     toastTimer = setTimeout(hideToast, undo ? 8000 : 4000);
   };
+  const notSaved = () => showToast('Not saved. Check your connection.', null);
   $('#toast-undo').addEventListener('click', () => { const fn = toastUndo; hideToast(); if (fn) fn(); });
 
   // ------------------------------------------------------------------ restore a backup: adds what is missing, never overwrites
@@ -7518,6 +7497,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return f;
   };
   const readProfile = (f) => Object.fromEntries(PROFILE.filter((d) => f[d.key]).map((d) => [d.key, d.opts && !d.numeric ? f[d.key].value || null : parseNum(f[d.key].value)]));
+  // one setting changes; the rest of settings stays
+  const saveSetting = (patch) => saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, patch) }).catch(() => {});
   const saveRoot = (data) => {
     S.root = Object.assign({}, S.root || {}, data);
     return S.rootRef.update(data).catch(() => S.rootRef.set(Object.assign({ app: 'yes-coach', schema: 1, created_at: Date.now() }, S.root)));
@@ -7556,7 +7537,6 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     paintSettings();
   };
   const fail = (msg) => {
-    S.failed = true;
     $('#train-loading').hidden = false;
     $('#train-loading').textContent = msg;
   };
@@ -7724,10 +7704,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     local.set('yc-view', null);
     // signed in: straight to Train. The landing page is for people without an account (the web build shows it until they sign in).
     let hasAccount = true;
-    let fromLanding = false;
     try { hasAccount = !window.YC_WEB || Object.keys(localStorage).some((k) => /^sb-.+-auth-token$/.test(k)); } catch (e) { hasAccount = !window.YC_WEB; }
     const hashView = location.hash.slice(1); // index.html#progress opens that page; #home opens the landing page
-    fromLanding = !hasAccount;
     setView(VIEWS.includes(hashView) ? hashView : hasAccount ? 'train' : 'home');
     const a = local.get('yc-active');
     if (a && a.date && a.tpl) S.active = a;
@@ -7735,9 +7713,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     try { [db, user, dlCap] = await Promise.all([window.claude.use('db'), window.claude.use('user'), window.claude.use('downloads')]); } catch (e) { db = null; }
     const uid = user ? await user.id() : null;
     if (!db || !uid) { fail('Your training data is not available here. Sign in to claude.ai first. Already signed in? Then this account can only view Yes Coach, so it has no space for its own data: the owner can invite it as Editor in Share, which works while Anyone with the link is turned off.'); return; }
-    S.db = db;
-    S.uid = uid;
-    if (fromLanding && S.view === 'home') setView('train'); // just signed in from the landing page
+    if (!hasAccount && S.view === 'home') setView('train'); // just signed in from the landing page
     S.rootRef = db.doc('data/users/' + uid + '/yc');
     const onErr = (e) => { if (e && e.code === 'revoked') fail('Access to your data ended. Reload the page.'); };
     S.rootRef.onSnapshot((snap) => {

@@ -48,7 +48,10 @@
     if (res.error) throw asError(res.error);
     return res.data;
   };
-  const resync = async () => {
+  // refocus, coming back online and a failed write can all ask at once: one download serves them all
+  let syncing = null;
+  const resync = () => syncing || (syncing = download().finally(() => { syncing = null; }));
+  const download = async () => {
     const rows = [];
     for (let from = 0; ; from += 1000) {
       const page = await call(sb.from('docs').select('path,data').order('path').range(from, from + 999));

@@ -62,13 +62,15 @@
   };
   const dayRe = new RegExp('\\b(' + DAYS.join('|') + ')\\b', 'g');
   const dateRe = new RegExp('\\b(\\d{1,2}) (' + MONTHS.join('|') + ')\\b', 'g');
+  const monthRe = new RegExp('\\b(' + MONTHS.join('|') + ')\\b', 'g');
+  const dayBeforeDateRe = new RegExp('\\b(' + DAYS.join('|') + ') (?=\\d{1,2} )', 'g');
   const dateFix = (s) => {
     if (lang === 'en' || !dayNames.Mon) return s;
     // "Mon 5 Nov", "5 Nov", and lists such as "Mon, Wed, Fri": only when the whole text is made of these words
     const only = s.split(/[\s,·–-]+/).every((w) => !w || /^\d{1,2}$/.test(w) || DAYS.includes(w) || MONTHS.includes(w));
     let out = s.replace(dateRe, (m, d, mo) => d + ' ' + monthNames[mo]);
-    if (only) out = out.replace(dayRe, (m) => dayNames[m]).replace(new RegExp('\\b(' + MONTHS.join('|') + ')\\b', 'g'), (m) => monthNames[m]);
-    else out = out.replace(new RegExp('\\b(' + DAYS.join('|') + ') (?=\\d{1,2} )', 'g'), (m, d) => dayNames[d] + ' ');
+    if (only) out = out.replace(dayRe, (m) => dayNames[m]).replace(monthRe, (m) => monthNames[m]);
+    else out = out.replace(dayBeforeDateRe, (m, d) => dayNames[d] + ' ');
     return out;
   };
 
@@ -78,6 +80,7 @@
   const norm = (s) => s.replace(/\s+/g, ' ').trim();
   const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const build = (d) => {
+    memo.clear();
     exact = new Map();
     pats = [];
     Object.keys(d).forEach((k) => {
@@ -135,18 +138,25 @@
       }
       if (any) return out.join(' ');
     }
-    const tries = [(x) => x.split(' · '), (x) => x.split('; '), (x) => x.split(', ')];
-    const joins = [' · ', '; ', ', '];
-    for (let i = 0; i < tries.length; i += 1) {
-      const bits = tries[i](s);
+    for (const sep of [' · ', '; ', ', ']) {
+      const bits = s.split(sep);
       if (bits.length < 2) continue;
       let any = false;
       const out = bits.map((b) => { const t = lookup(norm(b), 2); if (t != null) { any = true; return t; } return dateFix(b); });
-      if (any) return out.join(joins[i]);
+      if (any) return out.join(sep);
     }
     return null;
   };
+  // The same strings come back all the time (a row label is rewritten on every repaint), so answers are kept until the dictionary changes.
+  const memo = new Map();
   const translate = (s) => {
+    if (memo.has(s)) return memo.get(s);
+    const r = translateNow(s);
+    if (memo.size > 3000) memo.clear();
+    memo.set(s, r);
+    return r;
+  };
+  const translateNow = (s) => {
     const k = norm(s);
     if (!k || !/[A-Za-z]/.test(k)) return null;
     let t = lookup(k, 0);

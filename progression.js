@@ -197,17 +197,15 @@
       return out({ load: L, reps: repsFor(0), repsBySet: null, kind: 'same', delta: 0, reason: fill(R.fewer_sets, [at.length, planned]), lastLoad: L });
     }
 
-    // no short sets, not all at the top of the range: one more rep than last time
-    if (plan.mode === 'range') {
-      var ordered = at.slice().sort(function (a, b) { return a.n - b.n; });
-      var per2 = [];
-      for (var k = 0; k < Math.max(planned, ordered.length); k += 1) {
-        var r1 = k < ordered.length ? ordered[k].reps : ordered[ordered.length - 1].reps;
-        per2.push(Math.min(plan.hi, r1 + 1));
-      }
-      return out({ load: L, reps: per2[0], repsBySet: per2, kind: 'same', delta: 0, reason: R.rep_up, lastLoad: L });
+    // Only a range is left here: a fixed plan that missed is a short set, and one that hit everything is allTop.
+    // No short sets, not all at the top of the range: one more rep than last time.
+    var ordered = at.slice().sort(function (a, b) { return a.n - b.n; });
+    var per2 = [];
+    for (var k = 0; k < Math.max(planned, ordered.length); k += 1) {
+      var r1 = k < ordered.length ? ordered[k].reps : ordered[ordered.length - 1].reps;
+      per2.push(Math.min(plan.hi, r1 + 1));
     }
-    return out({ load: L, reps: plan.n, repsBySet: null, kind: 'same', delta: 0, reason: fill(R.short, [plan.n]), lastLoad: L }); // not reached for fixed reps: a miss is already a short set
+    return out({ load: L, reps: per2[0], repsBySet: per2, kind: 'same', delta: 0, reason: R.rep_up, lastLoad: L });
   }
 
   var api = { suggest: suggest, parseReps: parseReps, defaultInc: defaultInc, stepFor: stepFor, REASONS: R };

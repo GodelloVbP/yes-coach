@@ -97,7 +97,7 @@ const dayOut = (id: string, d: Json, ex: Record<string, Json>, week: Set<string>
 // ---------------------------------------------------------------- sessions
 const isDone = (st: Json): boolean => !!st && st.done !== false;
 const isWork = (st: Json): boolean => !!st && st.kind !== 'warmup' && st.kind !== 'test';
-const sessionOut = (path: string, s: Json, ex: Record<string, Json>, days: Record<string, Json>): Json => {
+const sessionOut = (s: Json, ex: Record<string, Json>, days: Record<string, Json>): Json => {
   const by = dict<Json[]>();
   Object.values(s.sets || {}).filter(isDone).sort((a: Json, b: Json) => (a.order || 0) - (b.order || 0)).forEach((st: Json) => { (by[st.ex] = by[st.ex] || []).push(st); });
   return {
@@ -106,7 +106,6 @@ const sessionOut = (path: string, s: Json, ex: Record<string, Json>, days: Recor
       exercise_id: id, exercise: exName(ex, id),
       sets: sets.map((st: Json) => ({ n: st.n, type: st.kind || 'work', reps: st.reps ?? null, load: st.load ?? null, minutes: st.minutes ?? null, rir: st.rir ?? null, note: st.note || null })),
     })),
-    _id: idOf(path),
   };
 };
 // the best working set of one session for one exercise (Epley estimate for loaded lifts)
@@ -135,7 +134,7 @@ const TOOLS: Tool[] = [
       return {
         profile: (root && root.profile) || {}, schedule: readSchedule(root, days),
         training_days: byOrder(days).map((id) => ({ id, name: days[id].name, kind: days[id].kind || 'Other', exercises: (days[id].items || []).length, in_week: week.has(id) })),
-        recent_sessions: recent.map((r) => { const s = sessionOut(r.path, r.data, ex, days); return { date: s.date, label: s.label, day: s.day, exercises: s.exercises.length, sets: s.exercises.reduce((n: number, e: Json) => n + e.sets.length, 0) }; }),
+        recent_sessions: recent.map((r) => { const s = sessionOut(r.data, ex, days); return { date: s.date, label: s.label, day: s.day, exercises: s.exercises.length, sets: s.exercises.reduce((n: number, e: Json) => n + e.sets.length, 0) }; }),
         notes_waiting: notes.filter((n) => (n.data.status || 'new') === 'new' && !n.data.reply).length,
         today: today(),
       };
@@ -163,7 +162,7 @@ const TOOLS: Tool[] = [
       if (a.from != null && !isDate(a.from)) fail('from must be YYYY-MM-DD.');
       if (a.to != null && !isDate(a.to)) fail('to must be YYYY-MM-DD.');
       const [ex, days, rows] = await Promise.all([loadExercises(db), loadDays(db), db.list('yc/sessions/', { desc: true, limit: int(a.limit, 1, 60, 10), gte: a.from, lte: a.to ? a.to + '~z' : undefined })]);
-      return rows.map((r) => { const { _id, ...s } = sessionOut(r.path, r.data, ex, days); return s; });
+      return rows.map((r) => sessionOut(r.data, ex, days));
     },
   },
   {
@@ -172,10 +171,9 @@ const TOOLS: Tool[] = [
     description: 'How one exercise went over time: per session the best working set (load, reps, estimated one-rep max for loaded lifts) and the number of working sets.',
     run: async (db, a) => {
       const id = str(a.exercise_id, 80);
-      const ex = await loadExercises(db);
+      const [ex, rows] = await Promise.all([loadExercises(db), db.list('yc/sessions/', { desc: true, limit: 200 })]);
       if (!ex[id]) fail('Unknown exercise_id "' + id + '". Call list_exercises.');
       const unit = ex[id].unit || 'kg';
-      const rows = await db.list('yc/sessions/', { desc: true, limit: 200 });
       const limit = int(a.limit, 1, 60, 20);
       const out: Json[] = [];
       for (const r of rows) {

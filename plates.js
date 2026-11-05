@@ -34,13 +34,13 @@
     if (!isFinite(total) || !isFinite(bar) || total <= 0) return null;
     var list = (plates && plates.length ? plates : PLATES);
     var t = table(list);
-    var need = u((total - bar) / 2);
+    var raw = (total - bar) / 2 * U;
+    var need = Math.round(raw);
     if (total < bar) return { total: total, bar: bar, below: true, exact: false, side: [], lower: null, upper: null };
     var build = function (w) { return { total: bar + 2 * w / U, side: sideOf(t, w) }; };
-    var exact = Math.abs((total - bar) / 2 * U - need) < 1e-6 && need <= MAX_SIDE && t.n[need] !== Infinity;
+    var exact = Math.abs(raw - need) < 1e-6 && need <= MAX_SIDE && t.n[need] !== Infinity;
     if (exact) return { total: total, bar: bar, below: false, exact: true, side: sideOf(t, need), lower: null, upper: null };
     var lo = null, hi = null;
-    var raw = (total - bar) / 2 * U;
     for (var w = Math.floor(raw); w >= 0; w -= 1) if (t.n[w] !== Infinity) { lo = w; break; }
     for (var v = Math.ceil(raw); v <= MAX_SIDE; v += 1) if (t.n[v] !== Infinity) { hi = v; break; }
     return { total: total, bar: bar, below: false, exact: false, side: [], lower: lo === null ? null : build(lo), upper: hi === null ? null : build(hi) };
