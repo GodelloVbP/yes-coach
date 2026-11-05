@@ -1286,5 +1286,208 @@
   "de": "Beim Training springst du nach dem Abhaken eines Satzes direkt zur anderen Übung. Der Pausentimer startet nach der letzten Übung der Runde.",
   "fr": "Pendant l’entraînement, valider une série t’amène directement à l’autre exercice. Le minuteur de repos démarre après le dernier de la série.",
   "it": "Mentre ti alleni, spuntando una serie passi subito all’altro esercizio. Il timer di recupero parte dopo l’ultimo del giro."
+ },
+ "Log your sets.": {
+  "nl": "Log je sets.",
+  "es": "Registra tus series.",
+  "de": "Trage deine Sätze ein.",
+  "fr": "Note tes séries.",
+  "it": "Registra le tue serie."
+ },
+ "Plan your week.": {
+  "nl": "Plan je week.",
+  "es": "Planifica tu semana.",
+  "de": "Plane deine Woche.",
+  "fr": "Planifie ta semaine.",
+  "it": "Pianifica la settimana."
+ },
+ "See your progress.": {
+  "nl": "Zie je voortgang.",
+  "es": "Mira tu progreso.",
+  "de": "Sieh deinen Fortschritt.",
+  "fr": "Vois ta progression.",
+  "it": "Guarda i tuoi progressi."
+ },
+ "Free, no ads, on every device. It suggests your next weight, and your own AI can coach you.": {
+  "nl": "Gratis, zonder advertenties, op elk apparaat. Het stelt je volgende gewicht voor en je eigen AI kan je coachen.",
+  "es": "Gratis, sin anuncios, en cualquier dispositivo. Sugiere tu próximo peso y tu propia IA puede entrenarte.",
+  "de": "Kostenlos, ohne Werbung, auf jedem Gerät. Es schlägt dir das nächste Gewicht vor, und deine eigene KI kann dich coachen.",
+  "fr": "Gratuit, sans publicité, sur tous les appareils. Il propose ta prochaine charge et ta propre IA peut te coacher.",
+  "it": "Gratis, senza pubblicità, su ogni dispositivo. Suggerisce il prossimo peso e la tua AI può farti da coach."
+ },
+ "Create an account": {
+  "nl": "Account aanmaken",
+  "es": "Crear una cuenta",
+  "de": "Konto erstellen",
+  "fr": "Créer un compte",
+  "it": "Crea un account"
+ },
+ "Screenshots": {
+  "nl": "Schermafbeeldingen",
+  "es": "Capturas de pantalla",
+  "de": "Screenshots",
+  "fr": "Captures d’écran",
+  "it": "Schermate"
+ },
+ "Logging a set: the weight you did last time, the suggested next weight and the reason for it": {
+  "nl": "Een set loggen: het gewicht van de vorige keer, het voorgestelde volgende gewicht en de reden daarvoor",
+  "es": "Registrar una serie: el peso de la última vez, el siguiente peso sugerido y el motivo",
+  "de": "Einen Satz eintragen: das Gewicht vom letzten Mal, das vorgeschlagene nächste Gewicht und der Grund dafür",
+  "fr": "Saisir une série : la charge de la dernière fois, la charge suivante proposée et la raison",
+  "it": "Registrare una serie: il peso dell’ultima volta, il prossimo peso suggerito e il motivo"
+ },
+ "The week as seven blocks, with today's training day ready to start": {
+  "nl": "De week als zeven blokken, met de training van vandaag klaar om te starten",
+  "es": "La semana en siete bloques, con el entrenamiento de hoy listo para empezar",
+  "de": "Die Woche als sieben Blöcke, mit dem heutigen Training startbereit",
+  "fr": "La semaine en sept blocs, avec l’entraînement du jour prêt à démarrer",
+  "it": "La settimana in sette blocchi, con l’allenamento di oggi pronto a partire"
+ },
+ "The finish screen: time, working sets, volume and new personal records": {
+  "nl": "Het eindscherm: tijd, werksets, volume en nieuwe persoonlijke records",
+  "es": "La pantalla final: tiempo, series efectivas, volumen y nuevos récords personales",
+  "de": "Der Abschlussbildschirm: Zeit, Arbeitssätze, Volumen und neue persönliche Rekorde",
+  "fr": "L’écran de fin : durée, séries de travail, volume et nouveaux records personnels",
+  "it": "La schermata finale: tempo, serie di lavoro, volume e nuovi record personali"
+ },
+ "Log a set. Last time and the next weight are right there.": {
+  "nl": "Log een set. De vorige keer en het volgende gewicht staan er direct bij.",
+  "es": "Registra una serie. La última vez y el siguiente peso están ahí mismo.",
+  "de": "Trag einen Satz ein. Letztes Mal und nächstes Gewicht stehen direkt dabei.",
+  "fr": "Note une série. La dernière fois et la charge suivante sont juste là.",
+  "it": "Registra una serie. L’ultima volta e il prossimo peso sono lì."
+ },
+ "Your week at a glance.": {
+  "nl": "Je week in één oogopslag.",
+  "es": "Tu semana de un vistazo.",
+  "de": "Deine Woche auf einen Blick.",
+  "fr": "Ta semaine en un coup d’œil.",
+  "it": "La tua settimana a colpo d’occhio."
+ },
+ "Finish a day: time, volume and new records.": {
+  "nl": "Rond een dag af: tijd, volume en nieuwe records.",
+  "es": "Termina un día: tiempo, volumen y nuevos récords.",
+  "de": "Tag abschließen: Zeit, Volumen und neue Rekorde.",
+  "fr": "Termine une séance : durée, volume et nouveaux records.",
+  "it": "Concludi un giorno: tempo, volume e nuovi record."
+ },
+ "What makes it different": {
+  "nl": "Wat het anders maakt",
+  "es": "Lo que lo hace diferente",
+  "de": "Was es anders macht",
+  "fr": "Ce qui le distingue",
+  "it": "Cosa lo rende diverso"
+ },
+ "Your own AI as a coach": {
+  "nl": "Je eigen AI als coach",
+  "es": "Tu propia IA como entrenador",
+  "de": "Deine eigene KI als Coach",
+  "fr": "Ta propre IA comme coach",
+  "it": "La tua AI come coach"
+ },
+ "Connect Claude with the connector, or paste a request into any AI chat. It builds your plan and reviews your sessions. Your data stays in your account.": {
+  "nl": "Koppel Claude met de connector, of plak een verzoek in een willekeurige AI-chat. Die bouwt je schema en beoordeelt je trainingen. Je gegevens blijven in je account.",
+  "es": "Conecta Claude con el conector, o pega una petición en cualquier chat de IA. Crea tu plan y revisa tus sesiones. Tus datos se quedan en tu cuenta.",
+  "de": "Verbinde Claude über den Connector oder füge eine Anfrage in einen beliebigen KI-Chat ein. Die KI erstellt deinen Plan und wertet deine Einheiten aus. Deine Daten bleiben in deinem Konto.",
+  "fr": "Connecte Claude avec le connecteur, ou colle une demande dans n’importe quel chat d’IA. Elle crée ton plan et analyse tes séances. Tes données restent dans ton compte.",
+  "it": "Collega Claude con il connettore, oppure incolla una richiesta in qualsiasi chat AI. Crea il tuo piano e rivede i tuoi allenamenti. I tuoi dati restano nel tuo account."
+ },
+ "Next weight, with the reason": {
+  "nl": "Volgend gewicht, met de reden",
+  "es": "Siguiente peso, con el motivo",
+  "de": "Nächstes Gewicht, mit Begründung",
+  "fr": "Charge suivante, avec la raison",
+  "it": "Prossimo peso, con il motivo"
+ },
+ "After each session the app suggests the next load and reps, and says why.": {
+  "nl": "Na elke training stelt de app de volgende belasting en herhalingen voor en zegt waarom.",
+  "es": "Después de cada sesión la app sugiere la próxima carga y repeticiones, y explica por qué.",
+  "de": "Nach jeder Einheit schlägt die App die nächste Last und Wiederholungen vor und sagt, warum.",
+  "fr": "Après chaque séance, l’appli propose la prochaine charge et les répétitions, et explique pourquoi.",
+  "it": "Dopo ogni sessione l’app suggerisce il prossimo carico e le ripetizioni, e dice perché."
+ },
+ "A week you can see": {
+  "nl": "Een week die je overziet",
+  "es": "Una semana que se ve",
+  "de": "Eine Woche, die du siehst",
+  "fr": "Une semaine qu’on voit",
+  "it": "Una settimana che vedi"
+ },
+ "Seven blocks, one tap to start. Supersets, warm-ups and a plate calculator are built in.": {
+  "nl": "Zeven blokken, één tik om te starten. Supersets, opwarmsets en een schijvenrekenmachine zijn ingebouwd.",
+  "es": "Siete bloques, un toque para empezar. Superseries, calentamientos y calculadora de discos incluidos.",
+  "de": "Sieben Blöcke, ein Tipp zum Starten. Supersätze, Aufwärmsätze und ein Scheibenrechner sind eingebaut.",
+  "fr": "Sept blocs, un tap pour démarrer. Supersets, échauffements et calculateur de disques inclus.",
+  "it": "Sette blocchi, un tocco per iniziare. Superserie, riscaldamento e calcolatore dei dischi inclusi."
+ },
+ "Progress you can share": {
+  "nl": "Voortgang die je kunt delen",
+  "es": "Progreso que puedes compartir",
+  "de": "Fortschritt zum Teilen",
+  "fr": "Une progression à partager",
+  "it": "Progressi da condividere"
+ },
+ "Records, estimated strength and trends. Finish a day and share it as a picture.": {
+  "nl": "Records, geschatte kracht en trends. Rond een dag af en deel het als afbeelding.",
+  "es": "Récords, fuerza estimada y tendencias. Termina un día y compártelo como imagen.",
+  "de": "Rekorde, geschätzte Kraft und Trends. Schließe einen Tag ab und teile ihn als Bild.",
+  "fr": "Records, force estimée et tendances. Termine une séance et partage-la en image.",
+  "it": "Record, forza stimata e tendenze. Concludi un giorno e condividilo come immagine."
+ },
+ "Food and nutrients": {
+  "nl": "Eten en voedingsstoffen",
+  "es": "Comida y nutrientes",
+  "de": "Essen und Nährstoffe",
+  "fr": "Alimentation et nutriments",
+  "it": "Cibo e nutrienti"
+ },
+ "A food tracker with Dutch (RIVM) and USDA food data.": {
+  "nl": "Een voedingstracker met Nederlandse (RIVM) en USDA-voedingsdata.",
+  "es": "Un registro de comidas con datos de alimentos neerlandeses (RIVM) y del USDA.",
+  "de": "Ein Ernährungstracker mit niederländischen (RIVM) und USDA-Lebensmitteldaten.",
+  "fr": "Un suivi alimentaire avec les données néerlandaises (RIVM) et USDA.",
+  "it": "Un diario alimentare con dati olandesi (RIVM) e USDA."
+ },
+ "Bring your history": {
+  "nl": "Neem je geschiedenis mee",
+  "es": "Trae tu historial",
+  "de": "Bring deinen Verlauf mit",
+  "fr": "Apporte ton historique",
+  "it": "Porta il tuo storico"
+ },
+ "Import from Strong, Hevy and FitNotes. 300+ exercises, plus your own.": {
+  "nl": "Importeer uit Strong, Hevy en FitNotes. 300+ oefeningen, plus je eigen.",
+  "es": "Importa desde Strong, Hevy y FitNotes. Más de 300 ejercicios, y los tuyos.",
+  "de": "Import aus Strong, Hevy und FitNotes. Über 300 Übungen, plus deine eigenen.",
+  "fr": "Importe depuis Strong, Hevy et FitNotes. Plus de 300 exercices, et les tiens.",
+  "it": "Importa da Strong, Hevy e FitNotes. Oltre 300 esercizi, più i tuoi."
+ },
+ "Free and private": {
+  "nl": "Gratis en privé",
+  "es": "Gratis y privado",
+  "de": "Kostenlos und privat",
+  "fr": "Gratuit et privé",
+  "it": "Gratis e privato"
+ },
+ "New start page": {
+  "nl": "Nieuwe startpagina",
+  "es": "Nueva página de inicio",
+  "de": "Neue Startseite",
+  "fr": "Nouvelle page d’accueil",
+  "it": "Nuova pagina iniziale"
+ },
+ "The start page for visitors now shows the app on three screens and what makes it different. Pick your language with the button at the top.": {
+  "nl": "De startpagina voor bezoekers toont nu de app op drie schermen en wat hem anders maakt. Kies je taal met de knop bovenaan.",
+  "es": "La página de inicio para visitantes ahora muestra la app en tres pantallas y lo que la hace diferente. Elige tu idioma con el botón de arriba.",
+  "de": "Die Startseite für Besucher zeigt die App jetzt auf drei Bildschirmen und was sie anders macht. Wähle deine Sprache über die Schaltfläche oben.",
+  "fr": "La page d’accueil pour les visiteurs montre maintenant l’appli sur trois écrans et ce qui la distingue. Choisis ta langue avec le bouton en haut.",
+  "it": "La pagina iniziale per i visitatori ora mostra l’app in tre schermate e cosa la rende diversa. Scegli la lingua con il pulsante in alto."
+ },
+ "This list of changes moved to More, under What's new.": {
+  "nl": "Deze lijst met wijzigingen staat nu onder Meer, bij Wat is er nieuw.",
+  "es": "Esta lista de cambios ahora está en Más, en Novedades.",
+  "de": "Diese Liste der Änderungen ist jetzt unter Mehr, bei Neuigkeiten.",
+  "fr": "Cette liste des changements se trouve maintenant dans Plus, sous Nouveautés.",
+  "it": "Questo elenco di modifiche ora è in Altro, sotto Novità."
  }
 }

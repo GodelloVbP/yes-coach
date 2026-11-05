@@ -16,7 +16,7 @@ USER = {'id': 'u1', 'aud': 'authenticated', 'email': 'a@b.nl', 'app_metadata': {
 STUB = """window.__n = 0; window.__ts = [];
 window.turnstile = { render(box, o) { window.__ts.push({ box: box.id, key: o.sitekey, appearance: o.appearance }); window.__o = o; setTimeout(() => o.callback('TOKEN-' + (++window.__n)), 30); return 7; },
   reset() { setTimeout(() => window.__o.callback('TOKEN-' + (++window.__n)), 30); } };"""
-def make(pw, reject_captcha=False, block_cf=False, no_key=False, signed_in=False):
+def make(pw, reject_captcha=False, block_cf=False, no_key=False, signed_in=False, users=7):
     br = pw.chromium.launch(executable_path='/usr/bin/google-chrome', args=['--no-sandbox'])
     ctx = br.new_context(device_scale_factor=2, viewport={'width': 390, 'height': 800})  # CSP on: the policy itself is part of the test
     ctx.add_init_script("if (!sessionStorage.getItem('li')) { localStorage.setItem('yc-lang','en'); sessionStorage.setItem('li','1'); }")
@@ -39,7 +39,7 @@ def make(pw, reject_captcha=False, block_cf=False, no_key=False, signed_in=False
             if '/signup' in u: return j({'id': 'u2', 'email': body.get('email'), 'aud': 'authenticated', 'created_at': '2026-01-01T00:00:00Z'})
             if '/user' in u: return j(USER)
             return j({})
-        if u.startswith('/rest/v1/rpc/user_count'): return j(7)
+        if u.startswith('/rest/v1/rpc/user_count'): return j(users)
         return j([])
     ctx.route('**/*', lambda r: r.continue_() if r.request.url.startswith('http://127.0.0.1') else (log['other'].append(r.request.url), r.abort()))
     ctx.route(SB + '/**', supa)
@@ -76,9 +76,15 @@ with sync_playwright() as pw:
     ok(pg.is_visible('#hm-login') and pg.is_hidden('#hm-train') and pg.is_hidden('#hm-ticket') and pg.is_hidden('#hm-claude'), 'signed out: Home with a sign-in button, no train/ticket/Claude buttons')
     ok(pg.is_visible('#v-home') and pg.is_hidden('#tabs-nav') and pg.is_hidden('#appbar'), 'signed out: opens on the landing page with no navigation bar')
     ok(pg.is_hidden('#au-email') and pg.is_hidden('#stick'), 'signed out: sign-in form and tab bar are not showing')
-    until(pg, "document.querySelector('#hm-users').hidden === false")
-    ok('7' in pg.inner_text('#hm-users'), 'signed out: Home shows the user count: ' + pg.inner_text('#hm-users'))
+    pg.wait_for_timeout(1000)
+    ok(pg.is_hidden('#hm-users'), 'signed out: 7 users is below the threshold, so no counter is shown')
     ok(len(log['cf']) == 0, 'Cloudflare not contacted until the form opens')
+    ok(pg.is_visible('#hm-chip') and 'English' in pg.inner_text('#hm-chip') and pg.locator('#hm-chip svg.flag').count() == 1, 'header: a language chip with flag and name')
+    ok(pg.is_hidden('#hm-lang-wrap') and pg.get_attribute('#hm-chip', 'aria-expanded') == 'false', 'header: the picker is closed')
+    pg.click('#hm-chip')
+    ok(pg.is_visible('#hm-lang') and pg.get_attribute('#hm-chip', 'aria-expanded') == 'true', 'header: the chip opens the picker')
+    pg.keyboard.press('Escape')
+    ok(pg.is_hidden('#hm-lang-wrap'), 'header: Escape closes the picker')
     names = pg.eval_on_selector_all('#hm-lang button', 'els => els.map(e => e.textContent.trim())')
     ok(names == ['Nederlands', 'English', 'Español', 'Deutsch', 'Français', 'Italiano'], 'Home language picker: native names in order: %s' % names)
     ok(pg.locator('#hm-lang button svg.flag').count() == 6, 'Home language picker: a flag on every button')
@@ -97,9 +103,14 @@ with sync_playwright() as pw:
     ok(not log['other'], 'nothing else left the site: %s' % log['other'])
     br.close()
     br, pg, log = make(pw); pg.goto(BASE); pg.wait_for_selector('#hm-login', state='visible')
-    pg.click('#hm-lang button[lang=de]'); pg.wait_for_load_state('load'); pg.wait_for_selector('#hm-login', state='visible')
+    pg.click('#hm-chip'); pg.click('#hm-lang button[lang=de]'); pg.wait_for_load_state('load'); pg.wait_for_selector('#hm-login', state='visible')
     ok(pg.evaluate("localStorage.getItem('yc-lang')") == 'de' and pg.evaluate('document.documentElement.lang') == 'de', 'Home picker switches the language')
     ok('ANMELDEN' in pg.inner_text('#hm-login').upper(), 'Home is in German after the switch: ' + pg.inner_text('#hm-login'))
+    ok('Deutsch' in pg.inner_text('#hm-chip'), 'the chip shows the new language')
+    br.close()
+    br, pg, log = make(pw, users=150); pg.goto(BASE); pg.wait_for_selector('#hm-login', state='visible')
+    until(pg, "document.querySelector('#hm-users').hidden === false")
+    ok('150' in pg.inner_text('#hm-users'), 'signed out: the counter shows from the threshold up: ' + pg.inner_text('#hm-users'))
     br.close()
     # 2 sign up and reset send tokens, and a spent token is replaced
     br, pg, log = make(pw); pg.goto(BASE)
