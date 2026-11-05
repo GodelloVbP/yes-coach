@@ -39,12 +39,12 @@ A free, ad-free workout tracker. Static site on GitHub Pages, accounts and data 
 
 What the code enforces:
 - **Data access:** row-level security on every table (`schema.sql`, `tickets.sql`); a connected AI app is limited further by `connector.sql`. Functions that run with owner rights pin their `search_path` and check who is calling.
-- **Pages:** `build.py` gives `index.html`, `consent.html`, `connect.html` and `privacy.html` a content security policy (inline scripts only by hash, connections only to this site and Supabase) and a frame guard so the consent screen cannot be framed. Nothing loads from other sites. Re-run `python3 build.py` after changing any inline script; it recomputes the hashes.
+- **Pages:** `build.py` gives `index.html`, `consent.html`, `connect.html` and `privacy.html` a content security policy (inline scripts only by hash, connections only to this site and Supabase) and a frame guard so the consent screen cannot be framed. The only outside host is Cloudflare Turnstile, and only on the sign-in and consent screens (site key in `config.js`, secret in Supabase). Re-run `python3 build.py` after changing any inline script; it recomputes the hashes.
 - **Limits:** 256 KB per document and 20,000 documents per account (`schema.sql`); the connector refuses requests over 200 KB.
 - **Tests:** `node tests/merge.test.mjs` (deep merge cannot pollute `Object.prototype`), `node --experimental-strip-types --no-warnings supabase/tests/mcp.test.mjs` (connector).
 
 Set in the Supabase dashboard (code cannot do these):
-- Authentication, Attack Protection: turn on CAPTCHA (Turnstile or hCaptcha). Sign-up is open and email confirmation is off, so bots can create accounts.
+- Authentication, Attack Protection: turn on CAPTCHA with provider Cloudflare Turnstile and the secret key. The app already sends the token (`captcha.js`). Sign-up is open and email confirmation is off, so bots can create accounts.
 - Authentication, Providers, Email: minimum password length 8 or more.
 - Authentication, URL Configuration: only your app address under Redirect URLs, no wildcards.
 - Advisors, Security Advisor: run it after each SQL change and fix anything it flags.
