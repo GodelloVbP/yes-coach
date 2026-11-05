@@ -47,7 +47,7 @@ Set in the Supabase dashboard (code cannot do these):
 - Authentication, Attack Protection: turn on CAPTCHA with provider Cloudflare Turnstile and the secret key. The app already sends the token (`captcha.js`). Sign-up is open and email confirmation is off, so bots can create accounts.
 - Authentication, Providers, Email: minimum password length 8 or more.
 - Authentication, URL Configuration: only your app address under Redirect URLs, no wildcards.
-- Advisors, Security Advisor: run it after each SQL change and fix anything it flags.
+- Advisors, Security Advisor: run it after each SQL change and fix anything it flags. What stays flagged on purpose: `is_admin`, `admin_set_ticket`, `admin_reply`, `admin_delete_ticket`, `delete_me` and `user_count` are callable by signed-in users because the app calls them that way (the admin ones check `is_admin()` inside, `delete_me` only touches the caller's own rows). "Leaked password protection" needs the Pro plan.
 - Keep the secret (`service_role`) key out of this repo, the app and the function. Only the public key is used.
 
 ## Shipping an update

@@ -149,6 +149,8 @@ begin
 end $$;
 drop trigger if exists ticket_messages_reopen on public.ticket_messages;
 create trigger ticket_messages_reopen after insert on public.ticket_messages for each row execute function public.ticket_messages_reopen();
+-- a trigger function is never called over the API
+revoke all on function public.ticket_messages_reopen() from public, anon, authenticated;
 
 -- If an original is deleted (by the owner, or because its author deleted their account), its duplicates stop mirroring.
 -- Finished ones keep their result; the others go back to "open" so they show up in the owner's queue again.
