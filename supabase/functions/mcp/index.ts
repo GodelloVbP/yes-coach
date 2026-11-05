@@ -213,7 +213,7 @@ const TOOLS: Tool[] = [
       id: { type: 'string', description: 'An existing day id to replace. Leave out to create a new day.' }, name: { type: 'string' }, kind: { type: 'string', enum: KINDS }, focus: { type: 'string', description: 'A few words, e.g. "Chest and triceps".' },
       exercises: { type: 'array', maxItems: 12, description: 'The whole list of exercises for the day, in order. It replaces the old list.', items: obj({
         exercise_id: { type: 'string' }, sets: { type: 'integer' }, reps: { type: 'string', description: 'Text, e.g. "8", "8 to 10", "10 per arm", "max", "30 s".' },
-        target_kg: { type: 'string', description: 'Starting load in kg as a plain number in text, e.g. "60", or "".' }, rest_s: { type: 'integer' }, note: { type: 'string', description: 'One short coaching cue.' },
+        target_kg: { type: 'string', description: 'Load in kg as a plain number in text, e.g. "60", or "". Leave it empty to let the app suggest the next weight from the last sessions; a load set here replaces that suggestion until the next session is logged.' }, rest_s: { type: 'integer' }, note: { type: 'string', description: 'One short coaching cue.' },
       }, ['exercise_id', 'sets', 'reps']) },
     }, ['name', 'exercises']),
     description: 'Create a training day or replace an existing one (name, kind, focus and the whole exercise list). The exercise list given replaces the old one. A new day is not part of the week until the schedule includes it.',

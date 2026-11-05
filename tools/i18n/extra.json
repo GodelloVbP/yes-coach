@@ -845,5 +845,152 @@
   "de": "Stelle Stange (20, 15 oder 10 kg) und deine Scheiben unter Mehr, Eintragen ein.",
   "fr": "Règle ta barre (20, 15 ou 10 kg) et tes disques dans Plus, Saisie.",
   "it": "Imposta il bilanciere (20, 15 o 10 kg) e i dischi che hai in Altro, Registrazione."
+ },
+ "+{0}: all {1} sets reached {2} last time": {
+  "nl": "+{0}: alle {1} sets haalden vorige keer {2}",
+  "es": "+{0}: las {1} series llegaron a {2} la última vez",
+  "de": "+{0}: alle {1} Sätze haben letztes Mal {2} erreicht",
+  "fr": "+{0} : les {1} séries ont atteint {2} la dernière fois",
+  "it": "+{0}: tutte le {1} serie hanno raggiunto {2} l’ultima volta"
+ },
+ "-{0}: all {1} sets reached {2} last time": {
+  "nl": "-{0}: alle {1} sets haalden vorige keer {2}",
+  "es": "-{0}: las {1} series llegaron a {2} la última vez",
+  "de": "-{0}: alle {1} Sätze haben letztes Mal {2} erreicht",
+  "fr": "-{0} : les {1} séries ont atteint {2} la dernière fois",
+  "it": "-{0}: tutte le {1} serie hanno raggiunto {2} l’ultima volta"
+ },
+ "Same weight: your last sets were close to failure": {
+  "nl": "Zelfde gewicht: je laatste sets zaten tegen je limiet",
+  "es": "Mismo peso: tus últimas series estuvieron cerca del fallo",
+  "de": "Gleiches Gewicht: deine letzten Sätze waren nah am Muskelversagen",
+  "fr": "Même poids : tes dernières séries étaient proches de l’échec",
+  "it": "Stesso peso: le ultime serie erano vicine al cedimento"
+ },
+ "Same weight again: not every set reached {0}": {
+  "nl": "Weer hetzelfde gewicht: niet elke set haalde {0}",
+  "es": "Mismo peso otra vez: no todas las series llegaron a {0}",
+  "de": "Wieder dasselbe Gewicht: nicht jeder Satz erreichte {0}",
+  "fr": "Même poids : toutes les séries n’ont pas atteint {0}",
+  "it": "Stesso peso: non tutte le serie hanno raggiunto {0}"
+ },
+ "Stuck at {0}: same weight again": {
+  "nl": "Vast op {0}: weer hetzelfde gewicht",
+  "es": "Estancado en {0}: mismo peso otra vez",
+  "de": "Festgefahren bei {0}: wieder dasselbe Gewicht",
+  "fr": "Bloqué à {0} : même poids encore",
+  "it": "Fermo a {0}: ancora lo stesso peso"
+ },
+ "Down to {0}: short on reps at the same weight three sessions running": {
+  "nl": "Terug naar {0}: drie trainingen op rij te weinig herhalingen met hetzelfde gewicht",
+  "es": "Bajamos a {0}: te faltaron repeticiones con el mismo peso tres sesiones seguidas",
+  "de": "Zurück auf {0}: dreimal in Folge zu wenige Wiederholungen mit demselben Gewicht",
+  "fr": "Retour à {0} : pas assez de répétitions au même poids trois séances de suite",
+  "it": "Scendi a {0}: ripetizioni mancate con lo stesso peso per tre sessioni di fila"
+ },
+ "Same weight, aim for one more rep": {
+  "nl": "Zelfde gewicht, mik op één herhaling meer",
+  "es": "Mismo peso, intenta una repetición más",
+  "de": "Gleiches Gewicht, versuche eine Wiederholung mehr",
+  "fr": "Même poids, vise une répétition de plus",
+  "it": "Stesso peso, punta a una ripetizione in più"
+ },
+ "Back after {0} days: same weight as last time": {
+  "nl": "Terug na {0} dagen: zelfde gewicht als vorige keer",
+  "es": "De vuelta tras {0} días: mismo peso que la última vez",
+  "de": "Zurück nach {0} Tagen: gleiches Gewicht wie letztes Mal",
+  "fr": "De retour après {0} jours : même poids que la dernière fois",
+  "it": "Di ritorno dopo {0} giorni: stesso peso dell’ultima volta"
+ },
+ "Down to {0}: {1} days since your last session": {
+  "nl": "Terug naar {0}: {1} dagen sinds je laatste training",
+  "es": "Bajamos a {0}: han pasado {1} días desde tu última sesión",
+  "de": "Zurück auf {0}: {1} Tage seit deinem letzten Training",
+  "fr": "Retour à {0} : {1} jours depuis ta dernière séance",
+  "it": "Scendi a {0}: sono passati {1} giorni dall’ultima sessione"
+ },
+ "Same weight: last time you did {0} of {1} sets": {
+  "nl": "Zelfde gewicht: vorige keer deed je {0} van {1} sets",
+  "es": "Mismo peso: la última vez hiciste {0} de {1} series",
+  "de": "Gleiches Gewicht: letztes Mal hast du {0} von {1} Sätzen gemacht",
+  "fr": "Même poids : la dernière fois tu as fait {0} séries sur {1}",
+  "it": "Stesso peso: l’ultima volta hai fatto {0} serie su {1}"
+ },
+ "Beat last time: {0} reps": {
+  "nl": "Verbeter vorige keer: {0} herhalingen",
+  "es": "Supera la última vez: {0} repeticiones",
+  "de": "Schlag letztes Mal: {0} Wiederholungen",
+  "fr": "Bats la dernière fois : {0} répétitions",
+  "it": "Batti l’ultima volta: {0} ripetizioni"
+ },
+ "One more rep on each set": {
+  "nl": "Eén herhaling meer per set",
+  "es": "Una repetición más en cada serie",
+  "de": "Eine Wiederholung mehr pro Satz",
+  "fr": "Une répétition de plus par série",
+  "it": "Una ripetizione in più per ogni serie"
+ },
+ "You reached {0} reps on every set: add some weight": {
+  "nl": "Je haalde {0} herhalingen bij elke set: voeg wat gewicht toe",
+  "es": "Llegaste a {0} repeticiones en cada serie: añade algo de peso",
+  "de": "Du hast in jedem Satz {0} Wiederholungen geschafft: nimm etwas Gewicht dazu",
+  "fr": "Tu as atteint {0} répétitions à chaque série : ajoute du poids",
+  "it": "Hai raggiunto {0} ripetizioni in ogni serie: aggiungi un po’ di peso"
+ },
+ "Use last time": {
+  "nl": "Gebruik vorige keer",
+  "es": "Usar la última vez",
+  "de": "Letztes Mal übernehmen",
+  "fr": "Reprendre la dernière fois",
+  "it": "Usa l’ultima volta"
+ },
+ "Use the suggestion": {
+  "nl": "Gebruik het voorstel",
+  "es": "Usar la sugerencia",
+  "de": "Vorschlag nutzen",
+  "fr": "Utiliser la suggestion",
+  "it": "Usa il suggerimento"
+ },
+ "Suggest the next weight from your last sessions": {
+  "nl": "Stel het volgende gewicht voor op basis van je laatste trainingen",
+  "es": "Sugerir el próximo peso según tus últimas sesiones",
+  "de": "Nächstes Gewicht aus deinen letzten Trainings vorschlagen",
+  "fr": "Suggérer le prochain poids d’après tes dernières séances",
+  "it": "Suggerisci il prossimo peso in base alle ultime sessioni"
+ },
+ "Weight step when you go up": {
+  "nl": "Gewichtsstap bij verhogen",
+  "es": "Salto de peso al subir",
+  "de": "Gewichtsschritt beim Steigern",
+  "fr": "Palier de poids à l’augmentation",
+  "it": "Salto di peso quando sali"
+ },
+ "Suggested next weight": {
+  "nl": "Voorgesteld volgend gewicht",
+  "es": "Próximo peso sugerido",
+  "de": "Vorgeschlagenes nächstes Gewicht",
+  "fr": "Prochain poids suggéré",
+  "it": "Prossimo peso suggerito"
+ },
+ "Each exercise now shows the weight to try next, worked out from your last sessions. When every set reached the reps, it goes up a step.": {
+  "nl": "Elke oefening toont nu het gewicht om als volgende te proberen, berekend uit je laatste trainingen. Haalde elke set de herhalingen, dan gaat het een stap omhoog.",
+  "es": "Cada ejercicio muestra ahora el peso que probar a continuación, calculado con tus últimas sesiones. Si todas las series llegaron a las repeticiones, sube un escalón.",
+  "de": "Jede Übung zeigt jetzt das nächste Gewicht zum Ausprobieren, berechnet aus deinen letzten Trainings. Haben alle Sätze die Wiederholungen erreicht, geht es einen Schritt hoch.",
+  "fr": "Chaque exercice affiche maintenant le poids à essayer ensuite, calculé d’après tes dernières séances. Quand toutes les séries ont atteint les répétitions, il monte d’un palier.",
+  "it": "Ogni esercizio mostra ora il peso da provare dopo, calcolato dalle ultime sessioni. Se tutte le serie hanno raggiunto le ripetizioni, sale di un gradino."
+ },
+ "A line under the exercise says why. Tap Use last time to see last time’s numbers instead.": {
+  "nl": "Een regel onder de oefening zegt waarom. Tik op Gebruik vorige keer om in plaats daarvan de cijfers van vorige keer te zien.",
+  "es": "Una línea bajo el ejercicio explica por qué. Toca Usar la última vez para ver los números de la última vez.",
+  "de": "Eine Zeile unter der Übung sagt, warum. Tippe auf Letztes Mal übernehmen, um stattdessen die Zahlen vom letzten Mal zu sehen.",
+  "fr": "Une ligne sous l’exercice explique pourquoi. Touche Reprendre la dernière fois pour voir les chiffres de la dernière fois.",
+  "it": "Una riga sotto l’esercizio spiega perché. Tocca Usa l’ultima volta per vedere i numeri dell’ultima volta."
+ },
+ "Turn it off in Settings, Logging. Set the step per exercise in the plan editor.": {
+  "nl": "Zet het uit bij Meer, Loggen. Stel de stap per oefening in bij de plan-editor.",
+  "es": "Desactívalo en Más, Registro. Define el salto por ejercicio en el editor del plan.",
+  "de": "Schalte es unter Mehr, Eintragen aus. Den Schritt pro Übung stellst du im Plan-Editor ein.",
+  "fr": "Désactive-le dans Plus, Saisie. Règle le palier par exercice dans l’éditeur du plan.",
+  "it": "Disattivalo in Altro, Registrazione. Imposta il salto per esercizio nell’editor del piano."
  }
 }
