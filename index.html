@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-ZBg15Ui6u7pCtfgzhySn0YlZYgc2gvtiuvCkXwRkzm4=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-7i1GcLru7EmupZClVkqRPY9o3JvLNF8crn+/Oc2SgKo=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-05 15:55Z">
+<meta name="yc-build" content="2026-11-05 17:58Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -1733,6 +1733,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['5 Nov 2026', 'Critical reviews', ["After you finish a day, Claude or any AI chat now gets a proper brief. It judges your sets and weights, your notes, the plan of that day, your whole week and the muscle groups you miss, and checks its own answer once before it replies.", "With Claude connected, the review opens in a new chat and changes nothing until you say so. Without it, Review with my AI on the finish screen copies the same request, with your data, for any AI chat.", "Copy day and the full export use the same brief."]],
     ['5 Nov 2026', 'Sample workout', ["Try the app without an account: See a sample workout on the start page opens a plan with two earlier sessions, so you can log a set and see the suggested next weight. Nothing is saved.", "The start page now opens with what Yes Coach! does best: knowing what to lift next."]],
     ['5 Nov 2026', 'New start page', ["The start page for visitors now shows the app on three screens and what makes it different. Pick your language with the button at the top.", "This list of changes moved to More, under What's new."]],
     ['5 Nov 2026', 'Supersets', ["Pair two exercises that you do back to back. In the plan editor, open an exercise and tick Superset with the next exercise.", "While you train, ticking a set takes you straight to the other exercise. The rest timer starts after the last one of the round."]],
@@ -1872,20 +1873,23 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     b.setAttribute('aria-expanded', 'true');
   };
   // after a finished day: offer the review in the user's own Claude (only when a Claude is connected)
+  const REVIEW_URL_MAX = 12000; // addresses up to 16 KB pass the usual browsers and proxies; longer ones fall back to the clipboard
   const askClaudeReview = (day) => {
-    const prompt = 'Review my Yes Coach! workout "' + day.name + '" from ' + day.date + '. Use my Yes Coach connector to read that session and my plan, tell me how it went, and what to change next time.';
     const wrap = h('div', 'ydlg');
     const close = () => { wrap.remove(); document.removeEventListener('keydown', onKey); };
     const onKey = (e) => { if (e.key === 'Escape') close(); };
     const box = confirmBox({
       label: 'Send day to Coach Claude',
-      text: 'Send day to Coach Claude for review? ' + day.name + ' is saved. Claude reads it through your connector and answers in a new chat.',
+      text: 'Get a critical review from Claude? It reads ' + day.name + ' through your connector and judges your sets, your notes, this day\'s plan, your whole week and the muscle groups you miss. It changes nothing until you say so.',
       yes: 'Send to Claude', keep: 'Not now', yesId: 'claude-review-go',
       onYes: async () => {
-        try { window.open('https://claude.ai/new?q=' + encodeURIComponent(prompt), '_blank', 'noopener,noreferrer'); } catch (e) { /* copied below */ }
-        const ok = await copyPlain(prompt);
+        // the full text always goes to the clipboard; the address carries it when it fits, else a shorter one that leaves the numbers to the connector
+        const full = reviewPrompt(day);
+        const url = [full, reviewPrompt(day, true)].map((p) => 'https://claude.ai/new?q=' + encodeURIComponent(p)).find((u) => u.length <= REVIEW_URL_MAX);
+        try { window.open(url || 'https://claude.ai/new', '_blank', 'noopener,noreferrer'); } catch (e) { /* copied below */ }
+        const ok = await copyPlain(full);
         close();
-        showToast(ok ? 'Opening Claude. The request is also copied: paste it if the chat is empty.' : 'Opening Claude.', null);
+        showToast(!ok ? 'Opening Claude.' : url ? 'Opening Claude. The request is also copied: paste it if the chat is empty.' : 'Opening Claude. The request is copied: paste it into the chat.', null);
       },
       onKeep: close,
     });
@@ -1927,7 +1931,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const start = doc.started_at && ticks.length ? Math.min(doc.started_at, ...ticks) : ticks.length ? Math.min(...ticks) : null;
     const minutes = start ? (Math.max(...ticks) - start) / 60000 : null;
     return {
-      name: (S.templates[a.tpl] || {}).name || 'Session', date: a.date, sets: work.length, volume: hasVol ? volume : null,
+      name: (S.templates[a.tpl] || {}).name || 'Session', date: a.date, sid: SID(), tpl: a.tpl, sets: work.length, volume: hasVol ? volume : null,
       minutes: minutes != null && minutes >= 5 && minutes < 300 ? minutes : null, lines, note: doc.note || '',
     };
   };
@@ -2026,6 +2030,15 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       inn.append(cvWrap, toggles, status);
       draw();
     }
+    // without a connected Claude the review goes through the clipboard, to any AI chat
+    connInfo().then((c) => {
+      if (c.apps.length || !wrap.isConnected) return;
+      if (!status.isConnected) inn.insertBefore(status, acts);
+      const ai = btn('skew', 'Review with my AI');
+      ai.id = 'fin-ai';
+      ai.addEventListener('click', async () => { status.textContent = (await copyPlain(dayText(sum.sid, sum.tpl))) ? 'Review request copied. Paste it into your AI chat.' : 'Could not copy. Use Copy day on the training screen next time.'; });
+      acts.insertBefore(ai, done);
+    }).catch(() => {});
     acts.append(done);
     inn.append(acts);
     done.addEventListener('click', close);
@@ -2395,10 +2408,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (!a) return;
     const sum = daySummary();
     if (S.sessions[SID()]) queueWrite(SID(), { finished_at: Date.now() });
-    const day = { name: (S.templates[a.tpl] || {}).name || 'Session', date: a.date };
+    const day = { name: (S.templates[a.tpl] || {}).name || 'Session', date: a.date, sid: SID(), tpl: a.tpl, stats: sum && { minutes: sum.minutes, sets: sum.sets, volume: sum.volume, prs: sum.lines.filter((l) => l.pr).map((l) => l.ex) } };
     closeSession();
-    const after = () => connInfo().then((c) => { if (c.apps.length) askClaudeReview(day); }).catch(() => {});
-    if (sum) showFinish(sum, after); else after();
+    if (!sum) return; // nothing was logged: nothing to review
+    showFinish(sum, () => connInfo().then((c) => { if (c.apps.length) askClaudeReview(day); }).catch(() => {}));
   };
 
   // the session doc of a day when it belongs to that training day (a date can hold another day's workout)
@@ -2666,7 +2679,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     gen.append(genBox.el);
     const copyRow = h('div', 'foot-row');
     const cp = btn('skew', 'Copy day');
-    const cpMsg = h('span', 'note', 'This workout as text, with your notes, to paste into a chat with an AI or your trainer.');
+    const cpMsg = h('span', 'note', 'This workout as a review request: your sets, notes, plan and week, with instructions for a critical review. Paste it into a chat with an AI.');
     cpMsg.setAttribute('aria-live', 'polite');
     const cpBox = h('textarea', 'nt-text ex-out');
     cpBox.readOnly = true;
@@ -5370,19 +5383,125 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     o.push('Exercise ids: ' + exIds.map((x) => { const e = S.exercises[x] || {}; return x + ' = ' + (e.name || x) + ' (' + (unitWord(e) || 'bodyweight') + ')'; }).join('; ') + '.', '');
     return o;
   };
+  // ---- the review brief: the same rules behind every route to an AI (the connector review, Copy day, the full export)
+  const BRIEF = {
+    stance: 'You are my strength coach. I want a critical review, not encouragement. If my plan, my choices or my numbers are poor, say so and why. Every statement needs a number from my data and a date. No flattery, no filler, no generic tips. Never state a set, record or trend that is not in my data.',
+    sets: 'Today\'s sets, one line per exercise, with numbers (reps × load, and last time): did every set reach the planned reps? A drop of more than 2 reps between sets means the load was too heavy or the rest too short. Is the load sensible against my recent best sets (estimated one-rep max in the history)? Compare it with last time and with the app\'s suggestion (the app adds one step when every set reached the top of the rep range, holds the weight otherwise, and lowers it after three short sessions in a row or a break of four weeks). Reps in reserve where logged: 0 to 1 on most sets is the limit, 4 or more is too light. Planned exercises that were not done: say what that did to the week\'s volume and ask why unless my notes say. Check every PR the app flagged against the history. Anything that looks like a typo (a load or rep count far outside my history, 0 reps, 825 for 82.5): name it, ask, and do not build on it. Then give the exact load and reps for next time.',
+    notes: 'My notes outrank progression. Read today\'s and the last two weeks. Pain, a tweak or "felt off": do not raise the load there, offer a substitute or a lighter variation, and say plainly when sharp or lasting pain should be seen by a professional. Do not diagnose.',
+    dayPlan: 'Judge the plan of each day you look at, every time, also when nothing went wrong: the order (heavy compound lifts first, a lagging muscle early), sets and reps for my goal, rest times, two exercises doing the same job, supersets, session length against my profile, exercises against the equipment where I train.',
+    week: 'Judge the whole week every time. Per muscle group: working sets a week, days a week, rest between sessions. Push against pull, quads against hamstrings and glutes, vertical against horizontal pushing and pulling. Training days against my profile. Plan days that are not in the weekly schedule. Guideline, not law: 10 to 20 hard sets per muscle group a week suits most people who want to grow, 6 to 10 maintains, and twice a week beats once; judge by my goal. Name every muscle group that is missing or neglected, also the ones Yes Coach! does not tag (rear delts, calves, hamstrings, glutes, forearms, lower back, core), and give each one exercise that fits where I train and the day it goes on. Say what is overdone too.',
+    self: 'Review yourself once before you answer. Draft the answer, then check it: does every claim carry a number and a date? Did you judge all five parts (sets, notes, the plan of the day, the whole week, missing muscle groups)? Does any advice contradict my notes, injuries or equipment? Did you praise anything the numbers do not support? Are the loads realistic jumps (dumbbells 2 kg, barbell 2.5 kg, a machine one pin)? Is change 1 really the most important? Fix what fails, send only the corrected answer, and end with one line "Self-check: ..." naming what you changed or are unsure about.',
+    dayFormat: 'Answer in this order: Verdict (2 to 3 sentences: the one thing that matters most). Today\'s sets. Notes. This day\'s plan. The whole week: a short table (muscle group, sets a week, days a week, verdict), then the missing and overdone groups. Plan changes: numbered, at most 5, most important first; each with day, exercise, sets × reps, load in the exercise\'s own unit (kg, pin or kg assist) and a short reason. Questions: at most 3, only if the answer changes your advice. About 700 words, the table not counted.',
+    write: 'Change nothing yet. After your list I will say which changes to apply; then use save_training_day (it replaces the whole exercise list of a day: start from get_plan and keep every unchanged exercise exactly), set_schedule or create_exercise. Leave target_kg empty unless you have a reason to override the app\'s suggested weight. One exception: answer each waiting note with answer_note, in 1 to 3 plain sentences.',
+    paste: 'I will make the changes myself, so be exact about exercise, sets, reps and load.',
+  };
+  // the review of one finished day. connector: the AI reads the data itself, so the text is the rules plus the app's own numbers;
+  // paste: for any AI chat, so dayText adds the data. The five judgements and the self-check are the same in both.
+  const dayRules = (mode, name, from) => {
+    const o = [BRIEF.stance, ''];
+    if (mode === 'connector') {
+      o.push('I just finished "' + name + '" in Yes Coach!, a workout tracker. Read my data with my Yes Coach! connector: get_overview first (goal, days per week, session length, where I train, the schedule, waiting notes), then get_sessions with from ' + from + ' (every ticked set with reps, load, type, reps in reserve and notes; warm-ups are not performance), get_exercise_history for each exercise from today (ids below), get_plan (all days and the schedule) and get_notes. The numbers below come from the app; trust the tools over them. If a tool fails or an exercise has fewer than 3 sessions, say so and lower your confidence instead of guessing.');
+    } else {
+      o.push('Review this workout ("' + name + '") from Yes Coach!, a workout tracker. Everything you need is below: today\'s sets with last time, my notes, every training day, the weekly schedule and my last four weeks per body part. If something you need is missing, say what instead of guessing.');
+    }
+    o.push('', 'Judge all of this, in this order:', '- ' + BRIEF.sets, '- ' + BRIEF.notes, '- ' + BRIEF.dayPlan, '- ' + BRIEF.week, '', BRIEF.dayFormat, '', mode === 'connector' ? BRIEF.write : BRIEF.paste, '', BRIEF.self, '');
+    return o;
+  };
+  // what the app can count exactly, so the AI does not have to: working sets per body part over the last four weeks
+  const dayRate = (n) => { const r = Math.round(n * 10) / 10; return num(r) + (r === 1 ? ' day' : ' days'); };
+  const bodyPartFacts = () => {
+    const all = flatten();
+    if (!all.length) return [];
+    const to = today();
+    const from = addDays(to, -27);
+    const weeks = Math.max(1, Math.min(4, Math.ceil((dayNum(to) - Math.max(dayNum(from), dayNum(all[0].date)) + 1) / 7)));
+    const rows = all.filter((r) => isWork(r) && r.date >= from && r.date <= to);
+    const o = ['## My body parts, counted by the app (working sets, warm-ups left out, ' + (weeks === 4 ? 'past 4 weeks' : 'the ' + plural(weeks, 'week') + ' since I started') + ')'];
+    PGROUPS.filter((g) => g !== 'Other' || rows.some((r) => r.group === 'Other')).forEach((g) => {
+      const rs = rows.filter((r) => r.group === g);
+      if (!rs.length) { o.push('- ' + g + ': none logged.'); return; }
+      const days = new Set(rs.map((r) => r.date));
+      const by = new Map();
+      rs.forEach((r) => by.set(r.exercise, (by.get(r.exercise) || 0) + 1));
+      const top = [...by.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([n, c]) => n + ' ' + c).join(', ');
+      const last = Math.round(dayNum(to) - dayNum([...days].sort().pop()));
+      o.push('- ' + g + ': ' + num(Math.round(rs.length / weeks * 10) / 10) + ' sets a week, ' + dayRate(days.size / weeks) + ' a week, last ' + (last === 0 ? 'today' : last + (last === 1 ? ' day' : ' days') + ' ago') + '. Sets by exercise: ' + top + '.');
+    });
+    o.push('Yes Coach! tags only Chest, Back, Shoulders, Arms, Legs and Core, so rear delts, calves, hamstrings and glutes show up only through the exercise names.', '');
+    return o;
+  };
+  // the lifter's own notes of the last four weeks: pain and tweaks outrank progression, so the AI must see them
+  const recentNotesLines = (max = 10) => {
+    const from = addDays(today(), -27);
+    const ns = Object.values(S.notes).filter((n) => n.text && n.date >= from).sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, max);
+    if (!ns.length) return [];
+    const o = ['## My notes, past 4 weeks (newest first)'];
+    ns.forEach((n) => { o.push('- ' + n.date + ', ' + (n.about_label || 'General') + ': ' + String(n.text).replace(/\s+/g, ' ').trim().slice(0, 300)); if (n.reply) o.push('  - Earlier answer: ' + String(n.reply).replace(/\s+/g, ' ').trim().slice(0, 200)); });
+    o.push('');
+    return o;
+  };
+  // the plan as written, every training day, and the schedule
+  const trainingDayLines = () => {
+    const o = ['## Training days (the whole plan)', '', scheduleSummary(), ''];
+    templatesSorted().forEach((t) => {
+      o.push('### ' + t.name + (t.weekday || t.focus ? ' (' + [t.weekday, t.focus].filter(Boolean).join(', ') + ')' : ''));
+      (t.items || []).forEach((it) => o.push('- ' + exName(it.ex) + ': ' + it.sets + ' x ' + it.reps + (it.target ? ' at ' + withUnit(it.target, unitWord(S.exercises[it.ex])) : '')));
+      o.push('');
+    });
+    return o;
+  };
+  // the 3-month trend of one exercise, in words (the export lists all, the day review the exercises of the day)
+  const progressLine = (r, rc) => '- ' + r.exercise + ' (' + r.group + ', ' + r.measure + '): ' + r.firstLabel + ' to ' + r.latestLabel + ', best ' + r.bestLabel + ', ' + r.sessions + ' sessions; 3-month trend ' + (rc && rc.trend ? rc.changeLabel + ' (' + TREND_WORD[rc.trend] + ')' : 'not enough sessions');
+  const dayTrendLines = (exIds) => {
+    const recent = new Map(progressRows(addDays(today(), -91)).map((r) => [r.id, r]));
+    const rows = progressRows('').filter((r) => r.sessions >= 2 && exIds.includes(r.id));
+    return rows.length ? ['## Trend of today\'s exercises', ''].concat(rows.map((r) => progressLine(r, recent.get(r.id))), ['']) : [];
+  };
+  // today as compact lines, for the connector prompt (dayText has the long form for pasting)
+  const todayLines = (sid, tplId, stats) => {
+    const date = dateOf(sid);
+    const doc = S.sessions[sid] || { sets: {} };
+    const o = ['## What the app saw today (' + isoDow(date) + ' ' + dm(date) + ')'];
+    if (stats) o.push('- ' + [stats.minutes != null ? Math.round(stats.minutes) + ' min' : '', stats.sets + ' working sets', stats.volume != null ? Math.round(stats.volume) + ' kg volume' : ''].filter(Boolean).join(', ') + '.');
+    sessionItems({ date, tpl: tplId, sid }).forEach((it) => {
+      const e = S.exercises[it.ex] || { name: exName(it.ex) };
+      const uw = unitWord(e);
+      const sets = Object.values(doc.sets || {}).filter((st) => st && st.ex === it.ex && isDone(st)).sort((a, b) => a.n - b.n);
+      const rir = sets.filter((st) => st.rir != null).map((st) => num(st.rir));
+      const last = lastSetsForRaw(it.ex, date);
+      const n = S.notes[date + '_' + it.ex];
+      o.push('- ' + e.name + ' (exercise_id ' + it.ex + '): ' + (it.planned ? 'plan ' + it.sets + ' × ' + (it.reps || '?') + (it.target ? ' @ ' + withUnit(it.target, uw) : '') : 'added today') + '. ' + (sets.length ? 'Did ' + fmtSets(sets, e.unit || 'kg', uw) + (rir.length ? ' (reps in reserve ' + rir.join('/') + ')' : '') : 'Not done') + '.'
+        + (last ? ' Last time (' + dm(last.date) + '): ' + fmtSets(last.sets, e.unit || 'kg', uw) + '.' : '') + (stats && stats.prs.includes(it.ex) ? ' The app flagged a PR.' : '') + (n && n.text ? ' My note: ' + String(n.text).replace(/\s+/g, ' ').trim() + '.' : ''));
+    });
+    const g = S.notes[date + '_general'];
+    if (g && g.text) o.push('- Session note: ' + String(g.text).replace(/\s+/g, ' ').trim());
+    o.push('');
+    return o;
+  };
+  // everything sent to Claude after a finished day, through the connector
+  const reviewPrompt = (day, lean) => {
+    const t = S.templates[day.tpl] || {};
+    const out = dayRules('connector', day.name, addDays(today(), -27));
+    if (profileLine() || exportCtx.trim()) out.push('About me: ' + [profileLine(), exportCtx.trim() ? 'Notes: ' + exportCtx.trim().replace(/\s+/g, ' ') : ''].filter(Boolean).join('. '), '');
+    if (t.focus) out.push('Day focus: ' + t.focus, '');
+    if (!lean) { out.push.apply(out, todayLines(day.sid, day.tpl, day.stats)); out.push.apply(out, recentNotesLines()); out.push.apply(out, bodyPartFacts()); }
+    return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  };
   const buildExportText = () => {
     const out = [];
     out.push('# Training review request', '');
-    out.push(COACH_VOICE, '');
-    out.push('You are reviewing the training of a lifter who coaches himself. Read the context, the training days and the log below, then answer with:');
-    out.push('1. Progression per body part, based on the numbers: what moved and what stalled.');
-    out.push('2. Balance and volume: push against pull, upper against lower, sessions per week.');
-    out.push('3. Risks, given the injury notes. Say what to avoid and what to test first.');
-    out.push('4. A concrete plan for the next two weeks: exercises, sets, reps and starting loads.');
-    out.push('5. Exercise order: for the latest days, was the order I did the exercises in the right one for that day, and why? The log lists each day in the order I did them. Say what order each day should use.');
-    out.push('6. Questions you need answered before you are confident.');
-    out.push('If something in the plan is a mistake, say so instead of agreeing with it.', '');
-    out.push.apply(out, applyLines(templatesSorted().map((t) => t.id)));
+    out.push(BRIEF.stance, '');
+    out.push('Below is everything Yes Coach!, a workout tracker, has on me: my profile and injury notes, the plan, my last four weeks per body part, my progress per exercise, my notes and the whole training log. Read it all, then judge, in this order:');
+    out.push('- Progression per body part, from the numbers: what moved, what stalled, what went backwards, and the likely reason. Use the trend lines and the log, not impressions.');
+    out.push('- ' + BRIEF.notes.replace('Read today\'s and the last two weeks.', 'Read all of them, newest first.'));
+    out.push('- ' + BRIEF.dayPlan.replace('each day you look at', 'every training day, one by one'));
+    out.push('- ' + BRIEF.week);
+    out.push('- Exercise order: for the latest days, was the order I did the exercises in the right one for that day, and why? The log lists each day in the order I did them. Say what order each day should use.');
+    out.push('- Spot data that looks wrong (typos, loads far outside my history, 0 reps, a day logged twice) and say so instead of building on it.');
+    out.push('', 'Answer in this order: 1 Verdict (3 sentences: the most important thing). 2 Progression per body part. 3 Notes and risks: what to avoid and what to test first. 4 Each training day judged. 5 The whole week: a short table (muscle group, sets a week, days a week, verdict), then the missing and overdone groups. 6 A concrete plan for the next two weeks: exercises, sets, reps and starting loads in each exercise\'s own unit (kg, pin or kg assist). 7 Questions: at most 3, only if the answer changes your advice. Keep it under about 900 words, the table not counted.', '');
+    out.push(BRIEF.self, '');
+    if (AI_CAN_WRITE) out.push.apply(out, applyLines(templatesSorted().map((t) => t.id)));
+    else out.push(BRIEF.paste, '');
     out.push('Exported ' + today() + '.', '');
     out.push('## About the lifter', '', [profileLine(), exportCtx.trim() ? 'Notes: ' + exportCtx.trim() : ''].filter(Boolean).join('\n') || '(nothing added)', '');
     out.push('## How to read the numbers', '');
@@ -5396,6 +5515,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       out.push('- ' + all.sessions + ' logged sessions in ' + all.weeks + ' weeks since ' + dm(all.first) + ', about ' + all.perWeek + ' a week.');
       out.push('- ' + all.sets + ' working sets across ' + all.exercises + ' exercises; ' + all.repeated + ' were repeated in more than one session.', '');
     }
+    out.push.apply(out, bodyPartFacts());
     const fdays = Object.keys(S.food).filter((d) => d >= addDays(today(), -27) && d <= today() && dayTotals(d).k).map(dayTotals);
     if (!showCal()) {
       const md = Object.keys(S.food).filter((d) => d >= addDays(today(), -27) && d <= today() && dayTotals(d).m).map(dayTotals);
@@ -5416,18 +5536,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (pr.length) {
       const recent = new Map(progressRows(addDays(today(), -91)).map((r) => [r.id, r]));
       out.push('## Progress on repeated exercises', '', 'Best working set of the first session against the latest, the best ever, and the trend over the last 3 months (a least-squares line through every session, so one day does not decide it). For kg and pin the best set is the one with the highest estimated one-rep max (Epley, reps capped at 15), so more reps at the same load counts as progress. Bodyweight compares most reps; assistance compares least help.', '');
-      pr.forEach((r) => { const rc = recent.get(r.id); out.push('- ' + r.exercise + ' (' + r.group + ', ' + r.measure + '): ' + r.firstLabel + ' to ' + r.latestLabel + ', best ' + r.bestLabel + ', ' + r.sessions + ' sessions; 3-month trend ' + (rc && rc.trend ? rc.changeLabel + ' (' + TREND_WORD[rc.trend] + ')' : 'not enough sessions')); });
+      pr.forEach((r) => out.push(progressLine(r, recent.get(r.id))));
       out.push('');
     }
-    const ts = templatesSorted();
-    if (ts.length) {
-      out.push('## Training days', '');
-      ts.forEach((t) => {
-        out.push('### ' + t.name + ' (' + (t.weekday || '') + ', ' + (t.focus || '') + ')');
-        (t.items || []).forEach((it) => out.push('- ' + exName(it.ex) + ': ' + it.sets + ' x ' + it.reps + (it.target ? ' at ' + withUnit(it.target, unitWord(S.exercises[it.ex])) : '')));
-        out.push('');
-      });
-    }
+    if (templatesSorted().length) out.push.apply(out, trainingDayLines());
     const notes = Object.values(S.notes).filter((n) => n.text).sort((a, b) => (a.date < b.date ? -1 : 1));
     if (notes.length) {
       out.push('## Notes from the lifter', '');
@@ -5453,9 +5565,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const items = sessionItems({ date, tpl: tplId, sid });
     const d = new Date(date + 'T12:00:00');
     const out = ['# ' + (t.name || doc.label || 'Workout') + ', ' + isoDow(date) + ' ' + dm(date) + ' ' + d.getFullYear(), ''];
-    out.push('Please review this workout as my coach. ' + COACH_VOICE + ' Say what went well, what to change, and give concrete weights and reps for next time. Also judge the order I did the exercises in (see Order I did them in): was it the right order for this day, and why, and what order should I use next time?');
+    out.push.apply(out, dayRules('paste', t.name || doc.label || 'Workout'));
     out.push('Units: kg is the total weight (bar and both dumbbells counted), kg/side is per side or per arm, pin is a machine stack number (compare only within that machine), kg assist is help on an assisted machine (lower is better). Reps like 3.75 mean a partial last rep.', '');
-    out.push.apply(out, applyLines(tplId ? [tplId] : []));
+    if (AI_CAN_WRITE) out.push.apply(out, applyLines(tplId ? [tplId] : []));
     if (profileLine()) out.push('About me: ' + profileLine());
     if (exportCtx.trim()) out.push('My body: ' + exportCtx.trim().replace(/\s+/g, ' '));
     if (profileLine() || exportCtx.trim()) out.push('');
@@ -5492,6 +5604,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const g = S.notes[date + '_general'];
     if (g && g.text) out.push('## Session note', String(g.text).trim(), '');
     if (doc.note) out.push('## Note', String(doc.note).trim(), '');
+    out.push.apply(out, recentNotesLines());
+    out.push.apply(out, dayTrendLines(items.map((it) => it.ex)));
+    out.push.apply(out, trainingDayLines());
+    out.push.apply(out, bodyPartFacts());
     out.push.apply(out, planData(tplId ? [tplId] : []));
     return out.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n';
   };

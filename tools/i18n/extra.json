@@ -1615,5 +1615,75 @@
   "fr": "La page d’accueil commence maintenant par ce que Yes Coach! fait de mieux : savoir quelle charge soulever ensuite.",
   "es": "La página de inicio ahora empieza por lo que mejor hace Yes Coach!: saber qué levantar a continuación.",
   "it": "La pagina iniziale ora parte da ciò che Yes Coach! sa fare meglio: sapere cosa sollevare dopo."
+ },
+ "Get a critical review from Claude? It reads {0} through your connector and judges your sets, your notes, this day's plan, your whole week and the muscle groups you miss. It changes nothing until you say so.": {
+  "nl": "Een kritische beoordeling van Claude? Claude leest {0} via je connector en beoordeelt je sets, je notities, het plan van deze dag, je hele week en de spiergroepen die je mist. Er verandert niets totdat jij het zegt.",
+  "de": "Eine kritische Auswertung von Claude? Claude liest {0} über deinen Konnektor und beurteilt deine Sätze, deine Notizen, den Plan dieses Tages, deine ganze Woche und die Muskelgruppen, die dir fehlen. Es ändert sich nichts, bis du es sagst.",
+  "fr": "Une analyse critique de Claude ? Claude lit {0} via ton connecteur et juge tes séries, tes notes, le plan de cette journée, toute ta semaine et les groupes musculaires qui te manquent. Rien ne change tant que tu ne le dis pas.",
+  "es": "¿Una revisión crítica de Claude? Claude lee {0} a través de tu conector y juzga tus series, tus notas, el plan de este día, toda tu semana y los grupos musculares que te faltan. No cambia nada hasta que tú lo digas.",
+  "it": "Una revisione critica da Claude? Claude legge {0} tramite il tuo connettore e giudica le tue serie, le tue note, il piano di questo giorno, tutta la tua settimana e i gruppi muscolari che ti mancano. Non cambia nulla finché non lo dici tu."
+ },
+ "Opening Claude. The request is copied: paste it into the chat.": {
+  "nl": "Claude wordt geopend. Het verzoek is gekopieerd: plak het in de chat.",
+  "de": "Claude wird geöffnet. Die Anfrage ist kopiert: Füge sie in den Chat ein.",
+  "fr": "Ouverture de Claude. La demande est copiée : colle-la dans le chat.",
+  "es": "Abriendo Claude. La petición está copiada: pégala en el chat.",
+  "it": "Apertura di Claude. La richiesta è copiata: incollala nella chat."
+ },
+ "Review with my AI": {
+  "nl": "Laat mijn AI beoordelen",
+  "de": "Von meiner KI auswerten lassen",
+  "fr": "Faire analyser par mon IA",
+  "es": "Que mi IA lo revise",
+  "it": "Fai rivedere alla mia AI"
+ },
+ "Review request copied. Paste it into your AI chat.": {
+  "nl": "Verzoek gekopieerd. Plak het in je AI-chat.",
+  "de": "Anfrage kopiert. Füge sie in deinen KI-Chat ein.",
+  "fr": "Demande copiée. Colle-la dans ton chat IA.",
+  "es": "Petición copiada. Pégala en tu chat de IA.",
+  "it": "Richiesta copiata. Incollala nella tua chat AI."
+ },
+ "Could not copy. Use Copy day on the training screen next time.": {
+  "nl": "Kopiëren is niet gelukt. Gebruik de volgende keer Dag kopiëren op het trainingsscherm.",
+  "de": "Kopieren hat nicht geklappt. Nutze nächstes Mal Tag kopieren auf dem Trainingsbildschirm.",
+  "fr": "La copie a échoué. Utilise Copier le jour sur l’écran d’entraînement la prochaine fois.",
+  "es": "No se pudo copiar. La próxima vez usa Copiar día en la pantalla de entrenamiento.",
+  "it": "Copia non riuscita. La prossima volta usa Copia giorno nella schermata di allenamento."
+ },
+ "This workout as a review request: your sets, notes, plan and week, with instructions for a critical review. Paste it into a chat with an AI.": {
+  "nl": "Deze training als beoordelingsverzoek: je sets, notities, plan en week, met instructies voor een kritische beoordeling. Plak het in een chat met een AI.",
+  "de": "Dieses Workout als Auswertungsanfrage: deine Sätze, Notizen, dein Plan und deine Woche, mit Anweisungen für eine kritische Auswertung. Füge es in einen Chat mit einer KI ein.",
+  "fr": "Cet entraînement comme demande d’analyse : tes séries, notes, ton plan et ta semaine, avec des consignes pour une analyse critique. Colle-la dans un chat avec une IA.",
+  "es": "Este entrenamiento como petición de revisión: tus series, notas, plan y semana, con instrucciones para una revisión crítica. Pégalo en un chat con una IA.",
+  "it": "Questo allenamento come richiesta di revisione: le tue serie, note, piano e settimana, con istruzioni per una revisione critica. Incollalo in una chat con una AI."
+ },
+ "Critical reviews": {
+  "nl": "Kritische beoordelingen",
+  "de": "Kritische Auswertungen",
+  "fr": "Analyses critiques",
+  "es": "Revisiones críticas",
+  "it": "Revisioni critiche"
+ },
+ "After you finish a day, Claude or any AI chat now gets a proper brief. It judges your sets and weights, your notes, the plan of that day, your whole week and the muscle groups you miss, and checks its own answer once before it replies.": {
+  "nl": "Als je een dag afrondt, krijgt Claude of elke AI-chat nu een goede opdracht. Die beoordeelt je sets en gewichten, je notities, het plan van die dag, je hele week en de spiergroepen die je mist, en controleert het eigen antwoord één keer voordat het reageert.",
+  "de": "Wenn du einen Tag abschließt, bekommt Claude oder jeder KI-Chat jetzt einen ordentlichen Auftrag. Er beurteilt deine Sätze und Gewichte, deine Notizen, den Plan dieses Tages, deine ganze Woche und die Muskelgruppen, die dir fehlen, und prüft die eigene Antwort einmal, bevor er antwortet.",
+  "fr": "Quand tu termines une journée, Claude ou n’importe quel chat IA reçoit maintenant une vraie consigne. Elle juge tes séries et tes charges, tes notes, le plan de cette journée, toute ta semaine et les groupes musculaires qui te manquent, et vérifie sa propre réponse une fois avant de répondre.",
+  "es": "Al terminar un día, Claude o cualquier chat de IA recibe ahora un encargo en condiciones. Juzga tus series y pesos, tus notas, el plan de ese día, toda tu semana y los grupos musculares que te faltan, y revisa su propia respuesta una vez antes de contestar.",
+  "it": "Quando finisci un giorno, Claude o qualsiasi chat AI riceve ora un incarico fatto bene. Giudica le tue serie e i tuoi pesi, le tue note, il piano di quel giorno, tutta la tua settimana e i gruppi muscolari che ti mancano, e controlla la propria risposta una volta prima di rispondere."
+ },
+ "With Claude connected, the review opens in a new chat and changes nothing until you say so. Without it, Review with my AI on the finish screen copies the same request, with your data, for any AI chat.": {
+  "nl": "Met Claude gekoppeld opent de beoordeling in een nieuwe chat en verandert er niets totdat jij het zegt. Zonder koppeling kopieert Laat mijn AI beoordelen op het afrondscherm hetzelfde verzoek, met je gegevens, voor elke AI-chat.",
+  "de": "Mit verbundenem Claude öffnet sich die Auswertung in einem neuen Chat und ändert nichts, bis du es sagst. Ohne Verbindung kopiert Von meiner KI auswerten lassen auf dem Abschlussbildschirm dieselbe Anfrage, mit deinen Daten, für jeden KI-Chat.",
+  "fr": "Avec Claude connecté, l’analyse s’ouvre dans un nouveau chat et ne change rien tant que tu ne le dis pas. Sans lui, Faire analyser par mon IA sur l’écran de fin copie la même demande, avec tes données, pour n’importe quel chat IA.",
+  "es": "Con Claude conectado, la revisión se abre en un chat nuevo y no cambia nada hasta que tú lo digas. Sin él, Que mi IA lo revise en la pantalla final copia la misma petición, con tus datos, para cualquier chat de IA.",
+  "it": "Con Claude collegato, la revisione si apre in una nuova chat e non cambia nulla finché non lo dici tu. Senza, Fai rivedere alla mia AI nella schermata finale copia la stessa richiesta, con i tuoi dati, per qualsiasi chat AI."
+ },
+ "Copy day and the full export use the same brief.": {
+  "nl": "Dag kopiëren en de volledige export gebruiken dezelfde opdracht.",
+  "de": "Tag kopieren und der vollständige Export nutzen denselben Auftrag.",
+  "fr": "Copier le jour et l’export complet utilisent la même consigne.",
+  "es": "Copiar día y la exportación completa usan el mismo encargo.",
+  "it": "Copia giorno e l’esportazione completa usano la stessa richiesta."
  }
 }
