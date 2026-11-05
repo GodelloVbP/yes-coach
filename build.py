@@ -16,7 +16,8 @@ head = '''<link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Yes Coach">
 <meta name="description" content="A free, ad-free workout tracker: log sets, plan your week, track your progress and what you eat.">
 <style>
-body.signed-out #stick, body.signed-out #resume, body.signed-out #restbar { display: none !important; }
+body.signed-out #stick, body.signed-out #resume, body.signed-out #restbar, body.signed-out #tabs-nav { display: none !important; }
+body.signed-out { padding: 0 !important; }
 body.signed-out.authing main, body.signed-out:not(.authing) #auth { display: none !important; }
 body:not(.signed-out) .hm-login, body.signed-out #hm-trainrow, body.signed-out #hm-claude, body.signed-out #hm-claude-panel, body.signed-out #hm-ticket { display: none !important; }
 .auth { padding-block: 2rem 3rem; display: flex; flex-direction: column; gap: 1rem; max-width: 26rem; }

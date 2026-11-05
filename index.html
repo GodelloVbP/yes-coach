@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-momGIvE1X8FAqPgO75nYRIajXnB6IzHlWq6dIbCvstk=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-iudIKtVyaLu1z7inber45C1ph44qtL33BabdiGt7h+0=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-05 12:26Z">
+<meta name="yc-build" content="2026-11-05 12:54Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -12,7 +12,8 @@
 <meta name="apple-mobile-web-app-title" content="Yes Coach">
 <meta name="description" content="A free, ad-free workout tracker: log sets, plan your week, track your progress and what you eat.">
 <style>
-body.signed-out #stick, body.signed-out #resume, body.signed-out #restbar { display: none !important; }
+body.signed-out #stick, body.signed-out #resume, body.signed-out #restbar, body.signed-out #tabs-nav { display: none !important; }
+body.signed-out { padding: 0 !important; }
 body.signed-out.authing main, body.signed-out:not(.authing) #auth { display: none !important; }
 body:not(.signed-out) .hm-login, body.signed-out #hm-trainrow, body.signed-out #hm-claude, body.signed-out #hm-claude-panel, body.signed-out #hm-ticket { display: none !important; }
 .auth { padding-block: 2rem 3rem; display: flex; flex-direction: column; gap: 1rem; max-width: 26rem; }
@@ -109,32 +110,49 @@ html { scroll-padding-top: calc(var(--stick-h, 56px) + 0.75rem); }
 .mark-btn:active { transform: scale(0.9); }
 .mark-btn[aria-current="page"] { border-bottom-color: var(--ink); }
 .mark { width: 34px; height: 26px; flex: none; }
-.tabs { display: flex; gap: 0.25rem 1rem; min-width: 0; }
-.appbar .tab { font-size: var(--t2); letter-spacing: 0.04em; }
-.tab-gear { padding: 0 0.25rem; }
-.tab-gear svg { display: block; }
-@media (max-width: 439px) { .mark { width: 28px; height: 22px; } .ab-in { gap: 0.625rem; } .tabs { gap: 0.25rem 0.75rem; } }
-@media (max-width: 419px) { .appbar .tab { font-size: 0.9375rem; letter-spacing: 0.02em; } .tabs { gap: 0.25rem 0.625rem; } }
-@media (max-width: 379px) { .appbar .tab { font-size: var(--t1); letter-spacing: 0.01em; } .tabs { gap: 0.25rem 0.5rem; } .ab-in { gap: 0.375rem; } .mark { width: 24px; } }
+@media (max-width: 439px) { .mark { width: 28px; height: 22px; } .ab-in { gap: 0.625rem; } }
 .tab { background: none; border: 0; border-bottom: 3px solid transparent; min-height: 44px; padding: 0 0.125rem; font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-soft); cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; }
 .tab[aria-selected="true"], .tab[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--ink); }
-/* Phones: the tabs sit in a menu behind the hamburger, with the name of the current view next to the logo. */
-.menu-btn, .menu-cur { display: none; }
-.menu-btn { flex: none; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0; background: none; border: 0; border-bottom: 3px solid transparent; color: var(--ink); cursor: pointer; }
-.menu-btn[aria-expanded="true"] { border-bottom-color: var(--ink); }
-.menu-cur { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink); }
-@media (max-width: 719px) {
-  .ab-in { justify-content: flex-start; }
-  .menu-btn { display: inline-flex; margin-left: auto; }
-  .menu-cur { display: block; }
-  .tabs { display: none; position: absolute; left: 0; right: 0; top: 100%; z-index: 20; flex-direction: column; gap: 0; padding: 0.25rem max(16px, env(safe-area-inset-right, 0px)) 0.5rem max(16px, env(safe-area-inset-left, 0px)); background: var(--bg); border-bottom: 1px solid var(--line); box-shadow: 0 10px 24px rgba(16, 20, 43, 0.25); }
-  .tabs.open { display: flex; }
-  .appbar .tab { width: 100%; min-height: 48px; justify-content: flex-start; padding: 0 0.125rem; font-size: var(--t3); letter-spacing: 0.04em; border-bottom: 1px solid var(--line); }
-  .appbar .tab[aria-selected="true"] { border-bottom-color: var(--ink); }
-  .tab-gear::after { content: attr(aria-label); }
+
+/* ---- main navigation: a bottom bar on phones, a sidebar on wide screens. One angled frame primitive for everything that is a rectangle in the app's style. ---- */
+:root { --nav-h: 64px; --side-w: 15rem; }
+.angled { position: relative; isolation: isolate; }
+.angled::before { content: ''; position: absolute; inset: 0; z-index: -1; transform: skewX(-14deg); background: var(--ang-bg, var(--paper)); border: 2px solid var(--ang-bd, var(--ctl)); }
+.angled.pop { --ang-bg: var(--pop); --ang-bd: var(--pop); }
+.menu-cur { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink); }
+.ab-in { justify-content: flex-start; }
+.mainnav { position: fixed; z-index: 15; left: 0; right: 0; bottom: 0; display: flex; background: var(--paper); border-top: 2px solid var(--ink); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.nav-mark { display: none; }
+.mainnav .tab { position: relative; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: var(--nav-h); padding: 0 0.125rem; border: 0; font-size: 0.8125rem; letter-spacing: 0.05em; font-weight: 700; color: var(--ink-soft); isolation: isolate; }
+.mainnav .tab svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.mainnav .tab[aria-selected="true"], .mainnav .tab.in-more { color: var(--ink); }
+.mainnav .tab[aria-selected="true"]::after, .mainnav .tab.in-more::after { content: ''; position: absolute; top: -2px; left: 22%; right: 22%; height: 4px; background: var(--pop); transform: skewX(-14deg); }
+.tab-sub { display: none !important; }
+.nav-dot { display: none; position: absolute; top: 9px; left: calc(50% + 9px); width: 10px; height: 10px; border-radius: 50%; background: var(--pop); border: 2px solid var(--paper); }
+.mainnav:has(#tab-feedback.tk-dot) .nav-dot { display: block; }
+body { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px)); }
+body.in-session { padding-bottom: 0; }
+body.in-session .mainnav { display: none; }
+body:not(.in-session) .restbar { bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px)); padding-bottom: 0; }
+@media (min-width: 64rem) {
+  .appbar { display: none; }
+  body, body.in-session { padding-bottom: 0; padding-left: var(--side-w); }
+  .mainnav, body.in-session .mainnav { display: flex; top: 0; right: auto; width: var(--side-w); flex-direction: column; justify-content: flex-start; gap: 4px; padding: 16px 12px; border-top: 0; border-right: 2px solid var(--ink); overflow-y: auto; }
+  .nav-mark { display: inline-flex; align-self: flex-start; margin: 0 0 16px 4px; }
+  .mainnav .tab { flex: none; flex-direction: row; justify-content: flex-start; gap: 14px; width: 100%; min-height: 48px; padding: 0 20px; font-size: 1.125rem; text-align: left; }
+  .mainnav .tab::after { display: none !important; }
+  .mainnav .tab[aria-selected="true"]::before, .mainnav .tab.in-more::before { content: ''; position: absolute; inset: 0; z-index: -1; transform: skewX(-14deg); background: var(--faint); border: 2px solid var(--ink); }
+  .nav-dot { top: 12px; left: 38px; }
+  body .restbar, body:not(.in-session) .restbar { left: var(--side-w); bottom: 0; padding-bottom: env(safe-area-inset-bottom, 0px); }
 }
-@media (max-width: 719px) { :root[data-theme="dark"] .tabs { background: var(--faint); } }
-@media (max-width: 719px) and (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tabs { background: var(--faint); } }
+/* More: Settings regrouped, plus links to the other pages */
+.set-wrap { display: flex; flex-direction: column; }
+.more-grp { margin: 1.5rem 0 0.25rem; }
+.more-row { display: flex; align-items: center; gap: 0.625rem; width: 100%; min-height: 56px; padding: 0.5rem 0; background: none; border: 0; border-bottom: 1px solid var(--line); color: var(--ink); text-align: left; cursor: pointer; text-decoration: none; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; position: relative; }
+.more-row .p-caret { transform: rotate(-45deg); }
+.more-row .nav-dot { display: none; position: static; margin-left: 0.25rem; }
+body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; }
+.set-wrap > section.fold { border-bottom: 1px solid var(--line); }
 .view[hidden] { display: none; }
 
 /* session bar */
@@ -794,14 +812,14 @@ body.typing .restbar { display: none; }
 .set-tick.pop > span { animation: tick-pop 0.32s ease-out; }
 /* ---- feedback on every control. Press: shows at once, fades out slowly, so even a quick tap is seen. Hover: mouse only. ---- */
 :root { --press: color-mix(in srgb, var(--ink) 16%, transparent); --hover: color-mix(in srgb, var(--ink) 8%, transparent); }
-.set-tog, summary, .prow, .xl-row, .seg-b, .fd-hit, .pw-tap, .swaprow, .kmenu button, .sb-menu button, .menu-btn, .mark-btn, .sb-more, .arrow, select { transition: background-color 0.3s ease-out, border-color 0.15s, color 0.15s, transform 0.18s cubic-bezier(0.3, 1.7, 0.5, 1); }
-.set-tog:active, summary:active, .prow:active, .xl-row:active, .seg-b:active, .fd-hit:active, .pw-tap:active, .swaprow:active, .kmenu button:active, .sb-menu button:active, .menu-btn:active, .sb-more:active, .arrow:active, select:active { background-color: var(--press); transition-duration: 0s; }
-.menu-btn:active, .mark-btn:active { transform: scale(0.92); }
+.set-tog, summary, .prow, .xl-row, .seg-b, .fd-hit, .pw-tap, .swaprow, .kmenu button, .sb-menu button, .mark-btn, .sb-more, .arrow, select { transition: background-color 0.3s ease-out, border-color 0.15s, color 0.15s, transform 0.18s cubic-bezier(0.3, 1.7, 0.5, 1); }
+.set-tog:active, summary:active, .prow:active, .xl-row:active, .seg-b:active, .fd-hit:active, .pw-tap:active, .swaprow:active, .kmenu button:active, .sb-menu button:active, .sb-more:active, .arrow:active, select:active { background-color: var(--press); transition-duration: 0s; }
+.mark-btn:active { transform: scale(0.92); }
 .skew.solid:not([disabled]):active { opacity: 0.8; }
 .day-go:active { fill-opacity: 0.6; }
-@media (max-width: 719px) {
-  .appbar .tab { transition: background-color 0.3s ease-out, color 0.15s; }
-  .appbar .tab:active { background-color: var(--press); transform: none; transition-duration: 0s; }
+@media (max-width: 63.999rem) {
+  .mainnav .tab { transition: background-color 0.3s ease-out, color 0.15s; }
+  .mainnav .tab:active { background-color: var(--press); transform: none; transition-duration: 0s; }
 }
 @media (hover: hover) and (pointer: fine) {
   .skew:not([disabled]):hover { border-color: var(--ink); }
@@ -810,7 +828,7 @@ body.typing .restbar { display: none; }
   .pill:hover, .pk-chip:hover { border-color: var(--ink); }
   .pk-chip:not([aria-pressed="true"]):hover { background-color: var(--faint); }
   .tab:not([aria-selected="true"]):not([aria-pressed="true"]):hover { color: var(--ink); border-bottom-color: var(--ctl); }
-  .set-tog:hover, summary:hover, .menu-btn:hover, .mark-btn:hover, .sb-more:hover, .sb-back:hover { background-color: var(--hover); }
+  .set-tog:hover, summary:hover, .mark-btn:hover, .sb-more:hover, .sb-back:hover { background-color: var(--hover); }
   .arrow:not(:disabled):hover { background-color: var(--faint); border-color: var(--ink); }
   .link:hover, .textbtn:hover { text-decoration-thickness: 2px; }
   select:hover { border-bottom-color: var(--ink); cursor: pointer; }
@@ -851,16 +869,6 @@ body.typing .restbar { display: none; }
     <div class="in ab-in">
       <button type="button" class="mark-btn" id="mark" aria-label="Yes Coach! home"><svg class="mark" viewBox="0 0 52 40" aria-hidden="true"><g transform="translate(8 0) skewX(-14)"><rect x="0" y="12" width="7" height="16" fill="var(--logo-bar)"/><rect x="9" y="2" width="9" height="36" fill="var(--logo-bar)"/><rect x="20" y="12" width="7" height="16" fill="#ff8a65"/><rect x="29" y="2" width="9" height="36" fill="var(--logo-bar)"/></g></svg></button>
       <span class="menu-cur" id="menu-cur" aria-hidden="true"></span>
-      <nav class="tabs" role="tablist" aria-label="View" id="tabs-nav">
-        <button class="tab" role="tab" type="button" id="tab-train" data-view="train" aria-selected="true">Train</button>
-        <button class="tab" role="tab" type="button" id="tab-plan" data-view="plan" aria-selected="false">Plan</button>
-        <button class="tab" role="tab" type="button" id="tab-exercises" data-view="exercises" aria-selected="false">Exercises</button>
-        <button class="tab" role="tab" type="button" id="tab-progress" data-view="progress" aria-selected="false">Progress</button>
-        <button class="tab" role="tab" type="button" id="tab-food" data-view="food" aria-selected="false">Food</button>
-        <button class="tab" role="tab" type="button" id="tab-feedback" data-view="feedback" aria-selected="false" hidden>Feedback &amp; Requests</button>
-        <button class="tab tab-gear" role="tab" type="button" id="tab-settings" data-view="settings" aria-selected="false" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.4 7.4 0 0 0-1.7-1L15 3.3h-4l-.3 2.6a7.4 7.4 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.4 7.4 0 0 0 1.7 1l.3 2.6h4l.3-2.6a7.4 7.4 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg></button>
-      </nav>
-      <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="tabs-nav" aria-label="Menu"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M3 6h18v2.5H3zM3 10.75h18v2.5H3zM3 15.5h18V18H3z"/></svg></button>
     </div>
   </header>
   <div class="sbar" id="sbar" hidden>
@@ -885,6 +893,17 @@ body.typing .restbar { display: none; }
   </div>
 </div>
 <div class="resume in" id="resume" hidden><button type="button" class="resume-btn" id="resume-btn"><span id="resume-text"></span><b>Resume</b></button><button type="button" class="resume-fin" id="resume-fin">Finish day</button></div>
+
+<nav class="mainnav" role="tablist" aria-label="View" id="tabs-nav">
+    <button type="button" class="mark-btn nav-mark" id="mark2" aria-label="Yes Coach! home"><svg class="mark" viewBox="0 0 52 40" aria-hidden="true"><g transform="translate(8 0) skewX(-14)"><rect x="0" y="12" width="7" height="16" fill="var(--logo-bar)"/><rect x="9" y="2" width="9" height="36" fill="var(--logo-bar)"/><rect x="20" y="12" width="7" height="16" fill="#ff8a65"/><rect x="29" y="2" width="9" height="36" fill="var(--logo-bar)"/></g></svg></button>
+    <button class="tab" role="tab" type="button" id="tab-train" data-view="train" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6M6 6v12M18 6v12M21 9v6M6 12h12"/></svg><span>Train</span></button>
+    <button class="tab" role="tab" type="button" id="tab-plan" data-view="plan" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Plan</span></button>
+    <button class="tab" role="tab" type="button" id="tab-progress" data-view="progress" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg><span>Progress</span></button>
+    <button class="tab" role="tab" type="button" id="tab-food" data-view="food" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v8M5 3v5a2 2 0 004 0V3M7 11v10M17 3c-2 2-3 5-3 8h3v10"/></svg><span>Food</span></button>
+    <button class="tab" role="tab" type="button" id="tab-settings" data-view="settings" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>More</span><i class="nav-dot" aria-hidden="true"></i></button>
+    <button class="tab tab-sub" role="tab" type="button" id="tab-exercises" data-view="exercises" aria-selected="false">Exercises</button>
+    <button class="tab tab-sub" role="tab" type="button" id="tab-feedback" data-view="feedback" aria-selected="false" hidden>Feedback &amp; Requests</button>
+  </nav>
 
 <main>
   <div class="view" id="v-home" hidden>
@@ -1502,7 +1521,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (S.view !== v) { hideToast(); enter($('#v-' + v), 16 * Math.sign(VIEWS.indexOf(v) - VIEWS.indexOf(S.view))); }
     S.view = v;
     $$('[data-view]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.view === v)));
-    if (v === 'home') $('#mark').setAttribute('aria-current', 'page'); else $('#mark').removeAttribute('aria-current');
+    [$('#mark'), $('#mark2')].forEach((m) => { if (v === 'home') m.setAttribute('aria-current', 'page'); else m.removeAttribute('aria-current'); });
+    $('#tab-settings').classList.toggle('in-more', v === 'exercises' || v === 'feedback');
     VIEWS.forEach((x) => { $('#v-' + x).hidden = x !== v; });
     const cur = $('[data-view][aria-selected="true"]');
     $('#menu-cur').textContent = cur ? cur.getAttribute('aria-label') || cur.textContent.trim() : '';
@@ -1517,16 +1537,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (S.ready) paintChrome();
   };
   $$('[data-view]').forEach((b) => b.addEventListener('click', () => { setView(b.dataset.view); window.scrollTo({ top: 0 }); }));
-  $('#mark').addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); });
-  // phones: the hamburger opens and closes the list of tabs; choosing a tab, tapping elsewhere or Escape closes it
-  const setMenu = (on) => { $('#tabs-nav').classList.toggle('open', on); $('#menu-btn').setAttribute('aria-expanded', String(on)); };
-  $('#menu-btn').addEventListener('click', () => setMenu(!$('#tabs-nav').classList.contains('open')));
-  $$('[data-view]').forEach((b) => b.addEventListener('click', () => setMenu(false)));
-  $('#mark').addEventListener('click', () => setMenu(false));
-  document.addEventListener('click', (ev) => { if (!ev.target.closest('#appbar')) setMenu(false); });
-  document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && $('#tabs-nav').classList.contains('open')) { setMenu(false); $('#menu-btn').focus(); } });
+  [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['5 Nov 2026', 'New menu', ["Yes Coach! now opens straight on Train when you are signed in.", "Phone: the five main pages sit in a bar at the bottom. On a wide screen they sit in a bar on the left.", "More holds your settings in groups, plus Exercises, Feedback and Requests, and What's new."]],
     ['5 Nov 2026', "Yes Coach! now speaks your language", ["Choose Dutch, English, Spanish, German, French or Italian the first time you open it. Change it any time in Settings, under Languages.", "The app is originally in English and the translations are AI-generated, so some may be wrong. Found one? Report it in the form."]],
     ['5 Nov 2026', 'Plan, simpler', ['Put a day in your week right where you edit it: tap the weekdays on the day itself. Delete is now in plain sight at the bottom.', 'New look for dropdown lists, and more room between the parts of Plan.', 'Progress charts now show the weights you lifted by default. The estimated strength chart is one tap away and says it is an estimate.']],
     ['5 Nov 2026', 'Claude and your home screen', ['New Connect to Claude button on Home. With Claude connected, finishing a day offers to send it to Coach Claude for review.', 'New Put on home screen button, with the steps for iPhone and Android. Yes Coach! now always opens on Home.']],
@@ -6419,6 +6433,52 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       sec.classList.add('fold');
       sec.append(body);
     });
+    buildMore();
+    orderMore();
+  }
+  // More: the Settings sections regrouped, plus rows for the pages that have no tab
+  const MORE_GROUPS = [
+    ['Account', ['h-acct']],
+    ['Preferences', ['h-me', 'h-look', 'h-lang', 'h-pref', 'h-food-set']],
+    ['Library', ['#more-exercises']],
+    ['Your data', ['h-imp', 'h-ex', 'h-bk', 'h-conn']],
+    ['Help', ['#more-feedback', '#more-news', '#more-privacy']],
+  ];
+  function buildMore() {
+    const wrap = $('#v-settings .set-wrap');
+    if (!wrap || $('#more-exercises')) return;
+    const row = (id, label, onGo, href) => {
+      const b = h(href ? 'a' : 'button', 'more-row');
+      b.id = id;
+      if (href) b.href = href; else b.type = 'button';
+      b.append(h('span', '', label));
+      if (id === 'more-feedback') { const d = h('i', 'nav-dot'); d.setAttribute('aria-hidden', 'true'); b.append(d); }
+      const c = h('span', 'p-caret'); c.setAttribute('aria-hidden', 'true'); b.append(c);
+      if (onGo) b.addEventListener('click', onGo);
+      wrap.append(b);
+      return b;
+    };
+    MORE_GROUPS.forEach(([name], i) => { const l = h('p', 'lab more-grp', name); l.id = 'more-g' + i; wrap.append(l); });
+    row('more-exercises', 'Exercises', () => $('#tab-exercises').click());
+    const fb = row('more-feedback', 'Feedback & Requests', () => $('#tab-feedback').click());
+    row('more-news', "What's new", () => { setView('home'); requestAnimationFrame(() => { const c = $('#changelog'); if (c) c.scrollIntoView({ block: 'start' }); }); });
+    row('more-privacy', 'Privacy', null, 'privacy.html');
+    const syncFb = () => { fb.hidden = $('#tab-feedback').hidden; orderMore(); };
+    new MutationObserver(syncFb).observe($('#tab-feedback'), { attributes: true, attributeFilter: ['hidden'] });
+    syncFb();
+  }
+  function orderMore() {
+    MORE_GROUPS.forEach(([, ids], gi) => {
+      let any = false;
+      ids.forEach((id, k) => {
+        const el = id[0] === '#' ? $(id) : (document.getElementById(id) || { closest: () => null }).closest('section');
+        if (!el) return;
+        el.style.order = String(gi * 100 + k + 1);
+        if (!el.hidden) any = true;
+      });
+      const lab = $('#more-g' + gi);
+      if (lab) { lab.style.order = String(gi * 100); lab.hidden = !any || gi === 0; }
+    });
   }
   new MutationObserver(() => { if (!$('#v-settings').hidden) foldSettings(); }).observe($('#v-settings .set-wrap'), { childList: true });
   // open the section that holds an element (a jump from elsewhere in the app) and bring it into view
@@ -6830,7 +6890,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     paintTheme();
     loadDrafts();
     local.set('yc-view', null);
-    setView('home'); // the app always opens on Home
+    // signed in: straight to Train. The landing page is for people without an account (the web build shows it until they sign in).
+    let hasAccount = true;
+    let fromLanding = false;
+    try { hasAccount = !window.YC_WEB || Object.keys(localStorage).some((k) => /^sb-.+-auth-token$/.test(k)); } catch (e) { hasAccount = !window.YC_WEB; }
+    const hashView = location.hash.slice(1); // index.html#progress opens that page; #home opens the landing page
+    fromLanding = !hasAccount;
+    setView(VIEWS.includes(hashView) ? hashView : hasAccount ? 'train' : 'home');
     const a = local.get('yc-active');
     if (a && a.date && a.tpl) S.active = a;
     let db = null, user = null;
@@ -6839,6 +6905,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (!db || !uid) { fail('Your training data is not available here. Sign in to claude.ai first. Already signed in? Then this account can only view Yes Coach, so it has no space for its own data: the owner can invite it as Editor in Share, which works while Anyone with the link is turned off.'); return; }
     S.db = db;
     S.uid = uid;
+    if (fromLanding && S.view === 'home') setView('train'); // just signed in from the landing page
     S.rootRef = db.doc('data/users/' + uid + '/yc');
     const onErr = (e) => { if (e && e.code === 'revoked') fail('Access to your data ended. Reload the page.'); };
     S.rootRef.onSnapshot((snap) => {

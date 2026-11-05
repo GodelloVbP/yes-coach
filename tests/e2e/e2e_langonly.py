@@ -129,7 +129,7 @@ def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, l
     page.on('pageerror', lambda e: errors.append(str(e)))
     page.on('console', lambda m: errors.append('CSP: ' + m.text) if 'Content Security Policy' in m.text else None)
     page.on('dialog', lambda d: d.dismiss())
-    page.goto(BASE)
+    page.goto(BASE + '#home')
     if not home:
         page.wait_for_selector('#v-home', state='visible')  # the app opens on Home
         try: page.click('#hm-train', timeout=4000)
@@ -147,12 +147,13 @@ def card_of(page, title, root='#tk-admin-list'):
     return page.locator(root + ' .tk-card').filter(has=page.locator('.tk-title', has_text=title))
 
 def go(page, tab):
-    if not page.is_visible('#tab-' + tab): page.click('#menu-btn')
-    page.click('#tab-' + tab)
+    if tab in ('feedback', 'exercises'):
+        page.click('#tab-settings'); page.click('#more-' + tab)
+    else: page.click('#tab-' + tab)
 
 def open_feedback(page):
-    page.wait_for_selector('#tab-feedback:not([hidden])')
-    page.click('#tab-feedback')
+    page.wait_for_selector('#tab-feedback:not([hidden])', state='attached')
+    page.click('#tab-settings'); page.click('#more-feedback')
     page.wait_for_selector('#v-feedback #tk', state='visible')
 
 def send_form(page, title, text, name=None, kind=None):

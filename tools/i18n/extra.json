@@ -502,5 +502,82 @@
   "de": "Die Prüfung, ob du ein Mensch bist, wurde nicht abgeschlossen. Lade die Seite neu und versuche es erneut.",
   "fr": "La vérification anti-robot ne s’est pas terminée. Recharge la page et réessaie.",
   "it": "Il controllo anti-bot non si è concluso. Ricarica la pagina e riprova."
+ },
+ "More": {
+  "nl": "Meer",
+  "es": "Más",
+  "de": "Mehr",
+  "fr": "Plus",
+  "it": "Altro"
+ },
+ "Preferences": {
+  "nl": "Voorkeuren",
+  "es": "Preferencias",
+  "de": "Einstellungen",
+  "fr": "Préférences",
+  "it": "Preferenze"
+ },
+ "Library": {
+  "nl": "Bibliotheek",
+  "es": "Biblioteca",
+  "de": "Bibliothek",
+  "fr": "Bibliothèque",
+  "it": "Libreria"
+ },
+ "Your data": {
+  "nl": "Jouw gegevens",
+  "es": "Tus datos",
+  "de": "Deine Daten",
+  "fr": "Tes données",
+  "it": "I tuoi dati"
+ },
+ "Help": {
+  "nl": "Hulp",
+  "es": "Ayuda",
+  "de": "Hilfe",
+  "fr": "Aide",
+  "it": "Aiuto"
+ },
+ "Privacy": {
+  "nl": "Privacy",
+  "es": "Privacidad",
+  "de": "Datenschutz",
+  "fr": "Confidentialité",
+  "it": "Privacy"
+ },
+ "Plan": {
+  "nl": "Plan",
+  "es": "Plan",
+  "de": "Plan",
+  "fr": "Plan",
+  "it": "Piano"
+ },
+ "New menu": {
+  "nl": "Nieuw menu",
+  "es": "Menú nuevo",
+  "de": "Neues Menü",
+  "fr": "Nouveau menu",
+  "it": "Nuovo menu"
+ },
+ "Yes Coach! now opens straight on Train when you are signed in.": {
+  "nl": "Yes Coach! opent nu direct op Training als je bent ingelogd.",
+  "es": "Yes Coach! ahora se abre directamente en Entrenar cuando has iniciado sesión.",
+  "de": "Yes Coach! öffnet jetzt direkt im Training, wenn du angemeldet bist.",
+  "fr": "Yes Coach! s'ouvre maintenant directement sur Entraînement quand tu es connecté.",
+  "it": "Yes Coach! ora si apre direttamente su Allenamento quando hai effettuato l'accesso."
+ },
+ "Phone: the five main pages sit in a bar at the bottom. On a wide screen they sit in a bar on the left.": {
+  "nl": "Telefoon: de vijf hoofdpagina's staan in een balk onderaan. Op een breed scherm staan ze in een balk links.",
+  "es": "Móvil: las cinco páginas principales están en una barra inferior. En una pantalla ancha están en una barra a la izquierda.",
+  "de": "Handy: Die fünf Hauptseiten sind in einer Leiste unten. Auf einem breiten Bildschirm sind sie in einer Leiste links.",
+  "fr": "Téléphone : les cinq pages principales sont dans une barre en bas. Sur un grand écran, elles sont dans une barre à gauche.",
+  "it": "Telefono: le cinque pagine principali sono in una barra in basso. Su uno schermo largo sono in una barra a sinistra."
+ },
+ "More holds your settings in groups, plus Exercises, Feedback and Requests, and What's new.": {
+  "nl": "Onder Meer vind je je instellingen in groepen, plus Oefeningen, Feedback en verzoeken en Wat is er nieuw.",
+  "es": "En Más están tus ajustes en grupos, además de Ejercicios, Comentarios y solicitudes, y Novedades.",
+  "de": "Unter Mehr findest du deine Einstellungen in Gruppen, dazu Übungen, Feedback und Wünsche und Neuigkeiten.",
+  "fr": "Dans Plus, tes réglages sont rangés en groupes, avec Exercices, Retours et demandes, et Nouveautés.",
+  "it": "In Altro trovi le impostazioni in gruppi, più Esercizi, Feedback e richieste e Novità."
  }
 }
