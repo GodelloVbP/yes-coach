@@ -1,0 +1,250 @@
+0|21s
+1|Elastico dietro le ginocchia, ancorato davanti a te: siediti all'indietro con gli stinchi verticali. Spesso usato per le ginocchia doloranti.
+2|Camminata a passo svelto. Registra i minuti.
+3|Un burpee su due manubri, poi lancia i manubri dal pavimento sopra la testa in un unico movimento.
+4|Una trazione a presa supina con peso extra alla cintura. Registra solo il peso aggiunto.
+5|Uno stacco da fermi partendo dai pin all'altezza delle ginocchia. Lavoro pesante per la parte alta della schiena e il blocco finale.
+6|Un dip con peso extra alla cintura. Registra solo il peso aggiunto. Aumenta il carico gradualmente: i dip profondi sollecitano la spalla.
+7|Uno squat frontale che passa direttamente in una distensione sopra la testa, in un unico movimento.
+8|Uno squat completo su una gamba, con l'altra tesa in avanti.
+9|Un rematore pesante a un braccio per molte ripetizioni, con un po' di slancio del corpo. Ottimo anche per la presa.
+10|Un'escursione su colline o sentieri. Registra i minuti.
+11|Un hip thrust con quasi tutto il peso sul piede anteriore e il piede dietro solo per l'equilibrio.
+12|Un mix tra panca a presa stretta e skull crusher: abbassa il bilanciere verso il mento con i gomiti in avanti.
+13|Una trazione che prosegue in un dip sopra la sbarra. Servono prima trazioni e dip stretti molto solidi.
+14|Una trazione con peso extra alla cintura. Registra solo il peso aggiunto.
+15|Un'uscita in bici all'aperto. Registra i minuti; scrivi la distanza nella nota.
+16|Una corsa all'aperto. Registra i minuti; scrivi la distanza nella nota.
+17|Una piccola flessione e spinta delle gambe lancia il bilanciere, poi distendilo sopra la testa.
+18|Uno squat con una pausa di due secondi in basso.
+19|Ruota per addominali
+20|Rollout con ruota per addominali
+21|Allenamento addominali
+22|Addominali
+23|Addominali, core profondo
+24|Addominali, flessori dell'anca
+25|Addominali, obliqui
+26|Adduttori
+27|Adduttori, glutei
+28|Air bike
+29|Air squat
+30|Curl alternato con manubri
+31|Un tirata al mento fino all'altezza dei gomiti, ruota gli avambracci verso l'alto, poi spingi. Solo con pesi leggeri.
+32|Cavigliera agganciata, calcia una gamba dritta all'indietro senza inarcare la zona lombare.
+33|Caviglie
+34|Qualsiasi routine per gli addominali, registrata in minuti. Inserisci quanto è durata, ad esempio 8.
+35|Flessione arciere
+36|Le braccia si muovono ad arco da sopra la testa fino ai fianchi. Lavora i dorsali senza che i bicipiti prendano il sopravvento.
+37|Braccia quasi tese, spingi la barra o la corda dall'altezza degli occhi fino alle cosce. Stesso movimento del pullover con corda.
+38|Apri le braccia ad arco con i gomiti leggermente flessi. Fermati quando senti allungare, non a terra.
+39|Braccia tese in avanti, arrotola il peso su e giù lungo la corda.
+40|Braccia aperte ai lati all'altezza delle spalle, porta le maniglie verso la testa.
+41|Braccia tese davanti a te, apri l'elastico tirandolo verso il petto.
+42|Arnold press
+43|Trazione a presa supina assistita
+44|Dip assistito
+45|Macchina per dip assistiti
+46|Trazione assistita
+47|Macchina per trazioni assistite
+48|Hip thrust con appoggio a B
+49|Schiena
+50|Schiena contro un muro, piedi davanti a te: solleva le punte dei piedi il più in alto possibile.
+51|Schiena contro un muro, cosce parallele al pavimento. Conta i secondi.
+52|Schiena contro l'imbottitura, piedi in avanti sulla pedana. Scendi in profondità tenendo i talloni a terra.
+53|Piede posteriore su una panca, abbassa il ginocchio posteriore verso il pavimento. Parti leggero.
+54|Avampiedi su uno step sotto la barra della Smith machine, allungamento completo e pausa in alto.
+55|Elastico attorno alle ginocchia o alle caviglie, squat leggero, fai passi laterali senza far cedere le ginocchia verso l'interno.
+56|Apertura con elastico
+57|Camminata laterale con elastico
+58|Sbarra
+59|Bilanciere sulla parte anteriore delle spalle, gomiti alti, siediti restando in verticale.
+60|Bilanciere sulla schiena, inclinati in avanti con la schiena piatta, poi rialzati. Parti leggero.
+61|Bilanciere sulla schiena, fai un passo avanti in affondo e spingi per tornare indietro.
+62|Bilanciere sulla parte alta della schiena, addome in tensione, siediti tra i fianchi almeno fino al parallelo.
+63|Sbarra o anelli
+64|Bilanciere sopra la metà dei piedi, schiena piatta, spingi il pavimento lontano da te e rialzati. Riparti da fermo a ogni ripetizione.
+65|Sbarra con maniglie parallele
+66|Sbarra, cintura per zavorra
+67|Bilanciere
+68|Panca piana con bilanciere
+69|Curl con bilanciere
+70|Floor press con bilanciere
+71|Glute bridge con bilanciere
+72|Affondo con bilanciere
+73|Bilanciere o barra EZ
+74|Bilanciere o cavo
+75|Bilanciere o manubri, panca
+76|Bilanciere o manubri
+77|Bilanciere o manubri, panca alta
+78|Bilanciere o macchina, panca
+79|Lento avanti con bilanciere
+80|Rematore con bilanciere
+81|Bilanciere, panca
+82|Bilanciere, panca declinata
+83|Bilanciere, manubri o kettlebell
+84|Bilanciere, panca inclinata
+85|Bilanciere, imbottitura
+86|Bilanciere, rack
+87|Bilanciere, rack, box
+88|Bilanciere, panca a schienale verticale
+89|Funi da battaglia
+90|Curl bayesiano ai cavi
+91|Bear crawl
+92|Kettlebell appoggiato sul retro dell'avambraccio: spingilo sopra la testa e blocca il gomito.
+93|Belt squat
+94|Macchina per belt squat
+95|Panca
+96|Dip su panca
+97|Panca o box
+98|Panca dal pavimento in un rack. Fai una pausa quando i gomiti toccano terra.
+99|Panca su traiettoria guidata. Imposta i fermi di sicurezza appena sotto il petto.
+100|Panca inclinata a circa 30 gradi, bilanciere sulla parte alta del petto. Scapole indietro per tutta la serie.
+101|Panca, manubri
+102|Busto piegato in avanti sui fianchi sulla macchina, sali sulle punte dei piedi. Grande allungamento in basso.
+103|Bicipiti
+104|Bicipiti (capo lungo)
+105|Bicipiti (capo breve)
+106|Bicipiti, brachioradiale
+107|Crunch in bicicletta
+108|Bici
+109|Bird dog
+110|Corpo eretto sulle parallele, gomiti indietro, scendi fino a circa 90 gradi.
+111|Corpo libero
+112|Corpo libero o cavigliere zavorrate
+113|Corpo libero o sbarra
+114|Corpo libero o mini elastico
+115|Corpo libero o disco
+116|Corpo libero o panca per sissy squat
+117|Squat a corpo libero fino alla massima profondità.
+118|Corpo libero, imbottitura
+119|Entrambe le braccia sull'imbottitura, porta le maniglie verso di te su una traiettoria guidata.
+120|Box jump
+121|Box squat
+122|Lavoro al sacco da boxe
+123|Brachiale, bicipiti
+124|Brachioradiale
+125|Camminata a passo svelto su una pendenza ripida. Leggera per le articolazioni, ottima per il fiato.
+126|Squat bulgaro
+127|Burpee
+128|Bus driver
+129|Alzata a Y ai cavi
+130|Chest press ai cavi
+131|Crunch ai cavi
+132|Curl ai cavi
+133|Croci ai cavi, altezza media
+134|Alzata frontale ai cavi
+135|Kickback per glutei ai cavi
+136|Abduzione dell'anca ai cavi
+137|Adduzione dell'anca ai cavi
+138|Kickback ai cavi
+139|Alzata laterale ai cavi
+140|Pull-through ai cavi
+141|Croci inverse ai cavi per deltoidi posteriori
+142|Stazione cavi
+143|Stazione cavi, barra a V
+144|Stazione cavi, maniglia a V
+145|Stazione cavi, cavigliera
+146|Stazione cavi, barra
+147|Stazione cavi, corda
+148|Stazione cavi, barra larga
+149|Woodchop ai cavi
+150|Cavi all'altezza delle spalle, fai un passo avanti e porta le maniglie insieme davanti al petto come in un abbraccio.
+151|Cavi incrociati all'altezza delle spalle, aprili con le braccia tese.
+152|Cavi in basso, le mani salgono e si uniscono all'altezza del mento. Mantieni il movimento corto nel ritorno.
+153|Polpacci
+154|Captain's chair
+155|Sollevamento ginocchia alla captain's chair
+156|Cardio
+157|Petto
+158|Petto contro l'imbottitura, tira le maniglie verso le costole e stringi le scapole.
+159|Dip per il petto
+160|Petto sull'imbottitura, tira le maniglie verso l'alto. Risparmia la zona lombare rispetto al T-bar row libero.
+161|Petto, dorsali
+162|Petto, tricipiti
+163|T-bar row con petto appoggiato
+164|Rematore con petto appoggiato
+165|Rematore con petto appoggiato caricato con dischi. Ogni braccio lavora in modo indipendente.
+166|Trazione a presa supina
+167|Clamshell
+168|Clean and jerk
+169|Clean and press
+170|Porta il bilanciere alle spalle con uno strappo, poi spingilo sopra la testa divaricando i piedi.
+171|Porta il peso alle spalle, poi spingilo sopra la testa.
+172|Sali sulle scale mobili della macchina senza appoggiarti ai corrimano.
+173|Panca a presa stretta
+174|Lat machine a presa stretta
+175|Flessioni a presa stretta
+176|Curl concentrato
+177|Tensione costante dal basso fino in alto.
+178|Copenhagen plank
+179|Core
+180|Cossack squat
+181|Estensione ai cavi incrociata
+182|Hammer curl incrociato
+183|Crunch
+184|Crunch su macchina addominale con carico.
+185|Cuban press
+186|Curl con palmi in su, ruota i palmi verso il basso in alto, poi scendi lentamente.
+187|Curl con palmi rivolti verso il basso.
+188|Pedalata su una cyclette. Registra i minuti.
+189|Dead bug
+190|Dead hang
+191|Stacco da terra
+192|Panca declinata con bilanciere
+193|Panca declinata
+194|Panca declinata con manubri
+195|Flessioni declinate
+196|Sit-up declinati
+197|Core profondo, zona lombare
+198|Core profondo, obliqui
+199|Core profondo, spalle
+200|Flessioni con deficit
+201|Devil press
+202|Flessioni a diamante
+203|Parallele
+204|Parallele, cintura per zavorra
+205|Donkey calf raise
+206|Donkey kick
+207|Drag curl
+208|Dragon flag
+209|Scendi a terra, flessione facoltativa, riporta i piedi sotto di te e salta.
+210|Manubrio
+211|Calf raise con manubrio
+212|Floor press con manubri
+213|Croci con manubri
+214|Kickback con manubrio
+215|Manubrio o corpo libero
+216|Manubrio o kettlebell
+217|Estensione sopra la testa con manubrio
+218|Preacher curl con manubrio
+219|Pullover con manubrio
+220|Lento avanti con manubri
+221|Flessione laterale con manubrio
+222|Snatch con manubrio
+223|Squat con manubrio
+224|Squat sumo con manubrio
+225|Manubrio, panca
+226|Manubrio, panca Scott
+227|Manubrio, step
+228|Manubrio, montante verticale
+229|Manubri
+230|Manubri sul petto, gomiti larghi, abbassa i manubri l'uno verso l'altro e spingi di nuovo su.
+231|Manubri o barra EZ, panca inclinata
+232|Manubri o bilanciere
+233|Manubri o bilanciere, cuneo
+234|Manubri o maniglie per farmer's walk
+235|Manubri, panca
+236|Manubri, panca declinata
+237|Manubri, panca inclinata
+238|Barra EZ
+239|Curl con barra EZ
+240|Barra EZ o bilanciere
+241|Barra EZ o manubri, panca
+242|Estensione sopra la testa con barra EZ
+243|Gomito lungo il fianco e piegato a 90 gradi, ruota l'avambraccio verso l'interno e verso l'esterno. Pesi molto leggeri.
+244|Gomito verso il ginocchio opposto, in alternanza, mentre l'altra gamba si distende.
+245|Gomiti lungo i fianchi, porta il bilanciere in alto senza dondolare.
+246|Gomiti sull'imbottitura, estendi le braccia contro le maniglie.
+247|Gomiti bloccati lungo i fianchi, spingi verso il basso e apri la corda in fondo.
+248|Ellittica
+249|Ellittica

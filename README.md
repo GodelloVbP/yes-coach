@@ -85,3 +85,9 @@ Food search loads `foods-nevo.json` and `foods-usda.json` the first time someone
 
 Rebuild after a new release: `python3 tools/build_foods.py <NEVO20xx.csv> <USDA sr_legacy csv folder>` (keep the raw NEVO files out of this repo).
 - Portie-online versie 2026/2.0, RIVM, Bilthoven: household measures per NEVO code in `portions-nevo.json` (used unchanged, packaging sizes left out). Full table: `Portie-online 2026-2.0.xlsx` in the Yes Coach folder.
+
+## Tests
+
+`tests/run.sh` builds the app and runs everything: the merge unit tests (Node), then the end-to-end suites in `tests/e2e/` (headless Chrome with Playwright, Supabase faked in memory): tickets, sign-in with the human check, the connector consent page, languages, and logging a workout (tick, untick, correct, offline retry, draft after reload). `tests/e2e/harness.py` holds the shared fake backend.
+
+Translations: see `tools/i18n/README.md`.

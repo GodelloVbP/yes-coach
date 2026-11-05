@@ -1,0 +1,506 @@
+{
+ "Languages": {
+  "nl": "Talen",
+  "es": "Idiomas",
+  "de": "Sprachen",
+  "fr": "Langues",
+  "it": "Lingue"
+ },
+ "Language": {
+  "nl": "Taal",
+  "es": "Idioma",
+  "de": "Sprache",
+  "fr": "Langue",
+  "it": "Lingua"
+ },
+ "Yes Coach! is originally in English. The translations are AI-generated and might contain mistakes. If you find one, please report it in the form.": {
+  "nl": "Yes Coach! is oorspronkelijk in het Engels. De vertalingen zijn door AI gemaakt en kunnen fouten bevatten. Zie je er een? Meld het dan in het formulier.",
+  "es": "Yes Coach! está originalmente en inglés. Las traducciones están generadas por IA y pueden contener errores. Si encuentras alguno, infórmalo en el formulario.",
+  "de": "Yes Coach! ist ursprünglich auf Englisch. Die Übersetzungen sind KI-generiert und können Fehler enthalten. Wenn du einen findest, melde ihn bitte im Formular.",
+  "fr": "Yes Coach! est à l'origine en anglais. Les traductions sont générées par IA et peuvent contenir des erreurs. Si tu en trouves une, signale-la dans le formulaire.",
+  "it": "Yes Coach! è originariamente in inglese. Le traduzioni sono generate dall'IA e possono contenere errori. Se ne trovi una, segnalala nel modulo."
+ },
+ "Report a translation mistake": {
+  "nl": "Vertaalfout melden",
+  "es": "Informar de un error de traducción",
+  "de": "Übersetzungsfehler melden",
+  "fr": "Signaler une erreur de traduction",
+  "it": "Segnala un errore di traduzione"
+ },
+ "Other": {
+  "nl": "Overig",
+  "es": "Otro",
+  "de": "Sonstiges",
+  "fr": "Autre",
+  "it": "Altro"
+ },
+ "added today": {
+  "nl": "vandaag toegevoegd",
+  "es": "añadido hoy",
+  "de": "heute hinzugefügt",
+  "fr": "ajouté aujourd'hui",
+  "it": "aggiunto oggi"
+ },
+ "exercise name": {
+  "nl": "oefeningnaam",
+  "es": "nombre del ejercicio",
+  "de": "Übungsname",
+  "fr": "nom de l'exercice",
+  "it": "nome dell'esercizio"
+ },
+ "food entries": {
+  "nl": "eetregistraties",
+  "es": "entradas de comida",
+  "de": "Ernährungseinträge",
+  "fr": "entrées d'alimentation",
+  "it": "voci di cibo"
+ },
+ "g protein": {
+  "nl": "g eiwit",
+  "es": "g de proteína",
+  "de": "g Eiweiß",
+  "fr": "g de protéines",
+  "it": "g di proteine"
+ },
+ "kg total": {
+  "nl": "kg totaal",
+  "es": "kg en total",
+  "de": "kg gesamt",
+  "fr": "kg au total",
+  "it": "kg in totale"
+ },
+ "minutes empty": {
+  "nl": "minuten leeg",
+  "es": "minutos vacío",
+  "de": "Minuten leer",
+  "fr": "minutes vides",
+  "it": "minuti vuoti"
+ },
+ "planned today": {
+  "nl": "vandaag gepland",
+  "es": "planificado para hoy",
+  "de": "heute geplant",
+  "fr": "prévu aujourd'hui",
+  "it": "pianificato oggi"
+ },
+ "reps": {
+  "nl": "herhalingen",
+  "es": "repeticiones",
+  "de": "Wiederholungen",
+  "fr": "répétitions",
+  "it": "ripetizioni"
+ },
+ "reps empty": {
+  "nl": "herhalingen leeg",
+  "es": "repeticiones vacío",
+  "de": "Wiederholungen leer",
+  "fr": "répétitions vides",
+  "it": "ripetizioni vuote"
+ },
+ "set order": {
+  "nl": "volgorde van sets",
+  "es": "orden de las series",
+  "de": "Reihenfolge der Sätze",
+  "fr": "ordre des séries",
+  "it": "ordine delle serie"
+ },
+ "week plan": {
+  "nl": "weekplan",
+  "es": "plan semanal",
+  "de": "Wochenplan",
+  "fr": "programme de la semaine",
+  "it": "piano settimanale"
+ },
+ "Add {0}": {
+  "nl": "{0} toevoegen",
+  "es": "Añadir {0}",
+  "de": "{0} hinzufügen",
+  "fr": "Ajouter {0}",
+  "it": "Aggiungi {0}"
+ },
+ "Day {0}": {
+  "nl": "Dag {0}",
+  "es": "Día {0}",
+  "de": "Tag {0}",
+  "fr": "Jour {0}",
+  "it": "Giorno {0}"
+ },
+ "Day {0}{1}": {
+  "nl": "Dag {0}{1}",
+  "es": "Día {0}{1}",
+  "de": "Tag {0}{1}",
+  "fr": "Jour {0}{1}",
+  "it": "Giorno {0}{1}"
+ },
+ "target {0}": {
+  "nl": "doel {0}",
+  "es": "objetivo {0}",
+  "de": "Ziel {0}",
+  "fr": "objectif {0}",
+  "it": "obiettivo {0}"
+ },
+ "{0} day": {
+  "nl": "{0} dag",
+  "es": "{0} día",
+  "de": "{0} Tag",
+  "fr": "{0} jour",
+  "it": "{0} giorno"
+ },
+ "{0} days": {
+  "nl": "{0} dagen",
+  "es": "{0} días",
+  "de": "{0} Tage",
+  "fr": "{0} jours",
+  "it": "{0} giorni"
+ },
+ "{0} days ago": {
+  "nl": "{0} dagen geleden",
+  "es": "hace {0} días",
+  "de": "vor {0} Tagen",
+  "fr": "il y a {0} jours",
+  "it": "{0} giorni fa"
+ },
+ "{0} exercise": {
+  "nl": "{0} oefening",
+  "es": "{0} ejercicio",
+  "de": "{0} Übung",
+  "fr": "{0} exercice",
+  "it": "{0} esercizio"
+ },
+ "{0} exercises": {
+  "nl": "{0} oefeningen",
+  "es": "{0} ejercicios",
+  "de": "{0} Übungen",
+  "fr": "{0} exercices",
+  "it": "{0} esercizi"
+ },
+ "{0} g protein": {
+  "nl": "{0} g eiwit",
+  "es": "{0} g de proteína",
+  "de": "{0} g Eiweiß",
+  "fr": "{0} g de protéines",
+  "it": "{0} g di proteine"
+ },
+ "{0} item": {
+  "nl": "{0} item",
+  "es": "{0} elemento",
+  "de": "{0} Eintrag",
+  "fr": "{0} élément",
+  "it": "{0} elemento"
+ },
+ "{0} items": {
+  "nl": "{0} items",
+  "es": "{0} elementos",
+  "de": "{0} Einträge",
+  "fr": "{0} éléments",
+  "it": "{0} elementi"
+ },
+ "{0} kcal": {
+  "nl": "{0} kcal",
+  "es": "{0} kcal",
+  "de": "{0} kcal",
+  "fr": "{0} kcal",
+  "it": "{0} kcal"
+ },
+ "{0} lift": {
+  "nl": "{0} lift",
+  "es": "{0} levantamiento",
+  "de": "{0} Lift",
+  "fr": "{0} mouvement",
+  "it": "{0} sollevamento"
+ },
+ "{0} lifts": {
+  "nl": "{0} lifts",
+  "es": "{0} levantamientos",
+  "de": "{0} Lifts",
+  "fr": "{0} mouvements",
+  "it": "{0} sollevamenti"
+ },
+ "{0} line": {
+  "nl": "{0} regel",
+  "es": "{0} línea",
+  "de": "{0} Zeile",
+  "fr": "{0} ligne",
+  "it": "{0} riga"
+ },
+ "{0} lines": {
+  "nl": "{0} regels",
+  "es": "{0} líneas",
+  "de": "{0} Zeilen",
+  "fr": "{0} lignes",
+  "it": "{0} righe"
+ },
+ "{0} min": {
+  "nl": "{0} min",
+  "es": "{0} min",
+  "de": "{0} min",
+  "fr": "{0} min",
+  "it": "{0} min"
+ },
+ "{0} more line": {
+  "nl": "nog {0} regel",
+  "es": "{0} línea más",
+  "de": "{0} weitere Zeile",
+  "fr": "{0} ligne de plus",
+  "it": "{0} riga in più"
+ },
+ "{0} more lines": {
+  "nl": "nog {0} regels",
+  "es": "{0} líneas más",
+  "de": "{0} weitere Zeilen",
+  "fr": "{0} lignes de plus",
+  "it": "{0} righe in più"
+ },
+ "{0} planned": {
+  "nl": "{0} gepland",
+  "es": "{0} planificado",
+  "de": "{0} geplant",
+  "fr": "{0} prévu",
+  "it": "{0} pianificato"
+ },
+ "{0} reps": {
+  "nl": "{0} herhalingen",
+  "es": "{0} repeticiones",
+  "de": "{0} Wiederholungen",
+  "fr": "{0} répétitions",
+  "it": "{0} ripetizioni"
+ },
+ "{0} request": {
+  "nl": "{0} verzoek",
+  "es": "{0} petición",
+  "de": "{0} Wunsch",
+  "fr": "{0} demande",
+  "it": "{0} richiesta"
+ },
+ "{0} requests": {
+  "nl": "{0} verzoeken",
+  "es": "{0} peticiones",
+  "de": "{0} Wünsche",
+  "fr": "{0} demandes",
+  "it": "{0} richieste"
+ },
+ "{0} session": {
+  "nl": "{0} training",
+  "es": "{0} sesión",
+  "de": "{0} Einheit",
+  "fr": "{0} séance",
+  "it": "{0} sessione"
+ },
+ "{0} sessions": {
+  "nl": "{0} trainingen",
+  "es": "{0} sesiones",
+  "de": "{0} Einheiten",
+  "fr": "{0} séances",
+  "it": "{0} sessioni"
+ },
+ "{0} set": {
+  "nl": "{0} set",
+  "es": "{0} serie",
+  "de": "{0} Satz",
+  "fr": "{0} série",
+  "it": "{0} serie"
+ },
+ "{0} sets": {
+  "nl": "{0} sets",
+  "es": "{0} series",
+  "de": "{0} Sätze",
+  "fr": "{0} séries",
+  "it": "{0} serie"
+ },
+ "{0} skipped": {
+  "nl": "{0} overgeslagen",
+  "es": "{0} omitidos",
+  "de": "{0} übersprungen",
+  "fr": "{0} ignorés",
+  "it": "{0} saltati"
+ },
+ "{0} ticket": {
+  "nl": "{0} ticket",
+  "es": "{0} ticket",
+  "de": "{0} ticket",
+  "fr": "{0} ticket",
+  "it": "{0} ticket"
+ },
+ "{0} tickets": {
+  "nl": "{0} tickets",
+  "es": "{0} tickets",
+  "de": "{0} tickets",
+  "fr": "{0} tickets",
+  "it": "{0} tickets"
+ },
+ "{0} training day": {
+  "nl": "{0} trainingsdag",
+  "es": "{0} día de entrenamiento",
+  "de": "{0} Trainingstag",
+  "fr": "{0} jour d'entraînement",
+  "it": "{0} giorno di allenamento"
+ },
+ "{0} training days": {
+  "nl": "{0} trainingsdagen",
+  "es": "{0} días de entrenamiento",
+  "de": "{0} Trainingstage",
+  "fr": "{0} jours d'entraînement",
+  "it": "{0} giorni di allenamento"
+ },
+ "No {0} in {1}": {
+  "nl": "Geen {0} in {1}",
+  "es": "Nada de {0} en {1}",
+  "de": "Kein {0}-Training in {1}",
+  "fr": "Pas de {0} dans {1}",
+  "it": "Nessun {0} in {1}"
+ },
+ "{0} is on {1}.": {
+  "nl": "{0} staat op {1}.",
+  "es": "{0} está en {1}.",
+  "de": "{0} liegt auf {1}.",
+  "fr": "{0} est placé le {1}.",
+  "it": "{0} è su {1}."
+ },
+ "chest": {
+  "nl": "borst",
+  "es": "pecho",
+  "de": "Brust",
+  "fr": "pectoraux",
+  "it": "petto"
+ },
+ "back": {
+  "nl": "rug",
+  "es": "espalda",
+  "de": "Rücken",
+  "fr": "dos",
+  "it": "schiena"
+ },
+ "shoulders": {
+  "nl": "schouders",
+  "es": "hombros",
+  "de": "Schultern",
+  "fr": "épaules",
+  "it": "spalle"
+ },
+ "quads (front of the thighs)": {
+  "nl": "quadriceps (voorkant van de bovenbenen)",
+  "es": "cuádriceps (parte delantera del muslo)",
+  "de": "Quadrizeps (Oberschenkelvorderseite)",
+  "fr": "quadriceps (devant des cuisses)",
+  "it": "quadricipiti (parte anteriore delle cosce)"
+ },
+ "hamstrings and glutes": {
+  "nl": "hamstrings en bilspieren",
+  "es": "isquiotibiales y glúteos",
+  "de": "Beinbeuger und Gesäß",
+  "fr": "ischio-jambiers et fessiers",
+  "it": "femorali e glutei"
+ },
+ "biceps": {
+  "nl": "biceps",
+  "es": "bíceps",
+  "de": "Bizeps",
+  "fr": "biceps",
+  "it": "bicipiti"
+ },
+ "triceps": {
+  "nl": "triceps",
+  "es": "tríceps",
+  "de": "Trizeps",
+  "fr": "triceps",
+  "it": "tricipiti"
+ },
+ "calves": {
+  "nl": "kuiten",
+  "es": "pantorrillas",
+  "de": "Waden",
+  "fr": "mollets",
+  "it": "polpacci"
+ },
+ "core": {
+  "nl": "romp",
+  "es": "abdomen",
+  "de": "Rumpf",
+  "fr": "gainage",
+  "it": "addome"
+ },
+ "{0}, {1} sets in {2} sessions": {
+  "nl": "{0}, {1} sets in {2} trainingen",
+  "es": "{0}, {1} series en {2} sesiones",
+  "de": "{0}, {1} Sätze in {2} Einheiten",
+  "fr": "{0}, {1} séries en {2} séances",
+  "it": "{0}, {1} serie in {2} sessioni"
+ },
+ "week": {
+  "nl": "week",
+  "es": "semana",
+  "de": "Woche",
+  "fr": "semaine",
+  "it": "settimana"
+ },
+ "month": {
+  "nl": "maand",
+  "es": "mes",
+  "de": "Monat",
+  "fr": "mois",
+  "it": "mese"
+ },
+ "Yes Coach! now speaks your language": {
+  "nl": "Yes Coach! spreekt nu jouw taal",
+  "es": "Yes Coach! ahora habla tu idioma",
+  "de": "Yes Coach! spricht jetzt deine Sprache",
+  "fr": "Yes Coach! parle maintenant ta langue",
+  "it": "Yes Coach! ora parla la tua lingua"
+ },
+ "Choose Dutch, English, Spanish, German, French or Italian the first time you open it. Change it any time in Settings, under Languages.": {
+  "nl": "Kies Nederlands, Engels, Spaans, Duits, Frans of Italiaans als je de app voor het eerst opent. Je past het altijd aan in Instellingen, onder Talen.",
+  "es": "Elige neerlandés, inglés, español, alemán, francés o italiano la primera vez que la abras. Cámbialo cuando quieras en Ajustes, en Idiomas.",
+  "de": "Wähle Niederländisch, Englisch, Spanisch, Deutsch, Französisch oder Italienisch, wenn du die App zum ersten Mal öffnest. Du kannst es jederzeit in den Einstellungen unter Sprachen ändern.",
+  "fr": "Choisis le néerlandais, l’anglais, l’espagnol, l’allemand, le français ou l’italien à la première ouverture. Tu peux le changer à tout moment dans Réglages, sous Langues.",
+  "it": "Scegli olandese, inglese, spagnolo, tedesco, francese o italiano alla prima apertura. Puoi cambiarla in qualsiasi momento in Impostazioni, sotto Lingue."
+ },
+ "The app is originally in English and the translations are AI-generated, so some may be wrong. Found one? Report it in the form.": {
+  "nl": "De app is oorspronkelijk in het Engels en de vertalingen zijn door AI gemaakt, dus er kunnen fouten in zitten. Zie je er een? Meld het in het formulier.",
+  "es": "La app está originalmente en inglés y las traducciones las genera una IA, así que puede haber errores. ¿Encontraste uno? Infórmalo en el formulario.",
+  "de": "Die App ist ursprünglich auf Englisch und die Übersetzungen sind KI-generiert, daher können Fehler vorkommen. Einen gefunden? Melde ihn im Formular.",
+  "fr": "L’appli est d’origine en anglais et les traductions sont générées par IA, il peut donc y avoir des erreurs. Tu en as trouvé une ? Signale-la dans le formulaire.",
+  "it": "L’app è originariamente in inglese e le traduzioni sono generate dall’IA, quindi possono contenere errori. Ne hai trovato uno? Segnalalo nel modulo."
+ },
+ "The human check could not run. Turn off content blockers for this site and try again.": {
+  "nl": "De mensencheck kon niet draaien. Zet contentblockers voor deze site uit en probeer het opnieuw.",
+  "es": "No se pudo ejecutar la comprobación de que eres humano. Desactiva los bloqueadores de contenido para este sitio e inténtalo de nuevo.",
+  "de": "Die Prüfung, ob du ein Mensch bist, konnte nicht laufen. Schalte Inhaltsblocker für diese Seite aus und versuche es erneut.",
+  "fr": "La vérification anti-robot n’a pas pu s’exécuter. Désactive les bloqueurs de contenu pour ce site et réessaie.",
+  "it": "Non è stato possibile eseguire il controllo anti-bot. Disattiva i blocchi dei contenuti per questo sito e riprova."
+ },
+ "The human check failed. Try again.": {
+  "nl": "De mensencheck is mislukt. Probeer het opnieuw.",
+  "es": "Falló la comprobación de que eres humano. Inténtalo de nuevo.",
+  "de": "Die Prüfung, ob du ein Mensch bist, ist fehlgeschlagen. Versuche es erneut.",
+  "fr": "La vérification anti-robot a échoué. Réessaie.",
+  "it": "Il controllo anti-bot non è riuscito. Riprova."
+ },
+ "Back to the home page": {
+  "nl": "Terug naar de startpagina",
+  "es": "Volver al inicio",
+  "de": "Zurück zur Startseite",
+  "fr": "Retour à l’accueil",
+  "it": "Torna alla home"
+ },
+ "Privacy page": {
+  "nl": "Privacypagina",
+  "es": "Página de privacidad",
+  "de": "Datenschutzerklärung",
+  "fr": "Page de confidentialité",
+  "it": "Pagina sulla privacy"
+ },
+ "Tick the box above to continue.": {
+  "nl": "Vink het vakje hierboven aan om door te gaan.",
+  "es": "Marca la casilla de arriba para continuar.",
+  "de": "Hake das Kästchen oben an, um fortzufahren.",
+  "fr": "Coche la case ci-dessus pour continuer.",
+  "it": "Spunta la casella qui sopra per continuare."
+ },
+ "The human check did not finish. Reload the page and try again.": {
+  "nl": "De mensencheck is niet afgerond. Laad de pagina opnieuw en probeer het nog eens.",
+  "es": "La comprobación de que eres humano no terminó. Recarga la página e inténtalo de nuevo.",
+  "de": "Die Prüfung, ob du ein Mensch bist, wurde nicht abgeschlossen. Lade die Seite neu und versuche es erneut.",
+  "fr": "La vérification anti-robot ne s’est pas terminée. Recharge la page et réessaie.",
+  "it": "Il controllo anti-bot non si è concluso. Ricarica la pagina e riprova."
+ }
+}

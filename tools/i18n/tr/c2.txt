@@ -1,0 +1,310 @@
+250|Cyclette
+251|Girati di spalle a un cavo basso, braccio dietro di te, e fai il curl in avanti. Grande allungamento per il capo lungo.
+252|Girati di spalle alla stazione con la corda dietro la testa ed estendi le braccia in avanti e in alto. Il migliore per il capo lungo.
+253|Girati di spalle alla stazione, inclinati all'indietro, poi spingi i fianchi in avanti.
+254|A pancia in giù, disegna le forme Y, T e W con pesi molto leggeri. Lavoro per la salute delle spalle.
+255|Face pull
+256|Farmer's walk
+257|Piedi bloccati, alzati fino a sederti del tutto e scendi in modo controllato.
+258|Piedi bloccati, abbassa il bilanciere fino alla parte bassa del petto. Di solito permette di usare un po' più peso della panca piana.
+259|Piedi su una panca, mani a terra. Più difficile di una flessione normale e coinvolge di più la parte alta del petto.
+260|Piedi alla larghezza delle spalle sulla pedana, scendi finché le ginocchia sono a circa 90 gradi senza sollevare il bacino.
+261|Fire hydrant
+262|Panca piana con manubri
+263|Flutter kick
+264|Estensori dell'avambraccio
+265|Flessori dell'avambraccio
+266|Avambracci
+267|Avambracci a terra, linea retta dalla testa ai talloni. Conta i secondi, non le ripetizioni.
+268|Avambracci sui cuscinetti, schiena contro lo schienale, solleva le ginocchia.
+269|Avambracci sulle cosce, palmi in su, solleva il peso solo con i polsi.
+270|Frog pump
+271|Da appeso a braccia tese, abbassa le scapole senza piegare i gomiti. Costruisce l'inizio di ogni trazione.
+272|Da appeso, porta le punte dei piedi a toccare la sbarra.
+273|Dal pavimento sopra la testa in un'unica tirata esplosiva con un braccio.
+274|Da in ginocchio, fai rotolare la ruota in avanti il più possibile senza che la zona lombare ceda.
+275|Deltoidi anteriori e laterali
+276|Deltoidi anteriori
+277|Deltoidi anteriori, cuffia dei rotatori
+278|Deltoidi anteriori, tricipiti
+279|Deltoidi anteriori, parte alta del petto
+280|Alzata frontale
+281|Squat frontale
+282|Corpo intero
+283|Allungamento completo in basso, pausa, poi sali sulle punte dei piedi.
+284|Macchina GHD
+285|Glute bridge
+286|Macchina per glute bridge
+287|Macchina per kickback dei glutei
+288|Grande gluteo
+289|Medio gluteo
+290|Piccolo gluteo
+291|Glute-ham raise
+292|Glutei
+293|Glutei, adduttori, quadricipiti
+294|Glutei, femorali
+295|Glutei, femorali, spalle
+296|Glutei, zona lombare
+297|Glutei, quadricipiti
+298|Passa dalla posizione sdraiata a quella in piedi con un kettlebell tenuto sopra la testa, un passaggio alla volta, e poi torna giù.
+299|Goblet squat
+300|Good morning
+301|Gorilla row
+302|Presa
+303|Presa, trapezi superiori
+304|Lento avanti guidato. Un'opzione quando i pesi liberi danno fastidio alla spalla.
+305|Spinta guidata con angolo verso l'alto. Regola il sedile in modo che le maniglie partano all'altezza della parte alta del petto.
+306|Hack squat
+307|Hammer curl
+308|Hammer curl davanti al corpo verso la spalla opposta.
+309|Hammer curl con corda a un cavo basso, tensione costante.
+310|Chest press con presa a martello caricata con dischi. Registra i dischi di un lato o il totale, ma sempre allo stesso modo.
+311|Femorali
+312|Femorali e glutei
+313|Femorali, glutei
+314|Femorali, glutei, parte alta della schiena
+315|Femorali, zona lombare
+316|Mani circa alla larghezza delle spalle, gomiti vicini al corpo, bilanciere verso la parte bassa del petto.
+317|Mani su una panca dietro di te, abbassa il bacino. Pesante per la parte anteriore della spalla.
+318|Mani su una panca, corpo dritto. Più in alto sono le mani, più è facile.
+319|Mani su maniglie o dischi, così il petto scende sotto il livello delle mani per un allungamento maggiore.
+320|Mani unite sotto il petto con pollici e indici a formare un diamante.
+321|Mani sotto le spalle, gomiti che sfiorano i fianchi.
+322|Mani ben oltre la larghezza delle spalle. Più difficile di una trazione normale.
+323|Handstand push-up
+324|Hang clean
+325|Appeso a una sbarra, solleva le gambe tese fino all'altezza dei fianchi o più in alto.
+326|Appeso a una sbarra, porta le ginocchia verso il petto senza dondolare.
+327|Appeso a una sbarra con le spalle rilassate. Conta i secondi.
+328|Appeso sotto una sbarra all'altezza della vita, corpo dritto, tira il petto verso la sbarra. Porta i piedi indietro per renderlo più difficile.
+329|Sollevamento ginocchia da appeso
+330|Sollevamento gambe da appeso
+331|Cuore e polmoni
+332|Sacco pesante, guantoni
+333|Squat con talloni rialzati
+334|Talloni su un disco o un cuneo, così le ginocchia vanno avanti e i quadricipiti lavorano di più.
+335|Curl ai cavi alti
+336|Macchina per rematore alto
+337|Escursionismo
+338|Inclinati sui fianchi e spingi il bacino in avanti con uno scatto per far oscillare il kettlebell all'altezza del petto. È un movimento d'anca, non uno squat né un'alzata con le braccia.
+339|Inclinati sui fianchi sulla panca e solleva finché il corpo è in linea retta. Non inarcare oltre la posizione neutra.
+340|Inclinati sui fianchi con le gambe quasi tese finché senti allungare i femorali, poi rialzati.
+341|Inclinati in avanti con un manubrio per mano e tira entrambi verso i fianchi.
+342|Inclinati in avanti con la schiena piatta e tira il peso verso il petto. Termina la serie quando la schiena inizia ad arrotondarsi.
+343|Inclinati in avanti, braccio lungo il fianco, estendi il braccio all'indietro.
+344|Inclinati in avanti, braccio fermo, distendi il gomito finché il braccio punta all'indietro.
+345|Inclinati sui fianchi su una gamba mentre l'altra va indietro. Tieni i fianchi allineati.
+346|Inclinati a circa 45 gradi con la schiena piatta e tira il bilanciere verso le costole inferiori.
+347|Macchina per abduzione dell'anca
+348|Abduttori dell'anca (medio gluteo)
+349|Abduttori dell'anca (medio gluteo, piccolo gluteo)
+350|Macchina per adduzione dell'anca
+351|Flessori dell'anca
+352|Rotatori dell'anca
+353|Hip thrust
+354|Fianchi alti a formare una V rovesciata, abbassa la testa verso il pavimento tra le mani.
+355|Tieni un disco teso davanti a te e giralo a sinistra e a destra come un volante.
+356|Tieniti a un montante e inclinati lateralmente, alza un manubrio di lato. Più difficile in basso rispetto all'alzata normale.
+357|Tieni un manubrio dietro la testa con entrambe le mani ed estendi le braccia verso l'alto.
+358|Tieni un manubrio piatto sui palmi come un vassoio e fai il curl.
+359|Tieni un peso al petto e scendi in profondità. Ottimo per imparare il movimento.
+360|Afferra la panca dietro la testa e abbassa il corpo teso come una leva.
+361|Tieni l'estremità del landmine al petto ed esegui lo squat. Ottimo per imparare la profondità.
+362|Tieni l'estremità del bilanciere sopra la testa con le braccia tese e faglielo oscillare da un lato all'altro ad arco.
+363|Sostieniti sulle braccia tese con le gambe tese davanti a te.
+364|Hollow hold
+365|Panca per iperestensioni
+366|Panca per iperestensioni, disco
+367|In posizione da flessione sui manubri, tira un manubrio alla volta verso l'alto senza ruotare i fianchi.
+368|In posizione da flessione, porta le ginocchia al petto una dopo l'altra.
+369|In posizione da flessione, tocca ogni spalla con la mano opposta senza far oscillare i fianchi.
+370|Alzata a Y su panca inclinata
+371|Panca inclinata con bilanciere
+372|Panca inclinata o macchina
+373|Curl su panca inclinata con manubri
+374|Croci su panca inclinata con manubri
+375|Panca inclinata con manubri
+376|Chest press inclinata su macchina
+377|Panca inclinata alla Smith machine. Posiziona la panca in modo che il bilanciere tocchi la parte alta del petto.
+378|Flessioni inclinate
+379|Camminata inclinata sul tapis roulant
+380|Versione inclinata della spinta con dischi. Ogni braccio si muove da solo, quindi si nota il lato più debole.
+381|Petto interno
+382|Rematore inverso
+383|JM press
+384|Salta su un box e atterra senza rumore. Scendi con un passo, non saltare giù.
+385|Corda per saltare
+386|Jump squat
+387|Kettlebell
+388|Clean con kettlebell
+389|Stacco con kettlebell
+390|Lento avanti con kettlebell
+391|Kettlebell swing
+392|Kettlebell
+393|Calcia i piedi contro il muro e abbassa la testa fino al pavimento. Inizia con le pike push-up.
+394|Kickback su macchina guidata con appoggio per il petto.
+395|Inginocchiati di fronte alla stazione e porta le costole verso i fianchi.
+396|Inginocchiati o stai in piedi sulla pedana e tira verso l'alto. Registra l'assistenza; meno è meglio.
+397|In ginocchio con i talloni bloccati, abbassa il corpo in avanti il più lentamente possibile. Fermati con le mani.
+398|Flessioni sulle ginocchia
+399|In ginocchio, busto eretto, inclinati lentamente all'indietro con una linea retta dalle ginocchia alla testa, poi torna su.
+400|A ginocchia piegate lavora il muscolo più profondo del polpaccio.
+401|Kroc row
+402|L-sit
+403|Landmine press
+404|Rotazione con landmine
+405|Rematore con landmine
+406|Squat con landmine
+407|Landmine, bilanciere
+408|Vasche in piscina. Registra i minuti; scrivi la distanza o le bracciate nella nota.
+409|Lat machine
+410|Affondo laterale
+411|Alzata laterale
+412|Dorsali
+413|Dorsali, bicipiti
+414|Dorsali, petto, tricipiti
+415|Dorsali, core
+416|Dorsali, parte centrale della schiena
+417|Dorsali, parte alta della schiena
+418|Inclinati all'indietro e lascia che le ginocchia vadano molto in avanti. Tieniti a qualcosa.
+419|Inclinati un po' in avanti e scendi finché le braccia sono circa parallele al pavimento.
+420|Spingiti contro le maniglie e fai avanzare la slitta con passi brevi e potenti.
+421|Alzata laterale inclinata
+422|Leg curl a una gamba alla volta, in piedi.
+423|Leg extension
+424|Leg extension a una gamba alla volta.
+425|Leg press
+426|Calf raise alla leg press
+427|Gambe
+428|Gambe quasi tese, abbassa il peso verso il pavimento con la schiena piatta.
+429|Gambe, petto
+430|Gambe, spalle
+431|Gambe, parte alta della schiena, spalle
+432|Gambe, parte alta della schiena, spalle
+433|Curl su macchina a leva
+434|Sdraiati su una panca inclinata con le braccia che pendono dietro il corpo. L'allungamento carica il capo lungo e può dare fastidio alla parte anteriore della spalla.
+435|Sdraiati a pancia in giù su una panca inclinata con le braccia tese verso il basso e fai il curl.
+436|Sdraiati a pancia in giù e porta il cuscinetto verso i glutei.
+437|Sdraiati a pancia in giù e solleva braccia e gambe da terra. Mantieni, respira, scendi.
+438|Sdraiati a pancia in giù su una panca rialzata e tira partendo da braccia tese. Impossibile barare.
+439|Sdraiati a pancia in giù su una panca inclinata e alza manubri leggeri a forma di Y.
+440|Sdraiati a pancia in giù su una panca inclinata e tira i manubri verso l'alto. Nessuna sollecitazione per la zona lombare.
+441|Sdraiati a pancia in giù oltre l'estremità di una panca e solleva le gambe fino a una linea retta.
+442|Sdraiati su una panca e abbassa il peso verso la fronte piegando solo i gomiti.
+443|Sdraiati sulla schiena con i piedi verso la stazione e fai il curl con una barra da un cavo basso.
+444|Sdraiati su un fianco, gomito sull'anca e piegato a 90 gradi, ruota l'avambraccio verso l'alto. Pesi molto leggeri.
+445|Solleva la palla sopra la testa e sbattila a terra con tutta la forza.
+446|Solleva le spalle dritte verso le orecchie, pausa, scendi. Senza rotazioni.
+447|Manubrio leggero
+448|Manubri leggeri o bilanciere
+449|Manubri leggeri, panca inclinata
+450|Passo lungo, entrambi i piedi a terra, abbassa il ginocchio posteriore verticalmente.
+451|Cavo basso dietro di te, solleva la maniglia davanti fino all'altezza delle spalle.
+452|Cardio a basso impatto sull'ellittica. Registra i minuti.
+453|Addominali bassi
+454|Addominali bassi, flessori dell'anca
+455|Zona lombare
+456|Estensione lombare
+457|Zona lombare sulla palla, fai il crunch. La palla ti permette prima di allungarti all'indietro.
+458|Zona lombare, glutei, femorali
+459|Parte bassa del petto
+460|Parte bassa del petto, tricipiti
+461|Trapezi inferiori, dorsali
+462|Trapezi inferiori, deltoidi laterali
+463|Scendi finché le braccia sono circa parallele al pavimento. Inclinati un po' in avanti per coinvolgere il petto.
+464|Sdraiato di traverso o lungo una panca, abbassa un manubrio dietro la testa con le braccia quasi tese e riportalo su.
+465|Curl ai cavi da sdraiati
+466|Sdraiato, solleva braccia e gambe insieme e tocca le punte dei piedi in alto.
+467|Sollevamento gambe da sdraiati
+468|Sdraiato a terra con il bilanciere sui fianchi, spingili verso l'alto e stringi.
+469|Sdraiato su un fianco con le ginocchia piegate, apri il ginocchio superiore come una conchiglia.
+470|Sdraiato con le gambe tese verso l'alto, abbassale da un lato all'altro in modo controllato.
+471|Macchina
+472|Curl per bicipiti alla macchina
+473|Croci alla macchina
+474|Chest press alla macchina
+475|Crunch alla macchina
+476|Alzata laterale alla macchina
+477|Rematore basso alla macchina
+478|Macchina o step
+479|Pullover alla macchina
+480|Lento avanti alla macchina
+481|Scrollate alla macchina
+482|Squat alla macchina su arco oscillante. Flessione profonda delle ginocchia con supporto per la schiena.
+483|Estensione per tricipiti alla macchina
+484|Curl guidato dalla macchina, un braccio alla volta, su traiettoria fissa.
+485|Fai onde con entrambe le funi per un tempo stabilito. Registrato in minuti.
+486|Meadows row
+487|Medicine ball slam
+488|Palla medica, muro
+489|Parte centrale della schiena
+490|Parte centrale della schiena, dorsali
+491|Parte centrale della schiena, deltoidi posteriori
+492|Mini elastico
+493|Mountain climber
+494|Muscle-up
+495|Trazione a presa neutra
+496|Nessuno
+497|Nordic hamstring curl
+498|Obliqui
+499|Obliqui, core profondo
+500|Obliqui, presa
+501|Su mani e piedi con le ginocchia appena sollevate da terra, avanza a quattro zampe con la schiena piatta.
+502|A quattro zampe, solleva una gamba piegata di lato.
+503|A quattro zampe, spingi un piede verso il soffitto con il ginocchio piegato.
+504|A quattro zampe, allunga un braccio e la gamba opposta e mantieni un secondo.
+505|Su un avambraccio con il corpo in linea retta. Conta i secondi.
+506|Sulla panca glute-ham, scendi in avanti e risali usando i femorali.
+507|Sdraiato sulla schiena con i talloni su una palla, solleva i fianchi e fai rotolare la palla verso di te.
+508|Sdraiato sulla schiena con le piante dei piedi unite e le ginocchia aperte, spingi i fianchi verso l'alto.
+509|Sdraiato sulla schiena, solleva i fianchi da terra verso il petto.
+510|Sdraiato sulla schiena, porta le costole verso i fianchi. Piccola escursione, senza tirare il collo.
+511|Sdraiato sulla schiena con le ginocchia piegate, spingi i fianchi in alto finché il corpo è dritto.
+512|Sdraiato sulla schiena con le gambe appena sollevate da terra, fai piccoli colpi veloci.
+513|Sdraiato sulla schiena, zona lombare schiacciata a terra, braccia e gambe appena sollevate da terra.
+514|Sdraiato sulla schiena, abbassa le gambe tese verso il pavimento mentre la zona lombare resta a terra.
+515|Sdraiato sulla schiena, abbassa braccio e gamba opposti mentre la zona lombare resta piatta.
+516|Un braccio alla volta davanti al corpo. Più facile sentire lavorare il petto e correggere il lato più debole.
+517|Un braccio sull'imbottitura della panca Scott, fai il curl su tutta l'escursione.
+518|Un manubrio dietro la testa, gomito verso l'alto, estendi.
+519|Un piede al centro della pedana. Mostra la differenza tra le tue gambe.
+520|Un piede su uno step, manubrio nella mano dello stesso lato, sali e scendi lentamente.
+521|Un piede su uno step, tieniti a qualcosa per l'equilibrio, escursione completa.
+522|Una mano e un ginocchio su una panca, tira il manubrio verso l'anca.
+523|Una maniglia, porta il gomito giù verso il fianco. Corregge il lato che resta indietro.
+524|Rematore con manubrio a un braccio
+525|Apri le braccia di lato con i gomiti leggermente flessi e stringi le scapole.
+526|Ciclismo all'aperto
+527|Corsa all'aperto
+528|Estensione sopra la testa ai cavi
+529|Lento avanti seduto a terra con le gambe tese. Niente spinta delle gambe, niente inclinazione all'indietro.
+530|Imbottitura, ancoraggio per i talloni
+531|Cuscinetti sulla parte esterna delle braccia, sollevali fino all'altezza delle spalle.
+532|Pallof press
+533|Palmi rivolti l'uno verso l'altro per tutto il movimento. Costruisce il muscolo sotto il bicipite e gli avambracci.
+534|Palmi rivolti l'uno verso l'altro. La presa più facile per spalle e gomiti.
+535|Palmi rivolti verso di te, larghezza delle spalle. Un po' più facile per i dorsali di una trazione normale e più impegnativa per i bicipiti.
+536|Parallettes o parallele
+537|Squat con pausa
+538|Pec deck
+539|Pendlay row
+540|Pendulum squat
+541|Macchina per pendulum squat
+542|Pike push-up
+543|Stringi due dischi insieme con il lato liscio all'esterno e tieni.
+544|Pistol squat
+545|Plank
+546|Plank con tocco alla spalla
+547|Alzata frontale con disco
+548|Plate pinch
+549|Chest press con dischi
+550|Spinta inclinata con dischi
+551|Macchina a dischi
+552|Rematore a dischi
+553|Plyo box
+554|Pogo hops
+555|Piscina
+556|Power clean
+557|Panca Scott, barra EZ o macchina
+558|Preacher curl
+559|Spinta da sdraiato a terra. Il pavimento ferma presto i gomiti e risparmia le spalle.
