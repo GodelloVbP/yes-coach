@@ -41,7 +41,7 @@ What the code enforces:
 - **Data access:** row-level security on every table (`schema.sql`, `tickets.sql`); a connected AI app is limited further by `connector.sql`. Functions that run with owner rights pin their `search_path` and check who is calling.
 - **Pages:** `build.py` gives `index.html`, `consent.html`, `connect.html` and `privacy.html` a content security policy (inline scripts only by hash, connections only to this site and Supabase) and a frame guard so the consent screen cannot be framed. The only outside host is Cloudflare Turnstile, and only on the sign-in and consent screens (site key in `config.js`, secret in Supabase). Re-run `python3 build.py` after changing any inline script; it recomputes the hashes.
 - **Limits:** 256 KB per document and 20,000 documents per account (`schema.sql`); the connector refuses requests over 200 KB.
-- **Tests:** `node tests/merge.test.mjs` (deep merge cannot pollute `Object.prototype`), `node --experimental-strip-types --no-warnings supabase/tests/mcp.test.mjs` (connector).
+- **Tests:** `sh tests/run.sh` runs all of them (see Tests below), among them the check that the deep merge cannot pollute `Object.prototype` and the connector tests.
 
 Set in the Supabase dashboard (code cannot do these):
 - Authentication, Attack Protection: turn on CAPTCHA with provider Cloudflare Turnstile and the secret key. The app already sends the token (`captcha.js`). Sign-up is open and email confirmation is off, so bots can create accounts.
@@ -88,6 +88,10 @@ Rebuild after a new release: `python3 tools/build_foods.py <NEVO20xx.csv> <USDA 
 
 ## Tests
 
-`tests/run.sh` builds the app and runs everything: the merge unit tests (Node), then the end-to-end suites in `tests/e2e/` (headless Chrome with Playwright, Supabase faked in memory): tickets, sign-in with the human check, the connector consent page, languages, and logging a workout (tick, untick, correct, offline retry, draft after reload). `tests/e2e/harness.py` holds the shared fake backend.
+```bash
+sh tests/run.sh
+```
+
+It checks that the built files are current (`python3 build.py --check`), rebuilds, runs the unit tests (merge, plates, progression, and the connector in `supabase/tests/`), then every end-to-end suite in `tests/e2e/`, and exits 1 if any of them fails. The end-to-end suites drive the built app in headless Chrome with Playwright, with Supabase faked in memory (`harness.py`: fake backend, local web server, browser launch; `signedout.py`: the signed-out pages and the Turnstile stand-in). They need Python with `playwright` and Node 22. Chrome is expected at `/usr/bin/google-chrome`; set `CHROME` to use another binary. One suite alone: `cd tests/e2e && python3 e2e_train.py`.
 
 Translations: see `tools/i18n/README.md`.

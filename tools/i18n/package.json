@@ -1,14 +1,7 @@
 {
-  "name": "ex",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "name": "yes-coach-i18n",
+  "private": true,
+  "description": "Extracts the English strings of the app (extract.mjs); needs acorn.",
   "dependencies": {
     "acorn": "^8.19.0",
     "acorn-walk": "^8.3.5"
