@@ -88,5 +88,6 @@ create or replace function public.user_count() returns integer
 language sql security definer set search_path = public as $$
   select count(*)::int from auth.users;
 $$;
-revoke all on function public.user_count() from public, anon;
-grant execute on function public.user_count() to authenticated;
+revoke all on function public.user_count() from public;
+-- on purpose public: the sign-in screen and Home show the number
+grant execute on function public.user_count() to anon, authenticated;
