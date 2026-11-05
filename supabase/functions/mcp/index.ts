@@ -84,7 +84,7 @@ const inWeek = (root: Json): Set<string> => {
 };
 const dayOut = (id: string, d: Json, ex: Record<string, Json>, week: Set<string>): Json => ({
   id, name: d.name, kind: d.kind || 'Other', focus: d.focus || '', in_week: week.has(id),
-  exercises: (d.items || []).map((it: Json) => ({ exercise_id: it.ex, exercise: exName(ex, it.ex), sets: it.sets, reps: it.reps, target_kg: it.target || '', rest_s: it.rest_s, note: it.note || null })),
+  exercises: (d.items || []).map((it: Json) => ({ exercise_id: it.ex, exercise: exName(ex, it.ex), sets: it.sets, reps: it.reps, target_kg: it.target || '', rest_s: it.rest_s, note: it.note || null, superset: it.group || null })),
 });
 
 // ---------------------------------------------------------------- sessions
@@ -214,6 +214,7 @@ const TOOLS: Tool[] = [
       exercises: { type: 'array', maxItems: 12, description: 'The whole list of exercises for the day, in order. It replaces the old list.', items: obj({
         exercise_id: { type: 'string' }, sets: { type: 'integer' }, reps: { type: 'string', description: 'Text, e.g. "8", "8 to 10", "10 per arm", "max", "30 s".' },
         target_kg: { type: 'string', description: 'Load in kg as a plain number in text, e.g. "60", or "". Leave it empty to let the app suggest the next weight from the last sessions; a load set here replaces that suggestion until the next session is logged.' }, rest_s: { type: 'integer' }, note: { type: 'string', description: 'One short coaching cue.' },
+        superset: { type: 'string', description: 'A short label such as "A". Exercises next to each other with the same label are done as a superset: one set of each in turn, rest after the round. Leave it out for a normal exercise.' },
       }, ['exercise_id', 'sets', 'reps']) },
     }, ['name', 'exercises']),
     description: 'Create a training day or replace an existing one (name, kind, focus and the whole exercise list). The exercise list given replaces the old one. A new day is not part of the week until the schedule includes it.',
@@ -225,8 +226,22 @@ const TOOLS: Tool[] = [
       const items = a.exercises.slice(0, 12).map((it: Json, k: number) => {
         const exId = str(it && it.exercise_id, 80);
         if (!ex[exId]) fail('Unknown exercise_id "' + exId + '". Call list_exercises or create_exercise.');
-        return { ex: exId, order: k + 1, sets: int(it.sets, 1, 8, 3), reps: str(it.reps, 20, '10'), target: str(it.target_kg, 20), target_at: today(), rest_s: int(it.rest_s, 0, 600, 90), note: it.note ? str(it.note, 140) : null };
+        return { ex: exId, order: k + 1, sets: int(it.sets, 1, 8, 3), reps: str(it.reps, 20, '10'), target: str(it.target_kg, 20), target_at: today(), rest_s: int(it.rest_s, 0, 600, 90), note: it.note ? str(it.note, 140) : null, group: it.superset ? str(it.superset, 8) : '' } as Json;
       });
+      // a superset is two or more exercises next to each other; a lone label is dropped, and a label reused further down becomes its own group
+      const used = new Set<string>();
+      for (let i = 0; i < items.length;) {
+        const g = items[i].group;
+        let j = i + 1;
+        while (g && j < items.length && items[j].group === g) j += 1;
+        if (g && j - i >= 2) {
+          let n = g;
+          for (let c = 2; used.has(n); c += 1) n = g.slice(0, 6) + c;
+          used.add(n);
+          for (let k = i; k < j; k += 1) items[k].group = n;
+        } else for (let k = i; k < j; k += 1) delete items[k].group;
+        i = j;
+      }
       let id = str(a.id, 40);
       if (id && !days[id]) fail('Unknown day id "' + id + '". Call get_plan, or leave id out to create a new day.');
       if (!id) { let n = 1; while (days['day-' + n]) n += 1; id = 'day-' + n; }
