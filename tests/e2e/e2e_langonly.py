@@ -213,3 +213,4 @@ try:
 finally:
     server.terminate()
 print('passed %d, failed %d' % (passed, failed))
+raise SystemExit(1 if failed else 0)

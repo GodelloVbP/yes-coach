@@ -1553,12 +1553,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     // quiet while saving; only a failure shows, so you know sets are waiting on this phone
     if (!err) { bar.hidden = true; if (n || notes) paintTickFlags(); return; }
     bar.hidden = false;
-    bar.classList.toggle('error', err);
-    bar.classList.toggle('pending', !err);
-    $('#save-text').textContent = err
-      ? (n ? n + (n === 1 ? ' set' : ' sets') : 'Changes') + ' not saved. ' + (Object.values(Q).some((q) => q.error === 'offline') ? 'No connection. They are kept on this phone and retry when signal is back.' : 'Saving failed; kept on this phone.')
-      : n ? 'Saving ' + n + (n === 1 ? ' set' : ' sets') + '…' : 'Saving notes…';
-    $('#save-retry').hidden = !err;
+    bar.classList.add('error');
+    $('#save-text').textContent = (n ? n + (n === 1 ? ' set' : ' sets') : 'Changes') + ' not saved. ' + (Object.values(Q).some((q) => q.error === 'offline') ? 'No connection. They are kept on this phone and retry when signal is back.' : 'Saving failed; kept on this phone.');
+    $('#save-retry').hidden = false;
     paintTickFlags();
   };
   $('#save-retry').addEventListener('click', retryAll);

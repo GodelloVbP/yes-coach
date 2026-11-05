@@ -91,6 +91,9 @@ try:
             check('thread shows both sides', 'Which screen is too bright?' in page.inner_text('#tk-list-feature .tk-thread') and 'It is too bright at night' in page.inner_text('#tk-list-feature .tk-thread'))
             check('reply box asks for an answer', 'Your answer' in page.text_content('#tk-list-feature .tk-reply'))
             page.fill('#tk-list-feature .tk-reply textarea', 'The Train screen')
+            # coming back to the app after a while reloads the list; the answer being typed stays
+            page.evaluate("(() => { const now = Date.now; Date.now = () => now() + 60000; document.dispatchEvent(new Event('visibilitychange')); })()"); page.wait_for_timeout(600)
+            check('a half-typed answer survives a reload of the list', page.input_value('#tk-list-feature .tk-reply textarea') == 'The Train screen' and page.evaluate("document.querySelector('#tk-list-feature .tk-card').open"))
             page.click('#tk-list-feature .tk-reply button')
             page.wait_for_function("!document.querySelector('#tab-feedback.tk-dot')")
             check('card stays open after repaint', page.evaluate("document.querySelector('#tk-list-feature .tk-card').open"))

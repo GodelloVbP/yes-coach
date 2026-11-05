@@ -32,6 +32,7 @@
   function fit(ctx, text, weight, maxW, size, min, family) {
     var s = size;
     for (; s > min; s -= 4) { ctx.font = weight + ' ' + s + 'px ' + family; if (ctx.measureText(text).width <= maxW) break; }
+    s = Math.max(s, min);
     ctx.font = weight + ' ' + s + 'px ' + family;
     return s;
   }

@@ -110,10 +110,17 @@
     if (open) { d.open = true; ensure(); }
     return d;
   };
-  // repaint a list of cards and keep the ones that were open
+  // repaint a list of cards and keep the ones that were open, with the reply someone was typing
   const paintCards = (list, tickets, make, empty) => {
     const open = new Set($$('.tk-card[open]', list).map((d) => d.dataset.id));
-    list.replaceChildren(...(tickets.length ? tickets.map((t) => make(t, open.has(t.id))) : [h('p', 'note', empty)]));
+    const drafts = new Map($$('.tk-card', list).map((d) => [d.dataset.id, ($('.tk-reply textarea', d) || {}).value]).filter(([, v]) => v));
+    const cards = tickets.map((t) => {
+      const c = make(t, open.has(t.id));
+      const box = drafts.has(t.id) && $('.tk-reply textarea', c);
+      if (box) box.value = drafts.get(t.id);
+      return c;
+    });
+    list.replaceChildren(...(cards.length ? cards : [h('p', 'note', empty)]));
   };
 
   // ------------------------------------------------------------------ the user: send something

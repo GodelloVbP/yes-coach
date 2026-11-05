@@ -64,8 +64,15 @@ const database = (env: Env, token: string, userId: string, f: typeof fetch) => {
 type Db = ReturnType<typeof database>;
 
 const idOf = (path: string): string => path.slice(path.lastIndexOf('/') + 1);
-const loadExercises = async (db: Db): Promise<Record<string, Json>> => Object.fromEntries((await db.list('yc/exercises/')).map((r) => [idOf(r.path), r.data]));
-const loadDays = async (db: Db): Promise<Record<string, Json>> => Object.fromEntries((await db.list('yc/templates/')).map((r) => [idOf(r.path), r.data]));
+// Looked up by ids the AI sends, so no prototype: "constructor" or "__proto__" must read as unknown, not as found.
+const dict = <T>(): Record<string, T> => Object.create(null);
+const loadDocs = async (db: Db, prefix: string): Promise<Record<string, Json>> => {
+  const out = dict<Json>();
+  (await db.list(prefix)).forEach((r) => { out[idOf(r.path)] = r.data; });
+  return out;
+};
+const loadExercises = (db: Db) => loadDocs(db, 'yc/exercises/');
+const loadDays = (db: Db) => loadDocs(db, 'yc/templates/');
 const exName = (ex: Record<string, Json>, id: string): string => (ex[id] && ex[id].name) || id;
 const byOrder = (days: Record<string, Json>): string[] => Object.keys(days).sort((a, b) => (days[a].order || 0) - (days[b].order || 0));
 
@@ -91,7 +98,7 @@ const dayOut = (id: string, d: Json, ex: Record<string, Json>, week: Set<string>
 const isDone = (st: Json): boolean => !!st && st.done !== false;
 const isWork = (st: Json): boolean => !!st && st.kind !== 'warmup' && st.kind !== 'test';
 const sessionOut = (path: string, s: Json, ex: Record<string, Json>, days: Record<string, Json>): Json => {
-  const by: Record<string, Json[]> = {};
+  const by = dict<Json[]>();
   Object.values(s.sets || {}).filter(isDone).sort((a: Json, b: Json) => (a.order || 0) - (b.order || 0)).forEach((st: Json) => { (by[st.ex] = by[st.ex] || []).push(st); });
   return {
     date: s.date, label: s.label || '', day: s.template && days[s.template] ? days[s.template].name : null, finished: !!s.finished_at, note: s.note || null,
@@ -169,12 +176,13 @@ const TOOLS: Tool[] = [
       if (!ex[id]) fail('Unknown exercise_id "' + id + '". Call list_exercises.');
       const unit = ex[id].unit || 'kg';
       const rows = await db.list('yc/sessions/', { desc: true, limit: 200 });
+      const limit = int(a.limit, 1, 60, 20);
       const out: Json[] = [];
       for (const r of rows) {
         const sets = Object.values(r.data.sets || {}).filter((st: Json) => st.ex === id);
         const best = bestSet(sets as Json[], unit);
         if (best) out.push({ date: r.data.date, working_sets: (sets as Json[]).filter((st) => isDone(st) && isWork(st)).length, best });
-        if (out.length >= int(a.limit, 1, 60, 20)) break;
+        if (out.length >= limit) break;
       }
       return { exercise: ex[id].name, unit, sessions: out };
     },
@@ -219,7 +227,7 @@ const TOOLS: Tool[] = [
     }, ['name', 'exercises']),
     description: 'Create a training day or replace an existing one (name, kind, focus and the whole exercise list). The exercise list given replaces the old one. A new day is not part of the week until the schedule includes it.',
     run: async (db, a) => {
-      const [ex, days] = await Promise.all([loadExercises(db), loadDays(db)]);
+      const [root, ex, days] = await Promise.all([db.get('yc'), loadExercises(db), loadDays(db)]);
       const name = str(a.name, 40);
       if (!name) fail('Give the day a name.');
       if (!Array.isArray(a.exercises) || !a.exercises.length) fail('A day needs at least one exercise.');
@@ -248,7 +256,7 @@ const TOOLS: Tool[] = [
       const old = days[id] || { order: Object.values(days).reduce((m: number, d: Json) => Math.max(m, d.order || 0), 0) + 1 };
       const doc = { ...old, name, kind: KINDS.includes(a.kind) ? a.kind : old.kind || 'Other', focus: str(a.focus, 80, old.focus || ''), items };
       await db.put('yc/templates/' + id, doc);
-      return { saved: true, day: dayOut(id, doc, ex, new Set()), created: !days[id] };
+      return { saved: true, day: dayOut(id, doc, ex, inWeek(root)), created: !days[id] };
     },
   },
   {

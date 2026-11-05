@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-RiEUlfZIoFnBZQUG9up3/vFCw7JwmEiQFdnIjmCN4kE=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-/2R7/kwUYZ3nCRkTqUMo33VaCfxPvcOFBuxemEk9vyE=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-05 14:23Z">
+<meta name="yc-build" content="2026-11-05 14:50Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -1609,12 +1609,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     // quiet while saving; only a failure shows, so you know sets are waiting on this phone
     if (!err) { bar.hidden = true; if (n || notes) paintTickFlags(); return; }
     bar.hidden = false;
-    bar.classList.toggle('error', err);
-    bar.classList.toggle('pending', !err);
-    $('#save-text').textContent = err
-      ? (n ? n + (n === 1 ? ' set' : ' sets') : 'Changes') + ' not saved. ' + (Object.values(Q).some((q) => q.error === 'offline') ? 'No connection. They are kept on this phone and retry when signal is back.' : 'Saving failed; kept on this phone.')
-      : n ? 'Saving ' + n + (n === 1 ? ' set' : ' sets') + '…' : 'Saving notes…';
-    $('#save-retry').hidden = !err;
+    bar.classList.add('error');
+    $('#save-text').textContent = (n ? n + (n === 1 ? ' set' : ' sets') : 'Changes') + ' not saved. ' + (Object.values(Q).some((q) => q.error === 'offline') ? 'No connection. They are kept on this phone and retry when signal is back.' : 'Saving failed; kept on this phone.');
+    $('#save-retry').hidden = false;
     paintTickFlags();
   };
   $('#save-retry').addEventListener('click', retryAll);

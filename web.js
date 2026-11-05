@@ -164,7 +164,9 @@
     const em = $('#au-email').value.trim();
     const pw = $('#au-pass').value;
     if (mode !== 'newpass' && !/^\S+@\S+\.\S+$/.test(em)) { say('Enter your email address.', true); $('#au-email').focus(); return; }
-    if (mode !== 'reset' && pw.length < 8) { say('Use a password of at least 8 characters.', true); $('#au-pass').focus(); return; }
+    // the minimum applies when a password is chosen; an older account may have a shorter one and must still get in
+    if (mode === 'in' && !pw) { say('Email or password is wrong.', true); $('#au-pass').focus(); return; }
+    if ((mode === 'up' || mode === 'newpass') && pw.length < 8) { say('Use a password of at least 8 characters.', true); $('#au-pass').focus(); return; }
     const go = $('#au-go');
     go.disabled = true;
     say('One moment…');

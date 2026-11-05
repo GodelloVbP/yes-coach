@@ -170,9 +170,15 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok((await call('tok.anna.x', 'save_training_day', { name: 'X', exercises: [] })).err, 'empty day rejected');
   ok((await call('tok.anna.x', 'save_training_day', { id: 'day-9', name: 'X', exercises: [{ exercise_id: 'bench', sets: 3, reps: '5' }] })).err, 'unknown day id rejected');
   ok((await call('tok.anna.x', 'save_training_day', { name: 'X', exercises: [{ exercise_id: 'squat', sets: 3, reps: '5' }] })).err, 'other user exercise rejected');
+  for (const key of ['constructor', '__proto__', 'toString']) { // ids that exist on every plain object must still read as unknown
+    ok((await call('tok.anna.x', 'save_training_day', { name: 'X', exercises: [{ exercise_id: key, sets: 3, reps: '5' }] })).err, key + ' is not an exercise');
+    ok((await call('tok.anna.x', 'save_training_day', { id: key, name: 'X', exercises: [{ exercise_id: 'bench', sets: 3, reps: '5' }] })).err, key + ' is not a day');
+    ok((await call('tok.anna.x', 'get_exercise_history', { exercise_id: key })).err, key + ' has no history');
+  }
   r = await call('tok.anna.x', 'save_training_day', { id: 'day-1', name: 'Push A', exercises: [{ exercise_id: 'bench', sets: 4, reps: '6', target_kg: '62.5' }] });
   const t1 = rows.find((x) => x.user_id === A && x.path === 'yc/templates/day-1').data;
   ok(!r.err && !r.json.created && t1.name === 'Push A' && t1.order === 1 && t1.kind === 'Push' && t1.items.length === 1 && t1.focus === 'Chest', 'replace keeps order/kind/focus');
+  ok(r.json.day.in_week === true, 'a replaced day that is in the week says so');
   ok(!rows.some((x) => x.user_id === B && x.path.startsWith('yc/templates/')), 'nothing written to ben');
 
   r = await call('tok.anna.x', 'save_training_day', { name: 'Arms', exercises: [{ exercise_id: 'bench', sets: 3, reps: '5', superset: 'A' }, { exercise_id: 'lateral-raise', sets: 3, reps: '12', superset: 'A' }, { exercise_id: 'bench', sets: 3, reps: '5', superset: 'B' }] });

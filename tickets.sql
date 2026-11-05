@@ -10,8 +10,10 @@
 --   Nobody else:       status, outcome, notes and links between tickets are never writable by users.
 
 -- Start clean: a policy from an older version of this file, under another name, would still apply next to the new ones.
+-- The "connected apps: ..." policies belong to connector.sql and stay; dropping them would give a connected AI app the user's tickets.
 do $$ declare r record; begin
-  for r in select policyname, tablename from pg_policies where schemaname = 'public' and tablename in ('tickets', 'ticket_messages', 'admins') loop
+  for r in select policyname, tablename from pg_policies where schemaname = 'public' and tablename in ('tickets', 'ticket_messages', 'admins')
+           and policyname not like 'connected apps: %' loop
     execute format('drop policy %I on public.%I', r.policyname, r.tablename);
   end loop;
 end $$;
