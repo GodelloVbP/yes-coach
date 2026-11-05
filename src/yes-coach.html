@@ -63,6 +63,10 @@ button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent
 h2 { font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.15; text-wrap: balance; }
 .lab { font-size: var(--t1); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
 .lab .note { font-family: var(--f-body); font-size: var(--t1); text-transform: none; letter-spacing: 0; }
+.ex-sug { display: flex; flex-wrap: wrap; align-items: center; gap: 0 0.5rem; margin: 0.15rem 0 0.35rem; font-size: 0.9rem; color: var(--ink); }
+.ex-sug[hidden] { display: none; }
+.ex-sug-why { font-weight: 600; }
+.ex-sug-undo { min-height: 44px; font-size: 0.9rem; }
 .textbtn { background: none; border: 0; padding: 0 0.25rem; min-height: 44px; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-weight: 600; font-size: var(--t2); }
 .conn-url { flex: 1 1 14rem; min-width: 0; box-sizing: border-box; min-height: 44px; padding: 0 0.6rem; border: 2px solid var(--ink); border-radius: 0; background: transparent; color: var(--ink); font: inherit; font-size: var(--t2); }
 .link { background: none; border: 0; padding: 0.25rem 0; color: var(--ink); text-decoration: underline; cursor: pointer; font-size: var(--t2); font-weight: 600; }
@@ -1245,6 +1249,7 @@ body.typing .restbar { display: none; }
       <section aria-labelledby="h-pref">
         <h2 id="h-pref">Logging</h2>
         <div class="settings"><label><input type="checkbox" id="set-rir"> Show a reps-in-reserve (RIR) field on each set</label></div>
+        <div class="settings"><label><input type="checkbox" id="set-prog"> Suggest the next weight from your last sessions</label></div>
         <div class="set-plates" id="set-plates"></div>
       </section>
       <section aria-labelledby="h-food-set">
@@ -1581,6 +1586,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['5 Nov 2026', 'Suggested next weight', ["Each exercise now shows the weight to try next, worked out from your last sessions. When every set reached the reps, it goes up a step.", "A line under the exercise says why. Tap Use last time to see last time’s numbers instead.", "Turn it off in Settings, Logging. Set the step per exercise in the plan editor."]],
     ['5 Nov 2026', 'Plate calculator', ["On barbell exercises, the Plates button shows which plates go on each side of the bar. If your plates cannot make the weight, it offers the nearest two.", "Set your bar (20, 15 or 10 kg) and the plates you own in Settings, Logging."]],
     ['5 Nov 2026', 'Logging on a big screen', ["On a computer, logging has three columns: the menu, your exercises, and the sets of the one you are on."]],
     ['5 Nov 2026', 'Logging, one exercise at a time', ["On a phone you now see one exercise at a time. Tap an exercise at the top to jump to it, or tap Next at the bottom.", "Each set shows what you did last time. Prefer the old list? Tap All exercises."]],
@@ -2217,6 +2223,36 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return { load: nums[0], word: null };
   };
   const isMaxItem = (item) => /max/i.test(item.reps || '');
+  // The suggested next weight: what the rule in progression.js makes of the last few sessions. Off in Settings, or per exercise today with "Use last time".
+  const progOn = () => !(S.root && S.root.settings && S.root.settings.progress_suggest === false);
+  const sugKey = (item) => SID() + '|' + item.ex;
+  const sugOffFor = (item) => !!(local.get('yc-nosug') || {})[sugKey(item)];
+  const incFor = (exId) => {
+    const e = S.exercises[exId] || {};
+    const lib = typeof libOfEx === 'function' ? libOfEx(exId) : null;
+    return window.YC_PROGRESSION.defaultInc({ inc: e.inc, unit: e.unit, load_basis: e.load_basis, equipment: lib && lib.equipment, name: e.name, group: lib ? lib.group : e.group });
+  };
+  // ignoreOff: the line under the name still needs the suggestion when today's switch to "last time" is on
+  const progFor = (item, ignoreOff) => {
+    const P = window.YC_PROGRESSION;
+    if (!P || !S.active || !item.planned || !progOn() || (!ignoreOff && sugOffFor(item))) return null;
+    const ck = 'prog|' + item.ex + '|' + (item.reps || '') + '|' + (item.target || '') + '|' + (item.target_at || '') + '|' + item.sets + '|' + S.active.date;
+    if (lastCache && lastCache.has(ck)) return lastCache.get(ck);
+    const e = S.exercises[item.ex] || {};
+    let r = null;
+    if (e.unit !== 'min') {
+      const history = [];
+      for (const s of sessionsSorted()) {
+        if (s.date >= S.active.date) continue;
+        const sets = workSets(s, item.ex).sort((a, b) => a.n - b.n);
+        if (sets.length) history.push({ date: s.date, sets: sets.map((st) => ({ n: st.n, load: st.load, reps: st.reps, rir: st.rir, kind: st.kind || 'work' })) });
+        if (history.length >= 4) break;
+      }
+      r = P.suggest({ unit: e.unit || 'kg', reps: item.reps, sets: item.sets, inc: incFor(item.ex), uw: unitWord(e), today: S.active.date, target: item.target, targetAt: item.target_at, history });
+    }
+    if (lastCache) lastCache.set(ck, r);
+    return r;
+  };
   const prefill = (item, n) => {
     const ex = S.exercises[item.ex] || {};
     const last = lastSetsFor(item.ex, S.active.date);
@@ -2224,12 +2260,21 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const isMax = isMaxItem(item);
     const planReps = isMax ? null : firstNum(item.reps);
     // a max set is never prefilled: it starts empty so an old or partial count is not logged by accident
-    const reps = isMax ? null : item.planned && planReps != null ? planReps : src ? src.reps : planReps;
+    let reps = isMax ? null : item.planned && planReps != null ? planReps : src ? src.reps : planReps;
     let load = null;
     let word = null;
     if (ex.unit !== 'bw' && ex.unit !== 'min') {
       if (item.planned && item.target) ({ load, word } = targetLoad(item.target, src ? src.load : null));
       else load = src ? src.load : firstNum(item.target);
+    }
+    const sug = progFor(item);
+    if (sug) {
+      if (sug.load != null) { load = sug.load; word = null; }
+      if (!isMax) {
+        const per = sug.repsBySet;
+        const r = per ? (per[n - 1] != null ? per[n - 1] : per[per.length - 1]) : sug.reps;
+        if (r != null) reps = r;
+      }
     }
     const minutes = ex.unit === 'min' ? (src && src.minutes != null ? src.minutes : firstNum(item.target) || 8) : null;
     return { reps, load, minutes, word };
@@ -2567,6 +2612,17 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (SHOULDER[ex.shoulder]) head.append(h('span', 'chip flag ' + ex.shoulder, SHOULDER[ex.shoulder]));
     if (!item.planned) head.append(h('span', 'chip done', 'Added'));
     wrap.append(head);
+    // why the weight is what it is, and a way back to last time's numbers
+    const sugRow = h('div', 'ex-sug');
+    sugRow.hidden = true;
+    sugRow.append(h('span', 'ex-sug-why', ''), plainBtn('textbtn ex-sug-undo', 'Use last time', null, () => {
+      const m = Object.assign({}, local.get('yc-nosug') || {});
+      if (m[sugKey(item)]) delete m[sugKey(item)]; else m[sugKey(item)] = 1;
+      const keys = Object.keys(m);
+      local.set('yc-nosug', keys.length > 40 ? Object.fromEntries(keys.slice(-40).map((k) => [k, 1])) : m);
+      paintSession();
+    }));
+    wrap.append(sugRow);
     // red X, top right: remove this exercise from today only, after a confirm
     const ctl = h('div', 'ex-ctl');
     [['ex-up', '↑', -1, 'up'], ['ex-down', '↓', 1, 'down']].forEach(([cls, glyph, dir, word]) => {
@@ -2600,6 +2656,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const bits = [];
     if (item.planned) bits.push(['Target' + (item.target_at ? ' (' + dm(item.target_at) + ')' : ''), item.sets + ' × ' + (item.reps || '?') + (item.target ? ' @ ' + withUnit(item.target, uw) : '')]);
     bits.push(['Last', last ? fmtSets(last.sets, unit, uw) + ' (' + dm(last.date) + ')' : 'none yet']);
+    const pg = progFor(item, true);
+    if (pg && pg.load != null) bits.push(['Next', num(pg.load) + (uw ? ' ' + uw : '') + (pg.delta ? ' (' + (pg.delta > 0 ? '+' : '−') + num(Math.abs(pg.delta)) + ')' : '')]);
     bits.forEach(([k, v], i) => { if (i) cap.append(' · '); cap.append(k + ' '); cap.append(h('b', '', v)); });
     // target, last time, how-to and your last note fold away under one header; closed until you open it, remembered per exercise
     const det = h('div', 'ex-det');
@@ -2901,6 +2959,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       reps: values.reps, load: values.load, minutes: values.minutes, rir: values.rir == null ? null : values.rir, note: null, done: true, at: Date.now(), ticked_at: Date.now(),
       unit: unitKey(S.exercises[refs.item.ex]),
     };
+    // what the app suggested for this set, kept next to what was done, so Progress and Coach can see how closely the rule fitted
+    if (progFor(refs.item)) { const p = prefill(refs.item, refs.n); body.sug = { load: p.load == null ? null : p.load, reps: p.reps == null ? null : p.reps }; }
     const st = refs.key ? storedSet(refs.key) : null;
     if (st && st.removed) body.removed = false;
     return body;
@@ -3116,6 +3176,17 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       if (!it.el) return;
       const keys = Object.keys(R.sets).filter((k) => R.sets[k].item.ex === it.item.ex);
       it.el.classList.toggle('is-done', keys.length > 0 && keys.every((k) => isDone(storedSet(k))));
+      const sugRow = it.el.querySelector('.ex-sug');
+      if (sugRow) {
+        const pg = progFor(it.item, true);
+        const off = sugOffFor(it.item);
+        const done = keys.length > 0 && keys.every((k) => isDone(storedSet(k)));
+        sugRow.hidden = !pg || done;
+        if (pg) {
+          sugRow.firstChild.textContent = off ? '' : pg.reason;
+          sugRow.lastChild.textContent = off ? 'Use the suggestion' : 'Use last time';
+        }
+      }
       if (it.fill && it.last) {
         const fillable = keys.filter((k) => R.sets[k].n <= it.last.sets.length && rowState(k) === 'suggested').length;
         it.fill.disabled = !fillable;
@@ -4850,7 +4921,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const COACH_VOICE = 'Coach me directly and supportively, like a coach I respect: say plainly what worked and what to fix, back it with my numbers, acknowledge effort where it is earned, no flattery and no filler.';
   const DB = 'data/users/me/yc';
   const CAN_WRITE = 'If you can read and write the Yes Coach database (your artifact data tool; artifact ' + APP_URL + ')';
-  const ITEM_FIELDS = 'Item fields: ex (exercise id), order (1, 2, 3 ...: the order of the exercises on that day; to reorder, send the items in the new order and renumber them), sets (number), reps (text, for example "8", "10 per arm", "max"), target (the load as text, a number in the exercise\'s unit), target_at (today\'s date as YYYY-MM-DD, set whenever reps or target change), rest_s (seconds), note (a short coaching cue), kind ("warmup" for warm-up exercises, otherwise leave it out).';
+  const ITEM_FIELDS = 'Item fields: ex (exercise id), order (1, 2, 3 ...: the order of the exercises on that day; to reorder, send the items in the new order and renumber them), sets (number), reps (text, for example "8", "10 per arm", "max"), target (the load as text, a number in the exercise\'s unit; a target set after the last session replaces the app\'s suggested next weight, so leave it empty to let the app suggest), target_at (today\'s date as YYYY-MM-DD, set whenever reps or target change), rest_s (seconds), note (a short coaching cue), kind ("warmup" for warm-up exercises, otherwise leave it out).';
   const EXERCISE_DOC = 'set, collection "' + DB + '/exercises", doc_id the lowercase hyphenated name, data {"name", "group" (Back, Chest, Shoulders, Arms, Legs, Core or Other), "category": "strength" ("cardio" for cardio), "unit" (kg, stack, bw, assist or min), "load_basis" ("total" or "per_side", kg only), "better": "higher", "per_side": false, "rest_s": 90, "shoulder": null, "library_id": null}';
   const applyLines = (ids) => {
     const have = ids.filter((id) => S.templates[id]);
@@ -6613,7 +6684,16 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         const note = edInput('ed-note-' + i, it.note);
         note.addEventListener('input', () => { it.note = note.value || null; saveTemplate(); });
         const f = h('div', 'ed-fields');
-        f.append(edField('Rest (seconds)', rest), edField('Measured as (every day with ' + e.name + ')', ms));
+        const inc = edInput('ed-inc-' + i, e.inc != null ? e.inc : '', 'number');
+        inc.min = '0'; inc.step = '0.25'; inc.inputMode = 'decimal';
+        inc.placeholder = window.YC_PROGRESSION ? num(incFor(it.ex)) : '';
+        inc.addEventListener('change', () => {
+          const v = inc.value === '' ? null : Number(inc.value);
+          const upd = v != null && v > 0 ? { inc: v } : { inc: null };
+          S.exercises[it.ex] = Object.assign({}, e, upd);
+          S.rootRef.collection('exercises').doc(it.ex).update(upd).catch(() => showToast('Not saved. Check your connection.', null));
+        });
+        f.append(edField('Rest (seconds)', rest), edField('Measured as (every day with ' + e.name + ')', ms), edField('Weight step when you go up', inc));
         const nf = edField('Note', note);
         nf.classList.add('wide');
         f.append(nf);
@@ -6775,8 +6855,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (sec) { const tog = $('.set-tog', sec); const body = $('.set-body', sec); body.hidden = false; tog.setAttribute('aria-expanded', 'true'); }
     requestAnimationFrame(() => el.scrollIntoView({ block: block || 'center' }));
   }
-  const paintSettings = () => { const cb = $('#set-rir'); cb.checked = showRir(); $('#set-cal').checked = showCal(); if (S.view === 'settings') { paintMe(); if (!$('#set-plates').contains(document.activeElement)) buildPlateSettings(); } };
+  const paintSettings = () => { const cb = $('#set-rir'); cb.checked = showRir(); $('#set-prog').checked = progOn(); $('#set-cal').checked = showCal(); if (S.view === 'settings') { paintMe(); if (!$('#set-plates').contains(document.activeElement)) buildPlateSettings(); } };
   $('#set-cal').addEventListener('change', () => { setShowCal($('#set-cal').checked); });
+  $('#set-prog').addEventListener('change', () => {
+    saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { progress_suggest: $('#set-prog').checked }) }).catch(() => {});
+    if (R) paintSession();
+  });
   $('#set-rir').addEventListener('change', () => {
     saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { show_rir: $('#set-rir').checked }) }).catch(() => {});
     if (R) R.sig = '';
