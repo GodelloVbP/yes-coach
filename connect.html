@@ -1,0 +1,63 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yes Coach! connector for Claude</title>
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+:root { --bg: #fff; --ink: #26358f; --soft: #56619f; --line: #c4c9e6; --card: #f4f5fc; color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root { --bg: #10142b; --ink: #e3e6fa; --soft: #a1a8d4; --line: #333b6b; --card: #181d3d; color-scheme: dark; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 "Helvetica Neue", Arial, sans-serif; }
+main { max-width: 40rem; margin: 0 auto; padding: 2rem max(16px, env(safe-area-inset-right, 0px)) 3rem max(16px, env(safe-area-inset-left, 0px)); }
+h1, h2 { font-family: "Arial Narrow", "Roboto Condensed", sans-serif; text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.15; }
+h2 { font-size: 1.1rem; margin-top: 2rem; }
+p, li { color: var(--soft); } a { color: var(--ink); }
+code { background: var(--card); border: 1px solid var(--line); padding: 0.1rem 0.35rem; overflow-wrap: anywhere; color: var(--ink); }
+table { border-collapse: collapse; width: 100%; } td, th { border-top: 1px solid var(--line); padding: 0.4rem 0.5rem 0.4rem 0; text-align: left; vertical-align: top; color: var(--soft); } th { color: var(--ink); }
+</style></head><body><main>
+<p><a href="./">‹ Yes Coach!</a></p>
+<h1>Yes Coach! connector for Claude</h1>
+<p>Connect your own Claude to your Yes Coach! account. Claude can read your plan, your logged sessions and your notes, and change your plan, so you can ask "what is my training plan today?" or "make Thursday lighter on the shoulder" and see it in the app straight away.</p>
+
+<h2>What you need</h2>
+<ul><li>A Yes Coach! account (<a href="./">create one</a>, free).</li>
+<li>A Claude account. Free, Pro and Max add the connector themselves (Free allows one custom connector). On Team and Enterprise, an Owner adds it once for the organization and each member then connects with their own Yes Coach! login.</li></ul>
+
+<h2>Connect</h2>
+<ol>
+<li>In Claude, open <b>Customize</b>, then <b>Connectors</b>, then <b>Add custom connector</b>.</li>
+<li>Name: <code>Yes Coach!</code>. Server URL: <code>https://qazvzhhoalkyyasakphs.supabase.co/functions/v1/mcp</code>. If asked how Claude identifies itself, choose <b>Register automatically</b>.</li>
+<li>Click <b>Add</b>, then <b>Connect</b>. A Yes Coach! page opens. Sign in with your Yes Coach! email and password.</li>
+<li>Read what the app may do, then click <b>Allow</b>.</li>
+<li>Ask Claude: "What is in my Yes Coach! plan?"</li>
+</ol>
+<p>In Claude Code: <code>claude mcp add --transport http yes-coach https://qazvzhhoalkyyasakphs.supabase.co/functions/v1/mcp</code></p>
+
+<h2>What Claude can do</h2>
+<table>
+<tr><th>Tool</th><th>What it does</th></tr>
+<tr><td>Get overview</td><td>Your profile, weekly schedule, training days, last sessions, notes waiting.</td></tr>
+<tr><td>Get training plan</td><td>Every training day with exercises, sets, reps, starting load, rest and notes.</td></tr>
+<tr><td>List exercises</td><td>Your exercises and how each is counted (kg, machine pin, bodyweight, assisted, minutes).</td></tr>
+<tr><td>Get logged sessions</td><td>Your logged sets per session, newest first, optionally between two dates.</td></tr>
+<tr><td>Get exercise history</td><td>How one exercise went over time: best working set per session.</td></tr>
+<tr><td>Get notes</td><td>Notes you wrote during sessions.</td></tr>
+<tr><td>Create exercise</td><td>Adds an exercise that is not in your list yet.</td></tr>
+<tr><td>Save training day</td><td>Creates a training day or replaces the exercise list of an existing one.</td></tr>
+<tr><td>Set weekly schedule</td><td>Chooses which days are in the week and when. The app keeps your previous schedule so you can undo it.</td></tr>
+<tr><td>Answer note</td><td>Writes a reply under one of your notes.</td></tr>
+</table>
+<p>Claude asks you before it changes anything.</p>
+
+<h2>What it can not do</h2>
+<ul><li>Change or delete anything you logged in a session.</li>
+<li>Delete your plan, exercises or account, or touch your feedback tickets. The database refuses these for connected apps, whatever the app tries.</li></ul>
+
+<h2>Disconnect</h2>
+<p>In Yes Coach!: Settings, Connected AI apps, Disconnect. The app loses access straight away. You can also remove the connector in Claude.</p>
+
+<h2>Privacy</h2>
+<p>What Claude reads is sent to Claude and handled under Anthropic's terms. Yes Coach! stores nothing extra for the connector. See the <a href="privacy.html">privacy page</a>.</p>
+
+<h2>Help</h2>
+<p>Something not working? Write to <span id="contact"></span>, or use the Feedback tab in the app.</p>
+<script src="config.js"></script>
+<script>document.getElementById('contact').textContent = (window.YC_CONFIG && window.YC_CONFIG.contactEmail) || 'the app owner';</script>
+</main></body></html>
