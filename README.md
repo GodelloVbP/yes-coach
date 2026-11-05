@@ -16,7 +16,8 @@ A free, ad-free workout tracker. Static site on GitHub Pages, accounts and data 
 | `consent.html` | The screen where a person allows or denies an AI app (the connector's sign-in step). |
 | `supabase/functions/mcp/` | The connector: an MCP server, one file, deployed as a Supabase Edge Function. `supabase/tests/mcp.test.mjs` tests it. |
 | `tickets.js` | The Feedback & Requests tab: send, follow, the "done" pop-up, and the owner's ticket bar. |
-| `vendor/` | The Supabase client library, so the app has no runtime dependency on a CDN for it. |
+| `vendor/` | The Supabase client library and d3 (charts), so the app has no runtime dependency on a CDN. |
+| `fonts/` | Barlow and Barlow Condensed (SIL Open Font License), served from this site instead of Google Fonts. |
 | `manifest.webmanifest`, `icon-*.png` | Install to home screen. |
 | `privacy.html` | Privacy page, linked from sign-in and Settings. |
 
@@ -33,6 +34,21 @@ A free, ad-free workout tracker. Static site on GitHub Pages, accounts and data 
 2. **GitHub**: repository `yes-coach` (public). Push these files to `main`. Settings → Pages → Deploy from a branch → `main` / root.
 3. Fill in `appUrl` (for example `https://<you>.github.io/yes-coach/`) and `contactEmail` in `config.js`.
 4. Open the app, create your account, Settings → Backup and restore → pick your backup file.
+
+## Security
+
+What the code enforces:
+- **Data access:** row-level security on every table (`schema.sql`, `tickets.sql`); a connected AI app is limited further by `connector.sql`. Functions that run with owner rights pin their `search_path` and check who is calling.
+- **Pages:** `build.py` gives `index.html`, `consent.html`, `connect.html` and `privacy.html` a content security policy (inline scripts only by hash, connections only to this site and Supabase) and a frame guard so the consent screen cannot be framed. Nothing loads from other sites. Re-run `python3 build.py` after changing any inline script; it recomputes the hashes.
+- **Limits:** 256 KB per document and 20,000 documents per account (`schema.sql`); the connector refuses requests over 200 KB.
+- **Tests:** `node tests/merge.test.mjs` (deep merge cannot pollute `Object.prototype`), `node --experimental-strip-types --no-warnings supabase/tests/mcp.test.mjs` (connector).
+
+Set in the Supabase dashboard (code cannot do these):
+- Authentication, Attack Protection: turn on CAPTCHA (Turnstile or hCaptcha). Sign-up is open and email confirmation is off, so bots can create accounts.
+- Authentication, Providers, Email: minimum password length 8 or more.
+- Authentication, URL Configuration: only your app address under Redirect URLs, no wildcards.
+- Advisors, Security Advisor: run it after each SQL change and fix anything it flags.
+- Keep the secret (`service_role`) key out of this repo, the app and the function. Only the public key is used.
 
 ## Shipping an update
 

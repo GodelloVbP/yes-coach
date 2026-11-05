@@ -19,9 +19,26 @@ drop policy if exists "own docs" on public.docs;
 create policy "own docs" on public.docs for all to authenticated
   using (user_id = auth.uid()) with check (user_id = auth.uid());
 
+-- Limits, so one account cannot fill the database: 256 KB per document and 20,000 documents per account.
+do $$ begin
+  alter table public.docs add constraint docs_size check (octet_length(data::text) <= 262144) not valid;
+exception when duplicate_object then null; end $$;
+create or replace function public.docs_limit() returns trigger
+language plpgsql set search_path = public as $$
+begin
+  -- a save of a document that already exists (an upsert fires this trigger too) is never a new document
+  if not exists (select 1 from public.docs where user_id = new.user_id and path = new.path)
+     and (select count(*) from public.docs where user_id = new.user_id) >= 20000 then
+    raise exception 'too many documents' using errcode = '54000';
+  end if;
+  return new;
+end $$;
+drop trigger if exists docs_limit on public.docs;
+create trigger docs_limit before insert on public.docs for each row execute function public.docs_limit();
+
 -- Nested objects merge; anything else is replaced. The app relies on this for partial updates.
 create or replace function public.jsonb_deep_merge(a jsonb, b jsonb) returns jsonb
-language sql immutable as $$
+language sql immutable set search_path = public as $$
   select case
     when jsonb_typeof(a) = 'object' and jsonb_typeof(b) = 'object' then coalesce((
       select jsonb_object_agg(k, case when a ? k and b ? k then public.jsonb_deep_merge(a -> k, b -> k)

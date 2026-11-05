@@ -1,6 +1,6 @@
 """Build the web app (index.html) from the shared Yes Coach! source (src/yes-coach.html): adds the sign-in screen,
 the Supabase layer and the install metadata. The artifact keeps running from the same source unchanged."""
-import re, pathlib, datetime
+import re, pathlib, datetime, hashlib, base64
 HERE = pathlib.Path(__file__).parent
 build = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%MZ')  # sent along with every ticket
 src = (HERE / 'src' / 'yes-coach.html').read_text()
@@ -52,6 +52,26 @@ out = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
        + base_style + '\n<title>Yes Coach!</title>\n<meta name="yc-build" content="' + build + '">\n' + head + '</head><body class="signed-out">' + src[skel.end():])
 out = once(out, '<div class="stick" id="stick">', auth + '<div class="stick" id="stick">')
 out = once(out, '<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>',
-           '<script src="config.js"></script>\n<script src="vendor/supabase.js"></script>\n<script src="web.js"></script>\n<script src="tickets.js"></script>\n<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>')
+           '<script src="config.js"></script>\n<script src="vendor/supabase.js"></script>\n<script src="web.js"></script>\n<script src="tickets.js"></script>\n<script src="vendor/d3.min.js"></script>')
+# no third party at runtime: the fonts come from this site (the claude.ai version keeps using Google Fonts)
+out, n = re.subn(r'<link rel="preconnect" href="https://fonts\.g[a-z]+\.com"[^>]*>\s*|<link rel="stylesheet" href="https://fonts\.googleapis\.com/[^"]+">\s*', '', out)
+assert n == 3, n
+out = once(out, '<link rel="manifest" href="manifest.webmanifest">', '<link rel="manifest" href="manifest.webmanifest">\n<link rel="stylesheet" href="fonts/fonts.css">')
+
+# ---- hardening: Content Security Policy (script hashes are computed here, so only this code can run) and a frame guard
+cfg = (HERE / 'config.js').read_text()
+SB = re.search(r"supabaseUrl: '([^']+)'", cfg).group(1)
+GUARD = '<style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script>'
+def harden(html, connect):
+    html = re.sub(r'<!--sec-->.*?<!--/sec-->', '', html, flags=re.S)
+    scripts = [m.group(1) for m in re.finditer(r'<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>', html + GUARD, re.S)]
+    hashes = ' '.join("'sha256-%s'" % base64.b64encode(hashlib.sha256(t.encode()).digest()).decode() for t in scripts)
+    policy = "default-src 'none'; script-src 'self' %s; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src %s; base-uri 'none'; object-src 'none'; form-action 'self'" % (hashes, "'self' " + SB + " " + SB.replace('https://', 'wss://') if connect else "'none'")
+    block = '<!--sec--><meta http-equiv="Content-Security-Policy" content="%s">%s<!--/sec-->' % (policy, GUARD)
+    return once(html, '<meta charset="utf-8">', '<meta charset="utf-8">' + block)
+out = harden(out, True)
+for page, connect in (('consent.html', True), ('connect.html', False), ('privacy.html', False)):
+    f = HERE / page
+    f.write_text(harden(f.read_text(), connect))
 (HERE / 'index.html').write_text(out)
 print('index.html', len(out) // 1000, 'kB')

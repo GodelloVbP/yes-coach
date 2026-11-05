@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-qo9f9n83wmwwP3mMOQp44UzR5YXSwgWNoVTwQRxHOGI=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Yes Coach! connect an AI</title>
 <link rel="icon" type="image/png" href="icon-192.png">
@@ -20,6 +20,7 @@ button { font: inherit; font-family: "Arial Narrow", "Roboto Condensed", sans-se
 button.ghost { background: transparent; color: var(--ink); }
 button:hover { filter: brightness(1.15); } button:active { transform: translateY(1px); } button:disabled { opacity: 0.5; cursor: default; }
 .err { color: var(--bad); min-height: 1.4em; }
+.warn { color: var(--bad); font-weight: 700; }
 [hidden] { display: none !important; }
 </style></head><body><main>
 <p><a href="./">‹ Yes Coach!</a></p>
@@ -37,6 +38,7 @@ button:hover { filter: brightness(1.15); } button:active { transform: translateY
 
 <section id="ask" hidden>
   <div class="who"><span>An app wants to connect to your Yes Coach! account:</span><b id="client">An app</b><small id="client-uri"></small></div>
+  <p id="dest"></p>
   <p>Signed in as <b id="me"></b>.</p>
   <h2>If you allow it, it can</h2>
   <ul>
@@ -72,6 +74,15 @@ button:hover { filter: brightness(1.15); } button:active { transform: translateY
     const c = data.client || {};
     $('#client').textContent = c.name || 'An app';
     $('#client-uri').textContent = c.uri ? String(c.uri) : '';
+    // where the app will send you after you allow it: anyone can register an app under any name, so the address is what counts
+    let host = '';
+    try { host = new URL(data.redirect_uri).hostname; } catch (e) { host = ''; }
+    if (host) {
+      const known = ['claude.ai', 'claude.com', 'localhost', '127.0.0.1'].some((k) => host === k || host.endsWith('.' + k));
+      $('#dest').textContent = 'After you allow it, you go to ' + host + '.' + (known ? '' : ' That is not Claude. Only continue if you trust this app.');
+      $('#dest').className = known ? '' : 'warn';
+      if (!known) $('#ok').textContent = 'Allow anyway';
+    }
     const s = (await sb.auth.getSession()).data.session;
     $('#me').textContent = (s && s.user && s.user.email) || '';
     say(''); show('#ask');
