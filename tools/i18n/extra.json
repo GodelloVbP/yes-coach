@@ -726,5 +726,124 @@
   "de": "Am Computer hat das Eintragen drei Spalten: das Menü, deine Übungen und die Sätze der aktuellen Übung.",
   "fr": "Sur ordinateur, la saisie a trois colonnes : le menu, tes exercices et les séries de celui en cours.",
   "it": "Su computer, la registrazione ha tre colonne: il menu, i tuoi esercizi e le serie di quello in corso."
+ },
+ "Plates": {
+  "nl": "Schijven",
+  "es": "Discos",
+  "de": "Scheiben",
+  "fr": "Disques",
+  "it": "Dischi"
+ },
+ "Total load (kg)": {
+  "nl": "Totaal gewicht (kg)",
+  "es": "Carga total (kg)",
+  "de": "Gesamtgewicht (kg)",
+  "fr": "Charge totale (kg)",
+  "it": "Carico totale (kg)"
+ },
+ "Bar weight": {
+  "nl": "Stanggewicht",
+  "es": "Peso de la barra",
+  "de": "Stangengewicht",
+  "fr": "Poids de la barre",
+  "it": "Peso del bilanciere"
+ },
+ "Bar": {
+  "nl": "Stang",
+  "es": "Barra",
+  "de": "Stange",
+  "fr": "Barre",
+  "it": "Bilanciere"
+ },
+ "Each side:": {
+  "nl": "Per kant:",
+  "es": "Cada lado:",
+  "de": "Pro Seite:",
+  "fr": "De chaque côté :",
+  "it": "Per lato:"
+ },
+ "Just the bar.": {
+  "nl": "Alleen de stang.",
+  "es": "Solo la barra.",
+  "de": "Nur die Stange.",
+  "fr": "Juste la barre.",
+  "it": "Solo il bilanciere."
+ },
+ "Type the weight you want on the bar.": {
+  "nl": "Typ het gewicht dat je op de stang wilt.",
+  "es": "Escribe el peso que quieres en la barra.",
+  "de": "Gib das Gewicht ein, das auf die Stange soll.",
+  "fr": "Saisis le poids que tu veux sur la barre.",
+  "it": "Scrivi il peso che vuoi sul bilanciere."
+ },
+ "That is lighter than the {0} kg bar.": {
+  "nl": "Dat is lichter dan de stang van {0} kg.",
+  "es": "Eso es más ligero que la barra de {0} kg.",
+  "de": "Das ist leichter als die {0}-kg-Stange.",
+  "fr": "C'est plus léger que la barre de {0} kg.",
+  "it": "È più leggero del bilanciere da {0} kg."
+ },
+ "{0} kg bar + 2 × {1} kg = {2} kg.": {
+  "nl": "Stang van {0} kg + 2 × {1} kg = {2} kg.",
+  "es": "Barra de {0} kg + 2 × {1} kg = {2} kg.",
+  "de": "{0}-kg-Stange + 2 × {1} kg = {2} kg.",
+  "fr": "Barre de {0} kg + 2 × {1} kg = {2} kg.",
+  "it": "Bilanciere da {0} kg + 2 × {1} kg = {2} kg."
+ },
+ "Cannot build {0} kg with your plates. Nearest loads:": {
+  "nl": "Met jouw schijven kun je {0} kg niet maken. Dichtstbijzijnde gewichten:",
+  "es": "Con tus discos no se puede cargar {0} kg. Cargas más cercanas:",
+  "de": "Mit deinen Scheiben lassen sich {0} kg nicht laden. Nächste Gewichte:",
+  "fr": "Avec tes disques, impossible de charger {0} kg. Charges les plus proches :",
+  "it": "Con i tuoi dischi non puoi caricare {0} kg. Carichi più vicini:"
+ },
+ "Use {0} kg": {
+  "nl": "Gebruik {0} kg",
+  "es": "Usar {0} kg",
+  "de": "{0} kg nehmen",
+  "fr": "Utiliser {0} kg",
+  "it": "Usa {0} kg"
+ },
+ "Bar for the plate calculator": {
+  "nl": "Stang voor de schijvenrekenaar",
+  "es": "Barra para la calculadora de discos",
+  "de": "Stange für den Scheibenrechner",
+  "fr": "Barre pour le calculateur de disques",
+  "it": "Bilanciere per il calcolo dei dischi"
+ },
+ "Plates you have (per side)": {
+  "nl": "Schijven die je hebt (per kant)",
+  "es": "Discos que tienes (por lado)",
+  "de": "Scheiben, die du hast (pro Seite)",
+  "fr": "Disques que tu as (par côté)",
+  "it": "Dischi che hai (per lato)"
+ },
+ "Barbell exercises get a Plates button: it shows which plates go on each side, or the nearest weights you can build.": {
+  "nl": "Oefeningen met een stang krijgen een Schijven-knop: die toont welke schijven aan elke kant moeten, of de dichtstbijzijnde gewichten die je kunt maken.",
+  "es": "Los ejercicios con barra tienen un botón Discos: muestra qué discos van a cada lado, o los pesos más cercanos que puedes cargar.",
+  "de": "Übungen mit der Langhantel bekommen einen Scheiben-Knopf: Er zeigt, welche Scheiben auf jede Seite kommen, oder die nächsten Gewichte, die du laden kannst.",
+  "fr": "Les exercices à la barre ont un bouton Disques : il montre quels disques mettre de chaque côté, ou les charges les plus proches possibles.",
+  "it": "Gli esercizi con il bilanciere hanno un pulsante Dischi: mostra quali dischi mettere per lato, o i pesi più vicini che puoi caricare."
+ },
+ "Plate calculator": {
+  "nl": "Schijvenrekenaar",
+  "es": "Calculadora de discos",
+  "de": "Scheibenrechner",
+  "fr": "Calculateur de disques",
+  "it": "Calcolo dei dischi"
+ },
+ "On barbell exercises, the Plates button shows which plates go on each side of the bar. If your plates cannot make the weight, it offers the nearest two.": {
+  "nl": "Bij oefeningen met een stang laat de knop Schijven zien welke schijven aan elke kant van de stang moeten. Kun je het gewicht niet maken met jouw schijven, dan stelt hij de twee dichtstbijzijnde voor.",
+  "es": "En los ejercicios con barra, el botón Discos muestra qué discos van a cada lado. Si tus discos no alcanzan ese peso, ofrece los dos más cercanos.",
+  "de": "Bei Langhantelübungen zeigt der Scheiben-Knopf, welche Scheiben auf jede Seite kommen. Lässt sich das Gewicht nicht laden, schlägt er die zwei nächsten vor.",
+  "fr": "Sur les exercices à la barre, le bouton Disques montre quels disques mettre de chaque côté. Si tes disques ne permettent pas ce poids, il propose les deux plus proches.",
+  "it": "Negli esercizi con il bilanciere, il pulsante Dischi mostra quali dischi mettere per lato. Se i tuoi dischi non bastano per quel peso, propone i due più vicini."
+ },
+ "Set your bar (20, 15 or 10 kg) and the plates you own in Settings, Logging.": {
+  "nl": "Stel je stang (20, 15 of 10 kg) en je schijven in bij Meer, Loggen.",
+  "es": "Elige tu barra (20, 15 o 10 kg) y los discos que tienes en Más, Registro.",
+  "de": "Stelle Stange (20, 15 oder 10 kg) und deine Scheiben unter Mehr, Eintragen ein.",
+  "fr": "Règle ta barre (20, 15 ou 10 kg) et tes disques dans Plus, Saisie.",
+  "it": "Imposta il bilanciere (20, 15 o 10 kg) e i dischi che hai in Altro, Registrazione."
  }
 }

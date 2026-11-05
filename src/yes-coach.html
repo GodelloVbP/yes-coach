@@ -133,6 +133,27 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .set-wrap > section.fold { border-bottom: 1px solid var(--line); }
 .view[hidden] { display: none; }
 
+/* plate calculator */
+.plates { display: flex; flex-direction: column; gap: 0.625rem; padding: 0.75rem 1rem 1rem; background: var(--faint); border-left: 4px solid var(--ink); }
+.plates[hidden] { display: none; }
+.pl-row { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: flex-end; }
+.pl-row label { display: flex; flex-direction: column; gap: 0.125rem; font-size: var(--t2); font-weight: 600; color: var(--ink-soft); }
+.pl-row input[type="text"] { width: 6.5rem; min-height: 44px; font: inherit; font-size: var(--t4); font-weight: 700; color: var(--ink); background: transparent; border: 0; border-bottom: 2px solid var(--ctl); }
+.pl-bars { display: flex; gap: 0.375rem; }
+.pl-bars button { min-width: 3.25rem; min-height: 44px; padding: 0 0.5rem; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; background: none; border: 2px solid var(--ctl); color: var(--ink); cursor: pointer; transform: skewX(-14deg); }
+.pl-bars button > span { display: inline-block; transform: skewX(14deg); }
+.pl-bars button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.pl-side { display: flex; flex-wrap: wrap; gap: 0.375rem; align-items: center; min-height: 52px; }
+.pl-p { --ang-bg: var(--ink); --ang-bd: var(--ink); color: var(--bg); display: inline-flex; align-items: center; justify-content: center; min-width: 2.5rem; padding: 0 0.625rem; font-family: var(--f-head); font-weight: 700; font-size: var(--t3); }
+.pl-p.big { min-height: 56px; } .pl-p.mid { min-height: 48px; } .pl-p.small { min-height: 40px; --ang-bg: var(--ctl); --ang-bd: var(--ctl); }
+.pl-txt { margin: 0; font-weight: 600; }
+.pl-txt b { font-family: var(--f-head); font-size: var(--t3); }
+.pl-near { display: flex; flex-wrap: wrap; gap: 0.5rem; padding-inline: 0.375rem; }
+.set-plates { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; align-items: center; }
+.set-plates fieldset { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 1rem; }
+.set-plates legend { padding: 0; font-weight: 700; }
+.set-plates select { font: inherit; font-weight: 600; color: var(--ink); background: transparent; border: 0; border-bottom: 2px solid var(--ctl); min-height: 44px; }
+
 /* one exercise at a time: chips and a Next / Finish bar on phones, a list beside the card on wide screens */
 :root { --fb-h: 80px; }
 .focusbar { display: none; }
@@ -147,11 +168,12 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .focus-toggle { flex: none; display: flex; min-height: 44px; align-items: center; padding: 0 0.5rem; white-space: nowrap; background: none; border: 0; color: var(--ink); font-weight: 700; text-decoration: underline; cursor: pointer; font-size: var(--t2); }
 #session.focus .ex.off { display: none; }
 #session.focus .ex { border-bottom: 0; }
-#session.focus .set-last { display: block; align-self: center; font-family: var(--f-head); font-size: var(--t2); font-weight: 700; color: var(--ink-soft); text-align: center; line-height: 1.05; white-space: nowrap; }
-#session.focus .set { grid-template-columns: 2.75rem 3.75rem minmax(0, 1fr) minmax(0, 1.25fr) 3.5rem; }
-#session.focus .set.one { grid-template-columns: 2.75rem 3.75rem minmax(0, 1fr) 3.5rem; }
-#session.focus .set.rir { grid-template-columns: 2.75rem 3.75rem minmax(0, 1fr) minmax(0, 1.25fr) 3rem 3.5rem; }
-#session.focus .set.rir.one { grid-template-columns: 2.75rem 3.75rem minmax(0, 1fr) 3rem 3.5rem; }
+#session.focus .set-last { display: block; align-self: center; font-family: var(--f-head); font-weight: 700; color: var(--ink-soft); text-align: center; line-height: 1.05; white-space: nowrap; }
+#session.focus .set { grid-template-columns: 2.5rem 3rem minmax(0, 1fr) minmax(0, 1.5fr) 3.5rem; gap: 0.375rem; }
+#session.focus .set.one { grid-template-columns: 2.5rem 3rem minmax(0, 1fr) 3.5rem; }
+#session.focus .set.rir { grid-template-columns: 2.5rem 3rem minmax(0, 1fr) minmax(0, 1.5fr) 2.75rem 3.5rem; }
+#session.focus .set.rir.one { grid-template-columns: 2.5rem 3rem minmax(0, 1fr) 2.75rem 3.5rem; }
+#session.focus .set-last { font-size: var(--t1); }
 @media (max-width: 63.99rem) {
   .chips-wrap { display: block; position: sticky; top: 0; z-index: 6; background: var(--bg); border-bottom: 1px solid var(--line); }
   .chips { display: flex; align-items: center; gap: 0.625rem; overflow-x: auto; padding: 0.625rem 1.25rem; scrollbar-width: none; }
@@ -1223,6 +1245,7 @@ body.typing .restbar { display: none; }
       <section aria-labelledby="h-pref">
         <h2 id="h-pref">Logging</h2>
         <div class="settings"><label><input type="checkbox" id="set-rir"> Show a reps-in-reserve (RIR) field on each set</label></div>
+        <div class="set-plates" id="set-plates"></div>
       </section>
       <section aria-labelledby="h-food-set">
         <h2 id="h-food-set">Food</h2>
@@ -1550,7 +1573,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (v === 'exercises') renderExercises();
     if (v === 'plan' && S.ready) renderPlan();
     if (v === 'progress') renderProgress();
-    if (v === 'settings') { foldSettings(); paintExport(); paintImport(); paintConn(); paintLang(); if (S.ready) paintMe(); }
+    if (v === 'settings') { foldSettings(); paintExport(); paintImport(); paintConn(); paintLang(); if (S.ready) { paintMe(); buildPlateSettings(); } }
     if (v === 'train' && S.ready) renderTrain();
     if (S.ready) paintChrome();
   };
@@ -1558,6 +1581,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['5 Nov 2026', 'Plate calculator', ["On barbell exercises, the Plates button shows which plates go on each side of the bar. If your plates cannot make the weight, it offers the nearest two.", "Set your bar (20, 15 or 10 kg) and the plates you own in Settings, Logging."]],
     ['5 Nov 2026', 'Logging on a big screen', ["On a computer, logging has three columns: the menu, your exercises, and the sets of the one you are on."]],
     ['5 Nov 2026', 'Logging, one exercise at a time', ["On a phone you now see one exercise at a time. Tap an exercise at the top to jump to it, or tap Next at the bottom.", "Each set shows what you did last time. Prefer the old list? Tap All exercises."]],
     ['5 Nov 2026', 'Train, week at a glance', ["The week is now seven blocks. Tap a day to see it, start it, move it to another day or remove it for this week.", "Tap a rest day to put a training day on it."]],
@@ -2412,6 +2436,125 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     }
   };
 
+  // ---- plate calculator: a Plates button on barbell exercises; the bar and the plates you own are set under Settings, Logging
+  const PL = () => window.YC_PLATES || null;
+  const plateCfg = () => {
+    const st = (S.root && S.root.settings) || {};
+    const lib = PL();
+    const plates = Array.isArray(st.plates) && st.plates.length ? st.plates.map(Number).filter((x) => x > 0) : (lib ? lib.PLATES : []);
+    return { bar: lib && lib.BARS.includes(Number(st.plate_bar)) ? Number(st.plate_bar) : 20, plates };
+  };
+  const barFor = (exId) => { const m = local.get('yc-bar') || {}; return Number(m[exId]) || plateCfg().bar; };
+  const setBarFor = (exId, v) => { const m = Object.assign({}, local.get('yc-bar') || {}); m[exId] = v; local.set('yc-bar', m); };
+  const isBarbell = (exId) => {
+    if (!PL()) return false;
+    const e = S.exercises[exId];
+    if (!e || (e.unit || 'kg') !== 'kg' || e.load_basis === 'per_side') return false;
+    if (e.plates === true) return true;
+    const l = libOfEx(exId);
+    return !!l && /barbell|ez-bar|trap bar|safety squat/i.test(l.equipment || '');
+  };
+  const buildPlates = (item) => {
+    const box = h('div', 'plates');
+    box.hidden = true;
+    box.id = 'plates-' + item.ex;
+    const lib = PL();
+    const pickTarget = () => {
+      const rows = Object.values(R.sets).filter((r) => r.item.ex === item.ex && r.load).sort((a, b) => a.n - b.n);
+      const open = rows.find((r) => !isDone(storedSet(r.key)) && (r.load.value || r.load.placeholder));
+      const row = open || rows.slice().reverse().find((r) => r.load.value) || rows[0] || null;
+      return row;
+    };
+    let target = null;
+    const draw = (total) => {
+      const cfg = plateCfg();
+      const bar = barFor(item.ex);
+      box.replaceChildren();
+      const row = h('div', 'pl-row');
+      const lab = h('label', '', 'Total load (kg)');
+      const inp = h('input');
+      inp.type = 'text'; inp.inputMode = 'decimal'; inp.autocomplete = 'off';
+      inp.id = 'pl-total-' + item.ex;
+      inp.value = total == null ? '' : String(total);
+      lab.append(inp);
+      const bars = h('div', 'pl-bars');
+      bars.setAttribute('role', 'group');
+      bars.setAttribute('aria-label', 'Bar weight');
+      lib.BARS.forEach((b) => {
+        const bb = h('button');
+        bb.type = 'button';
+        bb.append(h('span', '', b + ' kg'));
+        bb.setAttribute('aria-pressed', String(b === bar));
+        bb.addEventListener('click', () => { setBarFor(item.ex, b); draw(inp.value); });
+        bars.append(bb);
+      });
+      const barLab = h('label', '', 'Bar');
+      barLab.append(bars);
+      row.append(lab, barLab);
+      box.append(row);
+      const out = h('div');
+      box.append(out);
+      const paint = () => {
+        out.replaceChildren();
+        const t = Number(String(inp.value).replace(',', '.'));
+        const r = lib.plan(t, bar, cfg.plates);
+        if (!r) { out.append(h('p', 'pl-txt', 'Type the weight you want on the bar.')); return; }
+        if (r.below) { out.append(h('p', 'pl-txt', 'That is lighter than the ' + bar + ' kg bar.')); return; }
+        if (r.exact) {
+          const side = h('div', 'pl-side');
+          if (!r.side.length) side.append(h('p', 'pl-txt', 'Just the bar.'));
+          r.side.forEach((p) => side.append(h('span', 'pl-p angled ' + (p >= 15 ? 'big' : p >= 5 ? 'mid' : 'small'), String(p))));
+          out.append(h('p', 'pl-txt', 'Each side:'), side, h('p', 'note', bar + ' kg bar + 2 × ' + num((r.total - bar) / 2) + ' kg = ' + num(r.total) + ' kg.'));
+          return;
+        }
+        out.append(h('p', 'pl-txt', 'Cannot build ' + num(t) + ' kg with your plates. Nearest loads:'));
+        const near = h('div', 'pl-near');
+        [r.lower, r.upper].filter(Boolean).forEach((c) => {
+          const b = btn('skew small', 'Use ' + num(c.total) + ' kg');
+          b.addEventListener('click', () => {
+            inp.value = String(c.total);
+            if (target && target.load) { target.load.value = String(c.total); target.load.dispatchEvent(new Event('input', { bubbles: true })); }
+            paint();
+          });
+          near.append(b);
+        });
+        out.append(near);
+      };
+      inp.addEventListener('input', paint);
+      paint();
+    };
+    box.refresh = () => { target = pickTarget(); const v = target ? (target.load.value || target.load.placeholder || '') : ''; draw(v ? Number(String(v).replace(',', '.')) || '' : ''); };
+    return box;
+  };
+  const buildPlateSettings = () => {
+    const wrap = $('#set-plates');
+    const lib = PL();
+    if (!wrap || !lib) { if (wrap) wrap.hidden = true; return; }
+    wrap.replaceChildren();
+    const cfg = plateCfg();
+    const sel = h('select');
+    sel.id = 'set-bar';
+    lib.BARS.forEach((b) => { const o = h('option', '', b + ' kg'); o.value = String(b); if (b === cfg.bar) o.selected = true; sel.append(o); });
+    sel.addEventListener('change', () => saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { plate_bar: Number(sel.value) }) }).catch(() => {}));
+    const lab = h('label', '', 'Bar for the plate calculator');
+    lab.append(sel);
+    const fs = h('fieldset');
+    fs.append(h('legend', '', 'Plates you have (per side)'));
+    lib.PLATES.forEach((p) => {
+      const l = h('label');
+      const cb = h('input');
+      cb.type = 'checkbox'; cb.value = String(p); cb.checked = cfg.plates.includes(p);
+      cb.addEventListener('change', () => {
+        const on = [...fs.querySelectorAll('input:checked')].map((x) => Number(x.value));
+        if (!on.length) { cb.checked = true; return; } // at least one plate
+        saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { plates: on }) }).catch(() => {});
+      });
+      l.append(cb, ' ' + p + ' kg');
+      fs.append(l);
+    });
+    wrap.append(lab, fs, h('p', 'note', 'Barbell exercises get a Plates button: it shows which plates go on each side, or the nearest weights you can build.'));
+  };
+
   const buildItem = (item, pos, count) => {
     const ex = S.exercises[item.ex] || { name: item.ex, unit: 'kg' };
     const unit = ex.unit || 'kg';
@@ -2549,7 +2692,17 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       });
       acts.append(rev);
     }
+    let plBox = null;
+    if (isBarbell(item.ex)) {
+      plBox = buildPlates(item);
+      const pb = btn('skew small ex-plates', 'Plates');
+      pb.setAttribute('aria-expanded', 'false');
+      pb.setAttribute('aria-controls', plBox.id);
+      pb.addEventListener('click', () => { const open = plBox.hidden; if (open) plBox.refresh(); setOpen(pb, plBox, open); });
+      acts.append(pb);
+    }
     wrap.append(acts, msBox);
+    if (plBox) wrap.append(plBox);
     const nb = buildNote(item.ex, ex.name, false);
     noteBtn.addEventListener('click', () => { nb.open = true; syncNoteOpen(item.ex); nb.ta.focus(); });
     wrap.append(nb.el);
@@ -6622,7 +6775,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (sec) { const tog = $('.set-tog', sec); const body = $('.set-body', sec); body.hidden = false; tog.setAttribute('aria-expanded', 'true'); }
     requestAnimationFrame(() => el.scrollIntoView({ block: block || 'center' }));
   }
-  const paintSettings = () => { const cb = $('#set-rir'); cb.checked = showRir(); $('#set-cal').checked = showCal(); if (S.view === 'settings') paintMe(); };
+  const paintSettings = () => { const cb = $('#set-rir'); cb.checked = showRir(); $('#set-cal').checked = showCal(); if (S.view === 'settings') { paintMe(); if (!$('#set-plates').contains(document.activeElement)) buildPlateSettings(); } };
   $('#set-cal').addEventListener('change', () => { setShowCal($('#set-cal').checked); });
   $('#set-rir').addEventListener('change', () => {
     saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { show_rir: $('#set-rir').checked }) }).catch(() => {});
