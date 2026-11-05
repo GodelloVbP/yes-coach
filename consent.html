@@ -1,4 +1,4 @@
-<!doctype html><html lang="en" data-nopick><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-qo9f9n83wmwwP3mMOQp44UzR5YXSwgWNoVTwQRxHOGI=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><script src="i18n.js"></script><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="en" data-nopick><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-yaCrHypEoQMFFiYB7Ad446xojVAH2bCn9um7m/XRNX0=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><script src="i18n.js"></script><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Yes Coach! connect an AI</title>
 <link rel="icon" type="image/png" href="icon-192.png">
@@ -32,6 +32,7 @@ button:hover { filter: brightness(1.15); } button:active { transform: translateY
   <p>Sign in to your Yes Coach! account to continue.</p>
   <label for="em">Email</label><input id="em" type="email" autocomplete="username" required>
   <label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password" required>
+  <div id="cap" translate="no"></div>
   <p class="err" id="login-err" role="alert"></p>
   <div class="row"><button type="submit" id="login-go">Sign in</button></div>
 </form>
@@ -57,6 +58,7 @@ button:hover { filter: brightness(1.15); } button:active { transform: translateY
 
 <script src="config.js"></script>
 <script src="vendor/supabase.js"></script>
+<script src="captcha.js"></script>
 <script>
 (() => {
   const cfg = window.YC_CONFIG;
@@ -99,16 +101,19 @@ button:hover { filter: brightness(1.15); } button:active { transform: translateY
   $('#login').onsubmit = async (e) => {
     e.preventDefault();
     $('#login-go').disabled = true; $('#login-err').textContent = '';
-    const r = await sb.auth.signInWithPassword({ email: $('#em').value.trim(), password: $('#pw').value });
+    let token;
+    try { token = await YC_CAPTCHA.get(); } catch (x) { $('#login-go').disabled = false; $('#login-err').textContent = 'The human check could not run. Turn off content blockers for this site and try again.'; YC_CAPTCHA.mount($('#cap')); return; }
+    const r = await sb.auth.signInWithPassword({ email: $('#em').value.trim(), password: $('#pw').value, options: { captchaToken: token } });
+    YC_CAPTCHA.spent();
     $('#login-go').disabled = false;
-    if (r.error) { $('#login-err').textContent = 'Email or password is not right.'; return; }
+    if (r.error) { $('#login-err').textContent = /captcha/i.test(r.error.message || '') ? 'The human check failed. Try again.' : 'Email or password is not right.'; return; }
     ask();
   };
 
   (async () => {
     if (!id) { say('Nothing to connect here. Start from your AI app: add Yes Coach! as a connector.'); return; }
     const s = (await sb.auth.getSession()).data.session;
-    if (s) ask(); else { say(''); show('#login'); }
+    if (s) ask(); else { say(''); show('#login'); YC_CAPTCHA.mount($('#cap')); }
   })();
 })();
 </script>

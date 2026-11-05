@@ -158,20 +158,30 @@
     go.disabled = true;
     say('One moment…');
     let res;
+    let captchaToken;
+    if (mode !== 'newpass') {
+      try { captchaToken = await YC_CAPTCHA.get(); } catch (e) {
+        go.disabled = false;
+        say('The human check could not run. Turn off content blockers for this site and try again.', true);
+        YC_CAPTCHA.mount($('#au-cap'));
+        return;
+      }
+    }
     try {
-      if (mode === 'in') res = await sb.auth.signInWithPassword({ email: em, password: pw });
-      else if (mode === 'up') res = await sb.auth.signUp({ email: em, password: pw, options: { emailRedirectTo: cfg.appUrl } });
-      else if (mode === 'reset') res = await sb.auth.resetPasswordForEmail(em, { redirectTo: cfg.appUrl });
+      if (mode === 'in') res = await sb.auth.signInWithPassword({ email: em, password: pw, options: { captchaToken } });
+      else if (mode === 'up') res = await sb.auth.signUp({ email: em, password: pw, options: { emailRedirectTo: cfg.appUrl, captchaToken } });
+      else if (mode === 'reset') res = await sb.auth.resetPasswordForEmail(em, { redirectTo: cfg.appUrl, captchaToken });
       else res = await sb.auth.updateUser({ password: pw });
     } catch (e) { res = { error: e }; }
+    if (mode !== 'newpass') YC_CAPTCHA.spent();
     go.disabled = false;
     if (res.error) {
       const m = res.error.message || '';
-      say(/invalid login/i.test(m) ? 'Email or password is wrong.' : /already registered/i.test(m) ? 'That email already has an account. Sign in instead.' : /rate limit/i.test(m) ? 'Too many tries. Wait a few minutes and try again.' : !navigator.onLine ? 'No connection. Try again when you are online.' : m, true);
+      say(/invalid login/i.test(m) ? 'Email or password is wrong.' : /already registered/i.test(m) ? 'That email already has an account. Sign in instead.' : /captcha/i.test(m) ? 'The human check failed. Try again.' : /rate limit/i.test(m) ? 'Too many tries. Wait a few minutes and try again.' : !navigator.onLine ? 'No connection. Try again when you are online.' : m, true);
       return;
     }
     if (mode === 'reset') { say('If that email has an account, a reset link is on its way.'); return; }
-    if (mode === 'up' && !(res.data && res.data.session)) { say('Check your email to confirm your account, then sign in.'); mode = 'in'; paint(); return; }
+    if (mode === 'up' && !(res.data && res.data.session)) { mode = 'in'; paint(); say('Check your email to confirm your account, then sign in.'); return; }
     if (mode === 'newpass') { history.replaceState(null, '', location.pathname); start(res.data.user); }
   });
 
@@ -223,6 +233,6 @@
   });
   sb.auth.getSession().then(({ data }) => {
     if (data && data.session && mode !== 'newpass') start(data.session.user);
-    else if (!started) { $('#auth').hidden = false; paint(); }
+    else if (!started) { $('#auth').hidden = false; paint(); YC_CAPTCHA.mount($('#au-cap')); }
   });
 })();

@@ -33,6 +33,7 @@ auth = f'''<section class="auth in" id="auth" hidden aria-labelledby="au-h">
   <form id="au-form" class="au-form" novalidate>
     <label class="ed-f" id="au-email-f"><span class="lab">Email</span><input id="au-email" type="email" autocomplete="email" inputmode="email"></label>
     <label class="ed-f" id="au-pass-f"><span class="lab">Password</span><input id="au-pass" type="password" autocomplete="current-password"></label>
+    <div id="au-cap" translate="no"></div>
     <button class="skew pop big" type="submit" id="au-go"><span>Sign in</span></button>
     <p class="note" id="au-msg" aria-live="polite"></p>
     <div class="foot-row"><button class="textbtn" type="button" id="au-alt"></button><button class="textbtn" type="button" id="au-forgot">Forgot password?</button></div>
@@ -53,7 +54,7 @@ out = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
        + base_style + '\n<title>Yes Coach!</title>\n<meta name="yc-build" content="' + build + '">\n' + head + '</head><body class="signed-out">' + src[skel.end():])
 out = once(out, '<div class="stick" id="stick">', auth + '<div class="stick" id="stick">')
 out = once(out, '<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>',
-           '<script src="config.js"></script>\n<script src="vendor/supabase.js"></script>\n<script src="web.js"></script>\n<script src="tickets.js"></script>\n<script src="vendor/d3.min.js"></script>')
+           '<script src="config.js"></script>\n<script src="vendor/supabase.js"></script>\n<script src="captcha.js"></script>\n<script src="web.js"></script>\n<script src="tickets.js"></script>\n<script src="vendor/d3.min.js"></script>')
 # no third party at runtime: the fonts come from this site (the claude.ai version keeps using Google Fonts)
 out, n = re.subn(r'<link rel="preconnect" href="https://fonts\.g[a-z]+\.com"[^>]*>\s*|<link rel="stylesheet" href="https://fonts\.googleapis\.com/[^"]+">\s*', '', out)
 assert n == 3, n
@@ -63,16 +64,17 @@ out = once(out, '<link rel="manifest" href="manifest.webmanifest">', '<link rel=
 cfg = (HERE / 'config.js').read_text()
 SB = re.search(r"supabaseUrl: '([^']+)'", cfg).group(1)
 GUARD = '<style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script>'
-def harden(html, connect):
+def harden(html, connect, cap=False):
+    CF = ' https://challenges.cloudflare.com' if cap else ''
     html = re.sub(r'<!--sec-->.*?<!--/sec-->', '', html, flags=re.S)
     scripts = [m.group(1) for m in re.finditer(r'<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>', html + GUARD, re.S)]
     hashes = ' '.join("'sha256-%s'" % base64.b64encode(hashlib.sha256(t.encode()).digest()).decode() for t in scripts)
-    policy = "default-src 'none'; script-src 'self' %s; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src %s; base-uri 'none'; object-src 'none'; form-action 'self'" % (hashes, "'self' " + SB + " " + SB.replace('https://', 'wss://') if connect else "'none'")
+    policy = "default-src 'none'; script-src 'self' %s%s; frame-src%s; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src %s; base-uri 'none'; object-src 'none'; form-action 'self'" % (hashes, CF, CF or " 'none'", "'self' " + SB + " " + SB.replace('https://', 'wss://') + CF if connect else "'none'")
     block = '<!--sec--><meta http-equiv="Content-Security-Policy" content="%s">%s<!--/sec-->' % (policy, GUARD)
     return once(html, '<meta charset="utf-8">', '<meta charset="utf-8">' + block)
-out = harden(out, True)
+out = harden(out, True, True)
 for page, connect in (('consent.html', True), ('connect.html', False), ('privacy.html', False)):
     f = HERE / page
-    f.write_text(harden(f.read_text(), connect))
+    f.write_text(harden(f.read_text(), connect, page == 'consent.html'))
 (HERE / 'index.html').write_text(out)
 print('index.html', len(out) // 1000, 'kB')
