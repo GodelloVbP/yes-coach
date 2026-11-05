@@ -1,4 +1,4 @@
-<!doctype html><html lang="en" data-nopick><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-yaCrHypEoQMFFiYB7Ad446xojVAH2bCn9um7m/XRNX0=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><script src="i18n.js"></script><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="en" data-nopick><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-i7gLIzZE5k1FmpEkj9jUnmACv2dA+T7UFWtnUt4LMgE=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><script src="i18n.js"></script><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Yes Coach! connect an AI</title>
 <link rel="icon" type="image/png" href="icon-192.png">
@@ -102,7 +102,8 @@ button:hover { filter: brightness(1.15); } button:active { transform: translateY
     e.preventDefault();
     $('#login-go').disabled = true; $('#login-err').textContent = '';
     let token;
-    try { token = await YC_CAPTCHA.get(); } catch (x) { $('#login-go').disabled = false; $('#login-err').textContent = 'The human check could not run. Turn off content blockers for this site and try again.'; YC_CAPTCHA.mount($('#cap')); return; }
+    const slow = setTimeout(() => { $('#login-err').textContent = 'Tick the box above to continue.'; }, 3000);
+    try { token = await YC_CAPTCHA.get(); clearTimeout(slow); $('#login-err').textContent = ''; } catch (x) { clearTimeout(slow); $('#login-go').disabled = false; $('#login-err').textContent = x && x.message === 'captcha-timeout' ? 'The human check did not finish. Reload the page and try again.' : 'The human check could not run. Turn off content blockers for this site and try again.'; YC_CAPTCHA.mount($('#cap')); return; }
     const r = await sb.auth.signInWithPassword({ email: $('#em').value.trim(), password: $('#pw').value, options: { captchaToken: token } });
     YC_CAPTCHA.spent();
     $('#login-go').disabled = false;

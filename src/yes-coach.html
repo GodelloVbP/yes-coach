@@ -536,9 +536,12 @@ body.typing .restbar { display: none; }
 .hm-tag { font-size: var(--t3); font-weight: 500; text-align: center; text-wrap: balance; }
 .hm-users { align-self: center; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.375rem 1rem; background: var(--faint); border-left: 4px solid var(--pop); }
 .lang-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: 0.5rem; }
-.lang-opt { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; min-height: 48px; padding: 0 0.875rem; font: inherit; font-size: var(--t3); font-weight: 700; color: var(--ink); background: var(--paper); border: 2px solid var(--ctl); border-radius: 0; cursor: pointer; text-align: left; }
+.lang-opt { display: flex; align-items: center; gap: 0.625rem; min-height: 48px; padding: 0 0.875rem; font: inherit; font-size: var(--t3); font-weight: 700; color: var(--ink); background: var(--paper); border: 2px solid var(--ctl); border-radius: 0; cursor: pointer; text-align: left; }
 .lang-opt[aria-checked="true"] { border-color: var(--ink); background: var(--faint); }
+.lang-opt .flag { flex: none; }
+.lang-name { flex: 1; }
 .lang-opt[aria-checked="true"]::after { content: "✓"; font-family: var(--f-head); color: var(--pop); }
+.hm-lang { display: flex; flex-direction: column; gap: 0.5rem; }
 .hm-side { gap: 0.75rem; }
 .hm-p { font-size: var(--t3); font-weight: 500; line-height: 1.5; max-width: 40rem; }
 .hm-checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
@@ -849,6 +852,10 @@ body.typing .restbar { display: none; }
       <div class="foot-row hm-side">
         <button class="skew small" type="button" id="hm-install" aria-expanded="false" aria-controls="hm-install-panel" hidden><span>Put on home screen</span></button>
         <button class="skew small" type="button" id="hm-claude" aria-expanded="false" aria-controls="hm-claude-panel" hidden><span>Connect to Claude</span></button>
+      </div>
+      <div class="hm-lang" id="hm-lang-wrap" hidden>
+        <p class="lab" translate="no">Language · Taal · Idioma · Sprache · Langue · Lingua</p>
+        <div id="hm-lang" class="lang-list" role="radiogroup" aria-label="Language"></div>
       </div>
       <div class="hm-panel" id="hm-install-panel" hidden></div>
       <div class="hm-panel" id="hm-claude-panel" hidden></div>
@@ -1482,12 +1489,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     ['Oct 2026', 'First version', ['Log sets with a rest timer, plan your week with drag and drop, notes for your coach, and export for an AI review.']],
   ];
   // ---- Languages (Settings): the choice is kept on this device and the page reloads in it
-  const paintLang = () => {
+  // one button per language: flag and its own name; used in Settings and on Home
+  const langButtons = () => {
     const I = window.YC_I18N;
-    $('#lang').hidden = !I;
-    if (!I) return;
-    $('#lang-list').replaceChildren(...I.langs.map((l) => {
-      const b = h('button', 'lang-opt', l.name);
+    return I.langs.map((l) => {
+      const b = h('button', 'lang-opt');
+      b.append(I.flag(l.code), h('span', 'lang-name', l.name));
       b.type = 'button';
       b.lang = l.code;
       b.setAttribute('translate', 'no');
@@ -1495,7 +1502,18 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       b.setAttribute('aria-checked', String(l.code === I.current()));
       b.addEventListener('click', () => I.set(l.code));
       return b;
-    }));
+    });
+  };
+  const paintHomeLang = () => {
+    if (!window.YC_I18N) return;
+    $('#hm-lang').replaceChildren(...langButtons());
+    $('#hm-lang-wrap').hidden = false;
+  };
+  const paintLang = () => {
+    const I = window.YC_I18N;
+    $('#lang').hidden = !I;
+    if (!I) return;
+    $('#lang-list').replaceChildren(...langButtons());
     const rep = $('#lang-report');
     rep.hidden = !window.YC_FEEDBACK;
     rep.onclick = () => { setView('feedback'); window.scrollTo({ top: 0 }); window.YC_FEEDBACK.compose('bug', 'Translation mistake (' + I.current() + ')'); };
@@ -1649,6 +1667,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     });
     paintInstall();
     paintHomeConn();
+    paintHomeLang();
     $('#hm-ticket').hidden = !window.YC_FEEDBACK;
     const users = $('#hm-users');
     if (window.YC_USERS) window.YC_USERS().then((n) => { if (n) { users.textContent = n === 1 ? '1 person trains with Yes Coach!' : n + ' people train with Yes Coach!'; users.hidden = false; } }).catch(() => {});
