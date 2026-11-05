@@ -499,9 +499,9 @@ try:
         def home_a(page):
             page.wait_for_selector('#v-home', state='visible')
             txt = page.inner_text('#v-home')
-            for want in ('Made with you', '24 hours', 'Pricing and privacy', '100% free. Forever.', 'No ads.', 'No tracking.', 'export it with one click', 'What you get', '300+ exercises', 'Claude connector'):
+            for want in ('Made with you', '24 hours', 'Free and private', '100% free. Forever.', 'No ads.', 'No tracking.', 'export it with one click', 'What makes it different', '300+ exercises', 'Your own AI as a coach'):
                 check('home says: ' + want, want.lower() in txt.lower(), txt[:200])
-            check('bullets are ticks', page.locator('.hm-checks li').count() == 12)
+            check('bullets are ticks', page.locator('.hm-checks li').count() == 5)
             page.evaluate("window.__opened = []; window.open = (u) => { window.__opened.push(u); return null; }; 0")
             page.wait_for_selector('#hm-claude:not([hidden])')
             check('button says Connect to Claude', page.inner_text('#hm-claude').lower() == 'connect to claude')
