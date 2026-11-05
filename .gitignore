@@ -1,3 +1,6 @@
 # personal data never goes in this public repo
 *backup*.json
 .DS_Store
+node_modules/
+tools/i18n/strings.json
+__pycache__/
