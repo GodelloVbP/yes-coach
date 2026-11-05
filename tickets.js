@@ -519,8 +519,6 @@
     wrap.append(buildIntro(), ...GROUPS.map(buildGroup));
     $('#v-feedback').replaceChildren(wrap);
     $('#tab-feedback').hidden = false;
-    const row = $('#v-home .foot-row');
-    if (row) row.append(textBtn('Feedback & Requests', () => $('#tab-feedback').click()));
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') refresh(); });
     refresh(true);
     let owner = false;

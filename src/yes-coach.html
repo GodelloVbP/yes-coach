@@ -535,6 +535,19 @@ body.typing .restbar { display: none; }
 .hm .brand svg { width: min(100%, 20rem); }
 .hm-tag { font-size: var(--t3); font-weight: 500; text-align: center; text-wrap: balance; }
 .hm-users { align-self: center; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.375rem 1rem; background: var(--faint); border-left: 4px solid var(--pop); }
+.hm-side { gap: 0.75rem; }
+.hm-p { font-size: var(--t3); font-weight: 500; line-height: 1.5; max-width: 40rem; }
+.hm-checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.hm-checks li { display: flex; gap: 0.625rem; align-items: baseline; font-size: var(--t3); font-weight: 600; }
+.hm-checks li::before { content: "✓"; flex: none; font-family: var(--f-head); font-weight: 800; color: var(--pop); }
+.hm-panel { display: flex; flex-direction: column; gap: 0.625rem; padding: 0.875rem 1rem; background: var(--faint); border-left: 4px solid var(--pop); }
+.hm-panel[hidden] { display: none; }
+.hm-panel ol { margin: 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.375rem; font-weight: 500; }
+.hm-app { display: flex; align-items: center; gap: 0.75rem; }
+.hm-app img { width: 3.5rem; height: 3.5rem; border-radius: 0.75rem; box-shadow: 0 1px 6px rgba(10, 14, 40, 0.25); }
+.hm-app b { font-family: var(--f-head); text-transform: uppercase; letter-spacing: 0.04em; }
+.ydlg { position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(10, 14, 40, 0.55); }
+.ydlg .confirm { width: min(100%, 26rem); background: var(--paper); border: 2px solid var(--ink); }
 .hm .foot-row { justify-content: center; }
 .hm > h2 { margin-top: 1rem; border-bottom: 2px solid var(--ink); padding-bottom: 0.375rem; }
 .changelog { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
@@ -705,6 +718,33 @@ body.typing .restbar { display: none; }
 .privacy { padding: 0.75rem; background: var(--faint); border-left: 4px solid var(--ink); font-weight: 500; }
 /* native selects look the same everywhere: flat underline, our own chevron */
 .ed-f select, .sm-frow select, #sm-add, .cal-panel select, .mover select, .sel { -webkit-appearance: none; appearance: none; border-radius: 0; background-color: transparent; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%236f79bf' stroke-width='2.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 4px center; padding-right: 26px; }
+/* Plan: the week's day settings, and room between the blocks (the old rows sat flush against each other) */
+.pw-inweek { display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+.pw-inweek .pw-days { padding-inline: 0.375rem; }
+.pk-chip.taken:not([aria-pressed="true"]) { border-style: dashed; color: var(--ink-soft); }
+.pw-more { gap: 0.75rem; }
+.pw-more > .foot-row { margin-top: 1rem; }
+.pw-spare + .foot-row { margin-top: 1.25rem; }
+.pw-daymore { margin-top: 0.25rem; }
+.danger-zone { flex-direction: column; align-items: flex-start; gap: 0.625rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 2px solid var(--line); }
+.danger-zone .skew { align-self: flex-start; }
+/* dropdowns: our own list, the browser's select stays underneath for value, forms and fallback */
+.ysel { position: relative; display: inline-flex; min-width: 0; max-width: 100%; vertical-align: bottom; }
+.ed-f .ysel, .sm-frow .ysel, .cal-panel .ysel { display: flex; width: 100%; }
+.pw-acts .ysel { max-width: 12rem; }
+.xl-add .ysel { min-width: 10rem; }
+.xr-card .xl-add .ysel { min-width: 0; flex: 1 1 7rem; }
+.ysel-native { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
+.ysel-btn { width: 100%; min-height: 40px; font: inherit; font-weight: 600; color: var(--ink); text-align: left; background-color: transparent; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%236f79bf' stroke-width='2.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 4px center; border: 0; border-bottom: 2px solid var(--ctl); border-radius: 0; padding: 0.25rem 26px 0.25rem 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+.ed-f .ysel-btn, .sm-frow .ysel-btn, .cal-panel .ysel-btn { font-size: var(--t2); }
+.ysel-btn[aria-expanded="true"], .ysel-btn:focus-visible { border-bottom-color: var(--ink); box-shadow: 0 1px 0 var(--ink); outline: none; }
+.ysel-btn[disabled] { opacity: 0.5; cursor: default; }
+.ysel-pop { position: fixed; z-index: 70; box-sizing: border-box; overflow-y: auto; overscroll-behavior: contain; background: var(--paper); border: 2px solid var(--ink); box-shadow: 0 8px 22px rgba(10, 14, 40, 0.22); }
+.ysel-opt { display: flex; align-items: center; min-height: 44px; padding: 0.5rem 0.875rem; border-left: 4px solid transparent; font-size: var(--t2); font-weight: 600; color: var(--ink); cursor: pointer; }
+.ysel-opt + .ysel-opt { border-top: 1px solid var(--line); }
+.ysel-opt.act { background: var(--faint); }
+.ysel-opt[aria-selected="true"] { border-left-color: var(--pop); font-weight: 700; }
+.ysel-opt[aria-disabled="true"] { opacity: 0.45; cursor: default; }
 .ed-f input::placeholder, .ed-f textarea::placeholder, .intro textarea::placeholder { color: var(--ink-soft); opacity: 1; }
 .ed-f input[type="text"], .ed-f input:not([type]) { -webkit-appearance: none; appearance: none; border-radius: 0; }
 .intro textarea, .ed-f textarea { min-height: 5.5rem; overflow: hidden; line-height: 1.45; }
@@ -797,9 +837,36 @@ body.typing .restbar { display: none; }
     <section class="hm in" aria-labelledby="h-home">
       <h1 class="brand" id="hm-brand"></h1>
       <h2 class="sr-only" id="h-home">Yes Coach! home</h2>
-      <p class="hm-tag">A free, ad-free workout tracker. Log your sets, plan your week, see your progress.</p>
+      <p class="hm-tag">Log your sets, plan your week, see your progress. Free, no ads, and it works on every device.</p>
       <p class="hm-users" id="hm-users" hidden></p>
       <div class="foot-row"><button class="skew pop" type="button" id="hm-train"><span>Today's training</span></button></div>
+      <div class="foot-row hm-side">
+        <button class="skew small" type="button" id="hm-install" aria-expanded="false" aria-controls="hm-install-panel" hidden><span>Put on home screen</span></button>
+        <button class="skew small" type="button" id="hm-claude" aria-expanded="false" aria-controls="hm-claude-panel" hidden><span>Connect to Claude</span></button>
+      </div>
+      <div class="hm-panel" id="hm-install-panel" hidden></div>
+      <div class="hm-panel" id="hm-claude-panel" hidden></div>
+      <h2>Made with you</h2>
+      <p class="hm-p">Yes Coach! is built with the people who use it. Want to see something in the app? Found a bug? Just have feedback? Send a ticket from inside the app. It goes straight to me, and I aim to fix or build it within 24 hours.</p>
+      <div class="foot-row"><button class="skew small" type="button" id="hm-ticket" hidden><span>Send a ticket</span></button></div>
+      <h2>Pricing and privacy</h2>
+      <ul class="hm-checks">
+        <li>100% free. Forever.</li>
+        <li>No ads.</li>
+        <li>No tracking.</li>
+        <li>Your data is never sold or passed on to third parties.</li>
+        <li>Your data is yours: export it with one click.</li>
+      </ul>
+      <h2>What you get</h2>
+      <ul class="hm-checks">
+        <li>300+ exercises, plus your own</li>
+        <li>A weekly planner</li>
+        <li>Progress charts and trends</li>
+        <li>Food and nutrient tracker, with Dutch (RIVM) and USDA food data</li>
+        <li>Plans and reviews from your own AI, including a Claude connector</li>
+        <li>Import your history from Strong, Hevy and FitNotes</li>
+        <li>Works on every device, synced through your account</li>
+      </ul>
       <h2>What's new</h2>
       <ol class="changelog" id="changelog"></ol>
     </section>
@@ -1167,7 +1234,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     db: null, uid: null, rootRef: null, ready: false, failed: false,
     root: null, exercises: {}, templates: {}, sessions: {}, notes: {},
     loaded: { root: false, exercises: false, templates: false, sessions: false, notes: false, weeks: false, food: false },
-    weeks: {}, editing: null, metric: 'est', weekStart: null,
+    weeks: {}, editing: null, metric: 'load', weekStart: null,
     active: null, // {date, tpl}
     view: 'train', ptab: 'All', range: 30, picked: null, away: false, food: {}, fday: null, frange: 30, fmetric: 'kcal',
     drafts: {}, // date -> set key -> {reps, load, minutes, rir, kind}: Edited values kept on this device
@@ -1376,7 +1443,6 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (v === 'settings') { foldSettings(); paintExport(); paintImport(); paintConn(); if (S.ready) paintMe(); }
     if (v === 'train' && S.ready) renderTrain();
     if (S.ready) paintChrome();
-    local.set('yc-view', v);
   };
   $$('[data-view]').forEach((b) => b.addEventListener('click', () => { setView(b.dataset.view); window.scrollTo({ top: 0 }); }));
   $('#mark').addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); });
@@ -1389,6 +1455,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && $('#tabs-nav').classList.contains('open')) { setMenu(false); $('#menu-btn').focus(); } });
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['5 Nov 2026', 'Plan, simpler', ['Put a day in your week right where you edit it: tap the weekdays on the day itself. Delete is now in plain sight at the bottom.', 'New look for dropdown lists, and more room between the parts of Plan.', 'Progress charts now show the weights you lifted by default. The estimated strength chart is one tap away and says it is an estimate.']],
+    ['5 Nov 2026', 'Claude and your home screen', ['New Connect to Claude button on Home. With Claude connected, finishing a day offers to send it to Coach Claude for review.', 'New Put on home screen button, with the steps for iPhone and Android. Yes Coach! now always opens on Home.']],
     ['2 Nov 2026', 'Real portion sizes', ['Dutch foods now offer RIVM\'s household measures: 1 beschuit (10 g), 1 snee (35 g), 1 glas (200 ml), 1 eetlepel and more, with 2 and 3 of them one tap away.', 'Portions: Portie-online versie 2026/2.0, RIVM, Bilthoven.']],
     ['2 Nov 2026', 'Food search', ['Search over 9,000 foods in Food: Dutch foods from NEVO (RIVM) and international foods from USDA.', 'Search, pick a food, tap how much. Food is per 100 g and drinks per 100 ml. Do not know the weight? Tap a portion: for Dutch foods these are RIVM\'s own household measures (Portie-online versie 2026/2.0, RIVM, Bilthoven), like 1 beschuit or 1 eetlepel.', 'Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven and other data sources (USDA FoodData Central).']],
     ['2 Nov 2026', 'Plan, rebuilt', ['Plan is now your week on one screen: every training day with its exercises.', 'Tap the weekdays you train, and choose what a missed day does: skip it, or move it up.', 'Edit a day as a short list: tap an exercise to change sets, reps and weight, drag to reorder, or replace it.', 'Ask your AI coach right from Plan to adjust your plan: you see what changes before anything does.']],
@@ -1399,6 +1467,142 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     ['2 Nov 2026', 'Progress and exercises', ['Progress shows trends over 1, 3, 6 or 12 months, with charts that stay readable however much you log.', '304 exercises, including forearms, full body and cardio.', 'Smoother screens and clearer feedback on every tap.']],
     ['Oct 2026', 'First version', ['Log sets with a rest timer, plan your week with drag and drop, notes for your coach, and export for an AI review.']],
   ];
+  // ---- Claude connector state (cached a minute): used by the Home button, Settings and the finish-day question
+  const CONNECTORS_URL = 'https://claude.ai/customize/connectors';
+  const connectUrl = () => (window.YC_CONFIG && window.YC_CONFIG.supabaseUrl || '') + '/functions/v1/mcp';
+  const CONN = { avail: false, apps: [], at: 0, p: null };
+  const connInfo = (force) => {
+    if (!force && CONN.p && Date.now() - CONN.at < 60000) return CONN.p;
+    CONN.at = Date.now();
+    CONN.p = (async () => {
+      const sb = window.YC_API && window.YC_API.sb;
+      let r = null;
+      try { if (sb && sb.auth && sb.auth.oauth && sb.auth.oauth.listGrants) r = await sb.auth.oauth.listGrants(); } catch (e) { r = null; }
+      CONN.avail = !!(r && !r.error && Array.isArray(r.data));
+      CONN.apps = CONN.avail ? r.data : [];
+      return CONN;
+    })();
+    return CONN.p;
+  };
+  const copyPlain = async (text, field) => {
+    try { await navigator.clipboard.writeText(text); return true; } catch (e) { /* fall back below */ }
+    try { if (field) field.select(); return document.execCommand('copy'); } catch (e) { return false; }
+  };
+  const paintHomeConn = async () => {
+    const c = await connInfo();
+    const b = $('#hm-claude');
+    b.hidden = !c.avail;
+    b.firstChild.textContent = c.apps.length ? 'Claude is connected' : 'Connect to Claude';
+    if (b.hidden) $('#hm-claude-panel').hidden = true;
+  };
+  const fillClaudePanel = (copied) => {
+    const p = $('#hm-claude-panel');
+    const url = connectUrl();
+    const inp = h('input', 'conn-url');
+    inp.type = 'text'; inp.readOnly = true; inp.value = url;
+    inp.setAttribute('aria-label', 'Connector address');
+    const cp = btn('skew small', 'Copy address');
+    cp.addEventListener('click', async () => { cp.firstChild.textContent = (await copyPlain(url, inp)) ? 'Copied' : 'Press and hold the address'; });
+    const row = h('div', 'foot-row');
+    row.append(inp, cp);
+    const open = h('a', 'link', 'Open Claude connectors');
+    open.href = CONNECTORS_URL; open.target = '_blank'; open.rel = 'noopener noreferrer';
+    const kids = [];
+    if (CONN.apps.length) {
+      kids.push(h('p', '', 'Connected: ' + CONN.apps.map((g) => (g.client && g.client.name) || 'An app').join(', ') + '. Your Claude can read your log and change your plan. Disconnect any time in Settings.'));
+      kids.push(row, open);
+    } else {
+      kids.push(h('p', '', copied ? 'Address copied, and Claude is opening in a new tab.' : 'Add Yes Coach! to your own Claude:'));
+      const ol = h('ol');
+      ['In Claude: Customize, Connectors, Add custom connector.', 'Paste the address, then Connect and Allow.'].forEach((t) => ol.append(h('li', '', t)));
+      kids.push(ol, row, open);
+    }
+    p.replaceChildren(...kids);
+  };
+  const claudeButton = async () => {
+    const b = $('#hm-claude');
+    const p = $('#hm-claude-panel');
+    if (!p.hidden) { p.hidden = true; b.setAttribute('aria-expanded', 'false'); return; }
+    const c = await connInfo(true);
+    let copied = false;
+    if (!c.apps.length) {
+      try { window.open(CONNECTORS_URL, '_blank', 'noopener,noreferrer'); } catch (e) { /* the link in the panel does the same */ }
+      copied = await copyPlain(connectUrl());
+    }
+    fillClaudePanel(copied);
+    p.hidden = false;
+    b.setAttribute('aria-expanded', 'true');
+  };
+  // after a finished day: offer the review in the user's own Claude (only when a Claude is connected)
+  const askClaudeReview = (day) => {
+    const prompt = 'Review my Yes Coach! workout "' + day.name + '" from ' + day.date + '. Use my Yes Coach connector to read that session and my plan, tell me how it went, and what to change next time.';
+    const wrap = h('div', 'ydlg');
+    const close = () => { wrap.remove(); document.removeEventListener('keydown', onKey); };
+    const onKey = (e) => { if (e.key === 'Escape') close(); };
+    const box = confirmBox({
+      label: 'Send day to Coach Claude',
+      text: 'Send day to Coach Claude for review? ' + day.name + ' is saved. Claude reads it through your connector and answers in a new chat.',
+      yes: 'Send to Claude', keep: 'Not now', yesId: 'claude-review-go',
+      onYes: async () => {
+        try { window.open('https://claude.ai/new?q=' + encodeURIComponent(prompt), '_blank', 'noopener,noreferrer'); } catch (e) { /* copied below */ }
+        const ok = await copyPlain(prompt);
+        close();
+        showToast(ok ? 'Opening Claude. The request is also copied: paste it if the chat is empty.' : 'Opening Claude.', null);
+      },
+      onKeep: close,
+    });
+    box.setAttribute('aria-modal', 'true');
+    wrap.append(box);
+    wrap.addEventListener('pointerdown', (e) => { if (e.target === wrap) close(); });
+    document.addEventListener('keydown', onKey);
+    document.body.append(wrap);
+    box.go.focus();
+  };
+
+  // ---- put Yes Coach! on the home screen: one tap where the browser allows it, otherwise a short sheet with the logo and the steps
+  let installEvt = null;
+  const standalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); installEvt = e; });
+  window.addEventListener('appinstalled', () => { installEvt = null; paintInstall(); });
+  const platform = () => {
+    const ua = navigator.userAgent || '';
+    if (/iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) return 'ios';
+    if (/Android/.test(ua)) return 'android';
+    return 'desktop';
+  };
+  const paintInstall = () => {
+    const b = $('#hm-install');
+    b.hidden = standalone();
+    if (b.hidden) $('#hm-install-panel').hidden = true;
+  };
+  const installButton = async () => {
+    const b = $('#hm-install');
+    const p = $('#hm-install-panel');
+    if (!p.hidden) { p.hidden = true; b.setAttribute('aria-expanded', 'false'); return; }
+    if (installEvt) {
+      const ev = installEvt;
+      installEvt = null;
+      try { await ev.prompt(); const r = await ev.userChoice; if (r && r.outcome === 'accepted') { showToast('Yes Coach! is on your home screen.', null); paintInstall(); return; } } catch (e) { /* show the steps instead */ }
+    }
+    const app = h('div', 'hm-app');
+    const img = h('img');
+    img.src = 'icon-192.png?v=3'; img.alt = ''; img.width = 56; img.height = 56;
+    app.append(img, h('b', '', 'Yes Coach!'));
+    const steps = {
+      ios: ['Tap the Share button (the square with an arrow) at the bottom or top of your browser.', 'Scroll down and tap Add to Home Screen.', 'Tap Add. The icon above appears on your home screen.'],
+      android: ['Tap the menu (three dots) at the top right of Chrome.', 'Tap Install app, or Add to Home screen.', 'Tap Install. The icon above appears on your home screen.'],
+      desktop: ['Chrome and Edge: click the install icon at the right end of the address bar, then Install.', 'Safari on a Mac: File, then Add to Dock.'],
+    }[platform()];
+    const ol = h('ol');
+    steps.forEach((t) => ol.append(h('li', '', t)));
+    p.replaceChildren(h('p', '', platform() === 'desktop' ? 'Open Yes Coach! like an app from your dock or desktop:' : 'Two taps in your browser, then it opens like an app:'), app, ol);
+    p.hidden = false;
+    b.setAttribute('aria-expanded', 'true');
+  };
+  $('#hm-install').addEventListener('click', installButton);
+  $('#hm-claude').addEventListener('click', claudeButton);
+  $('#hm-ticket').addEventListener('click', () => { setView('feedback'); window.scrollTo({ top: 0 }); });
+
   const renderHome = () => {
     const brand = $('#hm-brand');
     if (!brand.childElementCount) brand.append($('#pickday .brand svg').cloneNode(true));
@@ -1410,6 +1614,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       li.append(h('div', 'lab', date), h('h3', 'cl-title', title), ul);
       list.append(li);
     });
+    paintInstall();
+    paintHomeConn();
+    $('#hm-ticket').hidden = !window.YC_FEEDBACK;
     const users = $('#hm-users');
     if (window.YC_USERS) window.YC_USERS().then((n) => { if (n) { users.textContent = n === 1 ? '1 person trains with Yes Coach!' : n + ' people train with Yes Coach!'; users.hidden = false; } }).catch(() => {});
   };
@@ -1698,7 +1905,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const a = S.active;
     if (!a) return;
     if (S.sessions[SID()]) queueWrite(SID(), { finished_at: Date.now() });
+    const day = { name: (S.templates[a.tpl] || {}).name || 'Session', date: a.date };
     closeSession();
+    connInfo().then((c) => { if (c.apps.length) askClaudeReview(day); }).catch(() => {});
   };
 
   // the session doc of a day when it belongs to that training day (a date can hold another day's workout)
@@ -3225,16 +3434,16 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
 
   const METRICS = {
-    est: { name: 'Estimated strength', note: 'Best set per session as an estimated one-rep max (Epley), so more reps at the same load counts.', top: (p) => p.est },
+    est: { name: 'Estimated strength', note: 'Best set per session as an estimated one-rep max (Epley), so more reps at the same load counts. The axis shows that estimate, not a weight you lifted.', top: (p) => p.est },
     load: { name: 'Heaviest set', note: 'Heaviest set per session, with its reps.', top: (p) => p.heavyLoad, label: (p) => p.heavyLabel },
     reps: { name: 'Most reps', note: 'Most reps in one set, per session.', top: (p) => p.reps },
     assist: { name: 'Assistance', note: 'Least assistance per session, with reps. Lower is better.', top: (p) => p.load, lower: true },
   };
   const drawExChart = (det, row) => {
     const loaded = row.unit === 'kg' || row.unit === 'stack';
-    const key = loaded ? (S.metric === 'load' ? 'load' : 'est') : row.unit === 'bw' ? 'reps' : 'assist';
+    const key = loaded ? (S.metric === 'est' ? 'est' : 'load') : row.unit === 'bw' ? 'reps' : 'assist';
     const m = METRICS[key];
-    if (loaded) det.append(radioTabs('Chart', [['est', 'Est. strength'], ['load', 'Heaviest set']], key, (k) => { S.metric = k; drawList(); }));
+    if (loaded) det.append(radioTabs('Chart', [['load', 'Heaviest set'], ['est', 'Est. strength']], key, (k) => { S.metric = k; drawList(); }));
     det.append(h('p', 'note', (row.sessions > 1 ? 'Best in this period: ' + row.bestLabel + '. ' : '') + m.note + (key === 'est' && row.unit === 'stack' ? ' Pin numbers compare only with this machine.' : '') + ' The dashed line is the trend, so one good or bad day does not decide the change.'));
     const box = h('div', 'chart');
     det.append(box);
@@ -3255,7 +3464,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       b.addEventListener('click', () => setTrend(row.latestDate));
       fresh.append(b, h('span', 'note', 'Use this when earlier numbers do not compare, such as after fixing your form.'));
     }
-    const pts = row.series.map((p) => ({ date: p.date, top: m.top(p), label: m.label ? m.label(p) : p.label, sets: p.sets })).filter((p) => p.top != null);
+    const pts = row.series.map((p) => ({ date: p.date, top: m.top(p), label: m.label ? m.label(p) : key === 'est' && p.est != null ? '≈' + num(Math.round(p.est)) + (row.unit === 'stack' ? '' : ' kg') : p.label, sets: p.sets })).filter((p) => p.top != null);
     if (pts.length < 2) box.append(h('div', 'empty', pts.length ? 'One session in this period. The chart starts with the second.' : 'Not enough data for this view.'));
     else lineChart(box, pts, { name: m.name + ' per session for ' + row.exercise, lower: !!m.lower, tip: (p) => [{ text: 'Best set ' + p.label }].concat(key === 'est' ? [{ text: 'Est. 1RM ' + num(p.top) }] : []).concat([{ text: plural(p.sets, 'set') }]) });
     det.append(fresh);
@@ -5859,6 +6068,52 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     }
   };
 
+  // where a day sits in the week, set right on the day itself: weekday chips (fixed) or in/out of the order (rotation)
+  const inWeekBlock = (id) => {
+    const m = schedModel();
+    const t = S.templates[id];
+    const blk = h('div', 'pw-inweek');
+    blk.append(h('span', 'lab', 'In your week'));
+    if (m.mode === 'fixed') {
+      const chips = h('div', 'pw-days');
+      chips.setAttribute('role', 'group');
+      chips.setAttribute('aria-label', 'Weekdays for ' + t.name);
+      const taken = [];
+      WEEKDAYS.forEach((w) => {
+        const here = m.week[w] === id;
+        const other = m.week[w] && !here ? S.templates[m.week[w]] : null;
+        if (other) taken.push(w + ' has ' + other.name);
+        const c = btn('pk-chip' + (other ? ' taken' : ''), w, (here ? 'Take ' + t.name + ' off ' : 'Put ' + t.name + ' on ') + w + (other ? ' (replaces ' + other.name + ')' : ''));
+        c.setAttribute('aria-pressed', String(here));
+        c.addEventListener('click', () => {
+          const mm = schedModel();
+          const was = mm.week[w];
+          const before = Object.assign({}, mm.week);
+          if (was === id) { mm.week[w] = ''; saveSched(mm); return; }
+          mm.week[w] = id;
+          const sc = { enabled: true, mode: 'fixed', week: mm.week };
+          saveRoot({ schedule: sc }).catch(() => showToast('Not saved. Check your connection.', null));
+          if (was && S.templates[was]) showToast(S.templates[was].name + ' is no longer on ' + w + '.', () => { saveRoot({ schedule: { enabled: true, mode: 'fixed', week: before } }); renderEditor(); });
+          renderEditor();
+        });
+        chips.append(c);
+      });
+      blk.append(chips);
+      const on = WEEKDAYS.filter((w) => m.week[w] === id);
+      blk.append(h('p', 'note', (on.length ? t.name + ' is on ' + on.join(', ') + '.' : 'Not in your week yet. Tap the days you want it on.') + (taken.length && !on.length ? ' Tapping a day that is taken puts this day there instead.' : '')));
+    } else {
+      const inOrder = m.rotation.includes(id);
+      const tog = btn('skew small' + (inOrder ? '' : ' pop'), inOrder ? 'Take out of your week' : 'Put in your week');
+      tog.addEventListener('click', () => {
+        const mm = schedModel();
+        if (inOrder) mm.rotation = mm.rotation.filter((x) => x !== id);
+        else { mm.rotation.push(id); if (!mm.days.length) mm.days = ['Mon', 'Wed', 'Fri']; }
+        saveSched(mm);
+      });
+      blk.append(tog, h('p', 'note', inOrder ? 'In your order, on ' + (m.days.length ? m.days.join(', ') : 'no weekdays yet') + '. Change the order in Your week.' : 'Not in your order yet.'));
+    }
+    return blk;
+  };
   // ---- one training day: a compact line per exercise; tap one to change it, drag the handle to reorder
   const renderDayEditor = (box) => {
     if (!ED || ED.id !== S.editing) ED = { id: S.editing, doc: clone(S.templates[S.editing]), timer: 0, status: null, armed: false, confirm: null, open: null };
@@ -5872,8 +6127,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     nm.addEventListener('input', () => { d.name = nm.value || 'Day'; saveTemplate(); $('#editor .bar h2').textContent = d.name; });
     box.append(nm);
     const m = schedModel();
-    const where = m.mode === 'fixed' ? WEEKDAYS.filter((w) => m.week[w] === ED.id) : m.rotation.includes(ED.id) ? m.days : [];
-    box.append(h('p', 'note', where.length ? (m.mode === 'fixed' ? 'On ' + where.join(', ') + '.' : 'In your order, on ' + where.join(', ') + '.') + ' Change when in Your week.' : 'Not in your week yet: put it on a day in Your week.'));
+    box.append(inWeekBlock(ED.id));
     const list = h('div', 'pw-items');
     const commitOrder = () => { d.items.forEach((y, k) => { y.order = k + 1; }); saveTemplate(true); };
     d.items.forEach((it, i) => {
@@ -6001,7 +6255,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     addRow.append(addBtn);
     box.append(addRow, pk);
     const more = h('details', 'pw-moreset pw-daymore');
-    more.append(h('summary', '', 'More: type of day, delete'));
+    more.append(h('summary', '', 'More: type of day'));
     const kd = h('select');
     kd.id = 'ed-kind';
     KINDS.forEach(([v, l]) => kd.append(new Option(l, v)));
@@ -6010,7 +6264,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const kf = h('div', 'ed-fields');
     kf.append(edField('Type (sets its color and helps your AI coach)', kd));
     more.append(kf);
+    box.append(more);
     const del = btn('skew small danger', ED.armed ? 'Tap again to delete ' + d.name : 'Delete this day');
+    del.id = 'ed-delete';
     del.addEventListener('click', () => {
       if (!ED.armed) { ED.armed = true; renderEditor(); setTimeout(() => { if (ED) { ED.armed = false; if (S.editing === ED.id) renderEditor(); } }, 4000); return; }
       const id = ED.id;
@@ -6025,10 +6281,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       saveSched(mm);
     });
     const dz = h('div', 'danger-zone');
-    dz.append(del, h('span', 'note', 'Deleting a day keeps every session you logged with it.'));
-    more.append(dz);
-    if (ED.armed) more.open = true;
-    box.append(more);
+    dz.append(h('span', 'lab', 'Delete'), del, h('span', 'note', 'Deleting a day takes it out of your week. Sessions you logged with it stay in your history.'));
+    box.append(dz);
   };
   const renderEditor = () => {
     const box = $('#editor');
@@ -6312,32 +6566,26 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   // AI apps the person allowed through the Yes Coach! connector (web only; Supabase keeps the list)
   const paintConn = async () => {
-    const sb = window.YC_API && window.YC_API.sb;
-    if (!sb || !sb.auth || !sb.auth.oauth || !sb.auth.oauth.listGrants) return;
-    let r;
-    try { r = await sb.auth.oauth.listGrants(); } catch (e) { return; }
-    if (!r || r.error || !Array.isArray(r.data)) return; // the connector is not switched on: show nothing
+    const c = await connInfo(true);
+    if (!c.avail) return; // the connector is not switched on: show nothing
     $('#conn').hidden = false;
-    const url = (window.YC_CONFIG && window.YC_CONFIG.supabaseUrl || '') + '/functions/v1/mcp';
+    const url = connectUrl();
     $('#conn-url').value = url;
-    $('#conn-copy').onclick = async () => {
-      let done = false;
-      try { await navigator.clipboard.writeText(url); done = true; } catch (e) { $('#conn-url').select(); try { done = document.execCommand('copy'); } catch (e2) { done = false; } }
-      $('#conn-state').textContent = done ? 'Copied.' : 'Press and hold the address to copy it.';
-    };
+    $('#conn-copy').onclick = async () => { $('#conn-state').textContent = (await copyPlain(url, $('#conn-url'))) ? 'Copied.' : 'Press and hold the address to copy it.'; };
+    const sb = window.YC_API.sb;
     const box = $('#conn-list');
-    if (!r.data.length) { box.replaceChildren(h('p', 'note', 'None connected.')); return; }
-    box.replaceChildren(...r.data.map((g) => {
-      const c = g.client || {};
+    if (!c.apps.length) { box.replaceChildren(h('p', 'note', 'None connected.')); return; }
+    box.replaceChildren(...c.apps.map((g) => {
+      const cl = g.client || {};
       const row = h('div', 'foot-row');
       const b = h('button', 'skew small', null); b.type = 'button'; b.append(h('span', '', 'Disconnect'));
-      b.setAttribute('aria-label', 'Disconnect ' + (c.name || 'this app'));
+      b.setAttribute('aria-label', 'Disconnect ' + (cl.name || 'this app'));
       b.onclick = async () => {
         b.disabled = true; $('#conn-state').textContent = '';
-        let d; try { d = await sb.auth.oauth.revokeGrant({ clientId: c.id }); } catch (e) { d = { error: e }; }
-        if (d && d.error) { b.disabled = false; $('#conn-state').textContent = 'That did not go through. Try again.'; } else paintConn();
+        let d; try { d = await sb.auth.oauth.revokeGrant({ clientId: cl.id }); } catch (e) { d = { error: e }; }
+        if (d && d.error) { b.disabled = false; $('#conn-state').textContent = 'That did not go through. Try again.'; } else { paintConn(); paintHomeConn(); }
       };
-      row.append(h('span', 'note', c.name || 'An app'), b);
+      row.append(h('span', 'note', cl.name || 'An app'), b);
       return row;
     }));
   };
@@ -6348,12 +6596,137 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const paintTheme = () => {
     $('#look-row').replaceChildren(radioTabs('Appearance', THEMES, themeNow(), (k) => { local.set('yc-theme', k === 'auto' ? null : k); applyTheme(k); paintTheme(); }));
   };
+  // ---- dropdowns: Yes Coach! styled list instead of the browser's own; the native select stays underneath (value, change events, forms)
+  const enhanceSelect = (sel) => {
+    if (sel._ys || sel.multiple || sel.size > 1 || !sel.parentNode) return;
+    sel._ys = true;
+    const wrap = h('span', 'ysel');
+    const b = h('button', 'ysel-btn');
+    b.type = 'button';
+    b.setAttribute('role', 'combobox');
+    b.setAttribute('aria-haspopup', 'listbox');
+    b.setAttribute('aria-expanded', 'false');
+    const al = sel.getAttribute('aria-label');
+    if (al) b.setAttribute('aria-label', al);
+    sel.parentNode.insertBefore(wrap, sel);
+    wrap.append(b, sel);
+    sel.classList.add('ysel-native');
+    sel.tabIndex = -1;
+    sel.setAttribute('aria-hidden', 'true');
+    const paint = () => { const o = sel.options[sel.selectedIndex]; b.textContent = o ? o.text : ''; b.disabled = sel.disabled; };
+    paint();
+    new MutationObserver(paint).observe(sel, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['disabled', 'label'] });
+    sel.addEventListener('change', paint);
+    sel.addEventListener('focus', () => b.focus());
+    let pop = null;
+    let act = -1;
+    const items = () => (pop ? [...pop.children] : []);
+    const setAct = (i) => {
+      const its = items();
+      if (!its.length) return;
+      act = Math.max(0, Math.min(its.length - 1, i));
+      its.forEach((it, k) => it.classList.toggle('act', k === act));
+      b.setAttribute('aria-activedescendant', its[act].id);
+      const it = its[act];
+      if (it.offsetTop < pop.scrollTop) pop.scrollTop = it.offsetTop; else if (it.offsetTop + it.offsetHeight > pop.scrollTop + pop.clientHeight) pop.scrollTop = it.offsetTop + it.offsetHeight - pop.clientHeight;
+    };
+    const step = (from, dir) => { const its = items(); for (let i = from + dir; i >= 0 && i < its.length; i += dir) if (!sel.options[i].disabled) return i; return from; };
+    const away = (e) => { if (pop && !pop.contains(e.target) && !b.contains(e.target)) close(false); };
+    let at = null;
+    const onScroll = (e) => { if (!pop || pop.contains(e.target)) return; const r = b.getBoundingClientRect(); if (at && (Math.abs(r.top - at.top) > 1 || Math.abs(r.left - at.left) > 1)) close(false); };
+    const close = (refocus) => {
+      if (!pop) return;
+      pop.remove();
+      pop = null;
+      b.setAttribute('aria-expanded', 'false');
+      b.removeAttribute('aria-activedescendant');
+      document.removeEventListener('pointerdown', away, true);
+      window.removeEventListener('scroll', onScroll, true);
+      window.removeEventListener('resize', onResize);
+      if (refocus) b.focus();
+    };
+    const onResize = () => close(false);
+    const choose = (i) => {
+      if (sel.options[i].disabled) return;
+      const changed = sel.selectedIndex !== i;
+      sel.selectedIndex = i;
+      paint();
+      close(true);
+      if (changed) { sel.dispatchEvent(new Event('input', { bubbles: true })); sel.dispatchEvent(new Event('change', { bubbles: true })); }
+    };
+    const open = () => {
+      if (pop || b.disabled || !wrap.isConnected) return;
+      pop = h('div', 'ysel-popup ysel-pop');
+      pop.setAttribute('role', 'listbox');
+      if (al) pop.setAttribute('aria-label', al);
+      const uid = 'ys' + Math.random().toString(36).slice(2, 8);
+      pop.id = uid;
+      [...sel.options].forEach((o, i) => {
+        const it = h('div', 'ysel-opt', o.text);
+        it.id = uid + '-' + i;
+        it.setAttribute('role', 'option');
+        it.setAttribute('aria-selected', String(i === sel.selectedIndex));
+        if (o.disabled) it.setAttribute('aria-disabled', 'true');
+        it.addEventListener('pointerdown', (e) => e.preventDefault()); // keep focus on the button
+        it.addEventListener('click', () => choose(i));
+        it.addEventListener('pointermove', () => { if (act !== i && !o.disabled) setAct(i); });
+        pop.append(it);
+      });
+      b.setAttribute('aria-controls', uid);
+      document.body.append(pop);
+      const r = b.getBoundingClientRect();
+      const below = innerHeight - r.bottom - 12;
+      const above = r.top - 12;
+      const up = below < 180 && above > below;
+      pop.style.maxHeight = Math.max(140, Math.min(340, up ? above : below)) + 'px';
+      pop.style.minWidth = Math.max(r.width, 120) + 'px';
+      pop.style.maxWidth = Math.min(innerWidth - 16, 420) + 'px';
+      const pw = pop.offsetWidth;
+      const ph = pop.offsetHeight;
+      pop.style.left = Math.max(8, Math.min(r.left, innerWidth - pw - 8)) + 'px';
+      pop.style.top = (up ? Math.max(8, r.top - ph + 2) : r.bottom - 2) + 'px';
+      at = r;
+      b.setAttribute('aria-expanded', 'true');
+      document.addEventListener('pointerdown', away, true);
+      window.addEventListener('scroll', onScroll, true);
+      window.addEventListener('resize', onResize);
+      setAct(sel.selectedIndex);
+    };
+    b.addEventListener('click', () => { if (pop) close(false); else open(); });
+    let typed = '';
+    let typedAt = 0;
+    b.addEventListener('keydown', (e) => {
+      const k = e.key;
+      if (!pop) {
+        if (k === 'ArrowDown' || k === 'ArrowUp' || k === 'Enter' || k === ' ') { e.preventDefault(); open(); }
+        return;
+      }
+      if (k === 'Escape') { e.preventDefault(); e.stopPropagation(); close(true); }
+      else if (k === 'Tab') close(false);
+      else if (k === 'ArrowDown') { e.preventDefault(); setAct(step(act, 1)); }
+      else if (k === 'ArrowUp') { e.preventDefault(); setAct(step(act, -1)); }
+      else if (k === 'Home') { e.preventDefault(); setAct(step(-1, 1)); }
+      else if (k === 'End') { e.preventDefault(); setAct(step(sel.options.length, -1)); }
+      else if (k === 'Enter' || k === ' ') { e.preventDefault(); if (act >= 0) choose(act); }
+      else if (k.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const now = Date.now();
+        typed = now - typedAt > 700 ? k.toLowerCase() : typed + k.toLowerCase();
+        typedAt = now;
+        const hit = [...sel.options].findIndex((o, i) => !o.disabled && o.text.toLowerCase().startsWith(typed) && i >= (typed.length > 1 ? act : act + 1));
+        const any = hit >= 0 ? hit : [...sel.options].findIndex((o) => !o.disabled && o.text.toLowerCase().startsWith(typed));
+        if (any >= 0) setAct(any);
+      }
+    });
+  };
+  const enhanceIn = (root) => { if (root.nodeType !== 1) return; if (root.matches('select')) enhanceSelect(root); else root.querySelectorAll('select').forEach(enhanceSelect); };
+  new MutationObserver((muts) => muts.forEach((m) => m.addedNodes.forEach(enhanceIn))).observe(document.body, { childList: true, subtree: true });
+  enhanceIn(document.body);
   const boot = async () => {
     applyTheme(themeNow());
     paintTheme();
     loadDrafts();
-    const v = local.get('yc-view');
-    if ((VIEWS.includes(v) && v !== 'train' && (v !== 'feedback' || window.YC_FEEDBACK)) || v === 'export') setView(v === 'export' ? 'settings' : v);
+    local.set('yc-view', null);
+    setView('home'); // the app always opens on Home
     const a = local.get('yc-active');
     if (a && a.date && a.tpl) S.active = a;
     let db = null, user = null;
