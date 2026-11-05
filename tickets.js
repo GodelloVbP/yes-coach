@@ -117,6 +117,7 @@
   };
 
   // ------------------------------------------------------------------ the user: send something
+  let composeNow = null;
   let mine = [];
   const lastName = () => (mine.find((t) => t.first_name) || {}).first_name || '';
   const newForm = (onSent) => {
@@ -156,6 +157,7 @@
       go.disabled = false;
     });
     form.append(field('What is it about?', type), field('Your first name', name), field('In a few words', title), field('Tell us more', text), go, msg, textBtn('Cancel', () => { form.hidden = true; }));
+    form.prefill = (kind, ttl) => { if (TYPES[kind]) { type.value = kind; text.placeholder = HINT[kind]; } if (ttl && !title.value) title.value = ttl; };
     form.open = () => { form.hidden = false; if (!name.value) name.value = lastName(); $('select', form).focus(); };
     return form;
   };
@@ -417,6 +419,7 @@
     const sec = section('tk', 'Feedback & Requests');
     const state = liveNote();
     const form = newForm(() => { form.hidden = true; state.textContent = 'Sent. Thank you! You can follow it below.'; refresh(true); });
+    composeNow = (kind, ttl) => { state.textContent = ''; form.open(); form.prefill(kind, ttl); form.scrollIntoView({ block: 'center' }); const t = form.querySelector('textarea'); if (t) t.focus(); };
     const row = h('div', 'foot-row');
     row.append(skew('pop', 'Send something', () => { state.textContent = ''; form.open(); }));
     const sum = h('p', 'note');
@@ -526,6 +529,6 @@
     if (owner) { wrap.prepend(buildAdmin()); loadAdmin(); }
   };
   // the app calls this when the tab is opened; before the tab is built there is nothing to refresh
-  window.YC_FEEDBACK = { show: () => { if ($('#tk-sum')) refresh(); } };
+  window.YC_FEEDBACK = { show: () => { if ($('#tk-sum')) refresh(); }, compose: (kind, ttl) => { if (composeNow) composeNow(kind, ttl); } };
   init().catch(() => {});
 })();

@@ -535,6 +535,10 @@ body.typing .restbar { display: none; }
 .hm .brand svg { width: min(100%, 20rem); }
 .hm-tag { font-size: var(--t3); font-weight: 500; text-align: center; text-wrap: balance; }
 .hm-users { align-self: center; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.375rem 1rem; background: var(--faint); border-left: 4px solid var(--pop); }
+.lang-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: 0.5rem; }
+.lang-opt { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; min-height: 48px; padding: 0 0.875rem; font: inherit; font-size: var(--t3); font-weight: 700; color: var(--ink); background: var(--paper); border: 2px solid var(--ctl); border-radius: 0; cursor: pointer; text-align: left; }
+.lang-opt[aria-checked="true"] { border-color: var(--ink); background: var(--faint); }
+.lang-opt[aria-checked="true"]::after { content: "✓"; font-family: var(--f-head); color: var(--pop); }
 .hm-side { gap: 0.75rem; }
 .hm-p { font-size: var(--t3); font-weight: 500; line-height: 1.5; max-width: 40rem; }
 .hm-checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
@@ -1057,6 +1061,12 @@ body.typing .restbar { display: none; }
         <p class="note">Auto follows your phone or computer. Your choice is saved on this device only.</p>
         <div id="look-row"></div>
       </section>
+      <section aria-labelledby="h-lang" id="lang" hidden>
+        <h2 id="h-lang">Languages</h2>
+        <p class="note">Yes Coach! is originally in English. The translations are AI-generated and might contain mistakes. If you find one, please report it in the form.</p>
+        <div id="lang-list" class="lang-list" role="radiogroup" aria-label="Language"></div>
+        <div class="foot-row"><button class="skew small" type="button" id="lang-report"><span>Report a translation mistake</span></button></div>
+      </section>
       <section aria-labelledby="h-conn" id="conn" hidden>
         <h2 id="h-conn">Connected AI apps</h2>
         <p class="note">Connect your own Claude: in Claude open Customize, Connectors, Add custom connector, paste this address, then Connect and Allow. <a class="link" href="connect.html">Step by step</a></p>
@@ -1440,7 +1450,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (v === 'exercises') renderExercises();
     if (v === 'plan' && S.ready) renderPlan();
     if (v === 'progress') renderProgress();
-    if (v === 'settings') { foldSettings(); paintExport(); paintImport(); paintConn(); if (S.ready) paintMe(); }
+    if (v === 'settings') { foldSettings(); paintExport(); paintImport(); paintConn(); paintLang(); if (S.ready) paintMe(); }
     if (v === 'train' && S.ready) renderTrain();
     if (S.ready) paintChrome();
   };
@@ -1455,6 +1465,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && $('#tabs-nav').classList.contains('open')) { setMenu(false); $('#menu-btn').focus(); } });
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['5 Nov 2026', "Yes Coach! now speaks your language", ["Choose Dutch, English, Spanish, German, French or Italian the first time you open it. Change it any time in Settings, under Languages.", "The app is originally in English and the translations are AI-generated, so some may be wrong. Found one? Report it in the form."]],
     ['5 Nov 2026', 'Plan, simpler', ['Put a day in your week right where you edit it: tap the weekdays on the day itself. Delete is now in plain sight at the bottom.', 'New look for dropdown lists, and more room between the parts of Plan.', 'Progress charts now show the weights you lifted by default. The estimated strength chart is one tap away and says it is an estimate.']],
     ['5 Nov 2026', 'Claude and your home screen', ['New Connect to Claude button on Home. With Claude connected, finishing a day offers to send it to Coach Claude for review.', 'New Put on home screen button, with the steps for iPhone and Android. Yes Coach! now always opens on Home.']],
     ['2 Nov 2026', 'Real portion sizes', ['Dutch foods now offer RIVM\'s household measures: 1 beschuit (10 g), 1 snee (35 g), 1 glas (200 ml), 1 eetlepel and more, with 2 and 3 of them one tap away.', 'Portions: Portie-online versie 2026/2.0, RIVM, Bilthoven.']],
@@ -1467,6 +1478,25 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     ['2 Nov 2026', 'Progress and exercises', ['Progress shows trends over 1, 3, 6 or 12 months, with charts that stay readable however much you log.', '304 exercises, including forearms, full body and cardio.', 'Smoother screens and clearer feedback on every tap.']],
     ['Oct 2026', 'First version', ['Log sets with a rest timer, plan your week with drag and drop, notes for your coach, and export for an AI review.']],
   ];
+  // ---- Languages (Settings): the choice is kept on this device and the page reloads in it
+  const paintLang = () => {
+    const I = window.YC_I18N;
+    $('#lang').hidden = !I;
+    if (!I) return;
+    $('#lang-list').replaceChildren(...I.langs.map((l) => {
+      const b = h('button', 'lang-opt', l.name);
+      b.type = 'button';
+      b.lang = l.code;
+      b.setAttribute('translate', 'no');
+      b.setAttribute('role', 'radio');
+      b.setAttribute('aria-checked', String(l.code === I.current()));
+      b.addEventListener('click', () => I.set(l.code));
+      return b;
+    }));
+    const rep = $('#lang-report');
+    rep.hidden = !window.YC_FEEDBACK;
+    rep.onclick = () => { setView('feedback'); window.scrollTo({ top: 0 }); window.YC_FEEDBACK.compose('bug', 'Translation mistake (' + I.current() + ')'); };
+  };
   // ---- Claude connector state (cached a minute): used by the Home button, Settings and the finish-day question
   const CONNECTORS_URL = 'https://claude.ai/customize/connectors';
   const connectUrl = () => (window.YC_CONFIG && window.YC_CONFIG.supabaseUrl || '') + '/functions/v1/mcp';
