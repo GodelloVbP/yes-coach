@@ -63,6 +63,7 @@ button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent
 h2 { font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.15; text-wrap: balance; }
 .lab { font-size: var(--t1); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
 .lab .note { font-family: var(--f-body); font-size: var(--t1); text-transform: none; letter-spacing: 0; }
+.ex-warm[hidden] { display: none; }
 .ex-sug { display: flex; flex-wrap: wrap; align-items: center; gap: 0 0.5rem; margin: 0.15rem 0 0.35rem; font-size: 0.9rem; color: var(--ink); }
 .ex-sug[hidden] { display: none; }
 .ex-sug-why { font-weight: 600; }
@@ -1586,6 +1587,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['5 Nov 2026', 'Warm-up sets', ["Tap + Warm-up on an exercise for a ramp to your working weight: the empty bar, then about half, 70% and 85% of it. It appears from 40 kg.", "Warm-ups do not count as working sets and do not change your suggested weight.", "Want it every time? Tick Add warm-up sets automatically in the plan editor."]],
     ['5 Nov 2026', 'Suggested next weight', ["Each exercise now shows the weight to try next, worked out from your last sessions. When every set reached the reps, it goes up a step.", "A line under the exercise says why. Tap Use last time to see last time’s numbers instead.", "Turn it off in Settings, Logging. Set the step per exercise in the plan editor."]],
     ['5 Nov 2026', 'Plate calculator', ["On barbell exercises, the Plates button shows which plates go on each side of the bar. If your plates cannot make the weight, it offers the nearest two.", "Set your bar (20, 15 or 10 kg) and the plates you own in Settings, Logging."]],
     ['5 Nov 2026', 'Logging on a big screen', ["On a computer, logging has three columns: the menu, your exercises, and the sets of the one you are on."]],
@@ -1798,6 +1800,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const QUEUE_KEY = 'yc-queue';
   const VALUE_FIELDS = ['reps', 'load', 'minutes', 'rir'];
   const hasValues = (d) => !!d && VALUE_FIELDS.some((f) => d[f] !== undefined);
+  // values the app filled in (a warm-up ramp) are listed in d.gen until you change them; they look like suggestions, not like your own typing
+  const genHas = (d, f) => !!d && Array.isArray(d.gen) && d.gen.includes(f);
+  const isGen = (d) => !!d && VALUE_FIELDS.every((f) => d[f] === undefined || genHas(d, f));
   const draftsFor = (date) => S.drafts[date] || (S.drafts[date] = {});
   // the draft rows of one exercise as [key, ex, n] (draft keys are ex_n)
   const draftRows = (ds, ex) => Object.keys(ds).map((k) => k.match(/^(.*)_(\d+)$/)).filter((m) => m && m[1] === ex);
@@ -2223,6 +2228,21 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return { load: nums[0], word: null };
   };
   const isMaxItem = (item) => /max/i.test(item.reps || '');
+  // the type of one row (work, warm-up, drop, test), from what is saved, else what was typed, else the exercise's own
+  const kindAt = (item, key) => {
+    const st = storedSet(key);
+    if (isDone(st)) return st.kind || 'work';
+    const d = draftsFor(SID())[key];
+    if (d && d.kind) return d.kind;
+    return st && st.kind ? st.kind : item.kind || 'work';
+  };
+  // Which working set a row is: warm-up rows in front do not count, so row 4 after three warm-ups is working set 1.
+  const workIndex = (item, n) => {
+    if (item.kind === 'warmup') return n;
+    let w = n;
+    for (let m = 1; m < n; m += 1) if (kindAt(item, item.ex + '_' + m) === 'warmup') w -= 1;
+    return w;
+  };
   // The suggested next weight: what the rule in progression.js makes of the last few sessions. Off in Settings, or per exercise today with "Use last time".
   const progOn = () => !(S.root && S.root.settings && S.root.settings.progress_suggest === false);
   const sugKey = (item) => SID() + '|' + item.ex;
@@ -2256,7 +2276,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const prefill = (item, n) => {
     const ex = S.exercises[item.ex] || {};
     const last = lastSetsFor(item.ex, S.active.date);
-    const src = last ? (last.sets[n - 1] || last.sets[last.sets.length - 1]) : null;
+    const wn = workIndex(item, n);
+    const src = last ? (last.sets[wn - 1] || last.sets[last.sets.length - 1]) : null;
     const isMax = isMaxItem(item);
     const planReps = isMax ? null : firstNum(item.reps);
     // a max set is never prefilled: it starts empty so an old or partial count is not logged by accident
@@ -2272,7 +2293,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       if (sug.load != null) { load = sug.load; word = null; }
       if (!isMax) {
         const per = sug.repsBySet;
-        const r = per ? (per[n - 1] != null ? per[n - 1] : per[per.length - 1]) : sug.reps;
+        const r = per ? (per[wn - 1] != null ? per[wn - 1] : per[per.length - 1]) : sug.reps;
         if (r != null) reps = r;
       }
     }
@@ -2286,7 +2307,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const rowState = (key) => {
     const st = storedSet(key);
     if (isDone(st)) return R && R.corrected[key] > Date.now() ? 'corrected' : 'done';
-    if (hasValues(draftsFor(SID())[key]) || openStored(st)) return 'edited';
+    const dr = draftsFor(SID())[key];
+    if ((hasValues(dr) && !isGen(dr)) || openStored(st)) return 'edited';
     return 'suggested';
   };
   const shownValues = (refs) => {
@@ -2376,6 +2398,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     fbar.setAttribute('role', 'group');
     fbar.setAttribute('aria-label', 'Next exercise');
     box.append(chipsWrap, body, foot, fbar);
+    autoWarmups();
     renderItems();
     paintSession();
   };
@@ -2600,6 +2623,49 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     wrap.append(lab, fs, h('p', 'note', 'Barbell exercises get a Plates button: it shows which plates go on each side, or the nearest weights you can build.'));
   };
 
+  // ---- warm-up sets: a ramp up to the working weight, added in front of the working sets as rows of type warm-up
+  const warmLoad = (item) => {
+    const d = draftsFor(SID())[item.ex + '_1'];
+    return d && d.load !== undefined ? parseNum(d.load) : prefill(item, 1).load;
+  };
+  const warmRamp = (item) => {
+    const lib = PL();
+    const ex = S.exercises[item.ex] || {};
+    if (!lib || !lib.warmups || item.kind === 'warmup' || (ex.unit || 'kg') !== 'kg' || ex.load_basis === 'per_side') return [];
+    const doc = S.sessions[SID()];
+    if (doc && Object.values(doc.sets || {}).some((st) => st && st.ex === item.ex && !st.removed)) return [];
+    const n = rowCount(item);
+    for (let i = 1; i <= n; i += 1) if (kindAt(item, item.ex + '_' + i) !== 'work') return [];
+    const load = warmLoad(item);
+    return load == null ? [] : lib.warmups(load, isBarbell(item.ex) ? barFor(item.ex) : null);
+  };
+  // no rendering here: the caller repaints
+  const addWarmups = (item) => {
+    const ramp = warmRamp(item);
+    if (!ramp.length) return false;
+    const k = ramp.length;
+    const n = rowCount(item);
+    const ds = draftsFor(SID());
+    for (let i = n; i >= 1; i -= 1) { const a = item.ex + '_' + i; if (ds[a]) { ds[item.ex + '_' + (i + k)] = ds[a]; delete ds[a]; } }
+    ramp.forEach((w, i) => { ds[item.ex + '_' + (i + 1)] = { load: num(w.load), reps: String(w.reps), kind: 'warmup', gen: ['load', 'reps'] }; });
+    saveDrafts();
+    setRows(item, n + k);
+    return true;
+  };
+  // exercises marked "always warm up" get their ramp once, when the day is opened
+  const autoWarmups = () => {
+    const done = local.get('yc-warmgen') || {};
+    let changed = false;
+    sessionItems().forEach((item) => {
+      const k = SID() + '|' + item.ex;
+      if (done[k] || !(S.exercises[item.ex] || {}).warmup) return;
+      done[k] = 1;
+      if (addWarmups(item)) changed = true;
+    });
+    const keys = Object.keys(done);
+    local.set('yc-warmgen', keys.length > 60 ? Object.fromEntries(keys.slice(-60).map((x) => [x, 1])) : done);
+    return changed;
+  };
   const buildItem = (item, pos, count) => {
     const ex = S.exercises[item.ex] || { name: item.ex, unit: 'kg' };
     const unit = ex.unit || 'kg';
@@ -2709,7 +2775,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     more.addEventListener('click', () => { const n = rowCount(item) + 1; setRows(item, n); renderItems(); paintSession(); enter(R.sets[item.ex + '_' + n] && R.sets[item.ex + '_' + n].row); });
     const less = plainBtn('icon boxed', '−', 'Remove the last set of ' + ex.name, () => removeLastSet(item));
     const noteBtn = plainBtn('icon boxed', '✎', 'Note for Coach about ' + ex.name);
-    acts.append(more, less, noteBtn);
+    const warm = btn('skew small ex-warm', '+ Warm-up');
+    warm.addEventListener('click', () => { if (addWarmups(item)) { renderItems(); paintSession(); } });
+    acts.append(more, warm, less, noteBtn);
     // minutes <-> kg: one tap to the other, for every day using this exercise (the Plan editor has the finer choices)
     const toV = unit === 'min' ? 'kg:total' : 'min:';
     const msBtn = btn('skew small ex-measure', unit === 'min' ? 'Switch to kg' : 'Switch to minutes');
@@ -2781,11 +2849,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     numBtn.setAttribute('aria-haspopup', 'menu');
     numBtn.setAttribute('aria-expanded', 'false');
     row.append(numBtn);
-    const lastSet = (() => { const l = lastSetsFor(item.ex, S.active.date); const st = l && l.sets[n - 1]; return st ? fmtSet(st, unit, '') : ''; })();
-    const lastEl = h('span', 'set-last', lastSet || '–');
+    const lastEl = h('span', 'set-last', '–');
     lastEl.setAttribute('aria-hidden', 'true');
     row.append(lastEl);
-    const refs = { key, item, n, unit, row, num: numBtn, flds: {}, needReps: false };
+    const refs = { key, item, n, unit, row, num: numBtn, flds: {}, needReps: false, lastEl };
     const mkField = (field, unitTxt, label) => {
       const f = h('label', 'fld');
       const inp = h('input');
@@ -2871,6 +2938,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const ds = draftsFor(date);
     const d = Object.assign({}, ds[refs.key] || {});
     if (inp.value.trim() === '') delete d[f]; else d[f] = inp.value.trim();
+    if (Array.isArray(d.gen)) { d.gen = d.gen.filter((g) => g !== f); if (!d.gen.length) delete d.gen; }
     if (Object.keys(d).length) ds[refs.key] = d; else delete ds[refs.key];
     if (f === 'reps') refs.needReps = false;
     saveDrafts();
@@ -2886,13 +2954,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (m && !m.hidden) setOpen($('#sb-more'), m, false);
   };
   const KIND_NAME = { work: 'working set', warmup: 'warm-up', drop: 'drop set', test: 'test set, not counted' };
-  const currentKind = (refs) => {
-    const st = storedSet(refs.key);
-    if (isDone(st)) return st.kind || 'work';
-    const d = draftsFor(SID())[refs.key];
-    if (d && d.kind) return d.kind;
-    return st && st.kind ? st.kind : refs.item.kind || 'work';
-  };
+  const currentKind = (refs) => kindAt(refs.item, refs.key);
   const setKind = (refs, k) => {
     const date = SID();
     const st = storedSet(refs.key);
@@ -3063,11 +3125,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const n = rowCount(item);
     const before = {};
     const filled = [];
-    for (let i = 1; i <= Math.min(n, last.sets.length); i += 1) {
+    for (let i = 1; i <= n; i += 1) {
       const key = item.ex + '_' + i;
-      if (rowState(key) !== 'suggested') continue;
+      if (rowState(key) !== 'suggested' || kindAt(item, key) === 'warmup') continue;
+      const src = last.sets[workIndex(item, i) - 1];
+      if (!src) continue;
       before[key] = ds[key] ? clone(ds[key]) : null;
-      const src = last.sets[i - 1];
       const d = Object.assign({}, ds[key] || {});
       ['reps', 'load', 'minutes'].forEach((f) => { if (src[f] != null) d[f] = num(src[f]); });
       if (src.kind === 'drop') d.kind = 'drop';
@@ -3147,15 +3210,18 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const d = draftsFor(SID())[refs.key] || {};
     const open = openStored(st);
     Object.entries(refs.flds).forEach(([f, inp]) => {
-      inp.parentElement.classList.toggle('sug', !on && d[f] === undefined && !open);
-      inp.parentElement.classList.toggle('edited', !on && d[f] !== undefined);
+      inp.parentElement.classList.toggle('sug', !on && (d[f] === undefined || genHas(d, f)) && !open);
+      inp.parentElement.classList.toggle('edited', !on && d[f] !== undefined && !genHas(d, f));
       if (document.activeElement !== inp && inp.value !== v[f]) inp.value = v[f];
       if (f === 'load') inp.placeholder = !on && v.word ? v.word : '';
       if (f === 'reps') inp.placeholder = refs.needReps ? 'reps?' : v.max && !on ? 'max' : '';
       if (inp.dataset.clr !== undefined) inp.placeholder = inp.dataset.clr;
       setWidth(inp);
     });
-    paintKind(refs, currentKind(refs));
+    const kindNow = currentKind(refs);
+    paintKind(refs, kindNow);
+    const lastWas = (() => { const l = kindNow === 'warmup' ? null : lastSetsFor(refs.item.ex, S.active.date); const st = l && l.sets[workIndex(refs.item, refs.n) - 1]; return st ? fmtSet(st, refs.unit, '') : '–'; })();
+    if (refs.lastEl.textContent !== lastWas) refs.lastEl.textContent = lastWas;
     const { pending, err } = paintPending(refs, q, on);
     let upd = refs.row.querySelector('.upd');
     if (state === 'corrected' && !upd) { upd = h('span', 'upd', 'updated'); refs.row.append(upd); }
@@ -3176,6 +3242,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       if (!it.el) return;
       const keys = Object.keys(R.sets).filter((k) => R.sets[k].item.ex === it.item.ex);
       it.el.classList.toggle('is-done', keys.length > 0 && keys.every((k) => isDone(storedSet(k))));
+      const wb = it.el.querySelector('.ex-warm');
+      if (wb) wb.hidden = !warmRamp(it.item).length;
       const sugRow = it.el.querySelector('.ex-sug');
       if (sugRow) {
         const pg = progFor(it.item, true);
@@ -3188,7 +3256,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         }
       }
       if (it.fill && it.last) {
-        const fillable = keys.filter((k) => R.sets[k].n <= it.last.sets.length && rowState(k) === 'suggested').length;
+        const fillable = keys.filter((k) => workIndex(it.item, R.sets[k].n) <= it.last.sets.length && kindAt(it.item, k) !== 'warmup' && rowState(k) === 'suggested').length;
         it.fill.disabled = !fillable;
         it.why.textContent = fillable ? '' : 'Nothing left to fill';
       }
@@ -6716,6 +6784,18 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         wc.addEventListener('change', () => { if (wc.checked) it.kind = 'warmup'; else delete it.kind; saveTemplate(true); });
         wl.append(wc, document.createTextNode(' Warm-up: these sets do not count as working sets'));
         wr.append(wl);
+        const al = h('label');
+        const ac = h('input');
+        ac.type = 'checkbox';
+        ac.id = 'ed-autowarm-' + i;
+        ac.checked = !!e.warmup;
+        ac.addEventListener('change', () => {
+          const upd = { warmup: ac.checked ? true : null };
+          S.exercises[it.ex] = Object.assign({}, S.exercises[it.ex], upd);
+          S.rootRef.collection('exercises').doc(it.ex).update(upd).catch(() => showToast('Not saved. Check your connection.', null));
+        });
+        al.append(ac, document.createTextNode(' Add warm-up sets automatically from 40 kg'));
+        wr.append(al);
         more.append(wr);
         det.append(more);
         row.append(det);
