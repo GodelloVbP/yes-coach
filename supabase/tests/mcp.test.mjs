@@ -175,6 +175,14 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok(!r.err && !r.json.created && t1.name === 'Push A' && t1.order === 1 && t1.kind === 'Push' && t1.items.length === 1 && t1.focus === 'Chest', 'replace keeps order/kind/focus');
   ok(!rows.some((x) => x.user_id === B && x.path.startsWith('yc/templates/')), 'nothing written to ben');
 
+  r = await call('tok.anna.x', 'save_training_day', { name: 'Arms', exercises: [{ exercise_id: 'bench', sets: 3, reps: '5', superset: 'A' }, { exercise_id: 'lateral-raise', sets: 3, reps: '12', superset: 'A' }, { exercise_id: 'bench', sets: 3, reps: '5', superset: 'B' }] });
+  const ts = rows.find((x) => x.user_id === A && x.path === 'yc/templates/' + r.json.day.id).data;
+  ok(!r.err && ts.items[0].group === 'A' && ts.items[1].group === 'A' && !('group' in ts.items[2]), 'superset kept on neighbours, dropped on a lone item');
+  ok(r.json.day.exercises[0].superset === 'A' && r.json.day.exercises[2].superset === null, 'superset is read back');
+  r = await call('tok.anna.x', 'save_training_day', { name: 'Split', exercises: [{ exercise_id: 'bench', sets: 3, reps: '5', superset: 'A' }, { exercise_id: 'lateral-raise', sets: 3, reps: '5', superset: 'A' }, { exercise_id: 'bench', sets: 3, reps: '5' }, { exercise_id: 'lateral-raise', sets: 3, reps: '5', superset: 'A' }, { exercise_id: 'bench', sets: 3, reps: '5', superset: 'A' }] });
+  const t2 = rows.find((x) => x.user_id === A && x.path === 'yc/templates/' + r.json.day.id).data;
+  ok(t2.items[0].group === 'A' && t2.items[3].group && t2.items[3].group !== 'A' && t2.items[3].group === t2.items[4].group, 'a label reused further down is a separate group');
+
   const rootBefore = JSON.parse(JSON.stringify(rows.find((x) => x.user_id === A && x.path === 'yc').data));
   r = await call('tok.anna.x', 'set_schedule', { mode: 'fixed', week: { Mon: 'day-1', Thu: 'day-2', Sat: 'day-3' } });
   const root = rows.find((x) => x.user_id === A && x.path === 'yc').data;

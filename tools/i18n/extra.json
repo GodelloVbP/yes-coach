@@ -1237,5 +1237,54 @@
   "de": "Eine Übung bekommt ein PR-Label, wenn ihr letztes Training alles davor übertroffen hat. Übungen in kg zeigen ihr geschätztes Einerwiederholungsmaximum.",
   "fr": "Un exercice reçoit l’étiquette PR quand sa dernière séance a dépassé tout le reste. Les exercices en kg affichent leur 1RM estimé.",
   "it": "Un esercizio riceve il tag PR quando l’ultima sessione ha superato tutto il resto. Gli esercizi in kg mostrano il massimale stimato."
+ },
+ "Superset with {0}": {
+  "nl": "Superset met {0}",
+  "es": "Superserie con {0}",
+  "de": "Supersatz mit {0}",
+  "fr": "Superset avec {0}",
+  "it": "Superserie con {0}"
+ },
+ "Superset with the next exercise: no rest between the two": {
+  "nl": "Superset met de volgende oefening: geen rust tussen de twee",
+  "es": "Superserie con el siguiente ejercicio: sin descanso entre los dos",
+  "de": "Supersatz mit der nächsten Übung: keine Pause dazwischen",
+  "fr": "Superset avec l’exercice suivant : pas de repos entre les deux",
+  "it": "Superserie con l’esercizio successivo: nessun riposo tra i due"
+ },
+ "superset": {
+  "nl": "superset",
+  "es": "superserie",
+  "de": "Supersatz",
+  "fr": "superset",
+  "it": "superserie"
+ },
+ "warm-up": {
+  "nl": "opwarmen",
+  "es": "calentamiento",
+  "de": "Aufwärmen",
+  "fr": "échauffement",
+  "it": "riscaldamento"
+ },
+ "Supersets": {
+  "nl": "Supersets",
+  "es": "Superseries",
+  "de": "Supersätze",
+  "fr": "Supersets",
+  "it": "Superserie"
+ },
+ "Pair two exercises that you do back to back. In the plan editor, open an exercise and tick Superset with the next exercise.": {
+  "nl": "Koppel twee oefeningen die je direct na elkaar doet. Open in de planeditor een oefening en vink Superset met de volgende oefening aan.",
+  "es": "Empareja dos ejercicios que haces seguidos. En el editor del plan, abre un ejercicio y marca Superserie con el siguiente ejercicio.",
+  "de": "Verbinde zwei Übungen, die du direkt hintereinander machst. Öffne im Planeditor eine Übung und hake Supersatz mit der nächsten Übung an.",
+  "fr": "Associe deux exercices que tu enchaînes. Dans l’éditeur de plan, ouvre un exercice et coche Superset avec l’exercice suivant.",
+  "it": "Abbina due esercizi che fai uno dopo l’altro. Nell’editor del piano, apri un esercizio e spunta Superserie con l’esercizio successivo."
+ },
+ "While you train, ticking a set takes you straight to the other exercise. The rest timer starts after the last one of the round.": {
+  "nl": "Tijdens het trainen ga je na het afvinken van een set direct naar de andere oefening. De rusttimer start na de laatste van de ronde.",
+  "es": "Mientras entrenas, al marcar una serie pasas directamente al otro ejercicio. El temporizador de descanso empieza tras el último de la ronda.",
+  "de": "Beim Training springst du nach dem Abhaken eines Satzes direkt zur anderen Übung. Der Pausentimer startet nach der letzten Übung der Runde.",
+  "fr": "Pendant l’entraînement, valider une série t’amène directement à l’autre exercice. Le minuteur de repos démarre après le dernier de la série.",
+  "it": "Mentre ti alleni, spuntando una serie passi subito all’altro esercizio. Il timer di recupero parte dopo l’ultimo del giro."
  }
 }

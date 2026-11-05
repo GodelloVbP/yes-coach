@@ -64,6 +64,7 @@ h2 { font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-s
 .lab { font-size: var(--t1); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
 .lab .note { font-family: var(--f-body); font-size: var(--t1); text-transform: none; letter-spacing: 0; }
 .ex-warm[hidden] { display: none; }
+.chip.ss { background: var(--pop); border-color: var(--pop); color: var(--on-pop); }
 .ex-sug { display: flex; flex-wrap: wrap; align-items: center; gap: 0 0.5rem; margin: 0.15rem 0 0.35rem; font-size: 0.9rem; color: var(--ink); }
 .ex-sug[hidden] { display: none; }
 .ex-sug-why { font-weight: 600; }
@@ -1613,6 +1614,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['5 Nov 2026', 'Supersets', ["Pair two exercises that you do back to back. In the plan editor, open an exercise and tick Superset with the next exercise.", "While you train, ticking a set takes you straight to the other exercise. The rest timer starts after the last one of the round."]],
     ['5 Nov 2026', 'Progress: records and estimated strength', ["Progress now opens with your sessions, working sets and lifts tracked for the period you picked.", "A lift gets a PR tag when its latest session beat everything before it. Lifts in kg show their estimated one-rep max."]],
     ['5 Nov 2026', 'Finish screen and share picture', ["When you finish a day you now see how it went: time, working sets, volume and any new personal records.", "Share it as a picture, with or without the weights and your note. Nothing leaves your phone until you share it."]],
     ['5 Nov 2026', 'Warm-up sets', ["Tap + Warm-up on an exercise for a ramp to your working weight: the empty bar, then about half, 70% and 85% of it. It appears from 40 kg.", "Warm-ups do not count as working sets and do not change your suggested weight.", "Want it every time? Tick Add warm-up sets automatically in the plan editor."]],
@@ -2258,7 +2260,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const sessionItems = (a = S.active) => {
     const t = S.templates[a.tpl] || { items: [] };
     const doc = ownDoc(a);
-    const items = (t.items || []).map((it) => ({ ex: it.ex, sets: Number(it.sets) || 3, reps: it.reps, target: it.target, target_at: it.target_at || null, rest_s: it.rest_s, note: it.note, kind: it.kind || null, planned: true }));
+    const items = (t.items || []).map((it) => ({ ex: it.ex, sets: Number(it.sets) || 3, reps: it.reps, target: it.target, target_at: it.target_at || null, rest_s: it.rest_s, note: it.note, kind: it.kind || null, group: it.group || null, planned: true }));
     const seen = new Set(items.map((i) => i.ex));
     const added = doc && doc.added ? Object.keys(doc.added).filter((k) => doc.added[k]) : [];
     added.forEach((ex) => {
@@ -2845,6 +2847,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (groupOf(ex.group) !== 'Other') head.append(h('span', 'chip grp', groupOf(ex.group)));
     if (SHOULDER[ex.shoulder]) head.append(h('span', 'chip flag ' + ex.shoulder, SHOULDER[ex.shoulder]));
     if (!item.planned) head.append(h('span', 'chip done', 'Added'));
+    if (item.group) {
+      const mates = sessionItems().filter((i) => i.group === item.group && i.ex !== item.ex).map((i) => exName(i.ex));
+      if (mates.length) head.append(h('span', 'chip ss', 'Superset with ' + mates.join(', ')));
+    }
     wrap.append(head);
     // why the weight is what it is, and a way back to last time's numbers
     const sugRow = h('div', 'ex-sug');
@@ -3196,6 +3202,19 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return body;
   };
 
+  // In a superset the rest comes after the last exercise of the round, not between the exercises.
+  const afterTick = (refs) => {
+    const item = refs.item;
+    if (!item.group) { startRest(item); return; }
+    const mates = sessionItems().filter((i) => i.group === item.group);
+    const undone = (i) => Object.keys(R.sets).some((k) => R.sets[k].item.ex === i.ex && !isDone(storedSet(k)));
+    const at = mates.findIndex((i) => i.ex === item.ex);
+    const later = mates.slice(at + 1).find(undone);
+    if (later) { if (focusOn()) goExercise(later.ex); return; }
+    startRest(item);
+    const first = mates.slice(0, Math.max(at, 0)).find(undone);
+    if (first && focusOn()) goExercise(first.ex);
+  };
   const toggleSet = (refs) => {
     closeMenus();
     // a field still emptied by a tap (no blur yet) goes back to its planned value before anything is read
@@ -3215,7 +3234,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       optimistic(date, refs.key, body);
       const ds = draftsFor(date);
       if (ds[refs.key]) { delete ds[refs.key]; saveDrafts(); }
-      startRest(refs.item);
+      afterTick(refs);
     }
     paintSession();
     const t = R && R.sets[refs.key] ? R.sets[refs.key].tick : refs.tick;
@@ -5170,7 +5189,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const COACH_VOICE = 'Coach me directly and supportively, like a coach I respect: say plainly what worked and what to fix, back it with my numbers, acknowledge effort where it is earned, no flattery and no filler.';
   const DB = 'data/users/me/yc';
   const CAN_WRITE = 'If you can read and write the Yes Coach database (your artifact data tool; artifact ' + APP_URL + ')';
-  const ITEM_FIELDS = 'Item fields: ex (exercise id), order (1, 2, 3 ...: the order of the exercises on that day; to reorder, send the items in the new order and renumber them), sets (number), reps (text, for example "8", "10 per arm", "max"), target (the load as text, a number in the exercise\'s unit; a target set after the last session replaces the app\'s suggested next weight, so leave it empty to let the app suggest), target_at (today\'s date as YYYY-MM-DD, set whenever reps or target change), rest_s (seconds), note (a short coaching cue), kind ("warmup" for warm-up exercises, otherwise leave it out).';
+  const ITEM_FIELDS = 'Item fields: ex (exercise id), order (1, 2, 3 ...: the order of the exercises on that day; to reorder, send the items in the new order and renumber them), sets (number), reps (text, for example "8", "10 per arm", "max"), target (the load as text, a number in the exercise\'s unit; a target set after the last session replaces the app\'s suggested next weight, so leave it empty to let the app suggest), target_at (today\'s date as YYYY-MM-DD, set whenever reps or target change), rest_s (seconds), note (a short coaching cue), kind ("warmup" for warm-up exercises, otherwise leave it out), group (a short label such as "s1" that neighbouring items share when they are done as a superset, otherwise leave it out).';
   const EXERCISE_DOC = 'set, collection "' + DB + '/exercises", doc_id the lowercase hyphenated name, data {"name", "group" (Back, Chest, Shoulders, Arms, Legs, Core or Other), "category": "strength" ("cardio" for cardio), "unit" (kg, stack, bw, assist or min), "load_basis" ("total" or "per_side", kg only), "better": "higher", "per_side": false, "rest_s": 90, "shoulder": null, "library_id": null}';
   const applyLines = (ids) => {
     const have = ids.filter((id) => S.templates[id]);
@@ -6548,11 +6567,45 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   let ED = null; // {id, doc, timer, status}
   const edField = (label, input) => { const f = h('label', 'ed-f'); f.append(h('span', 'lab', label), input); return f; };
   const edInput = (id, value, type) => { const i = h('input'); i.type = type || 'text'; i.id = id; i.value = value == null ? '' : String(value); i.autocomplete = 'off'; return i; };
+  // Supersets: neighbouring exercises with the same `group` are done as one round. A group needs two or more neighbours.
+  const newGroupId = () => 's' + Math.random().toString(36).slice(2, 6);
+  const normGroups = (items) => {
+    const seen = new Set();
+    let i = 0;
+    while (i < items.length) {
+      const g = items[i].group;
+      if (!g) { delete items[i].group; i += 1; continue; }
+      let j = i + 1;
+      while (j < items.length && items[j].group === g) j += 1;
+      if (j - i < 2) delete items[i].group;
+      else if (seen.has(g)) { const n = newGroupId(); for (let k = i; k < j; k += 1) items[k].group = n; seen.add(n); }
+      else seen.add(g);
+      i = j;
+    }
+  };
+  // join item i with the next one, or split them
+  const linkSuper = (items, i, on) => {
+    const a = items[i];
+    const b = items[i + 1];
+    if (!a || !b) return;
+    if (on) {
+      const g = a.group || newGroupId();
+      const old = b.group;
+      a.group = g;
+      b.group = g;
+      for (let j = i + 2; j < items.length && old && items[j].group === old; j += 1) items[j].group = g;
+    } else if (a.group && a.group === b.group) {
+      const g2 = newGroupId();
+      for (let j = i + 1; j < items.length && items[j].group === a.group; j += 1) items[j].group = g2;
+    }
+    normGroups(items);
+  };
   const saveTemplate = (now) => {
     if (!ED) return;
     clearTimeout(ED.timer);
     const write = () => {
       const id = ED.id;
+      normGroups(ED.doc.items || []);
       const doc = clone(ED.doc);
       S.templates[id] = doc;
       ED.status.textContent = 'Saving…';
@@ -6868,7 +6921,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       tap.type = 'button';
       tap.setAttribute('aria-expanded', String(open));
       const [n, desc] = exLine(it);
-      tap.append(h('span', 'pw-iname', n), h('span', 'pw-idesc', desc + (it.kind === 'warmup' ? ' · warm-up' : '')));
+      tap.append(h('span', 'pw-iname', n), h('span', 'pw-idesc', desc + (it.kind === 'warmup' ? ' · ' + T('warm-up') : '') + (it.group ? ' · ' + T('superset') : '')));
       tap.addEventListener('click', () => { ED.open = open ? null : i; renderEditor(); });
       line.append(handle, tap);
       row.append(line);
@@ -6920,7 +6973,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         det.append(acts, pk);
         // the rarely changed parts
         const more = h('details', 'pw-moreset');
-        if (ED.confirm && ED.confirm.ex === it.ex) more.open = true;
+        if ((ED.confirm && ED.confirm.ex === it.ex) || ED.moreOpen === i) more.open = true;
+        more.addEventListener('toggle', () => { if (more.open) ED.moreOpen = i; else if (ED.moreOpen === i) ED.moreOpen = null; });
         more.append(h('summary', '', 'More: rest, how it is measured, warm-up, note'));
         const rest = edInput('ed-rest-' + i, it.rest_s != null ? it.rest_s : (e.rest_s != null ? e.rest_s : ''), 'number'); rest.min = '0'; rest.step = '15'; rest.inputMode = 'numeric';
         rest.addEventListener('input', () => { it.rest_s = rest.value === '' ? null : Number(rest.value); saveTemplate(); });
@@ -6977,6 +7031,16 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         });
         al.append(ac, document.createTextNode(' Add warm-up sets automatically from 40 kg'));
         wr.append(al);
+        const sl = h('label');
+        const sc = h('input');
+        sc.type = 'checkbox';
+        sc.id = 'ed-ss-' + i;
+        const nx = d.items[i + 1];
+        sc.checked = !!(it.group && nx && nx.group === it.group);
+        sc.disabled = !nx;
+        sc.addEventListener('change', () => { linkSuper(d.items, i, sc.checked); saveTemplate(true); renderEditor(); });
+        sl.append(sc, document.createTextNode(' Superset with the next exercise: no rest between the two'));
+        wr.append(sl);
         more.append(wr);
         det.append(more);
         row.append(det);
