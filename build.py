@@ -30,6 +30,7 @@ auth = f'''<section class="auth in" id="auth" hidden aria-labelledby="au-h">
   {brand}
   <h2 id="au-h">Sign in</h2>
   <p class="note">A free, ad-free workout tracker. Your account keeps your log and plan in sync between your devices.</p>
+  <p class="hm-users" id="au-users" hidden></p>
   <form id="au-form" class="au-form" novalidate>
     <label class="ed-f" id="au-email-f"><span class="lab">Email</span><input id="au-email" type="email" autocomplete="email" inputmode="email"></label>
     <label class="ed-f" id="au-pass-f"><span class="lab">Password</span><input id="au-pass" type="password" autocomplete="current-password"></label>

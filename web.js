@@ -233,6 +233,9 @@
   });
   sb.auth.getSession().then(({ data }) => {
     if (data && data.session && mode !== 'newpass') start(data.session.user);
-    else if (!started) { $('#auth').hidden = false; paint(); YC_CAPTCHA.mount($('#au-cap')); }
+    else if (!started) {
+      $('#auth').hidden = false; paint(); YC_CAPTCHA.mount($('#au-cap'));
+      window.YC_USERS().then((n) => { if (n) { const u = $('#au-users'); u.textContent = n === 1 ? '1 person trains with Yes Coach!' : n + ' people train with Yes Coach!'; u.hidden = false; } });
+    }
   });
 })();
