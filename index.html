@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-tkJwn3E53NWVcx9VujvseAVSLL69tdkQrLl2KXb3hjs=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-hzhhtfvFdwqHtHSyRHrBAKOWbQ6kihDZcTeiCTwsOeE=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-06 19:28Z">
+<meta name="yc-build" content="2026-11-06 19:35Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -913,6 +913,8 @@ body.fin-open { overflow: hidden; }
 .fd-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 0 0.75rem; min-height: 52px; padding: 0.375rem 0; border-bottom: 1px solid var(--line); }
 .fd-row-name { font-weight: 700; overflow-wrap: anywhere; }
 .fd-sm-list { display: flex; flex-direction: column; }
+.fd-more { text-align: center; color: var(--ink-soft); }
+.fd-chip.mine { border-color: var(--ink); }
 .fd-sm { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 0 0.75rem; min-height: 56px; padding: 0.375rem 0; border-bottom: 1px solid var(--line); }
 .fd-sm-name { font-weight: 700; overflow-wrap: anywhere; }
 .fd-sm-mac { grid-column: 1; font-size: var(--t1); color: var(--ink-soft); font-weight: 500; font-variant-numeric: tabular-nums; }
@@ -1753,6 +1755,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['6 Nov 2026', 'Calmer food search', ["Your own meals and foods come first, then the food tables. Five results, with Show more for the rest.", "Each result is one line: a portion and the protein in it, instead of numbers per 100 g.", "Your own portion sizes, saved by you or by Claude, are the first choices when you add a food.", "Results that only match an old synonym no longer crowd the list."]],
     ['6 Nov 2026', 'Your meals', ["Save a meal you eat often and log it again with one tap. In your day, open a meal with several foods and tap Save as a meal.", "Tap the amount of a food to change it. The numbers follow.", "Claude can save your meals and portion sizes too, and remembers which food you mean: your cheese, your bread."]],
     ['6 Nov 2026', 'Log food by talking to Claude', ["If you connected Claude, tell it what you ate, for example “2 slices of bread with egg, cheese and mustard”. It finds the foods, picks the portions and saves the meal in your Food tab.", "A meal with several foods is one line. Tap What is in it to see the foods. A ~ marks an amount that was a guess.", "Claude reads the numbers from the same food tables the app uses. It does not make them up."]],
     ['6 Nov 2026', 'Smaller things', ["The rest timer now takes you back to the exercise it belongs to.", "Moving between exercises now slides smoothly and scrolls to your first open set.", "A new personal record now slams onto the set, and your records slide in on the finish screen."]],
@@ -5157,8 +5160,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     docs.filter(Boolean).forEach((d) => {
       if (d.src === 'portie') { portie = d.p; return; }
       srcs.add(d.src);
-      if (d.src === 'nevo') d.foods.forEach(([ref, nl, en, syn, g, kcal, p, c, f, unit, sug, fib]) => items.push({ src: 'nevo', ref, name: nl, alt: en, type: d.groups[g], kcal, p, c, f, unit, sug, fib, w: wordsOf(nl + ' ' + syn), w2: wordsOf(en) }));
-      else d.foods.forEach(([ref, name, g, kcal, p, c, f, sug, fib]) => items.push({ src: 'usda', ref, name, alt: '', type: d.groups[g], kcal, p, c, f, unit: 'g', sug, fib, w: wordsOf(name), w2: [] }));
+      if (d.src === 'nevo') d.foods.forEach(([ref, nl, en, syn, g, kcal, p, c, f, unit, sug, fib]) => items.push({ src: 'nevo', ref, name: nl, alt: en, type: d.groups[g], kcal, p, c, f, unit, sug, fib, w: wordsOf(nl), wsyn: wordsOf(syn), w2: wordsOf(en) }));
+      else d.foods.forEach(([ref, name, g, kcal, p, c, f, sug, fib]) => items.push({ src: 'usda', ref, name, alt: '', type: d.groups[g], kcal, p, c, f, unit: 'g', sug, fib, w: wordsOf(name), wsyn: [], w2: [] }));
     });
     items.forEach(shortName);
     items.forEach((it) => {
@@ -5200,17 +5203,21 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     FDB.items.forEach((it) => {
       const main = toks.every((t) => has(it.w, t));
       const alt = !main && it.w2.length && toks.every((t) => has(it.w2, t));
-      if (!main && !alt) return;
-      const ws = main ? it.w : it.w2;
-      let sc = (ws[0] && ws[0].startsWith(toks[0]) ? 20 : 0) + (ws[0] === toks[0] ? 5 : 0) - Math.min(12, ws.length) + (it.src === 'nevo' ? 3 : 0);
+      // a synonym ("mosterdkool" for amsoi) only counts when the name does not match, and ranks below real name matches
+      const viaSyn = !main && !alt && it.wsyn && it.wsyn.length > 0 && toks.every((t) => has(it.w, t) || has(it.wsyn, t));
+      if (!main && !alt && !viaSyn) return;
+      const ws = main ? it.w : alt ? it.w2 : it.w.concat(it.wsyn);
+      let sc = (ws[0] && ws[0].startsWith(toks[0]) ? 20 : 0) + (ws[0] === toks[0] ? 5 : 0) - Math.min(12, ws.length) + (it.src === 'nevo' ? 3 : 0) - (viaSyn ? 25 : 0);
       toks.forEach((t) => { if (ws.includes(t)) sc += 3; });
       // plain foods before processed and branded ones, unless you typed those words
       PROCESSED.forEach((p) => { if (ws.includes(p) && !toks.includes(p)) sc -= 3; });
       if (it.src === 'usda' && /\b[A-Z]{3,}\b/.test(it.name)) sc -= 4;
       if (ws.includes('whole') && !toks.includes('whole')) sc += 2;
-      out.push([sc, it, alt]);
+      out.push([sc, it, alt, viaSyn]);
     });
-    return out.sort((a, b) => b[0] - a[0]).slice(0, 8).map(([, it, alt]) => ({ it, label: alt ? it.dispAlt : it.disp, full: alt ? it.alt : it.name }));
+    // with three or more real name matches the synonym ones are only noise
+    const real = out.filter((x) => !x[3]);
+    return (real.length >= 3 ? real : out).sort((a, b) => b[0] - a[0]).slice(0, 12).map(([, it, alt]) => ({ it, label: alt ? it.dispAlt : it.disp, full: alt ? it.alt : it.name }));
   };
   // a few tags instead of long descriptions, on official thresholds per 100 g (drinks per 100 ml):
   // high protein: at least 20% of the energy from protein (EU claim) and enough to matter; high fibre: 6 g or more (EU claim);
@@ -5341,21 +5348,15 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return 5;
   };
   const markChip = (row, b) => $$('.fd-chip', row).forEach((c) => c.setAttribute('aria-pressed', String(c === b)));
-  const pickFood = (hit, grams) => {
-    const it = hit.it;
-    const tags = h('div', 'fd-card-tags');
-    tags.append(tagRow(it), h('span', 'note', per100(it)));
-    openCard('db', hit.full, tags);
-    FD.pick = { it, label: hit.full };
-    const box = $('#fd-amount');
-    const row = h('div', 'fd-amt-row');
+  // the amounts a food comes in: RIVM's household measures, counted pieces, small/medium/large, or drink sizes; the start amount and its name
+  const portionPlan = (it) => {
     // a few fixed sizes for drinks, the same for every drink; food stays in grams
     const n = foldW(it.name + ' ' + (it.alt || ''));
     const sizes = !it.drink ? [] : it.type === 'Alcohol' ? (/\b(bier|beer)\b/.test(n) ? [['Beer glass', 250], ['Can', 330], ['Bottle', 500]] : [['Wine glass', 125], ['Shot glass', 50], ['Beer glass', 250]])
       : [['Cup', 125], ['Glass', 200], ['Mug', 250], ['Can', 330], ['Bottle', 500]];
     // RIVM's own household measures for this NEVO food when Portie-online has them: the first countable one as 1, 2 or 3,
     // the others as they are. Everything else falls back to Yes Coach's estimates.
-    const rp = it.src === 'nevo' && FDB.portie && FDB.portie[it.ref];
+    const rp = it.src === 'nevo' && FDB && FDB.portie && FDB.portie[it.ref];
     let official = null;
     if (rp && rp.length) {
       // the everyday measure first: a whole piece, a normal slice, a glass, a portion; spoons and sips last
@@ -5373,10 +5374,33 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const slm = it.drink || pcs || official ? null : portionsFor(it, n);
     const sz = official ? [] : sizes;
     const start = official ? (/^4 × /.test(official[1] ? official[1][0] : '') ? official[1][1] : official[0][1]) : pcs ? pcs[0][1] : slm ? slm[1] : !it.drink ? 100 : /\b(koffie|coffee|thee|tea|espresso)\b/.test(n) ? 125 : sizes[0][0] === 'Beer glass' ? 250 : it.type === 'Alcohol' ? 125 : 200;
+    const startLabel = official ? (/^4 × /.test(official[1] ? official[1][0] : '') ? official[1][0] : official[0][0]) : pcs ? pcs[0][0] : slm ? 'Medium' : it.drink ? ((sizes.find((x) => x[1] === start) || [''])[0]) : '';
+    return { official, pcs, slm, sz, start, startLabel };
+  };
+  // your own portion sizes for a food, saved by you or by the connected AI: [[name, grams], ...]
+  const myFoodFor = (it) => Object.values(S.myfoods || {}).find((d) => d && typeof d === 'object' && !d.gone && d.food === it.src + ':' + it.ref) || null;
+  const myFoodPortions = (it) => { const d = myFoodFor(it); return d && d.portions && typeof d.portions === 'object' ? Object.entries(d.portions).filter(([l, g]) => l && isN(g) && g > 0 && g <= 5000) : []; };
+  const pickFood = (hit, grams) => {
+    const it = hit.it;
+    const tags = h('div', 'fd-card-tags');
+    tags.append(tagRow(it), h('span', 'note', per100(it)));
+    openCard('db', hit.full, tags);
+    FD.pick = { it, label: hit.full };
+    const box = $('#fd-amount');
+    const row = h('div', 'fd-amt-row');
+    const { official, pcs, slm, sz, start: planStart } = portionPlan(it);
+    const mineP = myFoodPortions(it);
+    const start = mineP.length ? mineP[0][1] : planStart;
     const inp = edInput('fd-g', String(grams || start));
     inp.inputMode = 'decimal';
     inp.addEventListener('input', fillFromPick);
     row.append(edField('How much (' + it.u + ')', inp));
+    mineP.forEach(([l, v]) => {
+      const b = h('button', 'fd-chip mine', l + ' · ' + num(v) + ' ' + it.u);
+      b.type = 'button';
+      b.addEventListener('click', () => { inp.value = String(v); fillFromPick(); markChip(row, b); });
+      row.append(b);
+    });
     (official || pcs || []).forEach(([l, v]) => {
       const b = h('button', 'fd-chip', l + ' · ' + num(v) + ' ' + it.u);
       b.type = 'button';
@@ -5410,12 +5434,46 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     inp.focus();
     inp.select();
   };
+  // one calm line under a result: a typical portion and what it holds, instead of numbers per 100 g that mean little without a portion
+  const hitLine = (it, own) => {
+    const plan = portionPlan(it);
+    const [label, g] = own && own.length ? own[0] : [plan.startLabel, plan.start];
+    const k = g / 100;
+    return [label ? label + ' · ' : '', num(g), ' ', it.u, ' · P ', num(Math.round((it.p || 0) * k * 10) / 10), ' g', showCal() ? ' · ' + Math.round(it.kcal * k) + ' kcal' : ''].join('');
+  };
+  const SHOWN = 5;
   const paintHits = (q) => {
     const box = $('#fd-hits');
     const ql = foldW(q.trim());
-    const mine = ql.length >= 2 ? knownFoods().filter((e) => foldW(e.name).includes(ql)).slice(0, 3) : [];
-    const db = searchFoods(q).filter((x) => !mine.some((e) => e.name.toLowerCase() === x.full.toLowerCase()));
+    const toks = wordsOf(q);
+    const starts = (ws) => toks.length > 0 && toks.every((t) => ws.some((w) => w.startsWith(t)));
+    // your own first: meals you saved, foods you logged or the connected AI remembered, then the tables
+    const meals = toks.length ? mealsList().filter((m) => starts(wordsOf(m.name))).slice(0, 3) : [];
+    const remembered = (toks.length ? Object.values(S.myfoods || {}).filter((d) => d && typeof d === 'object' && !d.gone && typeof d.food === 'string' && starts(wordsOf((d.name || '') + ' ' + Object.keys(d.aka && typeof d.aka === 'object' ? d.aka : {}).join(' '))))
+      .sort((x, y) => n0(y.n) - n0(x.n) || n0(y.last) - n0(x.last)) : [])
+      .map((d) => { const [src, ref] = String(d.food).split(':'); const it = FDB && FDB.items.find((x) => x.src === src && String(x.ref) === ref); return it ? { it, label: it.disp, full: it.name, key: d.food } : null; })
+      .filter(Boolean).slice(0, 3);
+    const mine = ql.length >= 2 ? knownFoods().filter((e) => foldW(e.name).includes(ql) && !remembered.some((r) => r.full.toLowerCase() === e.name.toLowerCase())).slice(0, 3) : [];
+    const db = searchFoods(q).filter((x) => !mine.some((e) => e.name.toLowerCase() === x.full.toLowerCase()) && !remembered.some((r) => r.key === x.it.src + ':' + x.it.ref));
     box.replaceChildren();
+    meals.forEach((m) => {
+      const b = h('button', 'fd-hit fd-meal');
+      b.type = 'button';
+      const row = h('span', 'fd-tags');
+      row.append(h('span', 'fd-bub mine', 'Your meal'), h('span', 'fd-mini', [m.p ? 'P ' + num(m.p) + ' g' : '', showCal() ? big(m.kcal) + ' kcal' : ''].filter(Boolean).join(' · ')));
+      b.append(h('b', '', m.name), row);
+      b.addEventListener('click', () => { $('#fd-name').value = ''; closeHits(); logMeal(m); });
+      box.append(b);
+    });
+    remembered.forEach((r) => {
+      const b = h('button', 'fd-hit');
+      b.type = 'button';
+      const row = h('span', 'fd-tags');
+      row.append(h('span', 'fd-bub mine', 'Yours'), h('span', 'fd-mini', hitLine(r.it, myFoodPortions(r.it))));
+      b.append(h('b', '', r.label), row);
+      b.addEventListener('click', () => pickFood(r));
+      box.append(b);
+    });
     mine.forEach((e) => {
       const b = h('button', 'fd-hit');
       b.type = 'button';
@@ -5436,14 +5494,23 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       });
       box.append(b);
     });
-    db.forEach((hit) => {
+    const addHit = (hit) => {
       const b = h('button', 'fd-hit');
       b.type = 'button';
-      const it = hit.it;
-      b.append(h('b', '', hit.label), tagRow(it, (showCal() ? it.kcal + ' kcal · ' : '') + 'P ' + num(it.p || 0) + ' g'));
+      const row = h('span', 'fd-tags');
+      row.append(h('span', 'fd-mini', hitLine(hit.it, null)));
+      b.append(h('b', '', hit.label), row);
       b.addEventListener('click', () => pickFood(hit));
-      box.append(b);
-    });
+      return b;
+    };
+    db.slice(0, SHOWN).forEach((hit) => box.append(addHit(hit)));
+    if (db.length > SHOWN) {
+      const more = h('button', 'fd-hit fd-more');
+      more.type = 'button';
+      more.append(h('b', '', 'Show more'));
+      more.addEventListener('click', () => { const rest = db.slice(SHOWN).map(addHit); more.replaceWith(...rest); });
+      box.append(more);
+    }
     const own = h('button', 'fd-hit fd-new');
     own.type = 'button';
     own.append(h('b', '', '+ Add “' + q.trim() + '” with your own numbers'), h('span', 'fd-mini', 'Not in the list, or something home-made'));
@@ -5466,7 +5533,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   });
   $('#fd-name').addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeHits(); });
   document.addEventListener('pointerdown', (ev) => { if (!ev.target.closest('#fd-hits') && ev.target !== $('#fd-name')) closeHits(); });
-  $('#fd-name').addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); const first = $('#fd-hits .fd-hit'); if (first && !$('#fd-hits').hidden) first.click(); } });
+  $('#fd-name').addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); const first = $('#fd-hits .fd-hit:not(.fd-meal):not(.fd-more)'); if (first && !$('#fd-hits').hidden) first.click(); } }); // enter picks the first food, it never logs a meal
   $('#fd-form').addEventListener('submit', async (ev) => {
     ev.preventDefault();
     const msg = $('#fd-msg');

@@ -1636,5 +1636,54 @@
   "de": "Claude kann auch deine Mahlzeiten und Portionsgrößen speichern und merkt sich, welches Lebensmittel du meinst: deinen Käse, dein Brot.",
   "fr": "Claude peut aussi enregistrer tes repas et tes tailles de portion, et retient de quel aliment tu parles : ton fromage, ton pain.",
   "it": "Claude può salvare anche i tuoi pasti e le dimensioni delle porzioni, e ricorda a quale alimento ti riferisci: il tuo formaggio, il tuo pane."
+ },
+ "Your meal": {
+  "nl": "Jouw maaltijd",
+  "es": "Tu comida",
+  "de": "Deine Mahlzeit",
+  "fr": "Ton repas",
+  "it": "Il tuo pasto"
+ },
+ "Show more": {
+  "nl": "Toon meer",
+  "es": "Mostrar más",
+  "de": "Mehr anzeigen",
+  "fr": "Afficher plus",
+  "it": "Mostra altro"
+ },
+ "Calmer food search": {
+  "nl": "Rustiger eten zoeken",
+  "es": "Búsqueda de comida más tranquila",
+  "de": "Ruhigere Lebensmittelsuche",
+  "fr": "Recherche d’aliments plus calme",
+  "it": "Ricerca degli alimenti più calma"
+ },
+ "Your own meals and foods come first, then the food tables. Five results, with Show more for the rest.": {
+  "nl": "Je eigen maaltijden en voedingsmiddelen staan bovenaan, daarna de voedingstabellen. Vijf resultaten, en Toon meer voor de rest.",
+  "es": "Tus propias comidas y alimentos van primero, luego las tablas de alimentos. Cinco resultados, y Mostrar más para el resto.",
+  "de": "Deine eigenen Mahlzeiten und Lebensmittel stehen oben, danach die Nährwerttabellen. Fünf Ergebnisse, den Rest zeigt Mehr anzeigen.",
+  "fr": "Tes repas et aliments passent en premier, puis les tables d’aliments. Cinq résultats, et Afficher plus pour le reste.",
+  "it": "I tuoi pasti e alimenti vengono per primi, poi le tabelle degli alimenti. Cinque risultati, e Mostra altro per il resto."
+ },
+ "Each result is one line: a portion and the protein in it, instead of numbers per 100 g.": {
+  "nl": "Elk resultaat is één regel: een portie en de eiwitten erin, in plaats van cijfers per 100 g.",
+  "es": "Cada resultado es una línea: una porción y las proteínas que contiene, en vez de números por 100 g.",
+  "de": "Jedes Ergebnis ist eine Zeile: eine Portion und das Eiweiß darin, statt Zahlen pro 100 g.",
+  "fr": "Chaque résultat tient sur une ligne : une portion et les protéines qu’elle contient, au lieu de chiffres pour 100 g.",
+  "it": "Ogni risultato è una riga: una porzione e le proteine che contiene, invece dei numeri per 100 g."
+ },
+ "Your own portion sizes, saved by you or by Claude, are the first choices when you add a food.": {
+  "nl": "Je eigen portiegroottes, bewaard door jou of door Claude, zijn de eerste keuzes als je een voedingsmiddel toevoegt.",
+  "es": "Tus propios tamaños de porción, guardados por ti o por Claude, son las primeras opciones al añadir un alimento.",
+  "de": "Deine eigenen Portionsgrößen, von dir oder von Claude gespeichert, sind die ersten Optionen, wenn du ein Lebensmittel hinzufügst.",
+  "fr": "Tes propres tailles de portion, enregistrées par toi ou par Claude, sont les premiers choix quand tu ajoutes un aliment.",
+  "it": "Le dimensioni delle porzioni tue, salvate da te o da Claude, sono le prime scelte quando aggiungi un alimento."
+ },
+ "Results that only match an old synonym no longer crowd the list.": {
+  "nl": "Resultaten die alleen op een oud synoniem passen, vullen de lijst niet meer.",
+  "es": "Los resultados que solo coinciden con un sinónimo antiguo ya no llenan la lista.",
+  "de": "Ergebnisse, die nur zu einem alten Synonym passen, füllen die Liste nicht mehr.",
+  "fr": "Les résultats qui ne correspondent qu’à un ancien synonyme n’encombrent plus la liste.",
+  "it": "I risultati che corrispondono solo a un vecchio sinonimo non riempiono più l’elenco."
  }
 }
