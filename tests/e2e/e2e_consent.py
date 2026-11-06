@@ -1,6 +1,6 @@
-import json, subprocess, threading, http.server, functools, sys
+import json, os, subprocess, threading, http.server, functools, sys
 from playwright.sync_api import sync_playwright
-ROOT='/home/claude/yes-coach'
+ROOT=os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..'))
 H=functools.partial(http.server.SimpleHTTPRequestHandler, directory=ROOT)
 H.log_message=lambda *a,**k: None
 srv=http.server.ThreadingHTTPServer(('127.0.0.1',8765),H); threading.Thread(target=srv.serve_forever,daemon=True).start()
