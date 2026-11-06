@@ -65,7 +65,8 @@ try:
             check('the row takes the hit', 'pr-hit' in (page.get_attribute(ROW, 'class') or '') and anim(page, ROW) == 'pr-hit', anim(page, ROW))
             log(page, 'bench_2', 71, 8); log(page, 'row_1', 65, 8)
             until(lambda: page.locator('.set:has(#f-row_1-load) .pr').count() == 1)
-            # a reload shows the tag without the slam
+            # a reload shows the tag without the slam, once the sets are saved (the app asks before leaving with unsent sets)
+            check('the sets are saved before the reload', settled(page))
             page.reload()
             until(lambda: page.is_visible('#resume-btn') or page.is_visible('#f-bench_1-load'), 10)
             if page.is_visible('#resume-btn'): page.click('#resume-btn')

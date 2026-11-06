@@ -78,7 +78,7 @@ try:
             check('All exercises shows every card', vis(page, '#f-bench_1-load') and vis(page, '#f-row_1-load') and vis(page, '#f-curl_1-load'))
             check('and hides chips and the bar', not vis(page, '.fchip') and not vis(page, '#focusbar'))
             check('the choice is remembered on this device', page.evaluate("localStorage.getItem('yc-focus')") == '"all"')
-            page.reload()
+            settled(page); page.reload()
             until(lambda: page.is_visible('#resume-btn') or page.is_visible('#f-bench_1-load'), 10)
             if page.is_visible('#resume-btn'): page.click('#resume-btn')
             page.wait_for_timeout(1500)

@@ -71,7 +71,7 @@ try:
             check('from the pill screen: back on the exercise', until(lambda: vis(page, '#f-bench_2-load') and not vis(page, '#resume-btn')))
 
             # 4. survives a reload
-            page.reload()
+            settled(page); page.reload()
             until(lambda: page.is_visible('#resume-btn') or page.is_visible('#f-bench_1-load'), 10)
             check('the timer is restored after a reload', until(lambda: vis(page, '#restbar'), 10))
             if page.is_visible('#resume-btn'):

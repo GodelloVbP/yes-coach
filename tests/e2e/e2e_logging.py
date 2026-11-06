@@ -100,7 +100,7 @@ try:
             start_day(page)
             page.fill('#f-bench_2-reps', '6'); page.fill('#f-bench_2-load', '47.5')
             page.wait_for_timeout(700)
-            page.reload()
+            settled(page); page.reload()
             until(lambda: page.is_visible('#resume-btn') or page.is_visible('#f-bench_2-load'), 10)
             if page.is_visible('#resume-btn'): page.click('#resume-btn')
             page.wait_for_selector('#f-bench_2-load', state='visible', timeout=10000)
