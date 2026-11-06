@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-p7o7pC4Tq0AQdA6MvxSRoWiiR/Z4qonw5S1RGPLjMSk=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-FAyQZbYgo4vbLF2aSgUWJzn7XqyoJhoDyxHmmXA+wAM=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-06 23:01Z">
+<meta name="yc-build" content="2026-11-06 23:16Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -5072,7 +5072,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     let tables = null;
     try { tables = await loadFoodDb(); } catch (err) { tables = null; } // offline: the stored numbers are scaled instead
     const nutrients = (it) => {
-      const hit = tables && tables.items.find((x) => x.src === it.src && String(x.ref) === String(it.ref));
+      const hit = foodByKey(it.src, it.ref, tables);
       if (hit) { const k = g / 100; return { kcal: Math.round(hit.kcal * k), p: r1((hit.p || 0) * k), c: r1((hit.c || 0) * k), f: r1((hit.f || 0) * k) }; }
       const k = g / it.g;
       return { kcal: Math.round(n0(it.kcal) * k), p: r1(n0(it.p) * k), c: r1(n0(it.c) * k), f: r1(n0(it.f) * k) };
@@ -5280,7 +5280,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         || (/\b(melk|milk|karnemelk|drank|drink|juice|sap|smoothie|shake|koffie|coffee|thee|tea)\b/.test(n) && !/poeder|powder|gecondenseerd|condensed|ijs|ice cream|pudding|vla|cake|koek|bar\b|reep/.test(n));
       it.u = it.drink ? 'ml' : 'g';
     });
-    FDB = { items, srcs, portie };
+    FDB = { items, srcs, portie, byKey: new Map(items.map((it) => [it.src + ':' + it.ref, it])) };
     return FDB;
   }));
   // NEVO names carry details as text ("m suiker verrijkt m calcium en vitamines"); show them as tags and keep the name short
@@ -5302,6 +5302,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     it.disp = a.trim() || it.name;
     it.dispAlt = b.trim() || it.alt;
   };
+  const foodByKey = (src, ref, db = FDB) => (db && db.byKey.get(src + ':' + ref)) || null; // one lookup, not a scan of the whole table
   const foodCredit = () => (FDB && FDB.srcs.has('nevo') ? 'Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven' + (FDB.srcs.has('usda') ? ' and other data sources (USDA FoodData Central).' : '.') : 'Food data: USDA FoodData Central.');
   // every word you type must start a word of the name; the first word, exact words and short names rank higher
   const PROCESSED = ['breaded', 'fried', 'battered', 'canned', 'frozen', 'sweetened', 'flavored', 'tender', 'nugget', 'patty', 'microwaved', 'fast', 'restaurant', 'sliced', 'deli', 'roll', 'prepackaged', 'powder', 'luncheon', 'dried', 'gedroogd', 'sauce', 'pie', 'taart', 'strudel', 'turnover', 'flap'];
@@ -5566,7 +5567,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const meals = toks.length ? mealsList().filter((m) => starts(wordsOf(m.name))).slice(0, 3) : [];
     const remembered = (toks.length ? Object.values(S.myfoods || {}).filter((d) => d && typeof d === 'object' && !d.gone && typeof d.food === 'string' && starts(wordsOf((d.name || '') + ' ' + Object.keys(d.aka && typeof d.aka === 'object' ? d.aka : {}).join(' '))))
       .sort((x, y) => n0(y.n) - n0(x.n) || n0(y.last) - n0(x.last)) : [])
-      .map((d) => { const [src, ref] = String(d.food).split(':'); const it = FDB && FDB.items.find((x) => x.src === src && String(x.ref) === ref); return it ? { it, label: it.disp, full: it.name, key: d.food } : null; })
+      .map((d) => { const [src, ref] = String(d.food).split(':'); const it = foodByKey(src, ref); return it ? { it, label: it.disp, full: it.name, key: d.food } : null; })
       .filter(Boolean).slice(0, 3);
     const mine = ql.length >= 2 ? knownFoods().filter((e) => foldW(e.name).includes(ql) && !remembered.some((r) => r.full.toLowerCase() === e.name.toLowerCase())).slice(0, 3) : [];
     const db = searchFoods(q).filter((x) => !mine.some((e) => e.name.toLowerCase() === x.full.toLowerCase()) && !remembered.some((r) => r.key === x.it.src + ':' + x.it.ref));
@@ -5597,7 +5598,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       b.append(h('b', '', e.name), row);
       b.addEventListener('click', () => {
         // a food you took from the tables before opens again by amount, starting at what you had last time
-        const it = e.src && FDB && FDB.items.find((x) => x.src === e.src && String(x.ref) === String(e.ref));
+        const it = e.src && foodByKey(e.src, e.ref);
         if (it) { pickFood({ it, label: e.name, full: e.name }, e.g); return; }
         openCard('mine', e.name, h('span', 'note', 'The same as last time'));
         FD.mineName = e.name;
