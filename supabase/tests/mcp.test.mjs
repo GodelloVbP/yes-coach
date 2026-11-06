@@ -75,7 +75,8 @@ let n = 0; const ok = (c, m) => { n += 1; assert.ok(c, m); };
 // ---- data
 const ex = (name, group, unit = 'kg') => ({ name, group, unit, category: 'strength' });
 const A = 'u-anna', B = 'u-ben';
-seed(A, 'yc', { app: 'yes-coach', profile: { goal: 'strength', days_per_week: 3 }, schedule: { enabled: true, mode: 'rotation', days: ['Mon', 'Wed', 'Fri'], rotation: ['day-1', 'day-2'] }, intro_seen: true });
+const rowA = (path) => rows.find((x) => x.user_id === A && x.path === path);
+seed(A, 'yc', { app: 'yes-coach', profile: { goal: 'strength', days_per_week: 3 }, schedule: { enabled: true, mode: 'rotation', days: ['Mon', 'Wed', 'Fri'], rotation: ['day-1', 'day-2'] }, intro_seen: true, settings: { tz: 'Europe/Amsterdam' } });
 seed(A, 'yc/exercises/bench', ex('Bench press', 'Chest'));
 seed(A, 'yc/exercises/row', ex('Row', 'Back'));
 seed(A, 'yc/exercises/pullup', ex('Pull-up', 'Back', 'bw'));
@@ -225,7 +226,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
 {
   const T = 'tok.anna.x';
   const dayIn = (tz) => { const p = new Intl.DateTimeFormat('en-GB', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()); const g = (t) => p.find((x) => x.type === t).value; return g('year') + '-' + g('month') + '-' + g('day'); };
-  const day = dayIn('Europe/Amsterdam'); // no time zone saved yet: Western Europe
+  const day = dayIn('Europe/Amsterdam'); // her saved time zone
   const foodRow = (u, d) => rows.find((x) => x.user_id === u && x.path === 'yc/food/' + d);
   const search = async (q, limit) => (await call(T, 'search_foods', { query: q, limit })).json;
 
@@ -300,13 +301,13 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   let g = (await call(T, 'get_food_day')).json;
   ok(g.date === day && g.entries.length === 2 && g.entries[0].id === id1 && g.entries[0].items.length === 4 && g.entries[0].items[0].amount.startsWith('~'), 'get_food_day lists entries in order with items and ~ for estimates');
   ok(!('kcal' in g.totals) && /hidden/.test(g.note) && g.totals.protein_g > 0, 'day totals without calories');
-  rows.find((x) => x.user_id === A && x.path === 'yc').data.settings = { show_calories: true };
+  { const rr = rows.find((x) => x.user_id === A && x.path === 'yc').data; rr.settings = { ...(rr.settings || {}), show_calories: true }; }
   rows.find((x) => x.user_id === A && x.path === 'yc').data.nutrition = { kcal: 2650, protein: 180 };
   g = (await call(T, 'get_food_day')).json;
   ok(g.totals.kcal > 0 && g.entries[0].kcal > 0 && g.targets.kcal === 2650 && g.targets.protein_g === 180 && !g.note, 'calories and targets appear once the person shows them');
   ok((await search('kaas', 1)).results[0].per_100.kcal > 0, 'search shows calories too then');
   ok((await call(T, 'get_food_day', { date: '2026-01-01' })).json.entries.length === 0, 'an empty day is an empty list');
-  ok((await call('tok.ben.x', 'get_food_day')).json.entries.length === 0, 'ben does not see her food');
+  ok((await call('tok.ben.x', 'get_food_day', { date: day })).json.entries.length === 0, 'ben does not see her food');
   ok((await call(T, 'get_food_day', { date: 'x' })).err, 'bad date');
 
   // remove
@@ -379,10 +380,16 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   let r = await call(T, 'log_meals', { meals: [meal('Late snack', egg)] });
   ok(!r.err && localDay !== utc && r.json.day.date === localDay && foodRow(localDay) && Object.values(foodRow(localDay).data.entries).some((e) => e && e.name === 'Late snack'), 'without a date the meal lands on the person\'s own today (' + localDay + '), not UTC\'s (' + utc + ')');
   ok((await call(T, 'get_food_day')).json.date === localDay, 'reading the day uses the same today');
-  rootRow.settings.tz = 'Not/AZone';
-  r = await call(T, 'get_food_day');
-  ok(!r.err && /^\d{4}-\d{2}-\d{2}$/.test(r.json.date), 'a broken time zone falls back instead of failing');
-  delete rootRow.settings.tz;
+  // no saved time zone (a person who connected before opening the app, or a broken value): no guess at their day, the date is asked for
+  const before = JSON.stringify(rows.filter((x) => x.path.startsWith('yc/food/')));
+  for (const bad of [undefined, 'Not/AZone', '']) {
+    if (bad === undefined) delete rootRow.settings.tz; else rootRow.settings.tz = bad;
+    r = await call(T, 'get_food_day'); const r2 = await call(T, 'log_meals', { meals: [meal('No day', egg)] });
+    ok(r.err && r2.err && /time zone is not saved/.test(r.text) && /YYYY-MM-DD/.test(r2.text), 'time zone "' + bad + '": the date is asked for, not guessed: ' + r.text.slice(0, 60));
+  }
+  ok(JSON.stringify(rows.filter((x) => x.path.startsWith('yc/food/'))) === before, 'and nothing was written to a guessed day');
+  ok(!(await call(T, 'get_food_day', { date: '2026-10-20' })).err && !(await call(T, 'log_meals', { date: '2026-10-22', meals: [meal('With a date', egg)] })).err, 'with the date given it works without a saved time zone');
+  rootRow.settings.tz = 'Europe/Amsterdam';
 
   // several searches in one call
   r = await call(T, 'search_foods', { queries: [{ query: 'tarwebrood bruin' }, { query: 'goudse', type: 'Cheese' }, { query: 'ei gekookt' }, { query: 'zzzqqq' }] });
@@ -402,7 +409,6 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
 // ---- the person's own foods, portion sizes and saved meals
 {
   const T = 'tok.anna.x', TB = 'tok.ben.x';
-  const rowA = (path) => rows.find((x) => x.user_id === A && x.path === path);
   rowA('yc').data.settings = { ...(rowA('yc').data.settings || {}), show_calories: false }; // earlier checks switched calories on
   const mineRows = (u = A) => rows.filter((x) => x.user_id === u && x.path.startsWith('yc/myfoods/') && x.data && !x.data.gone);
   const first = async (q, tok = T) => (await call(tok, 'search_foods', { query: q, limit: 1 })).json.results[0];
@@ -521,7 +527,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   // at most 500 remembered foods
   for (let i = 0; i < 500; i += 1) seed(B, 'yc/myfoods/f' + i, { food: 'nevo:' + (1000 + i), name: 'F' + i, n: 1, last: 1 });
   const cheese2 = (await call(TB, 'search_foods', { query: 'kaas goudse 48+', limit: 1 })).json.results[0];
-  r = await call(TB, 'log_meals', { meals: [{ items: [{ food: cheese2.food, grams: 20 }] }] });
+  r = await call(TB, 'log_meals', { date: '2026-10-28', meals: [{ items: [{ food: cheese2.food, grams: 20 }] }] });
   ok(!r.err && mineRows(B).length === 500, 'a full list stays at 500 and the meal is still logged: ' + mineRows(B).length);
 
   // two meals at once that remember the same new food
@@ -537,7 +543,6 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
 // ---- "I ate something": an entry with no details is shown as a placeholder and counts for nothing
 {
   const T = 'tok.anna.x';
-  const rowA = (path) => rows.find((x) => x.user_id === A && x.path === path);
   const at0 = Date.parse('2026-09-15T12:32:00Z');
   seed(A, 'yc/food/2026-09-15', { date: '2026-09-15', entries: { q1: { name: 'Ate something', quick: true, at: at0, p: null, c: null, f: null }, r1: { name: 'Apple', p: 0.3, c: 14, f: 0.2, kcal: 62, at: at0 + 1 }, q2: { name: 'Ate something', quick: true, at: 'soon' } } });
   let r = await call(T, 'get_food_day', { date: '2026-09-15' });
@@ -550,6 +555,68 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   const bread = (await call(T, 'search_foods', { query: 'tarwebrood bruin', limit: 1 })).json.results[0].food;
   r = await call(T, 'log_meals', { date: '2026-09-15', meals: [{ name: 'Sandwich', items: [{ food: bread, grams: 70 }] }] });
   ok(!r.err && r.json.day.totals.protein_g > 0.3 && r.json.day.entries.some((e) => e.id === 'q2' && e.placeholder), 'logging a meal on a day with placeholders adds to the totals and leaves them listed');
+}
+
+// ---- things found in review, each checked
+{
+  const T = 'tok.anna.x';
+  const settings = rowA('yc').data.settings;
+  const first = async (q) => (await call(T, 'search_foods', { query: q, limit: 1 })).json.results[0];
+  const egg = (await first('ei gekookt')).food;
+
+  // a rough entry has no calories: they are unknown, not zero, and it says it is rough
+  settings.show_calories = true;
+  seed(A, 'yc/food/2026-07-01', { date: '2026-07-01', entries: { rough: { name: 'Big lunch', p: 25, c: null, f: null, kcal: null, rough: true, at: 1 }, full: { name: 'Apple', p: 0.3, c: 14, f: 0.2, kcal: 62, at: 2 } } });
+  let r = await call(T, 'get_food_day', { date: '2026-07-01' });
+  const rough = r.json.entries.find((e) => e.id === 'rough');
+  ok(rough.kcal === null && rough.rough === true && rough.protein_g === 25 && r.json.entries.find((e) => e.id === 'full').kcal === 62, 'a missing calorie figure is null, not 0, and a rough entry is flagged: ' + JSON.stringify(rough));
+  ok(/1 entry has no calories/.test(r.json.calories_note) && r.json.totals.kcal === 62 && r.json.totals.protein_g === 25.3, 'the day says its calorie total is a minimum: ' + JSON.stringify(r.json.calories_note));
+  settings.show_calories = false;
+  r = await call(T, 'get_food_day', { date: '2026-07-01' });
+  ok(!('kcal' in r.json.entries[0]) && !('calories_note' in r.json) && r.json.entries.find((e) => e.id === 'rough').rough === true, 'with calories hidden there is nothing about calories, the flag stays');
+
+  // search: a synonym ranks below real names and drops out when three real ones exist (the app's rule); it still finds its food alone
+  const names = (await call(T, 'search_foods', { query: 'mosterd', limit: 15 })).json.results.map((x) => x.name);
+  ok(names.includes('Mosterd') && !names.some((n) => /^Amsoi|^Soep gebonden/.test(n)), 'mustard: real matches only, no vegetable or soup: ' + names);
+  const nevo = JSON.parse(readFileSync(new URL('../../foods-nevo.json', import.meta.url), 'utf8')).foods;
+  const usda = JSON.parse(readFileSync(new URL('../../foods-usda.json', import.meta.url), 'utf8')).foods;
+  const fold = (x) => String(x).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const words = (x) => fold(x).split(/[^a-z0-9]+/).filter(Boolean);
+  const seen = new Set(); nevo.forEach((rw) => { words(rw[1]).forEach((w) => seen.add(w)); words(rw[2] || '').forEach((w) => seen.add(w)); }); usda.forEach((rw) => words(rw[1]).forEach((w) => seen.add(w)));
+  let synRow = null, synWord = null;
+  for (const rw of nevo) { const own = new Set([...words(rw[1]), ...words(rw[2] || '')]); const w = words(rw[3] || '').find((x) => x.length >= 7 && !own.has(x) && ![...seen].some((s) => s.startsWith(x))); if (w) { synRow = rw; synWord = w; break; } }
+  ok(synRow && (await call(T, 'search_foods', { query: synWord })).json.results.some((x) => x.name === synRow[1]), 'a word that only a synonym has still finds its food (' + synWord + ')');
+
+  // remembering is skipped, not reset, when the remembered foods can not be read
+  const mine = () => rows.filter((x) => x.user_id === A && x.path.startsWith('yc/myfoods/') && x.data && x.data.food === egg)[0];
+  for (let i = 0; i < 3; i += 1) await call(T, 'log_meals', { date: '2026-07-02', meals: [{ items: [{ food: egg, grams: 50 }] }] });
+  const nBefore = mine().data.n;
+  const readsFail = createHandler({ url: base, anonKey: 'anon', publicUrl: PUB, siteUrl: base + '/site/' }, async (u, i) => (decodeURIComponent(String(u)).includes('yc/myfoods') && (!i || !i.method || i.method === 'GET') ? new Response('{}', { status: 500 }) : fetch(u, i)));
+  const lg = (await (await readsFail(new Request(PUB, { method: 'POST', headers: { authorization: 'Bearer ' + T }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'log_meals', arguments: { date: '2026-07-02', meals: [{ items: [{ food: egg, grams: 50 }] }] } } }) }))).json()).result;
+  ok(!lg.isError && nBefore >= 3 && mine().data.n === nBefore, 'a meal logged while the list is unreadable does not reset how often the food was used: ' + nBefore + ' -> ' + mine().data.n);
+
+  // a saved meal item with no real food is not remembered
+  const mineBefore = rows.filter((x) => x.user_id === A && x.path.startsWith('yc/myfoods/')).map((x) => x.path).sort().join();
+  seed(A, 'yc/meals/junk', { name: 'Junk meal', items: [{ name: 'Mystery', g: 50, kcal: 10, p: 1 }, { name: 'Ghost', src: 'nevo', ref: '99999999', g: 10, kcal: 1 }] });
+  r = await call(T, 'log_meals', { date: '2026-07-03', meals: [{ saved: 'junk' }] });
+  ok(!r.err && r.json.saved[0].items.length === 2 && rows.filter((x) => x.user_id === A && x.path.startsWith('yc/myfoods/')).map((x) => x.path).sort().join() === mineBefore, 'a saved meal item the tables do not know is logged but not remembered: ' + r.text.slice(0, 120));
+
+  // a null food is a clear error, not a crash
+  for (const [tool, args] of [['log_meals', { date: '2026-07-04', meals: [{ items: [null] }] }], ['save_meal', { name: 'Null', items: [null] }]]) {
+    r = await call(T, tool, args);
+    ok(r.err && /Each food needs/.test(r.text), tool + ' with a null food says what is wrong: ' + r.text);
+  }
+
+  // forgotten and removed items stay behind as { gone: true }: they must not push live ones out of the list
+  const sizeBefore = rows.length;
+  for (let i = 0; i < 650; i += 1) { if (i < 450) seed(A, 'yc/meals/aaa' + String(i).padStart(4, '0'), { gone: true }); seed(A, 'yc/myfoods/aaa' + String(i).padStart(4, '0'), { gone: true }); } // more than the old read limits (200 meals, 600 foods)
+  seed(A, 'yc/meals/zzz-live', { name: 'Last in the list', items: [{ name: 'Bread', src: 'nevo', ref: '1', g: 35, kcal: 80, p: 3 }], n: 1, last: 1 });
+  seed(A, 'yc/myfoods/zzz-live', { food: 'nevo:' + egg.split(':')[1], name: 'Live food', n: 1, last: 1 });
+  r = await call(T, 'get_my_foods');
+  ok(r.json.meals.some((m) => m.id === 'zzz-live') && r.json.foods.some((f) => f.name === 'Live food' || f.food === egg), 'live meals and foods are listed past 450 removed meals and 650 forgotten foods');
+  ok((await call(T, 'save_meal', { name: 'Last in the list', items: [{ food: egg, grams: 50 }] })).json.replaced === true, 'and saving under the same name replaces the live meal instead of overwriting it as a new one');
+  for (let k = rows.length - 1; k >= sizeBefore; k -= 1) if (/yc\/(meals|myfoods)\/(aaa|zzz-live)/.test(rows[k].path)) rows.splice(k, 1);
+  settings.show_calories = false;
 }
 
 // ---- database errors surface as tool errors, not crashes

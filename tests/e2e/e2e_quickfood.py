@@ -88,6 +88,17 @@ try:
             check('a placeholder can be removed', until(lambda: page.locator('#fd-list .fd-quickrow').count() == 0))
             page.click('#toast-undo')
             check('and comes back with Undo, still a placeholder', until(lambda: page.locator('#fd-list .fd-quickrow').count() == 1) and any(e.get('quick') for e in entries(be).values()))
+            # filling in is only for the food you pick for it: an undo while it is pending must not swallow the placeholder
+            page.locator('#fd-list .fd-quickrow .skew').click()
+            page.click('#fd-list .fd-row:has-text("Mosterd") .icon'); page.wait_for_timeout(300)
+            page.click('#toast-undo'); page.wait_for_timeout(500)
+            check('Undo of a removed food leaves the placeholder it is not filling', page.locator('#fd-list .fd-quickrow').count() == 1 and page.locator('#fd-list .fd-row:has-text("Mosterd")').count() == 2, page.inner_text('#fd-list'))
+            if vis(page, '#fd-fill'): page.click('#fd-fill >> text=Cancel')
+            # removing sends only that entry: a food another phone or the connector added since is not wiped
+            names = lambda: sorted(e['name'] for e in entries(be).values())
+            next(d for d in be.docs if d['path'] == 'yc/food/' + TODAY)['data']['entries']['elsewhere'] = {'name': 'Added elsewhere', 'p': 3, 'at': 5}
+            page.click('#fd-list .fd-row:has-text("Mosterd") .icon'); page.wait_for_timeout(600)
+            check('removing an entry keeps what was added elsewhere', 'Added elsewhere' in names() and names().count('Mosterd') == 1, names())
             # a past day has no I ate
             page.click('#fd-prev')
             check('on an earlier day there is no I ate something', not vis(page, '#fd-ate'))
@@ -142,6 +153,19 @@ try:
             page.click('.fin-eat button')
             check('it goes to Food with the search ready', until(lambda: vis(page, '#v-food') and not vis(page, '#fin-done')) and page.evaluate("document.activeElement && document.activeElement.id") == 'fd-name')
         errs = session(pw, be, ALICE, nudge, width=390); check('no page errors (nudge)', not errs, errs)
+        # the day you looked at last on Food is not where the nudge sends you: the food is about today
+        be = Backend(); workout_seed(be, False)
+        def nudge_today(page):
+            PAGE['p'] = page
+            page.goto(BASE); page.wait_for_selector('text=Start Push day', timeout=8000)
+            page.click('#tab-food'); page.wait_for_selector('#fd-prev', state='visible'); page.click('#fd-prev'); page.wait_for_timeout(300)
+            page.click('#tab-train'); page.click('text=Start Push day')
+            page.wait_for_selector('#f-bench_1-load', state='visible'); page.wait_for_timeout(300)
+            page.fill('#f-bench_1-load', '60'); page.fill('#f-bench_1-reps', '8'); page.locator('.set:has(#f-bench_1-load) .set-tick').click(); page.wait_for_timeout(400)
+            page.locator('button.skew:visible', has_text='Finish day').first.click(); page.wait_for_selector('#fin-done', state='visible')
+            page.click('.fin-eat button')
+            check('the nudge opens today, not the day looked at before', until(lambda: vis(page, '#v-food') and page.inner_text('#fd-date').lower().startswith('today')), page.inner_text('#fd-date'))
+        errs = session(pw, be, ALICE, nudge_today, width=390); check('no page errors (nudge today)', not errs, errs)
         be = Backend(); workout_seed(be, True)
         def no_nudge(page):
             finish_day(page)

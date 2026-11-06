@@ -1470,6 +1470,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const pad2 = (n) => String(n).padStart(2, '0');
+  const clock = (ms) => (ms ? pad2(new Date(ms).getHours()) + ':' + pad2(new Date(ms).getMinutes()) : '?');
   const localISO = (d) => d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
   const today = () => localISO(new Date());
   const mondayOf = (iso) => { const d = new Date(iso + 'T12:00:00'); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return localISO(d); };
@@ -2032,7 +2033,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     // nothing logged to eat today yet: a quiet way to go and do it
     if (!entriesOf(today()).some(([, e]) => !e.quick)) {
       const eat = h('p', 'fin-eat');
-      eat.append(plainBtn('textbtn', 'Log what you ate', null, () => { close(); setView('food'); window.scrollTo({ top: 0 }); const f = $('#fd-name'); if (f) f.focus(); }));
+      eat.append(plainBtn('textbtn', 'Log what you ate', null, () => { close(); S.fday = today(); setView('food'); window.scrollTo({ top: 0 }); const f = $('#fd-name'); if (f) f.focus(); }));
       inn.append(eat);
     }
     done.addEventListener('click', close);
@@ -4838,7 +4839,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     fill($('#fd-sug'), false);
   };
   const fdDayWord = (d) => (d === today() ? 'Today, ' : d === addDays(today(), -1) ? 'Yesterday, ' : '') + fmtLong(parse(d));
-  const addFood = async (e, date = S.fday) => {
+  const addFood = async (e, date = S.fday, opts = {}) => {
     const id = 'e' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
     const entry = { name: e.name, kcal: e.kcal, p: e.p == null ? null : e.p, c: e.c == null ? null : e.c, f: e.f == null ? null : e.f, at: Date.now() };
     if (e.src) Object.assign(entry, { src: e.src, ref: e.ref, g: e.g == null ? null : e.g, u: e.u || 'g' });
@@ -4854,18 +4855,25 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       if (had) await foodRef(date).update({ entries: { [id]: entry } });
       else await foodRef(date).set({ date, entries: { [id]: entry } });
     } catch (err) { showToast('Not saved. Check your connection.', null); }
-    if (FD.replace && FD.replace.date === date && FD.replace.id !== id && !e.quick) { const rid = FD.replace.id; FD.replace = null; undoAdd(rid, date); }
+    // only a food picked to fill in a one-tap entry replaces it; a meal, an undo or another one-tap note does not
+    if (opts.fill && FD.replace && FD.replace.date === date) { const rid = FD.replace.id; FD.replace = null; dropEntries([rid], date); }
     return id;
   };
-  const removeFood = (id, date = S.fday) => {
+  // take entries off a day: the doc keeps the other entries, so another phone's or the connector's new entry is not wiped
+  const dropEntries = (ids, date) => {
     const doc = clone(S.food[date]);
-    if (!doc || !doc.entries || !doc.entries[id]) return;
-    const gone = doc.entries[id];
-    delete doc.entries[id];
+    const gone = doc && doc.entries ? ids.filter((id) => doc.entries[id]) : [];
+    if (!gone.length) return null;
+    const removed = gone.map((id) => doc.entries[id]);
+    gone.forEach((id) => { delete doc.entries[id]; });
     S.food[date] = doc;
     renderFood();
-    foodRef(date).set(doc).catch(() => showToast('Not removed. Check your connection.', null));
-    showToast('Removed ' + gone.name + '.', () => { addFood(gone, date); });
+    foodRef(date).update({ entries: Object.fromEntries(gone.map((id) => [id, null])) }).catch(() => showToast('Not removed. Check your connection.', null));
+    return removed;
+  };
+  const removeFood = (id, date = S.fday) => {
+    const gone = dropEntries([id], date);
+    if (gone) showToast('Removed ' + gone[0].name + '.', () => { addFood(gone[0], date); });
   };
 
   // ---- your meals: usual meals you log with one tap (the connected AI can save them too), and amounts you can change in place
@@ -4891,21 +4899,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return { name: m.name, kcal: m.kcal, p: m.p, c: m.c, f: m.f, items: m.items.map((x) => Object.assign({}, x)) };
   };
   let mealTap = { id: '', t: 0 };
-  const undoAdd = (id, date) => {
-    const doc = clone(S.food[date]);
-    if (!doc || !doc.entries || !doc.entries[id]) return;
-    delete doc.entries[id];
-    S.food[date] = doc;
-    renderFood();
-    foodRef(date).set(doc).catch(() => showToast('Not removed. Check your connection.', null));
-  };
   const logMeal = async (m) => {
     if (mealTap.id === m.id && Date.now() - mealTap.t < 600) return; // a double tap on the same meal is one meal
     mealTap = { id: m.id, t: Date.now() };
     const date = S.fday;
     const id = await addFood(mealEntry(m), date);
     mealsRef().doc(m.id).update({ n: m.n + 1, last: Date.now() }).catch(() => {});
-    showToast('Added ' + m.name + '.', () => undoAdd(id, date));
+    showToast('Added ' + m.name + '.', () => dropEntries([id], date));
   };
   const removeMeal = (m) => {
     const was = clone(S.meals[m.id]);
@@ -4999,7 +4999,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         if (done) return;
         done = true;
         const v = fnum(inp.value);
-        if (save && v != null && !Number.isNaN(v) && v > 0 && v <= 5000) { if (v !== g) onSet(v); else paintFoodList(); } else {
+        if (save && v > 0 && v <= 5000) { if (v !== g) onSet(v); else paintFoodList(); } else {
           if (save) showToast('Enter an amount above 0, up to 5000.', null);
           paintFoodList();
         }
@@ -5068,14 +5068,6 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     await addFood({ name: 'Ate something', quick: true }, S.fday);
     showToast('Saved. Fill it in later.', null);
   });
-  const undoMany = (ids, date) => {
-    const doc = clone(S.food[date]);
-    if (!doc || !doc.entries) return;
-    ids.forEach((id) => { delete doc.entries[id]; });
-    S.food[date] = doc;
-    renderFood();
-    foodRef(date).set(doc).catch(() => showToast('Not removed. Check your connection.', null));
-  };
   const copyYesterday = async () => {
     const date = S.fday;
     const src = copyable(addDays(date, -1));
@@ -5096,7 +5088,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       if (had) await foodRef(date).update({ entries: add });
       else await foodRef(date).set({ date, entries: add });
     } catch (err) { showToast('Not saved. Check your connection.', null); return; }
-    showToast('Copied yesterday.', () => undoMany(Object.keys(add), date));
+    showToast('Copied yesterday.', () => dropEntries(Object.keys(add), date));
   };
   $('#fd-yday').addEventListener('click', copyYesterday);
 
@@ -5168,8 +5160,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         const q = h('div', 'fd-row fd-quickrow');
         const when = new Date(isN(e.at) ? e.at : Date.now());
         const nm = h('span', 'fd-row-name');
-        nm.append('Ate something', ' · ' + String(when.getHours()).padStart(2, '0') + ':' + String(when.getMinutes()).padStart(2, '0'));
-        const fill = btn('skew small', 'Fill in', 'Fill in what you ate at ' + String(when.getHours()).padStart(2, '0') + ':' + String(when.getMinutes()).padStart(2, '0'));
+        nm.append('Ate something', ' · ' + clock(when));
+        const fill = btn('skew small', 'Fill in', 'Fill in what you ate at ' + clock(when));
         fill.addEventListener('click', () => startFill(id));
         q.append(nm, fill, plainBtn('icon', '×', 'Remove this entry', () => removeFood(id)));
         box.append(q);
@@ -5622,7 +5614,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     closeCard();
     closeHits();
     $('#fd-name').value = '';
-    await addFood(Object.assign({ name }, vals, from, rough ? { rough: true } : {}));
+    await addFood(Object.assign({ name }, vals, from, rough ? { rough: true } : {}), S.fday, { fill: true });
     enter($('#fd-list').lastElementChild);
     showToast('Added ' + name + '.', null);
   });
@@ -5914,7 +5906,6 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     });
     return [...m.values()].sort((a, b) => a.first - b.first); // stable: no times means the card order
   };
-  const clock = (ms) => (ms ? pad2(new Date(ms).getHours()) + ':' + pad2(new Date(ms).getMinutes()) : '?');
   const logText = () => {
     const by = {};
     sessionsSorted().slice().reverse().forEach((s) => {

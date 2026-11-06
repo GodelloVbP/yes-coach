@@ -36,6 +36,7 @@ def seed(be, show_cal):
         'b1': {'name': 'Banana', 'kcal': 90, 'p': 1.3, 'c': 20.0, 'f': 0.3, 'at': t + 2},
     }}})
 def food_doc(be): return next(d['data'] for d in be.docs if d['path'] == 'yc/food/' + TODAY)
+def live(be): return [e for e in food_doc(be)['entries'].values() if e]  # a removed entry stays as null
 def vis(page, sel): return page.is_visible(sel)
 
 server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -69,7 +70,7 @@ try:
             check('removing takes the whole meal off the day', until(lambda: page.locator('#fd-list .fd-row').count() == 2 and page.locator('.fd-items').count() == 0))
             page.click('#toast-undo')
             check('undo brings it back with its foods', until(lambda: page.locator('#fd-list .fd-row').count() == 3 and page.locator('.fd-items').count() == 1))
-            saved = [e for e in food_doc(be)['entries'].values() if e.get('name') == MEAL and e.get('items')]
+            saved = [e for e in live(be) if e.get('name') == MEAL and e.get('items')]
             check('and the saved entry has them too', len(saved) >= 1 and len(saved[-1]['items']) == 3 and saved[-1]['items'][0].get('est') is True, saved)
 
             # add it again from your own foods
@@ -78,7 +79,7 @@ try:
             page.click('#fd-hits .fd-hit:has(.mine)')
             page.wait_for_selector('#fd-form', state='visible'); page.click('#fd-add')
             check('added again, still a meal with foods under it', until(lambda: page.locator('.fd-row:has(.fd-items)').count() == 2 and page.locator('#fd-list .fd-row').count() == 4), page.locator('#fd-list .fd-row').count())
-            again = [e for e in food_doc(be)['entries'].values() if e.get('name') == MEAL and e.get('items')]
+            again = [e for e in live(be) if e.get('name') == MEAL and e.get('items')]
             check('the new entry kept its foods', len(again) >= 2 and all(len(e['items']) == 3 for e in again))
             check('no horizontal overflow on a phone', page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
         errs = session(pw, be, ALICE, phone, width=390); check('no page errors (hidden calories)', not errs, errs)
