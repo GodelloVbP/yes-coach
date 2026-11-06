@@ -2,6 +2,7 @@
 // Run: node --experimental-strip-types --no-warnings supabase/tests/mcp.test.mjs
 import http from 'node:http';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { createHandler } from '../functions/mcp/index.ts';
 
 const USERS = { 'tok.anna.x': 'u-anna', 'tok.ben.x': 'u-ben' };
@@ -9,6 +10,7 @@ const rows = []; // {user_id, path, data, updated_at}
 const seed = (u, path, data) => rows.push({ user_id: u, path, data, updated_at: 'x' });
 let authCalls = 0;
 
+const deepMerge = (a, b) => (a && b && typeof a === 'object' && typeof b === 'object' && !Array.isArray(a) && !Array.isArray(b) ? Object.fromEntries([...new Set([...Object.keys(a), ...Object.keys(b)])].map((k) => [k, k in a && k in b ? deepMerge(a[k], b[k]) : k in b ? b[k] : a[k]])) : b);
 const like = (path, pat) => path.startsWith(pat.replace(/\*$/, ''));
 const mock = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://x');
@@ -17,9 +19,19 @@ const mock = http.createServer((req, res) => {
   const send = (code, body) => { res.writeHead(code, { 'content-type': 'application/json' }); res.end(body == null ? '' : JSON.stringify(body)); };
   let buf = '';
   req.on('data', (c) => (buf += c));
-  req.on('end', () => {
+  req.on('end', () => setTimeout(() => {
+    if (url.pathname.startsWith('/site/')) { // the app's own site: the food tables
+      try { const b = readFileSync(new URL('../../' + url.pathname.slice(6), import.meta.url)); res.writeHead(200, { 'content-type': 'application/json' }); return res.end(b); } catch (e) { return send(404, {}); }
+    }
     if (url.pathname === '/auth/v1/user') { authCalls += 1; return uid ? send(200, { id: uid }) : send(401, { msg: 'bad' }); }
     if (!uid) return send(401, { message: 'JWT' });
+    if (url.pathname === '/rest/v1/rpc/yc_update' && req.method === 'POST') { // the app's merge, under the same row-level rule
+      const { p_path, p_patch } = JSON.parse(buf);
+      const row = rows.find((r) => r.user_id === uid && r.path === p_path);
+      if (!row) return send(404, { code: 'P0002', message: 'not found' });
+      row.data = deepMerge(row.data, p_patch);
+      return send(200, row.data);
+    }
     if (url.pathname !== '/rest/v1/docs') return send(404, {});
     if (req.method === 'GET') {
       let out = rows.filter((r) => r.user_id === uid); // row-level security
@@ -38,16 +50,17 @@ const mock = http.createServer((req, res) => {
       const b = JSON.parse(buf);
       if (b.user_id !== uid) return send(403, { message: 'rls' }); // with check (user_id = auth.uid())
       const i = rows.findIndex((r) => r.user_id === uid && r.path === b.path);
+      if (i >= 0 && /ignore-duplicates/.test(req.headers.prefer || '')) return send(201, null); // on conflict do nothing
       if (i >= 0) rows[i] = b; else rows.push(b);
       return send(201, null);
     }
     send(405, {});
-  });
+  }, (url.searchParams.get('path') || '').includes('yc/food/') ? 15 : 0));
 });
 await new Promise((r) => mock.listen(0, r));
 const base = 'http://127.0.0.1:' + mock.address().port;
 const PUB = 'https://fn.example/functions/v1/mcp';
-const handler = createHandler({ url: base, anonKey: 'anon', publicUrl: PUB });
+const handler = createHandler({ url: base, anonKey: 'anon', publicUrl: PUB, siteUrl: base + '/site/' });
 
 let id = 0;
 const post = (tok, body) => handler(new Request(PUB, { method: 'POST', headers: { 'content-type': 'application/json', ...(tok ? { authorization: 'Bearer ' + tok } : {}) }, body: JSON.stringify(body) }));
@@ -110,15 +123,16 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok(authCalls === before, 'token check is cached');
   const list = await rpc('tok.anna.x', 'tools/list');
   const names = list.body.result.tools.map((t) => t.name);
-  ok(names.length === 10 && !names.some((x) => /delete|remove|session/.test(x) && x !== 'get_sessions'), 'tool list: ' + names);
+  ok(names.length === 14 && !names.some((x) => /delete|remove|session/.test(x) && !['get_sessions', 'remove_food_entry'].includes(x)), 'tool list: ' + names);
   ok(list.body.result.tools.every((t) => t.inputSchema.type === 'object' && t.annotations && t.description && t.title && t.annotations.title === t.title && t.name.length <= 64 && (t.annotations.readOnlyHint === true || typeof t.annotations.destructiveHint === 'boolean')), 'schemas, titles, hints');
   const toolNames = list.body.result.tools.map((t) => t.name);
   ok(list.body.result.tools.every((t) => !toolNames.some((n) => n !== t.name && (t.description + JSON.stringify(t.inputSchema)).includes(n))), 'descriptions do not mention other tools');
   ok(list.body.result.tools.every((t) => !/\b(always|never|must|should|instruction|ignore|before calling|call this)/i.test(t.description)), 'descriptions are plain, no directives');
   const init = (await rpc('tok.anna.x', 'initialize', {})).body.result.instructions;
   ok(!/\b(call|first|never|must|should)\b/i.test(init), 'server instructions are descriptive: ' + init);
-  ok(list.body.result.tools.filter((t) => t.annotations.destructiveHint === true).map((t) => t.name).sort().join() === 'answer_note,save_training_day,set_schedule', 'overwriting tools are destructive');
-  ok(list.body.result.tools.filter((t) => t.annotations.readOnlyHint).length === 6, 'read-only hints');
+  ok(list.body.result.tools.filter((t) => t.annotations.destructiveHint === true).map((t) => t.name).sort().join() === 'answer_note,remove_food_entry,save_training_day,set_schedule', 'overwriting tools are destructive');
+  ok(list.body.result.tools.find((t) => t.name === 'log_meals').annotations.idempotentHint === false, 'logging a meal twice adds it twice, so it is not idempotent');
+  ok(list.body.result.tools.filter((t) => t.annotations.readOnlyHint).length === 8, 'read-only hints');
   ok((await rpc('tok.anna.x', 'tools/call', { name: 'zzz' })).body.error.code === -32602, 'unknown tool');
 }
 
@@ -207,9 +221,187 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok(snapshot() === sessionsBefore, 'logged sessions never changed');
 }
 
+// ---- food: search, log, read, remove
+{
+  const T = 'tok.anna.x';
+  const dayIn = (tz) => { const p = new Intl.DateTimeFormat('en-GB', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()); const g = (t) => p.find((x) => x.type === t).value; return g('year') + '-' + g('month') + '-' + g('day'); };
+  const day = dayIn('Europe/Amsterdam'); // no time zone saved yet: Western Europe
+  const foodRow = (u, d) => rows.find((x) => x.user_id === u && x.path === 'yc/food/' + d);
+  const search = async (q, limit) => (await call(T, 'search_foods', { query: q, limit })).json;
+
+  // search
+  let r = await search('kaas');
+  ok(r.results.length === 10 && r.results.every((x) => /^(nevo|usda):/.test(x.food) && x.per_100.protein_g != null && x.portions.length && x.portions_are), 'search: ids, nutrients per 100, portions');
+  ok(!('kcal' in r.results[0].per_100) && /hidden/.test(r.calories), 'calories hidden by default, and the result says so');
+  ok((await search('kaas', 3)).results.length === 3, 'search limit');
+  r = await search('bruin brood');
+  ok(r.results.some((x) => x.name === 'Tarwebrood bruin'), 'a Dutch compound word is found by its last part: ' + r.results.map((x) => x.name));
+  r = await search('Ei gekookt');
+  ok(r.results.length > 0 && /ei/i.test(r.results[0].name), 'search is case and accent tolerant: ' + r.results.map((x) => x.name));
+  r = (await call(T, 'search_foods', { query: 'brood', type: 'bread' })).json;
+  ok(r.results.length > 0 && r.results.every((x) => x.type === 'Bread') && r.results.some((x) => /brood/i.test(x.name) && !/^Broodje/.test(x.name)), 'a group keeps the search inside it, case-insensitively: ' + r.results.map((x) => x.name));
+  r = (await call(T, 'search_foods', { query: 'kaas', type: 'Cheese', limit: 15 })).json;
+  ok(r.results.length === 15 && r.results.every((x) => x.type === 'Cheese') && !r.results.some((x) => /^Pindakaas/.test(x.name)), 'kaas inside Cheese leaves out peanut butter');
+  r = (await call(T, 'search_foods', { query: 'kaas', type: 'Cars' })).json;
+  ok(r.results.length === 0 && /in that group/.test(r.note), 'an unknown group finds nothing and says so');
+  r = await search('zzzzqqqq');
+  ok(r.results.length === 0 && /Nothing matched/.test(r.note), 'nothing found says so');
+  ok((await call(T, 'search_foods', { query: '  ' })).err, 'empty query rejected');
+  const pick = async (q) => (await search(q, 1)).results[0];
+  const bread = await pick('tarwebrood bruin'), egg = await pick('ei gekookt'), cheese = await pick('kaas goudse 48+'), mustard = await pick('mosterd');
+  ok([bread, egg, cheese, mustard].every(Boolean) && /snee|stuk/i.test(bread.portions[0].label), 'the everyday portion of bread comes first: ' + JSON.stringify(bread.portions[0]));
+
+  // log one meal with several foods
+  const meal = { name: '2 slices bread with egg, cheese and mustard', items: [{ food: bread.food, portion: { label: bread.portions[0].label, count: 2 } }, { food: egg.food, grams: 50, estimated: false }, { food: cheese.food, grams: 20 }, { food: mustard.food, grams: 5 }] };
+  r = await call(T, 'log_meals', { meals: [meal] });
+  ok(!r.err, r.text);
+  const doc = foodRow(A, day).data, [[id1, e1]] = Object.entries(doc.entries);
+  ok(doc.date === day && e1.name === meal.name && e1.items.length === 4 && e1.via === 'connector' && !('src' in e1), 'one entry, with its items inside');
+  const bg = bread.portions[0].grams * 2;
+  ok(e1.items[0].g === bg && e1.items[0].est === true && e1.items[1].g === 50 && !('est' in e1.items[1]), 'portion times count; estimated unless the weight was said');
+  const expectP = Math.round((bread.per_100.protein_g * bg / 100 + egg.per_100.protein_g * 0.5 + cheese.per_100.protein_g * 0.2 + mustard.per_100.protein_g * 0.05) * 10) / 10;
+  ok(Math.abs(e1.p - expectP) <= 0.3 && e1.p > 0, 'the entry protein is the sum from the tables: ' + e1.p + ' vs ' + expectP);
+  ok(Math.abs(e1.items.reduce((t, i) => t + i.p, 0) - e1.p) <= 0.3, 'entry protein adds up from its items');
+  ok(Math.abs(e1.kcal - e1.items.reduce((t, i) => t + i.kcal, 0)) <= 2, 'entry kcal adds up from its items');
+  ok(r.json.saved.length === 1 && r.json.saved[0].id === id1 && r.json.saved[0].items.length === 4 && !('kcal' in r.json.saved[0]), 'the reply lists what was saved, without calories');
+  ok(r.json.day.totals.protein_g === e1.p && r.json.day.entries.length === 1, 'the reply has the day totals');
+
+  // a second call adds to the same day without touching the first entry
+  r = await call(T, 'log_meals', { meals: [{ items: [{ food: (await pick('appel')).food, portion: { label: (await pick('appel')).portions[0].label } }] }] });
+  const doc2 = foodRow(A, day).data;
+  ok(!r.err && Object.keys(doc2.entries).length === 2 && JSON.stringify(doc2.entries[id1]) === JSON.stringify(e1), 'a second meal is added, the first stays as it was');
+  const e2 = Object.values(doc2.entries).find((e) => e !== doc2.entries[id1]);
+  ok(e2.src && e2.ref && e2.g > 0 && e2.u === 'g' && e2.at >= e1.at && !('items' in e2), 'one food becomes a normal entry the app can reopen');
+
+  // several meals and another day in one call
+  r = await call(T, 'log_meals', { date: '2026-11-01', meals: [{ name: 'Breakfast', items: [{ food: bread.food, grams: 70 }, { food: cheese.food, grams: 20 }] }, { name: 'Lunch', items: [{ food: egg.food, grams: 100 }, { food: bread.food, grams: 70 }] }] });
+  const d3 = foodRow(A, '2026-11-01').data, ents = Object.values(d3.entries).sort((a, b) => a.at - b.at);
+  ok(!r.err && ents.length === 2 && ents[0].name === 'Breakfast' && ents[1].name === 'Lunch' && ents[0].at < ents[1].at && !foodRow(A, day).data.entries.zzz, 'a whole day in one call, in order, on the date given');
+
+  // refused input
+  const bad = async (args, re, m) => { const x = await call(T, 'log_meals', args); ok(x.err && re.test(x.text), m + ': ' + x.text); };
+  const before = JSON.stringify(rows.filter((x) => x.path.startsWith('yc/food/')));
+  await bad({ meals: [{ items: [{ food: 'nevo:99999999', grams: 10 }] }] }, /Unknown food/, 'unknown food');
+  await bad({ meals: [{ items: [{ food: bread.food }] }] }, /grams or a portion/, 'no amount');
+  await bad({ meals: [{ items: [{ food: bread.food, portion: { label: 'bucket' } }] }] }, /not a portion of .*Its portions/, 'unknown portion lists the real ones');
+  await bad({ meals: [{ items: [{ food: bread.food, grams: 0 }] }] }, /Give grams/, 'zero grams');
+  await bad({ meals: [{ items: [{ food: bread.food, grams: 9000 }] }] }, /at most 5000/, 'absurd amount');
+  await bad({ meals: [{ items: [] }] }, /at least one food/, 'empty meal');
+  await bad({ meals: [] }, /at least one meal/, 'no meals');
+  await bad({ date: '1 Nov', meals: [{ items: [{ food: bread.food, grams: 10 }] }] }, /date must be a real day/, 'bad date');
+  await bad({ date: '2026-02-30', meals: [{ items: [{ food: bread.food, grams: 10 }] }] }, /date must be a real day/, 'a day that does not exist');
+  await bad({ meals: [{ items: [{ food: bread.food, grams: 0.01 }] }] }, /at least 0.1/, 'an amount that rounds to nothing');
+  await bad({ meals: Array.from({ length: 9 }, () => ({ items: [{ food: bread.food, grams: 10 }] })) }, /At most 8 meals.*Nothing was saved/, 'too many meals is refused, not cut short');
+  await bad({ meals: [{ items: Array.from({ length: 13 }, () => ({ food: bread.food, grams: 10 })) }] }, /At most 12 foods.*Nothing was saved/, 'too many foods in a meal is refused, not cut short');
+  ok(JSON.stringify(rows.filter((x) => x.path.startsWith('yc/food/'))) === before, 'a refused meal writes nothing');
+  ok(!rows.some((x) => x.user_id === B && x.path.startsWith('yc/food/')), 'nothing written to ben');
+
+  // read
+  let g = (await call(T, 'get_food_day')).json;
+  ok(g.date === day && g.entries.length === 2 && g.entries[0].id === id1 && g.entries[0].items.length === 4 && g.entries[0].items[0].amount.startsWith('~'), 'get_food_day lists entries in order with items and ~ for estimates');
+  ok(!('kcal' in g.totals) && /hidden/.test(g.note) && g.totals.protein_g > 0, 'day totals without calories');
+  rows.find((x) => x.user_id === A && x.path === 'yc').data.settings = { show_calories: true };
+  rows.find((x) => x.user_id === A && x.path === 'yc').data.nutrition = { kcal: 2650, protein: 180 };
+  g = (await call(T, 'get_food_day')).json;
+  ok(g.totals.kcal > 0 && g.entries[0].kcal > 0 && g.targets.kcal === 2650 && g.targets.protein_g === 180 && !g.note, 'calories and targets appear once the person shows them');
+  ok((await search('kaas', 1)).results[0].per_100.kcal > 0, 'search shows calories too then');
+  ok((await call(T, 'get_food_day', { date: '2026-01-01' })).json.entries.length === 0, 'an empty day is an empty list');
+  ok((await call('tok.ben.x', 'get_food_day')).json.entries.length === 0, 'ben does not see her food');
+  ok((await call(T, 'get_food_day', { date: 'x' })).err, 'bad date');
+
+  // remove
+  const sessionsBefore = snapshot();
+  for (const odd of ['__proto__', 'constructor', 'hasOwnProperty', 'toString', '']) {
+    const before = JSON.stringify(foodRow(A, day).data);
+    ok((await call(T, 'remove_food_entry', { date: day, entry_id: odd })).err && JSON.stringify(foodRow(A, day).data) === before, 'an id that is not an entry ("' + odd + '") is refused and changes nothing');
+  }
+  ok((await call(T, 'remove_food_entry', { date: '2026-13-01', entry_id: id1 })).err, 'remove needs a real day');
+  r = await call(T, 'remove_food_entry', { date: day, entry_id: id1 });
+  ok(!r.err && r.json.removed.id === id1 && r.json.day.entries.length === 1 && !foodRow(A, day).data.entries[id1], 'an entry is removed and the rest stays');
+  ok((await call(T, 'remove_food_entry', { date: day, entry_id: id1 })).err, 'removing it twice fails');
+  ok((await call(T, 'remove_food_entry', { date: '2026-01-01', entry_id: 'x' })).err, 'nothing to remove on an empty day');
+  ok((await call('tok.ben.x', 'remove_food_entry', { date: day, entry_id: Object.entries(foodRow(A, day).data.entries).find(([, e]) => e)[0] })).err, 'ben can not remove her entry');
+  ok(Object.values(foodRow(A, day).data.entries).filter(Boolean).length === 1 && snapshot() === sessionsBefore, 'her other entry and her logged sessions are untouched');
+
+  // the food tables not loading is a tool error that recovers
+  let down = true;
+  const h3 = createHandler({ url: base, anonKey: 'anon', publicUrl: PUB, siteUrl: base + '/site/' }, async (u, i) => (down && String(u).includes('/site/') ? new Response('', { status: 503 }) : fetch(u, i)));
+  const ask = async () => (await (await h3(new Request(PUB, { method: 'POST', headers: { authorization: 'Bearer ' + T }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'search_foods', arguments: { query: 'kaas' } } }) }))).json()).result;
+  const out = await ask();
+  ok(out.isError && /could not be loaded/.test(out.content[0].text), 'tables down -> tool error');
+  down = false;
+  ok(!(await ask()).isError, 'and it works again once they load, without a restart');
+}
+
+// ---- food: things that went wrong in review, each one checked
+{
+  const T = 'tok.anna.x';
+  const foodRow = (d) => rows.find((x) => x.user_id === A && x.path === 'yc/food/' + d);
+  const one = async (q) => (await call(T, 'search_foods', { query: q, limit: 1 })).json.results[0].food;
+  const bread = await one('tarwebrood bruin'), egg = await one('ei gekookt');
+  const meal = (name, food) => ({ name, items: [{ food, grams: 50 }, { food: bread, grams: 35 }] });
+
+  // two calls at the same moment on an empty day: both meals stay
+  let rs = await Promise.all([call(T, 'log_meals', { date: '2026-10-20', meals: [meal('Breakfast', egg)] }), call(T, 'log_meals', { date: '2026-10-20', meals: [meal('Lunch', egg)] })]);
+  ok(rs.every((x) => !x.err), rs.map((x) => x.text).join(' | '));
+  ok(Object.values(foodRow('2026-10-20').data.entries).map((e) => e.name).sort().join() === 'Breakfast,Lunch', 'parallel meals on a new day are both kept: ' + Object.values(foodRow('2026-10-20').data.entries).map((e) => e.name));
+  ok(foodRow('2026-10-20').data.date === '2026-10-20', 'the new day has its date');
+
+  // removing while another meal is logged: the removal and the new meal both land
+  const keepId = Object.entries(foodRow('2026-10-20').data.entries).find(([, e]) => e.name === 'Breakfast')[0];
+  rs = await Promise.all([call(T, 'remove_food_entry', { date: '2026-10-20', entry_id: keepId }), call(T, 'log_meals', { date: '2026-10-20', meals: [meal('Dinner', egg)] })]);
+  const names = Object.values(foodRow('2026-10-20').data.entries).filter(Boolean).map((e) => e.name).sort().join();
+  ok(rs.every((x) => !x.err) && names === 'Dinner,Lunch', 'a removal and a new meal at the same moment both land: ' + names);
+  ok(foodRow('2026-10-20').data.entries[keepId] === null, 'a removed entry is emptied in place, in one step');
+  ok((await call(T, 'get_food_day', { date: '2026-10-20' })).json.entries.length === 2, 'and the day no longer lists it');
+  ok((await call(T, 'remove_food_entry', { date: '2026-10-20', entry_id: keepId })).err, 'an emptied entry can not be removed twice');
+
+  // the app adds an entry right after a removal has read the day: the app's entry must survive the removal
+  await call(T, 'log_meals', { date: '2026-10-21', meals: [meal('Gone soon', egg)] });
+  const goneId = Object.keys(foodRow('2026-10-21').data.entries)[0];
+  let inject = true;
+  const h4 = createHandler({ url: base, anonKey: 'anon', publicUrl: PUB, siteUrl: base + '/site/' }, async (u, i) => {
+    const res = await fetch(u, i);
+    if (inject && (!i || !i.method || i.method === 'GET') && decodeURIComponent(String(u)).includes('yc/food/2026-10-21')) { inject = false; foodRow('2026-10-21').data.entries.app1 = { name: 'Added in the app', p: 1, at: 9 }; }
+    return res;
+  });
+  const rm = await (await h4(new Request(PUB, { method: 'POST', headers: { authorization: 'Bearer ' + T }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'remove_food_entry', arguments: { date: '2026-10-21', entry_id: goneId } } }) }))).json();
+  const left = foodRow('2026-10-21').data.entries;
+  ok(!rm.result.isError && !inject && left.app1 && left.app1.name === 'Added in the app' && left[goneId] === null, 'an entry the app adds while a removal runs is kept: ' + JSON.stringify(left).slice(0, 120));
+
+  // today is the person's own day
+  const rootRow = rows.find((x) => x.user_id === A && x.path === 'yc').data;
+  const utc = new Date().toISOString().slice(0, 10);
+  const far = new Date().getUTCHours() >= 10 ? 'Pacific/Kiritimati' : 'Etc/GMT+12'; // UTC+14 or UTC-12: a different date from UTC right now
+  const local = new Intl.DateTimeFormat('en-GB', { timeZone: far, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+  const localDay = ['year', 'month', 'day'].map((t) => local.find((x) => x.type === t).value).join('-');
+  rootRow.settings = { ...(rootRow.settings || {}), tz: far };
+  let r = await call(T, 'log_meals', { meals: [meal('Late snack', egg)] });
+  ok(!r.err && localDay !== utc && r.json.day.date === localDay && foodRow(localDay) && Object.values(foodRow(localDay).data.entries).some((e) => e && e.name === 'Late snack'), 'without a date the meal lands on the person\'s own today (' + localDay + '), not UTC\'s (' + utc + ')');
+  ok((await call(T, 'get_food_day')).json.date === localDay, 'reading the day uses the same today');
+  rootRow.settings.tz = 'Not/AZone';
+  r = await call(T, 'get_food_day');
+  ok(!r.err && /^\d{4}-\d{2}-\d{2}$/.test(r.json.date), 'a broken time zone falls back instead of failing');
+  delete rootRow.settings.tz;
+
+  // several searches in one call
+  r = await call(T, 'search_foods', { queries: [{ query: 'tarwebrood bruin' }, { query: 'goudse', type: 'Cheese' }, { query: 'ei gekookt' }, { query: 'zzzqqq' }] });
+  const ss = r.json && r.json.searches;
+  ok(!r.err && ss.length === 4 && ss[0].results.length <= 6 && ss[0].results.length > 0 && ss[1].results.every((x) => x.type === 'Cheese') && /Goudse/.test(ss[1].results[0].name), 'four foods in one search call, groups per search: ' + r.text.slice(0, 200));
+  ok(ss[3].results.length === 0 && /Nothing matched/.test(ss[3].note) && ss[0].query === 'tarwebrood bruin', 'each search says what it was and whether it found anything');
+  ok((await call(T, 'search_foods', { queries: Array.from({ length: 9 }, () => ({ query: 'kaas' })) })).err, 'at most 8 searches at once');
+  ok((await call(T, 'search_foods', { queries: [{ query: 'kaas' }, { query: ' ' }] })).err, 'an empty search in the list is refused');
+  ok((await call(T, 'search_foods', {})).err, 'no query at all is refused');
+
+  // whatever is stored, reading a day does not break
+  seed(A, 'yc/food/2026-09-01', { date: '2026-09-01', entries: { a: null, b: 'x', c: { name: 42, p: 5 }, d: { name: 'Odd meal', p: '5', kcal: 'lots', items: [null, 'x', { name: 'Ok', g: 10, p: 1 }] }, e: { name: 'Fine', p: 2, at: 2 } } });
+  r = await call(T, 'get_food_day', { date: '2026-09-01' });
+  ok(!r.err && r.json.entries.map((e) => e.name).sort().join() === 'Fine,Odd meal' && r.json.totals.protein_g === 2 && r.json.entries.find((e) => e.name === 'Odd meal').items.length === 1, 'malformed entries are skipped and text is never added up as a number: ' + r.text.slice(0, 160));
+}
+
 // ---- database errors surface as tool errors, not crashes
 {
-  const h2 = createHandler({ url: base, anonKey: 'anon', publicUrl: PUB }, async (u, i) => (String(u).includes('/rest/') ? new Response('{}', { status: 500 }) : fetch(u, i)));
+  const h2 = createHandler({ url: base, anonKey: 'anon', publicUrl: PUB, siteUrl: base + '/site/' }, async (u, i) => (String(u).includes('/rest/') ? new Response('{}', { status: 500 }) : fetch(u, i)));
   const r = await h2(new Request(PUB, { method: 'POST', headers: { authorization: 'Bearer tok.anna.x' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'get_plan', arguments: {} } }) }));
   const j = await r.json();
   ok(r.status === 200 && j.result.isError && /database said no/.test(j.result.content[0].text), 'db failure -> tool error');

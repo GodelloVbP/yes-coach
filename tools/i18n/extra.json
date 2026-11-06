@@ -1496,5 +1496,19 @@
   "de": "Zurück zur Übung",
   "fr": "Retour à l'exercice",
   "it": "Torna all'esercizio"
+ },
+ "What is in it": {
+  "nl": "Wat erin zit",
+  "es": "Qué contiene",
+  "de": "Was drin ist",
+  "fr": "Ce qu’il y a dedans",
+  "it": "Cosa c’è dentro"
+ },
+ "AI apps you allowed to read your data, change your plan and log your food. Disconnect one and it loses access straight away.": {
+  "nl": "AI-apps die jouw gegevens mogen lezen, je plan mogen aanpassen en je eten mogen loggen. Koppel er een los en de toegang stopt meteen.",
+  "es": "Apps de IA a las que permitiste leer tus datos, cambiar tu plan y registrar tu comida. Si desconectas una, pierde el acceso al instante.",
+  "de": "KI-Apps, denen du erlaubt hast, deine Daten zu lesen, deinen Plan zu ändern und dein Essen zu loggen. Wenn du eine trennst, verliert sie sofort den Zugriff.",
+  "fr": "Applis d’IA autorisées à lire tes données, à modifier ton programme et à enregistrer ce que tu manges. Déconnecte-en une et elle perd l’accès aussitôt.",
+  "it": "App AI a cui hai permesso di leggere i tuoi dati, modificare il tuo piano e registrare ciò che mangi. Se ne scolleghi una, perde subito l'accesso."
  }
 }

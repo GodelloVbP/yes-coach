@@ -5,10 +5,12 @@
 // Sign-in: Supabase's OAuth 2.1 server. The AI client sends the user's access token; every database call carries
 // that token, so row-level security (schema.sql) keeps each user inside their own rows. No admin key is used.
 // Logged sets are never written. The AI can change training days, the weekly schedule, add exercises and answer notes.
+// It can also log meals and remove food entries. Nutrients are never typed by the AI: they are read from the same NEVO and
+// USDA tables the app searches (foods-nevo.json, foods-usda.json, portions-nevo.json, fetched from the app's own site).
 
 declare const Deno: any;
 
-type Env = { url: string; anonKey: string; publicUrl: string };
+type Env = { url: string; anonKey: string; publicUrl: string; siteUrl: string };
 type Json = any;
 
 const PROTOCOLS = ['2025-06-18', '2025-03-26', '2024-11-05'];
@@ -21,6 +23,9 @@ const INSTRUCTIONS = [
   'Yes Coach! is a workout tracker. These tools read the signed-in person\'s own plan, log and notes, and change their plan.',
   'Logged sets can not be changed. Plan changes show up in their app at once, and the app keeps an undo for the schedule.',
   'Exercises are referenced by id. Loads are in kg.',
+  'Food: search_foods finds foods in the Dutch (NEVO) and international (USDA) tables the app uses; log_meals saves meals as food ids with grams or a portion; get_food_day and remove_food_entry read and remove entries.',
+  'The app reads every nutrient from those tables, so the AI supplies foods and amounts, not nutrient numbers. A search lists the portions a food comes in (a slice, a piece) with grams for one; amounts that are guesses are marked estimated.',
+  'People who switched calories off in the app get results without calories, with a note saying so.',
 ].join(' ');
 
 // ---------------------------------------------------------------- small helpers
@@ -55,6 +60,13 @@ const database = (env: Env, token: string, userId: string, f: typeof fetch) => {
     get: async (path: string): Promise<Json | null> => {
       const rows = await call('docs?' + new URLSearchParams({ select: 'data', path: 'eq.' + path, limit: '1' }).toString());
       return rows.length ? rows[0].data : null;
+    },
+    // merge a patch into an existing document in one step (the app's yc_update), so a write from the app or a parallel call
+    // at the same moment is not lost; returns the document as it is after the merge
+    patch: async (path: string, patch: Json): Promise<Json> => call('rpc/yc_update', { method: 'POST', body: JSON.stringify({ p_path: path, p_patch: patch }) }),
+    // create a document only if it is not there yet; an existing one is left exactly as it is
+    ensure: async (path: string, data: Json): Promise<void> => {
+      await call('docs?on_conflict=user_id,path', { method: 'POST', headers: { prefer: 'resolution=ignore-duplicates,return=minimal' }, body: JSON.stringify({ user_id: userId, path, data, updated_at: new Date().toISOString() }) });
     },
     put: async (path: string, data: Json): Promise<void> => {
       await call('docs?on_conflict=user_id,path', { method: 'POST', headers: { prefer: 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify({ user_id: userId, path, data, updated_at: new Date().toISOString() }) });
@@ -111,11 +123,149 @@ const bestSet = (sets: Json[], unit: string): Json | null => {
   return { load: b.load ?? null, reps: b.reps, estimated_1rm: unit === 'kg' || unit === 'stack' ? Math.round((b.load || 0) * (1 + b.reps / 30) * 10) / 10 : null };
 };
 
+// ---------------------------------------------------------------- food: the same tables the app searches
+type Food = { src: 'nevo' | 'usda'; ref: string; name: string; alt: string; type: string; kcal: number; p: number; c: number; f: number; unit: 'g' | 'ml'; w: string[]; w2: string[] };
+type FoodDb = { items: Food[]; byKey: Map<string, Food>; portie: Record<string, Json[]> };
+const fold = (t: Json): string => String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const wordsOf = (t: Json): string[] => fold(t).split(/[^a-z0-9]+/).filter(Boolean).map((w) => (w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w));
+const foodKey = (src: string, ref: Json): string => src + ':' + ref;
+const realDate = (v: Json): boolean => isDate(v) && !Number.isNaN(Date.parse(v + 'T00:00:00Z')) && new Date(v + 'T00:00:00Z').toISOString().slice(0, 10) === v;
+// today in the person's own time zone (the app saves it in root.settings.tz); most people using Yes Coach! are in Western Europe
+const localToday = (root: Json): string => {
+  const tz = root && root.settings && typeof root.settings.tz === 'string' ? root.settings.tz : '';
+  for (const zone of [tz, 'Europe/Amsterdam']) {
+    if (!zone) continue;
+    try {
+      const parts = new Intl.DateTimeFormat('en-GB', { timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+      const get = (t: string) => (parts.find((x) => x.type === t) || { value: '' }).value;
+      const d = get('year') + '-' + get('month') + '-' + get('day');
+      if (realDate(d)) return d;
+    } catch (e) { /* not a time zone this runtime knows */ }
+  }
+  return today();
+};
+const badDate = (v: Json): boolean => v != null && v !== '' && !realDate(v);
+const DATE_ERR = 'date must be a real day, like 2026-11-06.';
+const n0 = (v: Json): number => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
+const FOOD_FILES = ['foods-nevo.json', 'foods-usda.json', 'portions-nevo.json'];
+
+const loadFoods = async (env: Env, f: typeof fetch): Promise<FoodDb> => {
+  const base = env.siteUrl.replace(/\/?$/, '/');
+  const docs: Json[] = await Promise.all(FOOD_FILES.map(async (name) => {
+    const r = await f(base + name).catch(() => null);
+    if (!r || !r.ok) fail('The food tables could not be loaded. Try again in a minute.');
+    return (r as Response).json();
+  }));
+  const items: Food[] = [];
+  let portie: Record<string, Json[]> = {};
+  for (const d of docs) {
+    if (d.src === 'portie') portie = d.p || {};
+    else if (d.src === 'nevo') for (const [ref, nl, en, syn, g, kcal, p, c, fat, unit] of d.foods) items.push({ src: 'nevo', ref: String(ref), name: nl, alt: en || '', type: d.groups[g], kcal: kcal || 0, p: p || 0, c: c || 0, f: fat || 0, unit: unit === 'ml' ? 'ml' : 'g', w: wordsOf(nl + ' ' + (syn || '')), w2: wordsOf(en || '') });
+    else if (d.src === 'usda') for (const [ref, name, g, kcal, p, c, fat] of d.foods) items.push({ src: 'usda', ref: String(ref), name, alt: '', type: d.groups[g], kcal: kcal || 0, p: p || 0, c: c || 0, f: fat || 0, unit: 'g', w: wordsOf(name), w2: [] });
+  }
+  if (!items.length) fail('The food tables could not be loaded. Try again in a minute.');
+  return { items, byKey: new Map(items.map((it) => [foodKey(it.src, it.ref), it])), portie };
+};
+
+// the search the app uses (every typed word starts a word of the name; short, plain, Dutch foods first), plus a second pass for
+// Dutch compound words ("brood" finds "tarwebrood") when the first pass fills fewer than the limit
+const PROCESSED = ['breaded', 'fried', 'battered', 'canned', 'frozen', 'sweetened', 'flavored', 'tender', 'nugget', 'patty', 'microwaved', 'fast', 'restaurant', 'sliced', 'deli', 'roll', 'prepackaged', 'powder', 'luncheon', 'dried', 'gedroogd', 'sauce', 'pie', 'taart', 'strudel', 'turnover', 'flap'];
+const searchFoods = (db: FoodDb, q: string, limit: number, type = ''): Food[] => {
+  const toks = wordsOf(q);
+  if (!toks.length) return [];
+  const starts = (ws: string[], t: string) => ws.some((w) => w.startsWith(t));
+  const inside = (ws: string[], t: string) => ws.some((w) => w.includes(t));
+  const hits: [number, Food][] = [];
+  for (const it of db.items) {
+    if (type && fold(it.type) !== fold(type)) continue;
+    let ws: string[] | null = null;
+    let penalty = 0;
+    if (toks.every((t) => starts(it.w, t))) ws = it.w;
+    else if (it.w2.length && toks.every((t) => starts(it.w2, t))) ws = it.w2;
+    else if (toks.every((t) => inside(it.w, t))) { ws = it.w; penalty = 15; }
+    else if (it.w2.length && toks.every((t) => inside(it.w2, t))) { ws = it.w2; penalty = 15; }
+    if (!ws) continue;
+    let sc = (ws[0] && ws[0].startsWith(toks[0]) ? 20 : 0) + (ws[0] === toks[0] ? 5 : 0) - Math.min(12, ws.length) + (it.src === 'nevo' ? 3 : 0) - penalty;
+    for (const t of toks) if (ws.includes(t)) sc += 3;
+    for (const w of PROCESSED) if (ws.includes(w) && !toks.includes(w)) sc -= 3;
+    if (it.src === 'usda' && /\b[A-Z]{3,}\b/.test(it.name)) sc -= 4;
+    if (ws.includes('whole') && !toks.includes('whole')) sc += 2;
+    hits.push([sc, it]);
+  }
+  return hits.sort((a, b) => b[0] - a[0]).slice(0, limit).map((h) => h[1]);
+};
+
+// rough small, medium and large portions by kind of food, in grams (the same table the app falls back on)
+const SIZES: Record<string, number[]> = {
+  Meals: [200, 350, 500], Restaurant: [200, 350, 500], 'Fast food': [150, 250, 400], Soups: [200, 250, 350],
+  Meat: [75, 100, 150], Fish: [75, 125, 175], 'Plant-based': [60, 90, 150], 'Cold cuts': [15, 30, 60],
+  Vegetables: [110, 165, 220], Potatoes: [140, 210, 280], Legumes: [180, 240, 300], Fruit: [75, 125, 200],
+  Bread: [35, 70, 105], Bakery: [20, 40, 80], Pastry: [20, 40, 80], Cereals: [30, 40, 60],
+  Dairy: [100, 150, 250], Cheese: [20, 40, 60], Eggs: [50, 100, 150], 'Nuts and seeds': [15, 25, 50],
+  Snacks: [25, 40, 100], Sweets: [15, 30, 60], 'Fats and oils': [5, 10, 20], Spreads: [10, 20, 40], Sauces: [15, 25, 50], Supplements: [15, 30, 60],
+};
+// which of RIVM's household measures is the everyday one: a normal slice or piece first, spoons and sips last (the app's ranking)
+const measureScore = (m: string, type: string, g: number): number => {
+  const t = m.toLowerCase();
+  if (/afval/.test(t) || (/^stuks/.test(t) && g < 20 && ['Vegetables', 'Potatoes'].includes(type))) return 2;
+  if (/^(hoeveelheid|voor 1 toastje|voor 1 beschuit|scheutje|snufje|mespunt)/.test(t)) return 0;
+  if (/^slok/.test(t)) return 1;
+  if (/^(theelepel|dessert\/paplepel|dessertlepel)/.test(t)) return 2;
+  if (/^(eetlepel|sauslepel)/.test(t)) return 3;
+  if (/^(opscheplepel|groentelepel|aardappellepel)/.test(t)) return ['Vegetables', 'Potatoes', 'Legumes'].includes(type) ? 7 : 4;
+  if (/^voor 1 snee\b/.test(t) && ['Spreads', 'Cheese', 'Cold cuts', 'Sweets', 'Fats and oils'].includes(type)) return 9;
+  if (/^voor/.test(t)) return 3;
+  if (/^stuks? (gemiddeld|middel|medium|\(m\)|gem)/.test(t) || /^stuks (medium|m) /.test(t)) return 12;
+  if (/^stuks$/.test(t) || /^stuks (enkel|kippen)/.test(t)) return 11;
+  if (/^glas$/.test(t)) return 10;
+  if (/^snee$/.test(t)) return 11;
+  if (/^(glas|beker\/mok|kopje|portie|schaaltje|soepbord|plakje)$/.test(t) || /^(glas|portie|plakje) /.test(t)) return 9;
+  if (/^(broodje\/bolletje)$/.test(t)) return 10;
+  if (/^stuks/.test(t)) return /klein|small|\(s\)|mini|kriel/.test(t) ? 6 : /groot|large|\(l\)|xl/.test(t) ? 5 : 8;
+  if (/^snee/.test(t)) return /zonder korst|dun/.test(t) ? 6 : 7;
+  return 5;
+};
+// the amounts a food can be given in, best first: RIVM's household measures (grams per one), else rough sizes by kind of food
+const portionsOf = (db: FoodDb, it: Food): { source: string; list: { label: string; grams: number }[] } => {
+  const rp = it.src === 'nevo' ? db.portie[it.ref] : null;
+  if (rp && rp.length) {
+    const ranked = rp.map((m: Json, i: number) => [measureScore(String(m[0]), it.type, Number(m[1])), i, m] as [number, number, Json]).sort((a, b) => b[0] - a[0] || a[1] - b[1]);
+    return { source: 'RIVM household measures, grams for one', list: ranked.map(([, , m]) => ({ label: String(m[0]), grams: Number(m[1]) })).filter((x) => x.grams > 0) };
+  }
+  const s = SIZES[it.type] || [50, 100, 200];
+  return { source: 'rough sizes for this kind of food', list: ['small', 'medium', 'large'].map((label, i) => ({ label, grams: s[i] })) };
+};
+const per = (it: Food, g: number) => { const k = g / 100; const r1 = (n: number) => Math.round(n * k * 10) / 10; return { kcal: Math.round(it.kcal * k), p: r1(it.p), c: r1(it.c), f: r1(it.f) }; };
+const caloriesShown = (root: Json): boolean => {
+  const v = root && root.settings && root.settings.show_calories;
+  if (typeof v === 'boolean') return v;
+  return !!(root && root.nutrition && (root.nutrition.kcal || root.nutrition.protein));
+};
+const foodEntries = (doc: Json): [string, Json][] => Object.entries((doc && doc.entries) || {}).filter(([, e]) => e && typeof e === 'object' && typeof (e as Json).name === 'string' && (e as Json).name).sort((a, b) => ((a[1] as Json).at || 0) - ((b[1] as Json).at || 0)) as [string, Json][];
+const totalsOf = (entries: [string, Json][]) => entries.reduce((t, [, e]) => ({ kcal: t.kcal + n0(e.kcal), p: Math.round((t.p + n0(e.p)) * 10) / 10, c: Math.round((t.c + n0(e.c)) * 10) / 10, f: Math.round((t.f + n0(e.f)) * 10) / 10 }), { kcal: 0, p: 0, c: 0, f: 0 });
+const macros = (n: { kcal: number; p: number; c: number; f: number }, cal: boolean) => ({ ...(cal ? { kcal: n.kcal } : {}), protein_g: n.p, carbs_g: n.c, fat_g: n.f });
+const entryOut = (id: string, e: Json, cal: boolean) => ({
+  id, name: e.name, ...macros({ kcal: n0(e.kcal), p: n0(e.p), c: n0(e.c), f: n0(e.f) }, cal), ...(n0(e.g) ? { amount: (e.est ? '~' : '') + e.g + ' ' + (e.u || 'g') } : {}),
+  ...(Array.isArray(e.items) ? { items: e.items.filter((i: Json) => i && typeof i === 'object').map((i: Json) => ({ name: String(i.name || ''), amount: (i.est ? '~' : '') + n0(i.g) + ' ' + (i.u || 'g'), ...macros({ kcal: n0(i.kcal), p: n0(i.p), c: n0(i.c), f: n0(i.f) }, cal) })) } : {}),
+});
+const foodDayOut = (date: string, doc: Json, root: Json) => {
+  const entries = foodEntries(doc);
+  const cal = caloriesShown(root);
+  const tg = (root && root.nutrition) || {};
+  return {
+    date, entries: entries.map(([id, e]) => entryOut(id, e, cal)), totals: macros(totalsOf(entries), cal),
+    targets: { ...(cal && tg.kcal ? { kcal: tg.kcal } : {}), ...(tg.protein ? { protein_g: tg.protein } : {}) },
+    ...(cal ? {} : { note: 'Calories are hidden for this person: leave them out of your answer.' }),
+  };
+};
+
 // ---------------------------------------------------------------- tools
-type Tool = { name: string; title: string; description: string; inputSchema: Json; annotations: Json; run: (db: Db, a: Json) => Promise<Json> };
+type Ctx = { foods: () => Promise<FoodDb> };
+type Tool = { name: string; title: string; description: string; inputSchema: Json; annotations: Json; run: (db: Db, a: Json, ctx: Ctx) => Promise<Json> };
 const RO = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 const WR = { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false }; // overwrites plan data
 const ADD = { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false }; // only adds
+const LOG = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false }; // only adds, and every call adds again
 const obj = (properties: Json, required: string[] = []) => ({ type: 'object', properties, required, additionalProperties: false });
 
 const TOOLS: Tool[] = [
@@ -295,6 +445,138 @@ const TOOLS: Tool[] = [
       return { saved: true };
     },
   },
+  {
+    name: 'search_foods', title: 'Search foods', annotations: RO,
+    inputSchema: obj({
+      query: { type: 'string', description: 'One or two plain words, Dutch or English, e.g. "gouda", "brown bread", "ei gekookt". Dutch compound words work: "brood" also finds "tarwebrood".' },
+      type: { type: 'string', description: 'Optional food group to stay inside, as shown in results: Bread, Cheese, Eggs, Dairy, Meat, Fish, Vegetables, Fruit, Potatoes, Grains, Legumes, Spreads, Sauces, Spices, Fats and oils, Nuts and seeds, Sweets, Snacks, Drinks, Meals and more.' },
+      queries: { type: 'array', maxItems: 8, description: 'Several foods in one go, instead of query: one search each, e.g. [{"query":"tarwebrood bruin"},{"query":"goudse","type":"Cheese"}].', items: obj({ query: { type: 'string' }, type: { type: 'string' } }, ['query']) },
+      limit: { type: 'integer', description: 'Results per search, 1 to 15. Default 10 for one search, 6 each for several.' },
+    }),
+    description: 'Search the NEVO (Dutch) and USDA food tables the app uses. Each result has a "food" id, its nutrients per 100 g, and the portions it can be given in (RIVM household measures such as a slice or a piece, with grams for one). Plain, common foods rank first. An empty result means nothing matched; one plain word in Dutch or English usually finds it.',
+    run: async (db, a, ctx) => {
+      const many = Array.isArray(a.queries) && a.queries.length > 0;
+      if (many && a.queries.length > 8) fail('At most 8 searches at once.');
+      const asked = (many ? a.queries : [{ query: a.query, type: a.type }]).map((x: Json) => ({ query: str(x && x.query, 80), type: str(x && x.type, 40) }));
+      if (asked.some((x: Json) => !x.query)) fail('Give a word to search for.');
+      const [fdb, root] = await Promise.all([ctx.foods(), db.get('yc')]);
+      const cal = caloriesShown(root);
+      const limit = int(a.limit, 1, 15, many ? 6 : 10);
+      const one = (x: { query: string; type: string }) => {
+        const hits = searchFoods(fdb, x.query, limit, x.type);
+        if (!hits.length) return { results: [], note: 'Nothing matched' + (x.type ? ' in that group' : '') + '. One plain word in Dutch or English usually works.' };
+        return {
+          results: hits.map((it) => {
+            const pt = portionsOf(fdb, it);
+            return { food: foodKey(it.src, it.ref), name: it.name, ...(it.alt ? { english: it.alt } : {}), type: it.type, unit: it.unit, per_100: macros(per(it, 100), cal), portions: pt.list.slice(0, 6), portions_are: pt.source };
+          }),
+        };
+      };
+      const hidden = cal ? {} : { calories: 'Calories are hidden for this person: leave them out of your answer.' };
+      if (many) return { searches: asked.map((x: Json) => ({ query: x.query, ...(x.type ? { type: x.type } : {}), ...one(x) })), ...hidden };
+      return { ...one(asked[0]), ...hidden };
+    },
+  },
+  {
+    name: 'get_food_day', title: 'Get food day', annotations: RO,
+    inputSchema: obj({ date: { type: 'string', description: 'YYYY-MM-DD. Leave out for today in the person\'s own time zone.' } }),
+    description: 'What the person ate on one day: every entry with its id, name, nutrients and items, the day totals, and their daily targets.',
+    run: async (db, a) => {
+      if (badDate(a.date)) fail(DATE_ERR);
+      const root = await db.get('yc');
+      const date = a.date || localToday(root);
+      return foodDayOut(date, await db.get('yc/food/' + date), root);
+    },
+  },
+  {
+    name: 'log_meals', title: 'Log meals', annotations: LOG,
+    inputSchema: obj({
+      date: { type: 'string', description: 'YYYY-MM-DD, the day it was eaten. Leave out for today in the person\'s own time zone.' },
+      meals: { type: 'array', minItems: 1, maxItems: 8, description: 'One entry per meal, in the order eaten. A whole day can go in one call.', items: obj({
+        name: { type: 'string', description: 'The person\'s own words, short, e.g. "2 slices bread with egg, cheese and mustard". Optional for a single food.' },
+        items: { type: 'array', minItems: 1, maxItems: 12, items: obj({
+          food: { type: 'string', description: 'The "food" value of a search result, e.g. "nevo:123".' },
+          grams: { type: 'number', description: 'Amount in grams (millilitres for drinks). Use it when the person said a weight.' },
+          portion: obj({ label: { type: 'string', description: 'A label from that food\'s "portions" in a search result.' }, count: { type: 'number', description: 'How many of that portion. Default 1.' } }, ['label']),
+          estimated: { type: 'boolean', description: 'false only when the person said the exact weight. Default true: a guess or a typical portion.' },
+        }, ['food']) },
+      }, ['items']) },
+    }, ['meals']),
+    description: 'Save one or more meals to the person\'s food log. Each food is a "food" id from a search plus grams or a portion; the app reads the nutrients from its tables, so there are no nutrient fields. A meal with several foods becomes one entry with its items inside; a meal with one food is a normal entry. Returns what was saved and the day totals.',
+    run: async (db, a, ctx) => {
+      if (badDate(a.date)) fail(DATE_ERR);
+      if (!Array.isArray(a.meals) || !a.meals.length) fail('Give at least one meal.');
+      if (a.meals.length > 8) fail('At most 8 meals in one go. Nothing was saved; send the rest in a second call.');
+      const [fdb, root] = await Promise.all([ctx.foods(), db.get('yc')]);
+      const date = a.date || localToday(root);
+      const meals = a.meals.map((m: Json) => {
+        const raw = Array.isArray(m && m.items) ? m.items : [];
+        if (raw.length > 12) fail('At most 12 foods in one meal. Nothing was saved; split it into two meals.');
+        const items = raw.map((it: Json) => {
+          const key = str(it && it.food, 40);
+          const food = fdb.byKey.get(key);
+          if (!food) fail('Unknown food "' + key + '". Use the "food" value of a search result, like "nevo:123".');
+          let g: number;
+          if (Number(it.grams) > 0) g = Number(it.grams);
+          else if (it.portion && it.portion.label) {
+            const list = portionsOf(fdb, food as Food).list;
+            const hit = list.find((x) => fold(x.label) === fold(it.portion.label));
+            if (!hit) fail('"' + it.portion.label + '" is not a portion of ' + (food as Food).name + '. Its portions: ' + list.slice(0, 8).map((x) => x.label + ' (' + x.grams + ' g)').join(', ') + '. Or give grams.');
+            const count = Number(it.portion.count);
+            g = (hit as { grams: number }).grams * (count > 0 ? count : 1);
+          } else fail('Give grams or a portion for ' + (food as Food).name + '.');
+          g = Math.round(g * 10) / 10;
+          if (!(g > 0) || g > 5000) fail('The amount of ' + (food as Food).name + ' has to be at least 0.1 and at most 5000.');
+          return { food: food as Food, g, est: it.estimated !== false, n: per(food as Food, g) };
+        });
+        if (!items.length) fail('Each meal needs at least one food.');
+        return { name: str(m.name, 80), items };
+      });
+      const path = 'yc/food/' + date;
+      const old = await db.get(path);
+      if (foodEntries(old).length + meals.length > 100) fail('That day already has a lot of entries. Read the day first.');
+      const add: Record<string, Json> = {};
+      let at = Date.now();
+      meals.forEach((m: Json) => {
+        const id = 'e' + at.toString(36) + Math.random().toString(36).slice(2, 5);
+        const sum = m.items.reduce((t: Json, x: Json) => ({ kcal: t.kcal + x.n.kcal, p: t.p + x.n.p, c: t.c + x.n.c, f: t.f + x.n.f }), { kcal: 0, p: 0, c: 0, f: 0 });
+        const r1 = (n: number) => Math.round(n * 10) / 10;
+        if (m.items.length === 1) {
+          const x = m.items[0];
+          add[id] = { name: m.name || x.food.name, ...x.n, at, src: x.food.src, ref: x.food.ref, g: x.g, u: x.food.unit, ...(x.est ? { est: true } : {}), via: 'connector' };
+        } else {
+          add[id] = {
+            name: m.name || m.items.map((x: Json) => x.food.name).join(', ').slice(0, 80), kcal: Math.round(sum.kcal), p: r1(sum.p), c: r1(sum.c), f: r1(sum.f), at, via: 'connector',
+            items: m.items.map((x: Json) => ({ src: x.food.src, ref: x.food.ref, name: x.food.name, g: x.g, u: x.food.unit, ...x.n, ...(x.est ? { est: true } : {}) })),
+          };
+        }
+        at += 1;
+      });
+      // the day is created only if it is missing, then the meals are merged in: two calls at once both keep their meals
+      if (!old) await db.ensure(path, { date, entries: {} });
+      const after = await db.patch(path, { entries: add });
+      const day = foodDayOut(date, after, root);
+      const cal = caloriesShown(root);
+      return { saved: Object.entries(add).map(([id, e]) => entryOut(id, e, cal)), day };
+    },
+  },
+  {
+    name: 'remove_food_entry', title: 'Remove food entry', annotations: WR,
+    inputSchema: obj({ date: { type: 'string', description: 'YYYY-MM-DD of the entry.' }, entry_id: { type: 'string', description: 'The id of a food entry, as listed for that day.' } }, ['date', 'entry_id']),
+    description: 'Remove one entry from the food log, for when the person asks or an entry was logged by mistake. The entry is gone from their day; it can be logged again.',
+    run: async (db, a) => {
+      if (!realDate(a.date)) fail(DATE_ERR);
+      const path = 'yc/food/' + a.date;
+      const id = str(a.entry_id, 60);
+      const [doc, root] = await Promise.all([db.get(path), db.get('yc')]);
+      const entries = doc && doc.entries && typeof doc.entries === 'object' ? doc.entries : {};
+      const gone = Object.prototype.hasOwnProperty.call(entries, id) ? entries[id] : null;
+      if (!id || !gone || typeof gone !== 'object' || !gone.name) fail('No entry with that id on that day. Read the day to see its entries.');
+      // one merge step that empties this entry (the app skips empty entries), so an entry added meanwhile stays
+      const after = await db.patch(path, { entries: { [id]: null } });
+      return { removed: entryOut(id, gone, caloriesShown(root)), day: foodDayOut(a.date, after, root) };
+    },
+  },
 ];
 
 // ---------------------------------------------------------------- MCP over HTTP
@@ -304,6 +586,8 @@ const rpcOk = (id: Json, result: Json) => ({ jsonrpc: '2.0', id, result });
 const rpcErr = (id: Json, code: number, message: string) => ({ jsonrpc: '2.0', id: id ?? null, error: { code, message } });
 
 export const createHandler = (env: Env, f: typeof fetch = fetch) => {
+  let foodsLoad: Promise<FoodDb> | null = null; // the food tables, fetched once per running copy of the function
+  const ctx: Ctx = { foods: () => { if (!foodsLoad) foodsLoad = loadFoods(env, f).catch((e) => { foodsLoad = null; throw e; }); return foodsLoad; } };
   const seen = new Map<string, { id: string; until: number }>(); // token -> user, so a busy chat does not ask Supabase every time
   const who = async (token: string): Promise<string | null> => {
     if (token.length > 4096 || token.split('.').length !== 3) return null; // not a JWT: no need to ask Supabase
@@ -331,7 +615,7 @@ export const createHandler = (env: Env, f: typeof fetch = fetch) => {
       const tool = TOOLS.find((t) => t.name === (m.params && m.params.name));
       if (!tool) return rpcErr(id, -32602, 'Unknown tool');
       try {
-        const out = await tool.run(db, (m.params && m.params.arguments) || {});
+        const out = await tool.run(db, (m.params && m.params.arguments) || {}, ctx);
         return rpcOk(id, { content: [{ type: 'text', text: text(out) }] });
       } catch (e) {
         return rpcOk(id, { content: [{ type: 'text', text: e instanceof ToolError ? e.message : 'Something went wrong. Try again.' }], isError: true });
@@ -364,5 +648,5 @@ export const createHandler = (env: Env, f: typeof fetch = fetch) => {
 
 if (typeof Deno !== 'undefined' && Deno.serve) {
   const url = Deno.env.get('SUPABASE_URL') as string;
-  Deno.serve(createHandler({ url, anonKey: (Deno.env.get('YC_ANON_KEY') || Deno.env.get('SUPABASE_ANON_KEY')) as string, publicUrl: Deno.env.get('MCP_PUBLIC_URL') || url + '/functions/v1/mcp' }));
+  Deno.serve(createHandler({ url, anonKey: (Deno.env.get('YC_ANON_KEY') || Deno.env.get('SUPABASE_ANON_KEY')) as string, publicUrl: Deno.env.get('MCP_PUBLIC_URL') || url + '/functions/v1/mcp', siteUrl: Deno.env.get('YC_SITE_URL') || 'https://godellovbp.github.io/yes-coach/' }));
 }
