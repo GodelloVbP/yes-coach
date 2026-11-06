@@ -61,9 +61,12 @@ const database = (env: Env, token: string, userId: string, f: typeof fetch) => {
       const rows = await call('docs?' + new URLSearchParams({ select: 'data', path: 'eq.' + path, limit: '1' }).toString());
       return rows.length ? rows[0].data : null;
     },
-    // merge a patch into an existing document in one step (the app's yc_update), so a write from the app at the same moment is not lost
-    patch: async (path: string, patch: Json): Promise<void> => {
-      await call('rpc/yc_update', { method: 'POST', body: JSON.stringify({ p_path: path, p_patch: patch }) });
+    // merge a patch into an existing document in one step (the app's yc_update), so a write from the app or a parallel call
+    // at the same moment is not lost; returns the document as it is after the merge
+    patch: async (path: string, patch: Json): Promise<Json> => call('rpc/yc_update', { method: 'POST', body: JSON.stringify({ p_path: path, p_patch: patch }) }),
+    // create a document only if it is not there yet; an existing one is left exactly as it is
+    ensure: async (path: string, data: Json): Promise<void> => {
+      await call('docs?on_conflict=user_id,path', { method: 'POST', headers: { prefer: 'resolution=ignore-duplicates,return=minimal' }, body: JSON.stringify({ user_id: userId, path, data, updated_at: new Date().toISOString() }) });
     },
     put: async (path: string, data: Json): Promise<void> => {
       await call('docs?on_conflict=user_id,path', { method: 'POST', headers: { prefer: 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify({ user_id: userId, path, data, updated_at: new Date().toISOString() }) });
@@ -126,6 +129,24 @@ type FoodDb = { items: Food[]; byKey: Map<string, Food>; portie: Record<string, 
 const fold = (t: Json): string => String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const wordsOf = (t: Json): string[] => fold(t).split(/[^a-z0-9]+/).filter(Boolean).map((w) => (w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w));
 const foodKey = (src: string, ref: Json): string => src + ':' + ref;
+const realDate = (v: Json): boolean => isDate(v) && !Number.isNaN(Date.parse(v + 'T00:00:00Z')) && new Date(v + 'T00:00:00Z').toISOString().slice(0, 10) === v;
+// today in the person's own time zone (the app saves it in root.settings.tz); most people using Yes Coach! are in Western Europe
+const localToday = (root: Json): string => {
+  const tz = root && root.settings && typeof root.settings.tz === 'string' ? root.settings.tz : '';
+  for (const zone of [tz, 'Europe/Amsterdam']) {
+    if (!zone) continue;
+    try {
+      const parts = new Intl.DateTimeFormat('en-GB', { timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+      const get = (t: string) => (parts.find((x) => x.type === t) || { value: '' }).value;
+      const d = get('year') + '-' + get('month') + '-' + get('day');
+      if (realDate(d)) return d;
+    } catch (e) { /* not a time zone this runtime knows */ }
+  }
+  return today();
+};
+const badDate = (v: Json): boolean => v != null && v !== '' && !realDate(v);
+const DATE_ERR = 'date must be a real day, like 2026-11-06.';
+const n0 = (v: Json): number => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
 const FOOD_FILES = ['foods-nevo.json', 'foods-usda.json', 'portions-nevo.json'];
 
 const loadFoods = async (env: Env, f: typeof fetch): Promise<FoodDb> => {
@@ -220,12 +241,12 @@ const caloriesShown = (root: Json): boolean => {
   if (typeof v === 'boolean') return v;
   return !!(root && root.nutrition && (root.nutrition.kcal || root.nutrition.protein));
 };
-const foodEntries = (doc: Json): [string, Json][] => Object.entries((doc && doc.entries) || {}).filter(([, e]) => e && (e as Json).name).sort((a, b) => ((a[1] as Json).at || 0) - ((b[1] as Json).at || 0)) as [string, Json][];
-const totalsOf = (entries: [string, Json][]) => entries.reduce((t, [, e]) => ({ kcal: t.kcal + (e.kcal || 0), p: Math.round((t.p + (e.p || 0)) * 10) / 10, c: Math.round((t.c + (e.c || 0)) * 10) / 10, f: Math.round((t.f + (e.f || 0)) * 10) / 10 }), { kcal: 0, p: 0, c: 0, f: 0 });
+const foodEntries = (doc: Json): [string, Json][] => Object.entries((doc && doc.entries) || {}).filter(([, e]) => e && typeof e === 'object' && typeof (e as Json).name === 'string' && (e as Json).name).sort((a, b) => ((a[1] as Json).at || 0) - ((b[1] as Json).at || 0)) as [string, Json][];
+const totalsOf = (entries: [string, Json][]) => entries.reduce((t, [, e]) => ({ kcal: t.kcal + n0(e.kcal), p: Math.round((t.p + n0(e.p)) * 10) / 10, c: Math.round((t.c + n0(e.c)) * 10) / 10, f: Math.round((t.f + n0(e.f)) * 10) / 10 }), { kcal: 0, p: 0, c: 0, f: 0 });
 const macros = (n: { kcal: number; p: number; c: number; f: number }, cal: boolean) => ({ ...(cal ? { kcal: n.kcal } : {}), protein_g: n.p, carbs_g: n.c, fat_g: n.f });
 const entryOut = (id: string, e: Json, cal: boolean) => ({
-  id, name: e.name, ...macros({ kcal: e.kcal || 0, p: e.p || 0, c: e.c || 0, f: e.f || 0 }, cal), ...(e.g ? { amount: e.g + ' ' + (e.u || 'g') } : {}),
-  ...(Array.isArray(e.items) ? { items: e.items.map((i: Json) => ({ name: i.name, amount: (i.est ? '~' : '') + i.g + ' ' + (i.u || 'g'), ...macros({ kcal: i.kcal || 0, p: i.p || 0, c: i.c || 0, f: i.f || 0 }, cal) })) } : {}),
+  id, name: e.name, ...macros({ kcal: n0(e.kcal), p: n0(e.p), c: n0(e.c), f: n0(e.f) }, cal), ...(n0(e.g) ? { amount: (e.est ? '~' : '') + e.g + ' ' + (e.u || 'g') } : {}),
+  ...(Array.isArray(e.items) ? { items: e.items.filter((i: Json) => i && typeof i === 'object').map((i: Json) => ({ name: String(i.name || ''), amount: (i.est ? '~' : '') + n0(i.g) + ' ' + (i.u || 'g'), ...macros({ kcal: n0(i.kcal), p: n0(i.p), c: n0(i.c), f: n0(i.f) }, cal) })) } : {}),
 });
 const foodDayOut = (date: string, doc: Json, root: Json) => {
   const entries = foodEntries(doc);
@@ -429,40 +450,48 @@ const TOOLS: Tool[] = [
     inputSchema: obj({
       query: { type: 'string', description: 'One or two plain words, Dutch or English, e.g. "gouda", "brown bread", "ei gekookt". Dutch compound words work: "brood" also finds "tarwebrood".' },
       type: { type: 'string', description: 'Optional food group to stay inside, as shown in results: Bread, Cheese, Eggs, Dairy, Meat, Fish, Vegetables, Fruit, Potatoes, Grains, Legumes, Spreads, Sauces, Spices, Fats and oils, Nuts and seeds, Sweets, Snacks, Drinks, Meals and more.' },
-      limit: { type: 'integer', description: '1 to 15, default 10.' },
-    }, ['query']),
+      queries: { type: 'array', maxItems: 8, description: 'Several foods in one go, instead of query: one search each, e.g. [{"query":"tarwebrood bruin"},{"query":"goudse","type":"Cheese"}].', items: obj({ query: { type: 'string' }, type: { type: 'string' } }, ['query']) },
+      limit: { type: 'integer', description: 'Results per search, 1 to 15. Default 10 for one search, 6 each for several.' },
+    }),
     description: 'Search the NEVO (Dutch) and USDA food tables the app uses. Each result has a "food" id, its nutrients per 100 g, and the portions it can be given in (RIVM household measures such as a slice or a piece, with grams for one). Plain, common foods rank first. An empty result means nothing matched; one plain word in Dutch or English usually finds it.',
     run: async (db, a, ctx) => {
-      const q = str(a.query, 80);
-      if (!q) fail('Give a word to search for.');
+      const many = Array.isArray(a.queries) && a.queries.length > 0;
+      if (many && a.queries.length > 8) fail('At most 8 searches at once.');
+      const asked = (many ? a.queries : [{ query: a.query, type: a.type }]).map((x: Json) => ({ query: str(x && x.query, 80), type: str(x && x.type, 40) }));
+      if (asked.some((x: Json) => !x.query)) fail('Give a word to search for.');
       const [fdb, root] = await Promise.all([ctx.foods(), db.get('yc')]);
       const cal = caloriesShown(root);
-      const type = str(a.type, 40);
-      const hits = searchFoods(fdb, q, int(a.limit, 1, 15, 10), type);
-      if (!hits.length) return { results: [], note: 'Nothing matched' + (type ? ' in that group' : '') + '. One plain word in Dutch or English usually works.' };
-      return {
-        results: hits.map((it) => {
-          const pt = portionsOf(fdb, it);
-          return { food: foodKey(it.src, it.ref), name: it.name, ...(it.alt ? { english: it.alt } : {}), type: it.type, unit: it.unit, per_100: macros(per(it, 100), cal), portions: pt.list.slice(0, 6), portions_are: pt.source };
-        }),
-        ...(cal ? {} : { note: 'Calories are hidden for this person: leave them out of your answer.' }),
+      const limit = int(a.limit, 1, 15, many ? 6 : 10);
+      const one = (x: { query: string; type: string }) => {
+        const hits = searchFoods(fdb, x.query, limit, x.type);
+        if (!hits.length) return { results: [], note: 'Nothing matched' + (x.type ? ' in that group' : '') + '. One plain word in Dutch or English usually works.' };
+        return {
+          results: hits.map((it) => {
+            const pt = portionsOf(fdb, it);
+            return { food: foodKey(it.src, it.ref), name: it.name, ...(it.alt ? { english: it.alt } : {}), type: it.type, unit: it.unit, per_100: macros(per(it, 100), cal), portions: pt.list.slice(0, 6), portions_are: pt.source };
+          }),
+        };
       };
+      const hidden = cal ? {} : { calories: 'Calories are hidden for this person: leave them out of your answer.' };
+      if (many) return { searches: asked.map((x: Json) => ({ query: x.query, ...(x.type ? { type: x.type } : {}), ...one(x) })), ...hidden };
+      return { ...one(asked[0]), ...hidden };
     },
   },
   {
     name: 'get_food_day', title: 'Get food day', annotations: RO,
-    inputSchema: obj({ date: { type: 'string', description: 'YYYY-MM-DD. Leave out for today (UTC).' } }),
+    inputSchema: obj({ date: { type: 'string', description: 'YYYY-MM-DD. Leave out for today in the person\'s own time zone.' } }),
     description: 'What the person ate on one day: every entry with its id, name, nutrients and items, the day totals, and their daily targets.',
     run: async (db, a) => {
-      const date = a.date == null || a.date === '' ? today() : isDate(a.date) ? a.date : fail('date must look like 2026-11-06.');
-      const [doc, root] = await Promise.all([db.get('yc/food/' + date), db.get('yc')]);
-      return foodDayOut(date, doc, root);
+      if (badDate(a.date)) fail(DATE_ERR);
+      const root = await db.get('yc');
+      const date = a.date || localToday(root);
+      return foodDayOut(date, await db.get('yc/food/' + date), root);
     },
   },
   {
     name: 'log_meals', title: 'Log meals', annotations: LOG,
     inputSchema: obj({
-      date: { type: 'string', description: 'YYYY-MM-DD, the day it was eaten. Leave out for today (UTC); pass it when the person\'s own date may differ or the meal was on another day.' },
+      date: { type: 'string', description: 'YYYY-MM-DD, the day it was eaten. Leave out for today in the person\'s own time zone.' },
       meals: { type: 'array', minItems: 1, maxItems: 8, description: 'One entry per meal, in the order eaten. A whole day can go in one call.', items: obj({
         name: { type: 'string', description: 'The person\'s own words, short, e.g. "2 slices bread with egg, cheese and mustard". Optional for a single food.' },
         items: { type: 'array', minItems: 1, maxItems: 12, items: obj({
@@ -475,11 +504,15 @@ const TOOLS: Tool[] = [
     }, ['meals']),
     description: 'Save one or more meals to the person\'s food log. Each food is a "food" id from a search plus grams or a portion; the app reads the nutrients from its tables, so there are no nutrient fields. A meal with several foods becomes one entry with its items inside; a meal with one food is a normal entry. Returns what was saved and the day totals.',
     run: async (db, a, ctx) => {
-      const fdb = await ctx.foods();
-      const date = a.date == null || a.date === '' ? today() : isDate(a.date) ? a.date : fail('date must look like 2026-11-06.');
+      if (badDate(a.date)) fail(DATE_ERR);
       if (!Array.isArray(a.meals) || !a.meals.length) fail('Give at least one meal.');
-      const meals = a.meals.slice(0, 8).map((m: Json) => {
-        const items = (Array.isArray(m && m.items) ? m.items : []).slice(0, 12).map((it: Json) => {
+      if (a.meals.length > 8) fail('At most 8 meals in one go. Nothing was saved; send the rest in a second call.');
+      const [fdb, root] = await Promise.all([ctx.foods(), db.get('yc')]);
+      const date = a.date || localToday(root);
+      const meals = a.meals.map((m: Json) => {
+        const raw = Array.isArray(m && m.items) ? m.items : [];
+        if (raw.length > 12) fail('At most 12 foods in one meal. Nothing was saved; split it into two meals.');
+        const items = raw.map((it: Json) => {
           const key = str(it && it.food, 40);
           const food = fdb.byKey.get(key);
           if (!food) fail('Unknown food "' + key + '". Use the "food" value of a search result, like "nevo:123".');
@@ -492,15 +525,15 @@ const TOOLS: Tool[] = [
             const count = Number(it.portion.count);
             g = (hit as { grams: number }).grams * (count > 0 ? count : 1);
           } else fail('Give grams or a portion for ' + (food as Food).name + '.');
-          if (!(g > 0) || g > 5000) fail('The amount of ' + (food as Food).name + ' has to be more than 0 and at most 5000.');
           g = Math.round(g * 10) / 10;
+          if (!(g > 0) || g > 5000) fail('The amount of ' + (food as Food).name + ' has to be at least 0.1 and at most 5000.');
           return { food: food as Food, g, est: it.estimated !== false, n: per(food as Food, g) };
         });
         if (!items.length) fail('Each meal needs at least one food.');
         return { name: str(m.name, 80), items };
       });
       const path = 'yc/food/' + date;
-      const [old, root] = await Promise.all([db.get(path), db.get('yc')]);
+      const old = await db.get(path);
       if (foodEntries(old).length + meals.length > 100) fail('That day already has a lot of entries. Read the day first.');
       const add: Record<string, Json> = {};
       let at = Date.now();
@@ -519,9 +552,10 @@ const TOOLS: Tool[] = [
         }
         at += 1;
       });
-      if (old) await db.patch(path, { entries: add });
-      else await db.put(path, { date, entries: add });
-      const day = foodDayOut(date, { ...(old || {}), entries: { ...((old && old.entries) || {}), ...add } }, root);
+      // the day is created only if it is missing, then the meals are merged in: two calls at once both keep their meals
+      if (!old) await db.ensure(path, { date, entries: {} });
+      const after = await db.patch(path, { entries: add });
+      const day = foodDayOut(date, after, root);
       const cal = caloriesShown(root);
       return { saved: Object.entries(add).map(([id, e]) => entryOut(id, e, cal)), day };
     },
@@ -531,17 +565,16 @@ const TOOLS: Tool[] = [
     inputSchema: obj({ date: { type: 'string', description: 'YYYY-MM-DD of the entry.' }, entry_id: { type: 'string', description: 'The id of a food entry, as listed for that day.' } }, ['date', 'entry_id']),
     description: 'Remove one entry from the food log, for when the person asks or an entry was logged by mistake. The entry is gone from their day; it can be logged again.',
     run: async (db, a) => {
-      if (!isDate(a.date)) fail('date must look like 2026-11-06.');
+      if (!realDate(a.date)) fail(DATE_ERR);
       const path = 'yc/food/' + a.date;
       const id = str(a.entry_id, 60);
       const [doc, root] = await Promise.all([db.get(path), db.get('yc')]);
-      const gone = doc && doc.entries && doc.entries[id];
-      if (!gone) fail('No entry with that id on that day. Read the day to see its entries.');
-      const rest = { ...doc.entries };
-      delete rest[id];
-      const next = { ...doc, entries: rest };
-      await db.put(path, next);
-      return { removed: entryOut(id, gone, caloriesShown(root)), day: foodDayOut(a.date, next, root) };
+      const entries = doc && doc.entries && typeof doc.entries === 'object' ? doc.entries : {};
+      const gone = Object.prototype.hasOwnProperty.call(entries, id) ? entries[id] : null;
+      if (!id || !gone || typeof gone !== 'object' || !gone.name) fail('No entry with that id on that day. Read the day to see its entries.');
+      // one merge step that empties this entry (the app skips empty entries), so an entry added meanwhile stays
+      const after = await db.patch(path, { entries: { [id]: null } });
+      return { removed: entryOut(id, gone, caloriesShown(root)), day: foodDayOut(a.date, after, root) };
     },
   },
 ];

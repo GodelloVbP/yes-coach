@@ -4690,8 +4690,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const foodRef = (date) => S.rootRef.collection('food').doc(date);
   const fnum = (v) => { const t = String(v == null ? '' : v).trim().replace(',', '.'); if (!t) return null; const n = Number(t); return Number.isFinite(n) && n >= 0 ? Math.round(n * 10) / 10 : NaN; };
   const big = (n) => Math.round(n).toLocaleString('en-US');
-  const entriesOf = (date) => Object.entries(((S.food[date] || {}).entries) || {}).filter(([, e]) => e && e.name).sort((a, b) => (a[1].at || 0) - (b[1].at || 0));
-  const dayTotals = (date) => entriesOf(date).reduce((t, [, e]) => { t.kcal += e.kcal || 0; t.p += e.p || 0; t.c += e.c || 0; t.f += e.f || 0; t.n += 1; if (e.kcal != null) t.k += 1; if (e.p != null || e.c != null || e.f != null) t.m += 1; return t; }, { kcal: 0, p: 0, c: 0, f: 0, n: 0, k: 0, m: 0 });
+  // a removed entry can be left empty (null) in the day, and a connected app could store anything: only real entries count
+  const entriesOf = (date) => Object.entries(((S.food[date] || {}).entries) || {}).filter(([, e]) => e && typeof e === 'object' && typeof e.name === 'string' && e.name).sort((a, b) => (a[1].at || 0) - (b[1].at || 0));
+  const n0 = (v) => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
+  const dayTotals = (date) => entriesOf(date).reduce((t, [, e]) => { t.kcal += n0(e.kcal); t.p += n0(e.p); t.c += n0(e.c); t.f += n0(e.f); t.n += 1; if (e.kcal != null) t.k += 1; if (e.p != null || e.c != null || e.f != null) t.m += 1; return t; }, { kcal: 0, p: 0, c: 0, f: 0, n: 0, k: 0, m: 0 });
   const targets = () => (S.root && S.root.nutrition) || {};
   // every food you logged before, newest use first: feeds the quick-add chips and fills in numbers when you type a known name
   const knownFoods = () => {
@@ -4858,16 +4860,18 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (!list.length) { box.append(h('p', 'note', 'Nothing logged ' + (S.fday === today() ? 'today' : 'on this day') + ' yet.')); return; }
     list.forEach(([id, e]) => {
       const row = h('div', 'fd-row');
-      const mac = [e.p != null ? 'P ' + num(e.p) + ' g' : '', e.c != null ? 'C ' + num(e.c) + ' g' : '', e.f != null ? 'F ' + num(e.f) + ' g' : ''].filter(Boolean).join(' · ');
+      const isN = (v) => typeof v === 'number' && Number.isFinite(v);
+      const mac = [isN(e.p) ? 'P ' + num(e.p) + ' g' : '', isN(e.c) ? 'C ' + num(e.c) + ' g' : '', isN(e.f) ? 'F ' + num(e.f) + ' g' : ''].filter(Boolean).join(' · ');
       const x = plainBtn('icon', '×', 'Remove ' + e.name, () => removeFood(id));
       const cal = showCal();
-      row.append(h('span', 'fd-row-name', e.name + (e.g ? ' · ' + (e.est ? '~' : '') + num(e.g) + ' ' + (e.u || 'g') : '')), h('span', 'fd-row-kcal', cal && e.kcal != null ? big(e.kcal) + ' kcal' : ''), x);
+      row.append(h('span', 'fd-row-name', e.name + (isN(e.g) && e.g > 0 ? ' · ' + (e.est ? '~' : '') + num(e.g) + ' ' + (e.u === 'ml' ? 'ml' : 'g') : '')), h('span', 'fd-row-kcal', cal && isN(e.kcal) ? big(e.kcal) + ' kcal' : ''), x);
       if (mac) row.append(h('span', 'fd-row-mac', mac));
       // a meal with several foods stays one line; what is in it opens underneath
-      if (Array.isArray(e.items) && e.items.length > 1) {
+      const items = Array.isArray(e.items) ? e.items.filter((i) => i && typeof i === 'object' && typeof i.name === 'string') : [];
+      if (items.length > 1) {
         const det = h('details', 'fd-items');
         const ul = h('ul');
-        e.items.forEach((i) => ul.append(h('li', '', i.name + ' · ' + (i.est ? '~' : '') + num(i.g) + ' ' + (i.u || 'g') + (i.p != null ? ' · P ' + num(i.p) + ' g' : ''))));
+        items.forEach((i) => ul.append(h('li', '', i.name + (isN(i.g) ? ' · ' + (i.est ? '~' : '') + num(i.g) + ' ' + (i.u === 'ml' ? 'ml' : 'g') : '') + (isN(i.p) ? ' · P ' + num(i.p) + ' g' : ''))));
         det.append(h('summary', '', 'What is in it'), ul);
         row.append(det);
       }
@@ -7385,7 +7389,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const cur = S.food[id];
       if (!cur) return;
       const add = {};
-      Object.entries(doc.entries || {}).forEach(([k, e]) => { if (!(cur.entries || {})[k]) add[k] = e; });
+      Object.entries(doc.entries || {}).forEach(([k, e]) => { if (e && typeof e === 'object' && e.name && !(cur.entries || {})[k]) add[k] = e; });
       if (Object.keys(add).length) plan.foodAdds.push([id, add]);
     });
     plan.counts.foodEntries = plan.foodAdds.reduce((n, [, add]) => n + Object.keys(add).length, 0);
@@ -7552,10 +7556,21 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // the store delivers frozen objects; keep our own editable copies
   const toMap = (snap) => { const m = {}; snap.docs.forEach((d) => { m[d.id] = clone(d.data()); }); return m; };
   let resumed = false;
+  // the device's time zone in root.settings.tz, so a connected AI logs food on the person's own day instead of UTC's
+  let tzDone = false;
+  const syncTz = () => {
+    if (tzDone || !S.root || !S.rootRef) return;
+    tzDone = true;
+    let tz = '';
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { tz = ''; }
+    const st = S.root.settings || {};
+    if (tz && st.tz !== tz) saveRoot({ settings: Object.assign({}, st, { tz }) }).catch(() => {});
+  };
   const refresh = () => {
     S.ready = Object.values(S.loaded).every(Boolean);
     if (!S.ready) return;
     if (!resumed) { resumed = true; resumeQueue(); }
+    syncTz();
     renderTrain();
     if (S.view === 'progress') renderProgress();
     if (S.view === 'food') renderFood();

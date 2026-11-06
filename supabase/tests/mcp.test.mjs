@@ -19,7 +19,7 @@ const mock = http.createServer((req, res) => {
   const send = (code, body) => { res.writeHead(code, { 'content-type': 'application/json' }); res.end(body == null ? '' : JSON.stringify(body)); };
   let buf = '';
   req.on('data', (c) => (buf += c));
-  req.on('end', () => {
+  req.on('end', () => setTimeout(() => {
     if (url.pathname.startsWith('/site/')) { // the app's own site: the food tables
       try { const b = readFileSync(new URL('../../' + url.pathname.slice(6), import.meta.url)); res.writeHead(200, { 'content-type': 'application/json' }); return res.end(b); } catch (e) { return send(404, {}); }
     }
@@ -50,11 +50,12 @@ const mock = http.createServer((req, res) => {
       const b = JSON.parse(buf);
       if (b.user_id !== uid) return send(403, { message: 'rls' }); // with check (user_id = auth.uid())
       const i = rows.findIndex((r) => r.user_id === uid && r.path === b.path);
+      if (i >= 0 && /ignore-duplicates/.test(req.headers.prefer || '')) return send(201, null); // on conflict do nothing
       if (i >= 0) rows[i] = b; else rows.push(b);
       return send(201, null);
     }
     send(405, {});
-  });
+  }, (url.searchParams.get('path') || '').includes('yc/food/') ? 15 : 0));
 });
 await new Promise((r) => mock.listen(0, r));
 const base = 'http://127.0.0.1:' + mock.address().port;
@@ -223,14 +224,15 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
 // ---- food: search, log, read, remove
 {
   const T = 'tok.anna.x';
-  const day = new Date().toISOString().slice(0, 10);
+  const dayIn = (tz) => { const p = new Intl.DateTimeFormat('en-GB', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()); const g = (t) => p.find((x) => x.type === t).value; return g('year') + '-' + g('month') + '-' + g('day'); };
+  const day = dayIn('Europe/Amsterdam'); // no time zone saved yet: Western Europe
   const foodRow = (u, d) => rows.find((x) => x.user_id === u && x.path === 'yc/food/' + d);
   const search = async (q, limit) => (await call(T, 'search_foods', { query: q, limit })).json;
 
   // search
   let r = await search('kaas');
   ok(r.results.length === 10 && r.results.every((x) => /^(nevo|usda):/.test(x.food) && x.per_100.protein_g != null && x.portions.length && x.portions_are), 'search: ids, nutrients per 100, portions');
-  ok(!('kcal' in r.results[0].per_100) && /hidden/.test(r.note), 'calories hidden by default, and the result says so');
+  ok(!('kcal' in r.results[0].per_100) && /hidden/.test(r.calories), 'calories hidden by default, and the result says so');
   ok((await search('kaas', 3)).results.length === 3, 'search limit');
   r = await search('bruin brood');
   ok(r.results.some((x) => x.name === 'Tarwebrood bruin'), 'a Dutch compound word is found by its last part: ' + r.results.map((x) => x.name));
@@ -286,7 +288,11 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   await bad({ meals: [{ items: [{ food: bread.food, grams: 9000 }] }] }, /at most 5000/, 'absurd amount');
   await bad({ meals: [{ items: [] }] }, /at least one food/, 'empty meal');
   await bad({ meals: [] }, /at least one meal/, 'no meals');
-  await bad({ date: '1 Nov', meals: [{ items: [{ food: bread.food, grams: 10 }] }] }, /date must look like/, 'bad date');
+  await bad({ date: '1 Nov', meals: [{ items: [{ food: bread.food, grams: 10 }] }] }, /date must be a real day/, 'bad date');
+  await bad({ date: '2026-02-30', meals: [{ items: [{ food: bread.food, grams: 10 }] }] }, /date must be a real day/, 'a day that does not exist');
+  await bad({ meals: [{ items: [{ food: bread.food, grams: 0.01 }] }] }, /at least 0.1/, 'an amount that rounds to nothing');
+  await bad({ meals: Array.from({ length: 9 }, () => ({ items: [{ food: bread.food, grams: 10 }] })) }, /At most 8 meals.*Nothing was saved/, 'too many meals is refused, not cut short');
+  await bad({ meals: [{ items: Array.from({ length: 13 }, () => ({ food: bread.food, grams: 10 })) }] }, /At most 12 foods.*Nothing was saved/, 'too many foods in a meal is refused, not cut short');
   ok(JSON.stringify(rows.filter((x) => x.path.startsWith('yc/food/'))) === before, 'a refused meal writes nothing');
   ok(!rows.some((x) => x.user_id === B && x.path.startsWith('yc/food/')), 'nothing written to ben');
 
@@ -305,12 +311,17 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
 
   // remove
   const sessionsBefore = snapshot();
+  for (const odd of ['__proto__', 'constructor', 'hasOwnProperty', 'toString', '']) {
+    const before = JSON.stringify(foodRow(A, day).data);
+    ok((await call(T, 'remove_food_entry', { date: day, entry_id: odd })).err && JSON.stringify(foodRow(A, day).data) === before, 'an id that is not an entry ("' + odd + '") is refused and changes nothing');
+  }
+  ok((await call(T, 'remove_food_entry', { date: '2026-13-01', entry_id: id1 })).err, 'remove needs a real day');
   r = await call(T, 'remove_food_entry', { date: day, entry_id: id1 });
-  ok(!r.err && r.json.removed.id === id1 && r.json.day.entries.length === 1 && !(id1 in foodRow(A, day).data.entries), 'an entry is removed and the rest stays');
+  ok(!r.err && r.json.removed.id === id1 && r.json.day.entries.length === 1 && !foodRow(A, day).data.entries[id1], 'an entry is removed and the rest stays');
   ok((await call(T, 'remove_food_entry', { date: day, entry_id: id1 })).err, 'removing it twice fails');
   ok((await call(T, 'remove_food_entry', { date: '2026-01-01', entry_id: 'x' })).err, 'nothing to remove on an empty day');
-  ok((await call('tok.ben.x', 'remove_food_entry', { date: day, entry_id: Object.keys(foodRow(A, day).data.entries)[0] })).err, 'ben can not remove her entry');
-  ok(Object.keys(foodRow(A, day).data.entries).length === 1 && snapshot() === sessionsBefore, 'her other entry and her logged sessions are untouched');
+  ok((await call('tok.ben.x', 'remove_food_entry', { date: day, entry_id: Object.entries(foodRow(A, day).data.entries).find(([, e]) => e)[0] })).err, 'ben can not remove her entry');
+  ok(Object.values(foodRow(A, day).data.entries).filter(Boolean).length === 1 && snapshot() === sessionsBefore, 'her other entry and her logged sessions are untouched');
 
   // the food tables not loading is a tool error that recovers
   let down = true;
@@ -320,6 +331,72 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok(out.isError && /could not be loaded/.test(out.content[0].text), 'tables down -> tool error');
   down = false;
   ok(!(await ask()).isError, 'and it works again once they load, without a restart');
+}
+
+// ---- food: things that went wrong in review, each one checked
+{
+  const T = 'tok.anna.x';
+  const foodRow = (d) => rows.find((x) => x.user_id === A && x.path === 'yc/food/' + d);
+  const one = async (q) => (await call(T, 'search_foods', { query: q, limit: 1 })).json.results[0].food;
+  const bread = await one('tarwebrood bruin'), egg = await one('ei gekookt');
+  const meal = (name, food) => ({ name, items: [{ food, grams: 50 }, { food: bread, grams: 35 }] });
+
+  // two calls at the same moment on an empty day: both meals stay
+  let rs = await Promise.all([call(T, 'log_meals', { date: '2026-10-20', meals: [meal('Breakfast', egg)] }), call(T, 'log_meals', { date: '2026-10-20', meals: [meal('Lunch', egg)] })]);
+  ok(rs.every((x) => !x.err), rs.map((x) => x.text).join(' | '));
+  ok(Object.values(foodRow('2026-10-20').data.entries).map((e) => e.name).sort().join() === 'Breakfast,Lunch', 'parallel meals on a new day are both kept: ' + Object.values(foodRow('2026-10-20').data.entries).map((e) => e.name));
+  ok(foodRow('2026-10-20').data.date === '2026-10-20', 'the new day has its date');
+
+  // removing while another meal is logged: the removal and the new meal both land
+  const keepId = Object.entries(foodRow('2026-10-20').data.entries).find(([, e]) => e.name === 'Breakfast')[0];
+  rs = await Promise.all([call(T, 'remove_food_entry', { date: '2026-10-20', entry_id: keepId }), call(T, 'log_meals', { date: '2026-10-20', meals: [meal('Dinner', egg)] })]);
+  const names = Object.values(foodRow('2026-10-20').data.entries).filter(Boolean).map((e) => e.name).sort().join();
+  ok(rs.every((x) => !x.err) && names === 'Dinner,Lunch', 'a removal and a new meal at the same moment both land: ' + names);
+  ok(foodRow('2026-10-20').data.entries[keepId] === null, 'a removed entry is emptied in place, in one step');
+  ok((await call(T, 'get_food_day', { date: '2026-10-20' })).json.entries.length === 2, 'and the day no longer lists it');
+  ok((await call(T, 'remove_food_entry', { date: '2026-10-20', entry_id: keepId })).err, 'an emptied entry can not be removed twice');
+
+  // the app adds an entry right after a removal has read the day: the app's entry must survive the removal
+  await call(T, 'log_meals', { date: '2026-10-21', meals: [meal('Gone soon', egg)] });
+  const goneId = Object.keys(foodRow('2026-10-21').data.entries)[0];
+  let inject = true;
+  const h4 = createHandler({ url: base, anonKey: 'anon', publicUrl: PUB, siteUrl: base + '/site/' }, async (u, i) => {
+    const res = await fetch(u, i);
+    if (inject && (!i || !i.method || i.method === 'GET') && decodeURIComponent(String(u)).includes('yc/food/2026-10-21')) { inject = false; foodRow('2026-10-21').data.entries.app1 = { name: 'Added in the app', p: 1, at: 9 }; }
+    return res;
+  });
+  const rm = await (await h4(new Request(PUB, { method: 'POST', headers: { authorization: 'Bearer ' + T }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'remove_food_entry', arguments: { date: '2026-10-21', entry_id: goneId } } }) }))).json();
+  const left = foodRow('2026-10-21').data.entries;
+  ok(!rm.result.isError && !inject && left.app1 && left.app1.name === 'Added in the app' && left[goneId] === null, 'an entry the app adds while a removal runs is kept: ' + JSON.stringify(left).slice(0, 120));
+
+  // today is the person's own day
+  const rootRow = rows.find((x) => x.user_id === A && x.path === 'yc').data;
+  const utc = new Date().toISOString().slice(0, 10);
+  const far = new Date().getUTCHours() >= 10 ? 'Pacific/Kiritimati' : 'Etc/GMT+12'; // UTC+14 or UTC-12: a different date from UTC right now
+  const local = new Intl.DateTimeFormat('en-GB', { timeZone: far, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+  const localDay = ['year', 'month', 'day'].map((t) => local.find((x) => x.type === t).value).join('-');
+  rootRow.settings = { ...(rootRow.settings || {}), tz: far };
+  let r = await call(T, 'log_meals', { meals: [meal('Late snack', egg)] });
+  ok(!r.err && localDay !== utc && r.json.day.date === localDay && foodRow(localDay) && Object.values(foodRow(localDay).data.entries).some((e) => e && e.name === 'Late snack'), 'without a date the meal lands on the person\'s own today (' + localDay + '), not UTC\'s (' + utc + ')');
+  ok((await call(T, 'get_food_day')).json.date === localDay, 'reading the day uses the same today');
+  rootRow.settings.tz = 'Not/AZone';
+  r = await call(T, 'get_food_day');
+  ok(!r.err && /^\d{4}-\d{2}-\d{2}$/.test(r.json.date), 'a broken time zone falls back instead of failing');
+  delete rootRow.settings.tz;
+
+  // several searches in one call
+  r = await call(T, 'search_foods', { queries: [{ query: 'tarwebrood bruin' }, { query: 'goudse', type: 'Cheese' }, { query: 'ei gekookt' }, { query: 'zzzqqq' }] });
+  const ss = r.json && r.json.searches;
+  ok(!r.err && ss.length === 4 && ss[0].results.length <= 6 && ss[0].results.length > 0 && ss[1].results.every((x) => x.type === 'Cheese') && /Goudse/.test(ss[1].results[0].name), 'four foods in one search call, groups per search: ' + r.text.slice(0, 200));
+  ok(ss[3].results.length === 0 && /Nothing matched/.test(ss[3].note) && ss[0].query === 'tarwebrood bruin', 'each search says what it was and whether it found anything');
+  ok((await call(T, 'search_foods', { queries: Array.from({ length: 9 }, () => ({ query: 'kaas' })) })).err, 'at most 8 searches at once');
+  ok((await call(T, 'search_foods', { queries: [{ query: 'kaas' }, { query: ' ' }] })).err, 'an empty search in the list is refused');
+  ok((await call(T, 'search_foods', {})).err, 'no query at all is refused');
+
+  // whatever is stored, reading a day does not break
+  seed(A, 'yc/food/2026-09-01', { date: '2026-09-01', entries: { a: null, b: 'x', c: { name: 42, p: 5 }, d: { name: 'Odd meal', p: '5', kcal: 'lots', items: [null, 'x', { name: 'Ok', g: 10, p: 1 }] }, e: { name: 'Fine', p: 2, at: 2 } } });
+  r = await call(T, 'get_food_day', { date: '2026-09-01' });
+  ok(!r.err && r.json.entries.map((e) => e.name).sort().join() === 'Fine,Odd meal' && r.json.totals.protein_g === 2 && r.json.entries.find((e) => e.name === 'Odd meal').items.length === 1, 'malformed entries are skipped and text is never added up as a number: ' + r.text.slice(0, 160));
 }
 
 // ---- database errors surface as tool errors, not crashes
