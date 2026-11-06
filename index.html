@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-6dRKkLGhNIHE2rdo7/5yf7upeM7s8xQ5MffpyJZG7Hk=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-Tg/TS8+Oty+tUk8PkLkkniBB2BLHbwMcFioH7z780GI=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-06 20:12Z">
+<meta name="yc-build" content="2026-11-06 20:26Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -1373,6 +1373,8 @@ body.fin-open { overflow: hidden; }
         <h2 id="h-lang">Languages</h2>
         <p class="note">Yes Coach! is originally in English. The translations are AI-generated and might contain mistakes. If you find one, please report it in the form.</p>
         <div id="lang-list" class="lang-list" role="radiogroup" aria-label="Language"></div>
+        <div class="settings" id="lang-ex-row" hidden><label><input type="checkbox" id="lang-ex"> Translate exercise names</label></div>
+        <p class="note" id="lang-ex-note" hidden>Most people know an exercise by its English name, so the names stay in English. Switch this on to see them translated.</p>
         <div class="foot-row"><button class="skew small" type="button" id="lang-report"><span>Report a translation mistake</span></button></div>
       </section>
       <section aria-labelledby="h-conn" id="conn" hidden>
@@ -1778,6 +1780,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['6 Nov 2026', 'Exercise names stay in English', ["Most people know an exercise by its English name, so the names now stay in English in every language.", "Prefer them translated? Settings, Languages, Translate exercise names."]],
     ['6 Nov 2026', 'Gentler numbers', ["Reaching your protein target is enough: more is never shown as above.", "Calories get a band: within 10% of your target counts as on target.", "A day with entries that have no calories now says so, instead of looking low.", "Short on time? Add a food with your own numbers and pick a rough guess: small, medium or large."]],
     ['6 Nov 2026', 'Quicker food logging', ["Put Log food on your home screen: press and hold the app icon, where your phone allows it.", "Tap I ate something to save the time in one tap and fill it in later. Fill in swaps it for what you add.", "On an empty day, Same as yesterday copies what you logged the day before.", "After you finish training, a button takes you to Food if you have not logged anything today.", "Claude can see which entries you still have to fill in, so you can ask it what you forgot today."]],
     ['6 Nov 2026', 'Calmer food search', ["Your own meals and foods come first, then the food tables. Five results, with Show more for the rest.", "Each result is one line: a portion and the protein in it, instead of numbers per 100 g.", "Your own portion sizes, saved by you or by Claude, are the first choices when you add a food.", "Results that only match an old synonym no longer crowd the list."]],
@@ -1851,6 +1854,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#lang').hidden = !I;
     if (!I) return;
     $('#lang-list').replaceChildren(...langButtons());
+    // only in a language that has translated names to show
+    const ex = I.current() !== 'en' && typeof I.setExercises === 'function';
+    $('#lang-ex-row').hidden = !ex;
+    $('#lang-ex-note').hidden = !ex;
+    if (ex) { $('#lang-ex').checked = I.exercises(); $('#lang-ex').onchange = (ev) => I.setExercises(ev.target.checked); }
     const rep = $('#lang-report');
     rep.hidden = !window.YC_FEEDBACK;
     rep.onclick = () => { setView('feedback'); window.scrollTo({ top: 0 }); window.YC_FEEDBACK.compose('bug', 'Translation mistake (' + I.current() + ')'); };

@@ -1325,6 +1325,8 @@ body.fin-open { overflow: hidden; }
         <h2 id="h-lang">Languages</h2>
         <p class="note">Yes Coach! is originally in English. The translations are AI-generated and might contain mistakes. If you find one, please report it in the form.</p>
         <div id="lang-list" class="lang-list" role="radiogroup" aria-label="Language"></div>
+        <div class="settings" id="lang-ex-row" hidden><label><input type="checkbox" id="lang-ex"> Translate exercise names</label></div>
+        <p class="note" id="lang-ex-note" hidden>Most people know an exercise by its English name, so the names stay in English. Switch this on to see them translated.</p>
         <div class="foot-row"><button class="skew small" type="button" id="lang-report"><span>Report a translation mistake</span></button></div>
       </section>
       <section aria-labelledby="h-conn" id="conn" hidden>
@@ -1722,6 +1724,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['6 Nov 2026', 'Exercise names stay in English', ["Most people know an exercise by its English name, so the names now stay in English in every language.", "Prefer them translated? Settings, Languages, Translate exercise names."]],
     ['6 Nov 2026', 'Gentler numbers', ["Reaching your protein target is enough: more is never shown as above.", "Calories get a band: within 10% of your target counts as on target.", "A day with entries that have no calories now says so, instead of looking low.", "Short on time? Add a food with your own numbers and pick a rough guess: small, medium or large."]],
     ['6 Nov 2026', 'Quicker food logging', ["Put Log food on your home screen: press and hold the app icon, where your phone allows it.", "Tap I ate something to save the time in one tap and fill it in later. Fill in swaps it for what you add.", "On an empty day, Same as yesterday copies what you logged the day before.", "After you finish training, a button takes you to Food if you have not logged anything today.", "Claude can see which entries you still have to fill in, so you can ask it what you forgot today."]],
     ['6 Nov 2026', 'Calmer food search', ["Your own meals and foods come first, then the food tables. Five results, with Show more for the rest.", "Each result is one line: a portion and the protein in it, instead of numbers per 100 g.", "Your own portion sizes, saved by you or by Claude, are the first choices when you add a food.", "Results that only match an old synonym no longer crowd the list."]],
@@ -1795,6 +1798,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#lang').hidden = !I;
     if (!I) return;
     $('#lang-list').replaceChildren(...langButtons());
+    // only in a language that has translated names to show
+    const ex = I.current() !== 'en' && typeof I.setExercises === 'function';
+    $('#lang-ex-row').hidden = !ex;
+    $('#lang-ex-note').hidden = !ex;
+    if (ex) { $('#lang-ex').checked = I.exercises(); $('#lang-ex').onchange = (ev) => I.setExercises(ev.target.checked); }
     const rep = $('#lang-report');
     rep.hidden = !window.YC_FEEDBACK;
     rep.onclick = () => { setView('feedback'); window.scrollTo({ top: 0 }); window.YC_FEEDBACK.compose('bug', 'Translation mistake (' + I.current() + ')'); };
