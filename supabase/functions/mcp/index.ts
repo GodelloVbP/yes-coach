@@ -37,7 +37,7 @@ const slug = (s: string): string => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').
 const isDate = (v: Json): boolean => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
 const today = (): string => new Date().toISOString().slice(0, 10);
 class ToolError extends Error {}
-const fail = (m: string): never => { throw new ToolError(m); };
+const fail: (m: string) => never = (m) => { throw new ToolError(m); };
 
 // ---------------------------------------------------------------- the user's documents (one table, row-level security)
 const database = (env: Env, token: string, userId: string, f: typeof fetch) => {
@@ -125,29 +125,29 @@ const bestSet = (sets: Json[], unit: string): Json | null => {
 };
 
 // ---------------------------------------------------------------- food: the same tables the app searches
-type Food = { src: 'nevo' | 'usda'; ref: string; name: string; alt: string; type: string; kcal: number; p: number; c: number; f: number; unit: 'g' | 'ml'; w: string[]; w2: string[] };
+type Food = { src: 'nevo' | 'usda'; ref: string; name: string; alt: string; type: string; tf: string; wsyn: string[]; kcal: number; p: number; c: number; f: number; unit: 'g' | 'ml'; w: string[]; w2: string[] };
 type FoodDb = { items: Food[]; byKey: Map<string, Food>; portie: Record<string, Json[]> };
 const fold = (t: Json): string => String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const wordsOf = (t: Json): string[] => fold(t).split(/[^a-z0-9]+/).filter(Boolean).map((w) => (w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w));
 const foodKey = (src: string, ref: Json): string => src + ':' + ref;
 const realDate = (v: Json): boolean => isDate(v) && !Number.isNaN(Date.parse(v + 'T00:00:00Z')) && new Date(v + 'T00:00:00Z').toISOString().slice(0, 10) === v;
-// today in the person's own time zone (the app saves it in root.settings.tz); most people using Yes Coach! are in Western Europe
-const localToday = (root: Json): string => {
+// today in the person's own time zone, which the app saves in root.settings.tz when it is opened. Until then it is not known,
+// and a guess would put a meal on the wrong day for anyone outside it: the caller asks for the date instead.
+const localToday = (root: Json): string | null => {
   const tz = root && root.settings && typeof root.settings.tz === 'string' ? root.settings.tz : '';
-  for (const zone of [tz, 'Europe/Amsterdam']) {
-    if (!zone) continue;
-    try {
-      const parts = new Intl.DateTimeFormat('en-GB', { timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
-      const get = (t: string) => (parts.find((x) => x.type === t) || { value: '' }).value;
-      const d = get('year') + '-' + get('month') + '-' + get('day');
-      if (realDate(d)) return d;
-    } catch (e) { /* not a time zone this runtime knows */ }
-  }
-  return today();
+  if (!tz) return null;
+  try {
+    const parts = new Intl.DateTimeFormat('en-GB', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+    const get = (t: string) => (parts.find((x) => x.type === t) || { value: '' }).value;
+    const d = get('year') + '-' + get('month') + '-' + get('day');
+    return realDate(d) ? d : null;
+  } catch (e) { return null; } // not a time zone this runtime knows
 };
+const NO_TZ = 'The person\'s time zone is not saved yet (it is saved when they open Yes Coach! on their phone). Give the date as YYYY-MM-DD.';
 const badDate = (v: Json): boolean => v != null && v !== '' && !realDate(v);
 const DATE_ERR = 'date must be a real day, like 2026-11-06.';
 const n0 = (v: Json): number => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
+const round1 = (n: number): number => Math.round(n * 10) / 10;
 const FOOD_FILES = ['foods-nevo.json', 'foods-usda.json', 'portions-nevo.json'];
 
 const loadFoods = async (env: Env, f: typeof fetch): Promise<FoodDb> => {
@@ -155,14 +155,14 @@ const loadFoods = async (env: Env, f: typeof fetch): Promise<FoodDb> => {
   const docs: Json[] = await Promise.all(FOOD_FILES.map(async (name) => {
     const r = await f(base + name).catch(() => null);
     if (!r || !r.ok) fail('The food tables could not be loaded. Try again in a minute.');
-    return (r as Response).json();
+    return r.json();
   }));
   const items: Food[] = [];
   let portie: Record<string, Json[]> = {};
   for (const d of docs) {
     if (d.src === 'portie') portie = d.p || {};
-    else if (d.src === 'nevo') for (const [ref, nl, en, syn, g, kcal, p, c, fat, unit] of d.foods) items.push({ src: 'nevo', ref: String(ref), name: nl, alt: en || '', type: d.groups[g], kcal: kcal || 0, p: p || 0, c: c || 0, f: fat || 0, unit: unit === 'ml' ? 'ml' : 'g', w: wordsOf(nl + ' ' + (syn || '')), w2: wordsOf(en || '') });
-    else if (d.src === 'usda') for (const [ref, name, g, kcal, p, c, fat] of d.foods) items.push({ src: 'usda', ref: String(ref), name, alt: '', type: d.groups[g], kcal: kcal || 0, p: p || 0, c: c || 0, f: fat || 0, unit: 'g', w: wordsOf(name), w2: [] });
+    else if (d.src === 'nevo') for (const [ref, nl, en, syn, g, kcal, p, c, fat, unit] of d.foods) items.push({ src: 'nevo', ref: String(ref), name: nl, alt: en || '', type: d.groups[g], kcal: kcal || 0, p: p || 0, c: c || 0, f: fat || 0, unit: unit === 'ml' ? 'ml' : 'g', w: wordsOf(nl), wsyn: wordsOf(syn || ''), tf: fold(d.groups[g]), w2: wordsOf(en || '') });
+    else if (d.src === 'usda') for (const [ref, name, g, kcal, p, c, fat] of d.foods) items.push({ src: 'usda', ref: String(ref), name, alt: '', type: d.groups[g], kcal: kcal || 0, p: p || 0, c: c || 0, f: fat || 0, unit: 'g', w: wordsOf(name), wsyn: [], tf: fold(d.groups[g]), w2: [] });
   }
   if (!items.length) fail('The food tables could not be loaded. Try again in a minute.');
   return { items, byKey: new Map(items.map((it) => [foodKey(it.src, it.ref), it])), portie };
@@ -176,24 +176,30 @@ const searchFoods = (db: FoodDb, q: string, limit: number, type = ''): Food[] =>
   if (!toks.length) return [];
   const starts = (ws: string[], t: string) => ws.some((w) => w.startsWith(t));
   const inside = (ws: string[], t: string) => ws.some((w) => w.includes(t));
-  const hits: [number, Food][] = [];
+  const tk = fold(type);
+  const hits: [number, Food, boolean][] = [];
   for (const it of db.items) {
-    if (type && fold(it.type) !== fold(type)) continue;
+    if (tk && it.tf !== tk) continue;
     let ws: string[] | null = null;
     let penalty = 0;
+    let viaSyn = false;
     if (toks.every((t) => starts(it.w, t))) ws = it.w;
     else if (it.w2.length && toks.every((t) => starts(it.w2, t))) ws = it.w2;
     else if (toks.every((t) => inside(it.w, t))) { ws = it.w; penalty = 15; }
     else if (it.w2.length && toks.every((t) => inside(it.w2, t))) { ws = it.w2; penalty = 15; }
+    // a synonym ("mosterdkool" for amsoi) only counts when the name does not match, and ranks below real name matches
+    else if (it.wsyn.length && toks.every((t) => starts(it.w, t) || starts(it.wsyn, t))) { ws = it.w.concat(it.wsyn); penalty = 25; viaSyn = true; }
     if (!ws) continue;
     let sc = (ws[0] && ws[0].startsWith(toks[0]) ? 20 : 0) + (ws[0] === toks[0] ? 5 : 0) - Math.min(12, ws.length) + (it.src === 'nevo' ? 3 : 0) - penalty;
     for (const t of toks) if (ws.includes(t)) sc += 3;
     for (const w of PROCESSED) if (ws.includes(w) && !toks.includes(w)) sc -= 3;
     if (it.src === 'usda' && /\b[A-Z]{3,}\b/.test(it.name)) sc -= 4;
     if (ws.includes('whole') && !toks.includes('whole')) sc += 2;
-    hits.push([sc, it]);
+    hits.push([sc, it, viaSyn]);
   }
-  return hits.sort((a, b) => b[0] - a[0]).slice(0, limit).map((h) => h[1]);
+  // with three or more real name matches the synonym ones are only noise
+  const real = hits.filter((h) => !h[2]);
+  return (real.length >= 3 ? real : hits).sort((a, b) => b[0] - a[0]).slice(0, limit).map((h) => h[1]);
 };
 
 // rough small, medium and large portions by kind of food, in grams (the same table the app falls back on)
@@ -236,7 +242,7 @@ const portionsOf = (db: FoodDb, it: Food): { source: string; list: { label: stri
   const s = SIZES[it.type] || [50, 100, 200];
   return { source: 'rough sizes for this kind of food', list: ['small', 'medium', 'large'].map((label, i) => ({ label, grams: s[i] })) };
 };
-const per = (it: Food, g: number) => { const k = g / 100; const r1 = (n: number) => Math.round(n * k * 10) / 10; return { kcal: Math.round(it.kcal * k), p: r1(it.p), c: r1(it.c), f: r1(it.f) }; };
+const per = (it: Food, g: number) => { const k = g / 100; return { kcal: Math.round(it.kcal * k), p: round1(it.p * k), c: round1(it.c * k), f: round1(it.f * k) }; };
 const caloriesShown = (root: Json): boolean => {
   const v = root && root.settings && root.settings.show_calories;
   if (typeof v === 'boolean') return v;
@@ -244,19 +250,29 @@ const caloriesShown = (root: Json): boolean => {
 };
 const foodEntries = (doc: Json): [string, Json][] => Object.entries((doc && doc.entries) || {}).filter(([, e]) => e && typeof e === 'object' && typeof (e as Json).name === 'string' && (e as Json).name).sort((a, b) => ((a[1] as Json).at || 0) - ((b[1] as Json).at || 0)) as [string, Json][];
 // an entry the person noted with one tap and no details ("I ate something") holds no numbers and is left out of the totals
-const totalsOf = (entries: [string, Json][]) => entries.filter(([, e]) => !e.quick).reduce((t, [, e]) => ({ kcal: t.kcal + n0(e.kcal), p: Math.round((t.p + n0(e.p)) * 10) / 10, c: Math.round((t.c + n0(e.c)) * 10) / 10, f: Math.round((t.f + n0(e.f)) * 10) / 10 }), { kcal: 0, p: 0, c: 0, f: 0 });
-const macros = (n: { kcal: number; p: number; c: number; f: number }, cal: boolean) => ({ ...(cal ? { kcal: n.kcal } : {}), protein_g: n.p, carbs_g: n.c, fat_g: n.f });
+const totalsOf = (entries: [string, Json][]) => entries.filter(([, e]) => !e.quick).reduce((t, [, e]) => ({ kcal: t.kcal + n0(e.kcal), p: round1(t.p + n0(e.p)), c: round1(t.c + n0(e.c)), f: round1(t.f + n0(e.f)) }), { kcal: 0, p: 0, c: 0, f: 0 });
+const macros = (n: { kcal: number | null; p: number; c: number; f: number }, cal: boolean) => ({ ...(cal ? { kcal: n.kcal } : {}), protein_g: n.p, carbs_g: n.c, fat_g: n.f });
 const isoOf = (at: Json): string | null => { const d = new Date(n0(at)); return n0(at) > 0 && Number.isFinite(d.getTime()) ? d.toISOString() : null; };
+const kcalOf = (e: Json): number | null => (typeof e.kcal === 'number' && Number.isFinite(e.kcal) ? e.kcal : null); // missing is unknown, not 0
+const amountOf = (g: number, u: string | undefined, est: Json): string => (est ? '~' : '') + g + ' ' + (u || 'g');
+// one entry of a day by its id; only the day's own entries count, so an id such as "constructor" finds nothing
+const entryAt = (doc: Json, id: string): Json => {
+  const entries = doc && doc.entries && typeof doc.entries === 'object' ? doc.entries : {};
+  const e = id && Object.prototype.hasOwnProperty.call(entries, id) ? entries[id] : null;
+  return e && typeof e === 'object' && e.name ? e : fail('No entry with that id on that day. Read the day to see its entries.');
+};
 const entryOut = (id: string, e: Json, cal: boolean) => ({
-  id, name: e.name, ...(e.quick ? { placeholder: true, logged_at: isoOf(e.at) } : {}), ...macros({ kcal: n0(e.kcal), p: n0(e.p), c: n0(e.c), f: n0(e.f) }, cal), ...(n0(e.g) ? { amount: (e.est ? '~' : '') + e.g + ' ' + (e.u || 'g') } : {}),
-  ...(Array.isArray(e.items) ? { items: e.items.filter((i: Json) => i && typeof i === 'object').map((i: Json) => ({ name: String(i.name || ''), amount: (i.est ? '~' : '') + n0(i.g) + ' ' + (i.u || 'g'), ...macros({ kcal: n0(i.kcal), p: n0(i.p), c: n0(i.c), f: n0(i.f) }, cal) })) } : {}),
+  id, name: e.name, ...(e.quick ? { placeholder: true, logged_at: isoOf(e.at) } : {}), ...(e.rough ? { rough: true } : {}), ...macros({ kcal: kcalOf(e), p: n0(e.p), c: n0(e.c), f: n0(e.f) }, cal), ...(n0(e.g) ? { amount: amountOf(e.g, e.u, e.est) } : {}),
+  ...(Array.isArray(e.items) ? { items: e.items.filter((i: Json) => i && typeof i === 'object').map((i: Json) => ({ name: String(i.name || ''), amount: amountOf(n0(i.g), i.u, i.est), ...macros({ kcal: kcalOf(i), p: n0(i.p), c: n0(i.c), f: n0(i.f) }, cal) })) } : {}),
 });
 const foodDayOut = (date: string, doc: Json, root: Json) => {
   const entries = foodEntries(doc);
   const cal = caloriesShown(root);
   const tg = (root && root.nutrition) || {};
+  const noKcal = entries.filter(([, e]) => !e.quick && kcalOf(e) === null).length;
   return {
     date, entries: entries.map(([id, e]) => entryOut(id, e, cal)), totals: macros(totalsOf(entries), cal),
+    ...(cal && noKcal ? { calories_note: noKcal + (noKcal === 1 ? ' entry has' : ' entries have') + ' no calories (kcal is null), so the calorie total is a minimum.' } : {}),
     targets: { ...(cal && tg.kcal ? { kcal: tg.kcal } : {}), ...(tg.protein ? { protein_g: tg.protein } : {}) },
     ...(cal ? {} : { note: 'Calories are hidden for this person: leave them out of your answer.' }),
   };
@@ -265,25 +281,25 @@ const foodDayOut = (date: string, doc: Json, root: Json) => {
 // ---------------------------------------------------------------- one food in an entry, and the person's own foods and meals
 // An item is what an entry and a saved meal keep for one food. The nutrients are worked out once, from the tables.
 type Item = { src: string; ref: string; name: string; g: number; u: string; kcal: number; p: number; c: number; f: number; est?: true };
-const round1 = (n: number): number => Math.round(n * 10) / 10;
 const itemOf = (food: Food, g: number, est: boolean): Item => ({ src: food.src, ref: food.ref, name: food.name, g, u: food.unit, ...per(food, g), ...(est ? { est: true as const } : {}) });
 // what is stored could have been written by any connected app: keep only what is a real food with real numbers
 const cleanItem = (x: Json): Item | null => {
   if (!x || typeof x !== 'object' || typeof x.name !== 'string' || !x.name || !(n0(x.g) > 0)) return null;
   return { src: x.src === 'usda' ? 'usda' : 'nevo', ref: str(x.ref, 20), name: str(x.name, 120), g: n0(x.g), u: x.u === 'ml' ? 'ml' : 'g', kcal: n0(x.kcal), p: n0(x.p), c: n0(x.c), f: n0(x.f), ...(x.est ? { est: true as const } : {}) };
 };
-const sumItems = (items: Item[]) => items.reduce((t, x) => ({ kcal: t.kcal + x.kcal, p: t.p + x.p, c: t.c + x.c, f: t.f + x.f }), { kcal: 0, p: 0, c: 0, f: 0 });
+// the foods of a meal added up, rounded the way an entry keeps them
+const sumItems = (items: Item[]) => { const t = items.reduce((a, x) => ({ kcal: a.kcal + x.kcal, p: a.p + x.p, c: a.c + x.c, f: a.f + x.f }), { kcal: 0, p: 0, c: 0, f: 0 }); return { kcal: Math.round(t.kcal), p: round1(t.p), c: round1(t.c), f: round1(t.f) }; };
 // one food becomes a normal entry the app can reopen; several become one entry with the foods inside
 const entryOf = (name: string, items: Item[], at: number): Json => {
   if (items.length === 1) { const x = items[0]; return { name: name || x.name, kcal: x.kcal, p: x.p, c: x.c, f: x.f, at, src: x.src, ref: x.ref, g: x.g, u: x.u, ...(x.est ? { est: true } : {}), via: 'connector' }; }
-  const t = sumItems(items);
-  return { name: name || items.map((x) => x.name).join(', ').slice(0, 80), kcal: Math.round(t.kcal), p: round1(t.p), c: round1(t.c), f: round1(t.f), at, via: 'connector', items };
+  return { name: name || items.map((x) => x.name).join(', ').slice(0, 80), ...sumItems(items), at, via: 'connector', items };
 };
-const itemOut = (i: Item) => ({ name: i.name, amount: (i.est ? '~' : '') + i.g + ' ' + i.u });
+const itemOut = (i: Item) => ({ name: i.name, amount: amountOf(i.g, i.u, i.est) });
 
 // yc/myfoods/<id>: a food the person logged before { food: "nevo:123", name, aka: { word: 1 }, n, last, portions: { label: grams } }
-type Mine = { id: string; food: string; name: string; aka: Record<string, number>; n: number; last: number; portions: Record<string, number> };
-const MINE_MAX = 500;
+type Mine = { id: string; food: string; name: string; aka: Record<string, number>; ws: string[]; n: number; last: number; portions: Record<string, number> };
+const MINE_MAX = 500, AKA_MAX = 12, PORTIONS_MAX = 8;
+const MINE_READ = 2000; // forgotten foods stay as { gone: true } documents: read well past the live cap
 const myId = (key: string): string => key.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 const sayOf = (v: Json): string => fold(str(v, 40)).replace(/\s+/g, ' ').trim();
 const numMap = (v: Json, max: number, keyMax: number): Record<string, number> => {
@@ -291,10 +307,25 @@ const numMap = (v: Json, max: number, keyMax: number): Record<string, number> =>
   if (v && typeof v === 'object' && !Array.isArray(v)) for (const [k, x] of Object.entries(v)) { const key = str(k, keyMax); if (key && Object.keys(out).length < max && typeof x === 'number' && Number.isFinite(x) && x > 0 && x <= 100000) out[key] = x; }
   return out;
 };
-const loadMine = async (db: Db): Promise<Mine[]> => (await db.list('yc/myfoods/', { limit: 600 }))
-  .filter((r) => r.data && typeof r.data === 'object' && !r.data.gone && typeof r.data.food === 'string' && r.data.food)
-  .map((r) => ({ id: idOf(r.path), food: str(r.data.food, 40), name: str(r.data.name, 120), aka: numMap(r.data.aka, 12, 40), n: n0(r.data.n), last: n0(r.data.last), portions: numMap(r.data.portions, 8, 30) }));
-const mineMatches = (m: Mine, toks: string[]): boolean => { const ws = wordsOf(m.name + ' ' + Object.keys(m.aka).join(' ')); return toks.every((t) => ws.some((w) => w.startsWith(t))); };
+const toMine = (id: string, d: Json): Mine | null => {
+  if (!d || typeof d !== 'object' || d.gone || typeof d.food !== 'string' || !d.food) return null;
+  const name = str(d.name, 120);
+  const aka = numMap(d.aka, AKA_MAX, 40);
+  return { id, food: str(d.food, 40), name, aka, ws: wordsOf(name + ' ' + Object.keys(aka).join(' ')), n: n0(d.n), last: n0(d.last), portions: numMap(d.portions, PORTIONS_MAX, 30) };
+};
+const loadMine = async (db: Db): Promise<Mine[]> => (await db.list('yc/myfoods/', { limit: MINE_READ })).map((r) => toMine(idOf(r.path), r.data)).filter(Boolean) as Mine[];
+const mineMatches = (m: Mine, toks: string[]): boolean => toks.every((t) => m.ws.some((w) => w.startsWith(t)));
+// the words to add to what a food already has: new ones only, up to the cap
+const newWords = (old: Mine | undefined, words: Iterable<string>): Record<string, number> => {
+  const out: Record<string, number> = {};
+  let n = old ? Object.keys(old.aka).length : 0;
+  for (const w of words) if (w && !(old && w in old.aka) && !(w in out) && n < AKA_MAX) { out[w] = 1; n += 1; }
+  return out;
+};
+// merge what changed into a remembered food, creating its document first when it is new (a forgotten food comes back as new)
+const upsertMine = (db: Db, id: string, food: string, name: string, patch: Json, old?: Mine): Promise<Json> =>
+  (old ? Promise.resolve() : db.ensure('yc/myfoods/' + id, { food, name, aka: {}, n: 0, last: 0, portions: {} }))
+    .then(() => db.patch('yc/myfoods/' + id, { food, name, ...patch, ...(old ? {} : { gone: null }) }));
 // a food gets remembered when it is logged: how often, the words the person used for it, and (below) their portion sizes
 const learn = async (db: Db, mine: Mine[], uses: Map<string, { name: string; said: Set<string>; times: number }>): Promise<void> => {
   const have = new Map(mine.map((m) => [m.food, m]));
@@ -302,30 +333,29 @@ const learn = async (db: Db, mine: Mine[], uses: Map<string, { name: string; sai
   await Promise.all([...uses].map(async ([food, u]) => {
     const old = have.get(food);
     if (!old) { if (room <= 0) return; room -= 1; }
-    const id = old ? old.id : myId(food);
-    const aka: Record<string, number> = {};
-    let have_ = old ? Object.keys(old.aka).length : 0;
-    for (const w of u.said) if (w && !(old && w in old.aka) && have_ < 12) { aka[w] = 1; have_ += 1; }
-    await db.ensure('yc/myfoods/' + id, { food, name: u.name, aka: {}, n: 0, last: 0, portions: {} });
-    await db.patch('yc/myfoods/' + id, { food, name: u.name, aka, n: (old ? old.n : 0) + u.times, last: Date.now(), ...(old ? {} : { gone: null }) });
+    await upsertMine(db, old ? old.id : myId(food), food, u.name, { aka: newWords(old, u.said), n: (old ? old.n : 0) + u.times, last: Date.now() }, old);
   }));
 };
 
 // yc/meals/<id>: a saved meal { name, items: [Item], n, last }; { gone: true } once removed
 type Saved = { id: string; name: string; items: Item[]; n: number; last: number };
 const SAVED_MAX = 200;
-const loadMeals = async (db: Db): Promise<Saved[]> => (await db.list('yc/meals/', { limit: SAVED_MAX }))
-  .filter((r) => r.data && typeof r.data === 'object' && !r.data.gone && typeof r.data.name === 'string' && r.data.name && Array.isArray(r.data.items))
-  .map((r) => ({ id: idOf(r.path), name: str(r.data.name, 60), items: r.data.items.slice(0, 12).map(cleanItem).filter(Boolean) as Item[], n: n0(r.data.n), last: n0(r.data.last) }))
-  .filter((m) => m.items.length > 0);
+const SAVED_READ = 600; // removed meals stay as { gone: true } documents too
+const toSaved = (id: string, d: Json): Saved | null => {
+  if (!d || typeof d !== 'object' || d.gone || typeof d.name !== 'string' || !d.name || !Array.isArray(d.items)) return null;
+  const items = d.items.slice(0, 12).map(cleanItem).filter(Boolean) as Item[];
+  return items.length ? { id, name: str(d.name, 60), items, n: n0(d.n), last: n0(d.last) } : null;
+};
+const loadMeals = async (db: Db): Promise<Saved[]> => (await db.list('yc/meals/', { limit: SAVED_READ })).map((r) => toSaved(idOf(r.path), r.data)).filter(Boolean) as Saved[];
 const savedOut = (m: Saved, cal: boolean) => ({ id: m.id, name: m.name, times_logged: m.n, items: m.items.map(itemOut), ...macros(sumItems(m.items), cal) });
 
 // one food of a meal as the AI gave it (a food id, and grams or a portion), checked against the tables and the person's own portion sizes
 const resolveItem = (fdb: FoodDb, mineBy: Map<string, Mine>, it: Json): { item: Item; said: string } => {
-  const key = str(it && it.food, 40);
+  if (!it || typeof it !== 'object') fail('Each food needs a "food" id and grams or a portion.');
+  const key = str(it.food, 40);
   const food = fdb.byKey.get(key);
   if (!food) fail('Unknown food "' + key + '". Use the "food" value of a search result, like "nevo:123".');
-  const fd = food as Food;
+  const fd = food;
   const own = mineBy.get(key);
   let g: number;
   if (Number(it.grams) > 0) g = Number(it.grams);
@@ -336,7 +366,7 @@ const resolveItem = (fdb: FoodDb, mineBy: Map<string, Mine>, it: Json): { item: 
     const hit = mineHit ? { grams: mineHit[1] } : list.find((x) => fold(x.label) === want);
     if (!hit) fail('"' + it.portion.label + '" is not a portion of ' + fd.name + '. Its portions: ' + [...(own ? Object.entries(own.portions).map(([l, gr]) => ({ label: l, grams: gr })) : []), ...list].slice(0, 8).map((x) => x.label + ' (' + x.grams + ' g)').join(', ') + '. Or give grams.');
     const count = Number(it.portion.count);
-    g = (hit as { grams: number }).grams * (count > 0 ? count : 1);
+    g = hit.grams * (count > 0 ? count : 1);
   } else fail('Give grams or a portion for ' + fd.name + '.');
   g = Math.round(g * 10) / 10;
   if (!(g > 0) || g > 5000) fail('The amount of ' + fd.name + ' has to be at least 0.1 and at most 5000.');
@@ -572,9 +602,9 @@ const TOOLS: Tool[] = [
     description: 'What the person ate on one day: every entry with its id, name, nutrients and items, the day totals, and their daily targets. An entry marked placeholder is a meal the person noted with one tap and no details; it has the time it was noted and counts for nothing in the totals.',
     run: async (db, a) => {
       if (badDate(a.date)) fail(DATE_ERR);
-      const root = await db.get('yc');
-      const date = a.date || localToday(root);
-      return foodDayOut(date, await db.get('yc/food/' + date), root);
+      const [root, early] = await Promise.all([db.get('yc'), a.date ? db.get('yc/food/' + a.date) : Promise.resolve(null)]);
+      const date = a.date || localToday(root) || fail(NO_TZ);
+      return foodDayOut(date, a.date ? early : await db.get('yc/food/' + date), root);
     },
   },
   {
@@ -600,19 +630,21 @@ const TOOLS: Tool[] = [
       if (a.meals.length > 8) fail('At most 8 meals in one go. Nothing was saved; send the rest in a second call.');
       const wantsSaved = a.meals.some((m: Json) => m && m.saved);
       // the remembered foods only improve things: when they can not be read, the meal is still logged
-      const [fdb, root, mine, savedAll] = await Promise.all([ctx.foods(), db.get('yc'), loadMine(db).catch(() => [] as Mine[]), wantsSaved ? loadMeals(db) : Promise.resolve([] as Saved[])]);
-      const date = a.date || localToday(root);
+      let mineRead = true;
+      const [fdb, root, mine, savedAll, early] = await Promise.all([ctx.foods(), db.get('yc'), loadMine(db).catch(() => { mineRead = false; return [] as Mine[]; }), wantsSaved ? loadMeals(db) : Promise.resolve([] as Saved[]), a.date ? db.get('yc/food/' + a.date) : Promise.resolve(null)]);
+      const date = a.date || localToday(root) || fail(NO_TZ);
       const mineBy = new Map(mine.map((m) => [m.food, m]));
       const uses = new Map<string, { name: string; said: Set<string>; times: number }>();
       const usedSaved = new Map<string, { sm: Saved; times: number }>();
-      const note = (i: Item, said: string) => { const k = foodKey(i.src, i.ref); const u = uses.get(k) || { name: i.name, said: new Set<string>(), times: 0 }; u.times += 1; if (said) u.said.add(said); uses.set(k, u); };
+      const note = (i: Item, said: string) => { const k = foodKey(i.src, i.ref); if (!fdb.byKey.has(k)) return; // only foods the tables know are remembered
+         const u = uses.get(k) || { name: i.name, said: new Set<string>(), times: 0 }; u.times += 1; if (said) u.said.add(said); uses.set(k, u); };
       const meals = a.meals.map((m: Json) => {
         if (m && m.saved) {
           const sm = savedAll.find((x) => x.id === str(m.saved, 60));
           if (!sm) fail('Unknown saved meal "' + str(m.saved, 60) + '". Read the person\'s saved meals to see their ids.');
-          (sm as Saved).items.forEach((i) => note(i, ''));
-          usedSaved.set((sm as Saved).id, { sm: sm as Saved, times: (usedSaved.get((sm as Saved).id)?.times || 0) + 1 });
-          return { name: str(m.name, 80) || (sm as Saved).name, items: (sm as Saved).items };
+          sm.items.forEach((i) => note(i, ''));
+          usedSaved.set(sm.id, { sm: sm, times: (usedSaved.get(sm.id)?.times || 0) + 1 });
+          return { name: str(m.name, 80) || sm.name, items: sm.items };
         }
         const raw = Array.isArray(m && m.items) ? m.items : [];
         if (raw.length > 12) fail('At most 12 foods in one meal. Nothing was saved; split it into two meals.');
@@ -621,7 +653,7 @@ const TOOLS: Tool[] = [
         return { name: str(m && m.name, 80), items };
       });
       const path = 'yc/food/' + date;
-      const old = await db.get(path);
+      const old = a.date ? early : await db.get(path);
       if (foodEntries(old).length + meals.length > 100) fail('That day already has a lot of entries. Read the day first.');
       const add: Record<string, Json> = {};
       let at = Date.now();
@@ -634,7 +666,7 @@ const TOOLS: Tool[] = [
       const after = await db.patch(path, { entries: add });
       // remembering foods is best effort: the meal is already saved, so a hiccup here does not fail the call
       try {
-        await Promise.all([learn(db, mine, uses), ...[...usedSaved.values()].map((u) => db.patch('yc/meals/' + u.sm.id, { n: u.sm.n + u.times, last: Date.now() }))]);
+        await Promise.all([mineRead ? learn(db, mine, uses) : Promise.resolve(), ...[...usedSaved.values()].map((u) => db.patch('yc/meals/' + u.sm.id, { n: u.sm.n + u.times, last: Date.now() }))]);
       } catch (e) { /* ignored */ }
       const day = foodDayOut(date, after, root);
       const cal = caloriesShown(root);
@@ -663,28 +695,25 @@ const TOOLS: Tool[] = [
     }, ['food']),
     description: 'Remember which food the person means by a word, and their own portion sizes for it. A portion saved here is used when a meal is logged with that portion name. Saving again adds to what is there; a portion with the same name is replaced.',
     run: async (db, a, ctx) => {
-      const [fdb, mine] = await Promise.all([ctx.foods(), loadMine(db)]);
+      const fdb = await ctx.foods();
       const key = str(a.food, 40);
       const food = fdb.byKey.get(key);
       if (!food) fail('Unknown food "' + key + '". Use the "food" value of a search result, like "nevo:123".');
-      const old = mine.find((m) => m.food === key);
-      if (!old && mine.length >= MINE_MAX) fail('The list of remembered foods is full.');
-      const aka: Record<string, number> = {};
-      let count = old ? Object.keys(old.aka).length : 0;
-      for (const w of (Array.isArray(a.said) ? a.said.slice(0, 6) : []).map(sayOf)) if (w && !(old && w in old.aka) && !(w in aka) && count < 12) { aka[w] = 1; count += 1; }
+      const id = myId(key);
+      const old = toMine(id, await db.get('yc/myfoods/' + id)) || undefined;
+      if (!old && (await loadMine(db)).length >= MINE_MAX) fail('The list of remembered foods is full.');
+      const aka = newWords(old, (Array.isArray(a.said) ? a.said.slice(0, 6) : []).map(sayOf));
       const portions: Record<string, number> = {};
       const have = old ? Object.keys(old.portions).length : 0;
       for (const x of Array.isArray(a.portions) ? a.portions.slice(0, 6) : []) {
         const label = str(x && x.label, 30);
-        const grams = Math.round(Number(x && x.grams) * 10) / 10;
+        const grams = round1(Number(x && x.grams));
         if (!label || !(grams > 0) || grams > 5000) fail('A portion needs a name and grams between 0.1 and 5000.');
-        if (!(old && label in old.portions) && !(label in portions) && have + Object.keys(portions).length >= 8) fail('A food can have at most 8 portion sizes.');
+        if (!(old && label in old.portions) && !(label in portions) && have + Object.keys(portions).length >= PORTIONS_MAX) fail('A food can have at most ' + PORTIONS_MAX + ' portion sizes.');
         portions[label] = grams;
       }
-      const id = old ? old.id : myId(key);
-      await db.ensure('yc/myfoods/' + id, { food: key, name: food.name, aka: {}, n: 0, last: 0, portions: {} });
-      const after = await db.patch('yc/myfoods/' + id, { food: key, name: food.name, aka, portions, ...(old ? {} : { gone: null }) });
-      return { saved: { food: key, name: food.name, said: Object.keys(numMap(after && after.aka, 12, 40)), portions: numMap(after && after.portions, 8, 30) } };
+      const after = await upsertMine(db, id, key, food.name, { aka, portions }, old);
+      return { saved: { food: key, name: food.name, said: Object.keys(numMap(after && after.aka, AKA_MAX, 40)), portions: numMap(after && after.portions, PORTIONS_MAX, 30) } };
     },
   },
   {
@@ -701,31 +730,31 @@ const TOOLS: Tool[] = [
       const name = str(a.name, 60);
       if (!name) fail('Give the meal a name.');
       let items: Item[];
+      let all: Saved[];
+      let root: Json;
       if (a.from_entry) {
         if (!realDate(a.from_entry.date)) fail(DATE_ERR);
-        const doc = await db.get('yc/food/' + a.from_entry.date);
-        const entries = doc && doc.entries && typeof doc.entries === 'object' ? doc.entries : {};
-        const id = str(a.from_entry.entry_id, 60);
-        const e = Object.prototype.hasOwnProperty.call(entries, id) ? entries[id] : null;
-        if (!e || typeof e !== 'object' || !e.name) fail('No entry with that id on that day. Read the day to see its entries.');
+        let doc: Json;
+        [doc, all, root] = await Promise.all([db.get('yc/food/' + a.from_entry.date), loadMeals(db), db.get('yc')]);
+        const e = entryAt(doc, str(a.from_entry.entry_id, 60));
         items = (Array.isArray(e.items) ? e.items : e.src && e.g ? [{ src: e.src, ref: e.ref, name: e.name, g: e.g, u: e.u, kcal: e.kcal, p: e.p, c: e.c, f: e.f, est: e.est }] : []).slice(0, 12).map(cleanItem).filter(Boolean) as Item[];
         if (!items.length) fail('That entry has no foods to save: it was typed in by hand.');
       } else {
         const raw = Array.isArray(a.items) ? a.items : [];
         if (!raw.length) fail('Give the foods, or an entry to save.');
         if (raw.length > 12) fail('At most 12 foods in a saved meal.');
-        const [fdb, mine] = await Promise.all([ctx.foods(), loadMine(db)]);
+        const [fdb, mine, saved, rootDoc] = await Promise.all([ctx.foods(), loadMine(db), loadMeals(db), db.get('yc')]);
+        all = saved;
+        root = rootDoc;
         const mineBy = new Map(mine.map((m) => [m.food, m]));
         items = raw.map((it: Json) => resolveItem(fdb, mineBy, it).item);
       }
-      const all = await loadMeals(db);
       const same = all.find((m) => fold(m.name) === fold(name));
       if (!same && all.length >= SAVED_MAX) fail('There are already ' + SAVED_MAX + ' saved meals.');
-      let id = same ? same.id : slug(name) || 'meal';
-      if (!same) for (let n = 2; all.some((m) => m.id === id); n += 1) id = (slug(name) || 'meal') + '-' + n;
-      const t = sumItems(items);
-      await db.put('yc/meals/' + id, { name, items, kcal: Math.round(t.kcal), p: round1(t.p), c: round1(t.c), f: round1(t.f), n: same ? same.n : 0, last: Date.now() });
-      const root = await db.get('yc');
+      const base = slug(name) || 'meal';
+      let id = same ? same.id : base;
+      if (!same) for (let n = 2; all.some((m) => m.id === id); n += 1) id = base + '-' + n;
+      await db.put('yc/meals/' + id, { name, items, ...sumItems(items), n: same ? same.n : 0, last: Date.now() });
       return { saved: savedOut({ id, name, items, n: same ? same.n : 0, last: Date.now() }, caloriesShown(root)), replaced: !!same };
     },
   },
@@ -739,15 +768,17 @@ const TOOLS: Tool[] = [
     run: async (db, a) => {
       if (!!a.food === !!a.meal) fail('Give either a food or a meal, not both.');
       if (a.food) {
-        const hit = (await loadMine(db)).find((m) => m.food === str(a.food, 40));
-        if (!hit) fail('That food is not remembered.');
-        await db.put('yc/myfoods/' + (hit as Mine).id, { gone: true });
-        return { removed: { food: (hit as Mine).food, name: (hit as Mine).name } };
+        const key = str(a.food, 40);
+        const hit = toMine(myId(key), await db.get('yc/myfoods/' + myId(key)));
+        if (!hit || hit.food !== key) fail('That food is not remembered.');
+        await db.put('yc/myfoods/' + hit.id, { gone: true });
+        return { removed: { food: hit.food, name: hit.name } };
       }
-      const hit = (await loadMeals(db)).find((m) => m.id === str(a.meal, 60));
+      const id = str(a.meal, 60);
+      const hit = toSaved(id, await db.get('yc/meals/' + id));
       if (!hit) fail('No saved meal with that id.');
-      await db.put('yc/meals/' + (hit as Saved).id, { gone: true });
-      return { removed: { meal: (hit as Saved).id, name: (hit as Saved).name } };
+      await db.put('yc/meals/' + hit.id, { gone: true });
+      return { removed: { meal: hit.id, name: hit.name } };
     },
   },
   {
@@ -759,9 +790,7 @@ const TOOLS: Tool[] = [
       const path = 'yc/food/' + a.date;
       const id = str(a.entry_id, 60);
       const [doc, root] = await Promise.all([db.get(path), db.get('yc')]);
-      const entries = doc && doc.entries && typeof doc.entries === 'object' ? doc.entries : {};
-      const gone = Object.prototype.hasOwnProperty.call(entries, id) ? entries[id] : null;
-      if (!id || !gone || typeof gone !== 'object' || !gone.name) fail('No entry with that id on that day. Read the day to see its entries.');
+      const gone = entryAt(doc, id);
       // one merge step that empties this entry (the app skips empty entries), so an entry added meanwhile stays
       const after = await db.patch(path, { entries: { [id]: null } });
       return { removed: entryOut(id, gone, caloriesShown(root)), day: foodDayOut(a.date, after, root) };

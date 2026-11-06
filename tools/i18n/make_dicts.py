@@ -10,6 +10,7 @@ src = open(str(HERE.parent.parent / 'src' / 'yes-coach.html'), encoding='utf-8')
 LIB = json.loads(re.search(r'const LIB = (\[.*?\]);\n', src, re.S).group(1))
 labels = set(ui) | set(extra)
 NAMES = sorted({e['name'] for e in LIB} - labels)
+assert len(LIB) > 100 and len(NAMES) > 100, 'the exercise library was not read from the source (%d exercises)' % len(LIB)
 for code in ('nl', 'es', 'de', 'fr', 'it'):
     d = {}
     u = json.load(open(str(HERE / 'tr' / '%s_ui.json') % code))
