@@ -1685,5 +1685,124 @@
   "de": "Ergebnisse, die nur zu einem alten Synonym passen, füllen die Liste nicht mehr.",
   "fr": "Les résultats qui ne correspondent qu’à un ancien synonyme n’encombrent plus la liste.",
   "it": "I risultati che corrispondono solo a un vecchio sinonimo non riempiono più l’elenco."
+ },
+ "I ate something": {
+  "nl": "Ik at iets",
+  "es": "Comí algo",
+  "de": "Ich habe etwas gegessen",
+  "fr": "J’ai mangé quelque chose",
+  "it": "Ho mangiato qualcosa"
+ },
+ "Same as yesterday": {
+  "nl": "Hetzelfde als gisteren",
+  "es": "Igual que ayer",
+  "de": "Wie gestern",
+  "fr": "Comme hier",
+  "it": "Come ieri"
+ },
+ "Saved. Fill it in later.": {
+  "nl": "Bewaard. Vul het later in.",
+  "es": "Guardado. Complétalo más tarde.",
+  "de": "Gespeichert. Trag es später nach.",
+  "fr": "Enregistré. Complète-le plus tard.",
+  "it": "Salvato. Completalo più tardi."
+ },
+ "Ate something": {
+  "nl": "Iets gegeten",
+  "es": "Algo comido",
+  "de": "Etwas gegessen",
+  "fr": "Quelque chose mangé",
+  "it": "Qualcosa mangiato"
+ },
+ "Fill in": {
+  "nl": "Invullen",
+  "es": "Completar",
+  "de": "Ausfüllen",
+  "fr": "Compléter",
+  "it": "Completa"
+ },
+ "One meal is still to fill in.": {
+  "nl": "Eén maaltijd moet nog worden ingevuld.",
+  "es": "Falta completar una comida.",
+  "de": "Eine Mahlzeit muss noch ausgefüllt werden.",
+  "fr": "Il reste un repas à compléter.",
+  "it": "Resta un pasto da completare."
+ },
+ "Some meals are still to fill in.": {
+  "nl": "Een paar maaltijden moeten nog worden ingevuld.",
+  "es": "Faltan por completar algunas comidas.",
+  "de": "Einige Mahlzeiten müssen noch ausgefüllt werden.",
+  "fr": "Il reste des repas à compléter.",
+  "it": "Restano alcuni pasti da completare."
+ },
+ "Pick what it was and it replaces this entry.": {
+  "nl": "Kies wat het was en het vervangt deze invoer.",
+  "es": "Elige qué era y reemplazará esta entrada.",
+  "de": "Wähle, was es war, und es ersetzt diesen Eintrag.",
+  "fr": "Choisis ce que c’était et cela remplace cette entrée.",
+  "it": "Scegli cosa era e sostituirà questa voce."
+ },
+ "Copied yesterday.": {
+  "nl": "Gisteren gekopieerd.",
+  "es": "Ayer copiado.",
+  "de": "Gestern kopiert.",
+  "fr": "Hier copié.",
+  "it": "Ieri copiato."
+ },
+ "Log what you ate": {
+  "nl": "Log wat je at",
+  "es": "Registra lo que comiste",
+  "de": "Logge, was du gegessen hast",
+  "fr": "Enregistre ce que tu as mangé",
+  "it": "Registra cosa hai mangiato"
+ },
+ "Remove this entry": {
+  "nl": "Verwijder deze invoer",
+  "es": "Quitar esta entrada",
+  "de": "Diesen Eintrag entfernen",
+  "fr": "Retirer cette entrée",
+  "it": "Rimuovi questa voce"
+ },
+ "Quicker food logging": {
+  "nl": "Sneller eten loggen",
+  "es": "Registrar comida más rápido",
+  "de": "Essen schneller loggen",
+  "fr": "Enregistrer plus vite",
+  "it": "Registrare il cibo più in fretta"
+ },
+ "Put Log food on your home screen: press and hold the app icon, where your phone allows it.": {
+  "nl": "Zet Eten loggen op je beginscherm: houd het app-icoon ingedrukt, als je telefoon dat toelaat.",
+  "es": "Pon Registrar comida en tu pantalla de inicio: mantén pulsado el icono de la app, si tu móvil lo permite.",
+  "de": "Hol Essen loggen auf deinen Startbildschirm: halte das App-Symbol gedrückt, wo dein Handy es erlaubt.",
+  "fr": "Mets Enregistrer un repas sur ton écran d’accueil : appuie longuement sur l’icône de l’appli, si ton téléphone le permet.",
+  "it": "Metti Registra cibo nella schermata Home: tieni premuta l’icona dell’app, dove il telefono lo consente."
+ },
+ "Tap I ate something to save the time in one tap and fill it in later. Fill in swaps it for what you add.": {
+  "nl": "Tik op Ik at iets om het moment in één tik te bewaren en later in te vullen. Invullen vervangt het door wat je toevoegt.",
+  "es": "Toca Comí algo para guardar la hora con un toque y completarlo después. Completar lo cambia por lo que añadas.",
+  "de": "Tippe auf Ich habe etwas gegessen, um die Zeit mit einem Tipp zu speichern und später auszufüllen. Ausfüllen ersetzt den Eintrag durch das, was du hinzufügst.",
+  "fr": "Touche J’ai mangé quelque chose pour noter l’heure d’une seule touche et compléter plus tard. Compléter le remplace par ce que tu ajoutes.",
+  "it": "Tocca Ho mangiato qualcosa per salvare l’ora con un tocco e completare dopo. Completa lo sostituisce con ciò che aggiungi."
+ },
+ "On an empty day, Same as yesterday copies what you logged the day before.": {
+  "nl": "Op een lege dag kopieert Hetzelfde als gisteren wat je de dag ervoor logde.",
+  "es": "En un día vacío, Igual que ayer copia lo que registraste el día anterior.",
+  "de": "An einem leeren Tag kopiert Wie gestern, was du am Vortag geloggt hast.",
+  "fr": "Un jour vide, Comme hier copie ce que tu avais enregistré la veille.",
+  "it": "In un giorno vuoto, Come ieri copia ciò che hai registrato il giorno prima."
+ },
+ "After you finish training, a button takes you to Food if you have not logged anything today.": {
+  "nl": "Als je klaar bent met trainen, brengt een knop je naar Eten als je vandaag nog niets hebt gelogd.",
+  "es": "Al terminar de entrenar, un botón te lleva a Comida si hoy aún no has registrado nada.",
+  "de": "Nach dem Training bringt dich ein Knopf zu Ernährung, wenn du heute noch nichts geloggt hast.",
+  "fr": "Quand tu as fini ton entraînement, un bouton t’emmène vers Alimentation si tu n’as encore rien enregistré aujourd’hui.",
+  "it": "Quando finisci l’allenamento, un pulsante ti porta a Cibo se oggi non hai ancora registrato nulla."
+ },
+ "Claude can see which entries you still have to fill in, so you can ask it what you forgot today.": {
+  "nl": "Claude ziet welke invoeren je nog moet invullen, dus je kunt vragen wat je vandaag vergeten bent.",
+  "es": "Claude puede ver qué entradas te faltan por completar, así que puedes preguntarle qué olvidaste hoy.",
+  "de": "Claude sieht, welche Einträge du noch ausfüllen musst, also kannst du ihn fragen, was du heute vergessen hast.",
+  "fr": "Claude voit quelles entrées il te reste à compléter, tu peux donc lui demander ce que tu as oublié aujourd’hui.",
+  "it": "Claude vede quali voci devi ancora completare, quindi puoi chiedergli cosa hai dimenticato oggi."
  }
 }
