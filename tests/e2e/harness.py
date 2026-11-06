@@ -14,6 +14,15 @@ def jwt(uid):
     return b({'alg': 'HS256'}) + '.' + b({'sub': uid, 'exp': 4102444800, 'role': 'authenticated'}) + '.sig'
 def now(): return datetime.datetime.now(datetime.timezone.utc).isoformat()
 
+def settled(page, secs=10):
+    """True once the app has nothing left to save. The app asks before a page is left while sets or notes are unsent (a beforeunload prompt),
+    and these tests dismiss every dialog, which cancels the reload and leaves it waiting. Wait for the same condition the browser uses."""
+    end = time.time() + secs
+    while time.time() < end:
+        if not page.evaluate("() => { const e = new Event('beforeunload', { cancelable: true }); window.dispatchEvent(e); return e.defaultPrevented; }"): return True
+        page.wait_for_timeout(100)
+    return False
+
 class Backend:
     def __init__(self, admins=()):
         self.tickets, self.messages, self.calls, self.requests = [], [], [], []

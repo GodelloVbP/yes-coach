@@ -109,7 +109,7 @@ try:
             tz = page.evaluate('Intl.DateTimeFormat().resolvedOptions().timeZone')
             check('the time zone is saved for the connector', until(lambda: (next(d for d in be.docs if d['path'] == 'yc')['data'].get('settings') or {}).get('tz') == tz), tz)
             check('without touching the other settings', next(d for d in be.docs if d['path'] == 'yc')['data']['settings'].get('show_calories') is True)
-            page.reload(); page.wait_for_timeout(1500)
+            settled(page); page.reload(); page.wait_for_timeout(1500)
             check('saved once, not on every visit', len(tzw()) == 1, len(tzw()))
         errs = session(pw, be, ALICE, odd, width=390); check('no page errors (odd data)', not errs, errs)
         check('no outside requests', not EXTERNAL, EXTERNAL)
