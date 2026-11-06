@@ -95,6 +95,17 @@
     });
     pats.sort((a, b) => b.weight - a.weight);
   };
+  // what a pattern captured without a match of its own: after a separator ("Target{0}" with " · Last time"), translate the pieces and keep the separator
+  const tail = (raw, depth) => {
+    const m = /^(\s*[·,;:–-]\s*)([\s\S]+)$/.exec(raw);
+    if (m) {
+      const rest = norm(m[2]);
+      const t = lookup(rest, depth + 1);
+      const u = t != null ? t : depth < 2 ? pieces(rest) : null;
+      if (u != null) return m[1] + u;
+    }
+    return dateFix(raw);
+  };
   const lookup = (s, depth) => {
     const hit = exact.get(s);
     if (hit != null) return hit;
@@ -111,10 +122,20 @@
       // a pattern must not swallow several sentences, and a short one that starts with a gap ("{0} sets") only takes numbers
       if (m.slice(1).some((c) => /[.!?] [A-Z]/.test(c) || (p.strict && !/^(?:\d[\d.,/×x –+-]*|[A-Z])$/.test(c)))) continue;
       const parts = {};
-      p.idx.forEach((n, i) => { const raw = m[i + 1]; const t = lookup(norm(raw), depth + 1); parts[n] = t != null ? t : dateFix(raw); });
+      p.idx.forEach((n, i) => { const raw = m[i + 1]; const t = lookup(norm(raw), depth + 1); parts[n] = t != null ? t : tail(raw, depth); });
       return p.to.replace(/\{(\d+)\}/g, (x, n) => (parts[n] != null ? parts[n] : x));
     }
-    return null;
+    return withUnits(s);
+  };
+  // numbers glued to a unit ("40 kg assist × 8", "40 pin × 8", "40 kg/side × 8"): when nothing else but numbers and symbols is left,
+  // the unit words are translated in place, from the same dictionary
+  const UNIT_PHRASES = ['kg of assistance', 'kg per side', 'kg total', 'kg assist', 'kg/side', 'pin', 'reps', 'rep'];
+  const unitRe = new RegExp('(?<![A-Za-z])(' + UNIT_PHRASES.map(esc).join('|') + ')(?![A-Za-z])', 'g');
+  const withUnits = (s) => {
+    const found = s.match(unitRe);
+    if (!found || !/^[\s\d.,×x@+–·/:()-]*$/.test(s.replace(unitRe, ''))) return null;
+    if (found.some((u) => exact.get(u) == null)) return null;
+    return s.replace(unitRe, (u) => exact.get(u));
   };
   // pieces glued with separators ("a · b", "a, b", two sentences): translate the pieces that are known
   const pieces = (s) => {

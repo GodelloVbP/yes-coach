@@ -1895,5 +1895,131 @@
   "de": "Wenig Zeit? Füge ein Lebensmittel mit eigenen Zahlen hinzu und wähle eine grobe Schätzung: klein, mittel oder groß.",
   "fr": "Peu de temps ? Ajoute un aliment avec tes propres chiffres et choisis une estimation approximative : petit, moyen ou grand.",
   "it": "Poco tempo? Aggiungi un alimento con i tuoi numeri e scegli una stima approssimativa: piccolo, medio o grande."
+ },
+ "{0} kcal left": {
+  "nl": "{0} kcal over",
+  "es": "{0} kcal restantes",
+  "de": "{0} kcal übrig",
+  "fr": "{0} kcal restantes",
+  "it": "{0} kcal rimanenti"
+ },
+ "{0} g left": {
+  "nl": "{0} g over",
+  "es": "{0} g restantes",
+  "de": "{0} g übrig",
+  "fr": "{0} g restants",
+  "it": "{0} g rimanenti"
+ },
+ "{0} kcal above your target": {
+  "nl": "{0} kcal boven je doel",
+  "es": "{0} kcal por encima de tu objetivo",
+  "de": "{0} kcal über deinem Ziel",
+  "fr": "{0} kcal au-dessus de ton objectif",
+  "it": "{0} kcal sopra il tuo obiettivo"
+ },
+ "today": {
+  "nl": "vandaag",
+  "es": "hoy",
+  "de": "heute",
+  "fr": "aujourd’hui",
+  "it": "oggi"
+ },
+ "rest": {
+  "nl": "rust",
+  "es": "descanso",
+  "de": "Pause",
+  "fr": "repos",
+  "it": "recupero"
+ },
+ "age": {
+  "nl": "leeftijd",
+  "es": "edad",
+  "de": "Alter",
+  "fr": "âge",
+  "it": "età"
+ },
+ "height": {
+  "nl": "lengte",
+  "es": "altura",
+  "de": "Größe",
+  "fr": "taille",
+  "it": "altezza"
+ },
+ "weight": {
+  "nl": "gewicht",
+  "es": "peso",
+  "de": "Gewicht",
+  "fr": "poids",
+  "it": "peso"
+ },
+ "age and height": {
+  "nl": "leeftijd en lengte",
+  "es": "edad y altura",
+  "de": "Alter und Größe",
+  "fr": "âge et taille",
+  "it": "età e altezza"
+ },
+ "age and weight": {
+  "nl": "leeftijd en gewicht",
+  "es": "edad y peso",
+  "de": "Alter und Gewicht",
+  "fr": "âge et poids",
+  "it": "età e peso"
+ },
+ "height and weight": {
+  "nl": "lengte en gewicht",
+  "es": "altura y peso",
+  "de": "Größe und Gewicht",
+  "fr": "taille et poids",
+  "it": "altezza e peso"
+ },
+ "age, height and weight": {
+  "nl": "leeftijd, lengte en gewicht",
+  "es": "edad, altura y peso",
+  "de": "Alter, Größe und Gewicht",
+  "fr": "âge, taille et poids",
+  "it": "età, altezza e peso"
+ },
+ "Each day you logged, in {0}.": {
+  "nl": "Elke dag die je logde, in {0}.",
+  "es": "Cada día que registraste, en {0}.",
+  "de": "Jeder Tag, den du geloggt hast, in {0}.",
+  "fr": "Chaque jour enregistré, sur {0}.",
+  "it": "Ogni giorno che hai registrato: {0}."
+ },
+ "Average per logged day, by week, in {0}.": {
+  "nl": "Gemiddelde per gelogde dag, per week, in {0}.",
+  "es": "Promedio por día registrado, por semana, en {0}.",
+  "de": "Durchschnitt pro geloggtem Tag, nach Woche, in {0}.",
+  "fr": "Moyenne par jour enregistré, par semaine, sur {0}.",
+  "it": "Media per giorno registrato, per settimana: {0}."
+ },
+ "pin": {
+  "nl": "pin",
+  "es": "clavija",
+  "de": "Pin",
+  "fr": "cran",
+  "it": "pin"
+ },
+ "· {0} session": {
+  "nl": "· {0} training",
+  "es": "· {0} sesión",
+  "de": "· {0} Einheit",
+  "fr": "· {0} séance",
+  "it": "· {0} sessione"
+ },
+ "· {0} sessions": {
+  "nl": "· {0} trainingen",
+  "es": "· {0} sesiones",
+  "de": "· {0} Einheiten",
+  "fr": "· {0} séances",
+  "it": "· {0} sessioni"
+ },
+ "all your history": {
+  "nl": "al je geschiedenis",
+  "es": "todo tu historial",
+  "de": "deinem gesamten Verlauf",
+  "fr": "tout ton historique",
+  "it": "tutto il tuo storico"
  }
 }
