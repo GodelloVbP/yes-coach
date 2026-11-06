@@ -937,7 +937,8 @@ body.fin-open { overflow: hidden; }
 .ysel-opt[aria-disabled="true"] { opacity: 0.45; cursor: default; }
 .ed-f input::placeholder, .ed-f textarea::placeholder, .intro textarea::placeholder { color: var(--ink-soft); opacity: 1; }
 .ed-f input[type="text"], .ed-f input:not([type]) { -webkit-appearance: none; appearance: none; border-radius: 0; }
-.intro textarea, .ed-f textarea { min-height: 5.5rem; overflow: hidden; line-height: 1.45; }
+/* auto-growing boxes never overflow; boxes that do not grow (the ticket text) scroll instead of cutting the text off */
+.intro textarea, .ed-f textarea { min-height: 5.5rem; overflow-y: auto; line-height: 1.45; }
 /* motion: short, transform and opacity only. Press feedback on everything tappable, a slide-in for new screens,
    and panels that ease in when they open. All of it is off with reduced motion. */
 @keyframes enter { from { opacity: 0; transform: translate(var(--dx, 0px), 6px); } }
