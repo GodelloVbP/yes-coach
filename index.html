@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-D5ZDGkMrouwZDW0YdF/mV/Jpte6LNs9IzhHoR2GfFuw=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-tkJwn3E53NWVcx9VujvseAVSLL69tdkQrLl2KXb3hjs=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-06 19:15Z">
+<meta name="yc-build" content="2026-11-06 19:28Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -912,6 +912,17 @@ body.fin-open { overflow: hidden; }
 .fd-list { display: flex; flex-direction: column; }
 .fd-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 0 0.75rem; min-height: 52px; padding: 0.375rem 0; border-bottom: 1px solid var(--line); }
 .fd-row-name { font-weight: 700; overflow-wrap: anywhere; }
+.fd-sm-list { display: flex; flex-direction: column; }
+.fd-sm { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 0 0.75rem; min-height: 56px; padding: 0.375rem 0; border-bottom: 1px solid var(--line); }
+.fd-sm-name { font-weight: 700; overflow-wrap: anywhere; }
+.fd-sm-mac { grid-column: 1; font-size: var(--t1); color: var(--ink-soft); font-weight: 500; font-variant-numeric: tabular-nums; }
+.fd-sm .skew { grid-row: 1 / span 2; grid-column: 2; }
+.fd-sm .icon { grid-row: 1 / span 2; grid-column: 3; }
+.fd-sm-more > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 600; color: var(--ink-soft); }
+.fd-amt { font: inherit; color: inherit; background: none; border: 0; text-decoration: underline dashed var(--ctl); text-underline-offset: 4px; padding: 0 0.125rem; min-height: 32px; cursor: pointer; font-variant-numeric: tabular-nums; }
+.fd-amt-in { font: inherit; width: 5rem; min-height: 36px; padding: 0 0.5rem; color: var(--ink); background: var(--faint); border: 0; border-bottom: 2px solid var(--ink); }
+.fd-save { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 0.25rem 0 0.5rem; }
+.fd-save input { font: inherit; flex: 1 1 10rem; min-width: 0; min-height: 40px; padding: 0 0.625rem; color: var(--ink); background: var(--faint); border: 0; border-bottom: 2px solid var(--ctl); }
 .fd-items { grid-column: 1 / -1; margin: 0.25rem 0 0.125rem; font-size: var(--t1); color: var(--ink-soft); }
 .fd-items summary { cursor: pointer; min-height: 32px; display: flex; align-items: center; font-weight: 600; }
 .fd-items ul { margin: 0.25rem 0 0; padding-left: 1.1rem; display: grid; gap: 0.125rem; font-variant-numeric: tabular-nums; }
@@ -1265,6 +1276,10 @@ body.fin-open { overflow: hidden; }
         </div>
         <div class="fd-meter" id="fd-meter"></div>
         <div class="fd-sug" id="fd-sug-top" hidden></div>
+        <section class="p-sec" aria-labelledby="h-fd-meals" id="fd-meals" hidden>
+          <div class="p-head"><h2 id="h-fd-meals">Your meals</h2></div>
+          <div class="fd-sm-list" id="fd-sm-list"></div>
+        </section>
         <section class="p-sec" aria-labelledby="h-fd-add">
           <div class="p-head"><h2 id="h-fd-add">Add food</h2></div>
           <div class="fd-find">
@@ -1520,8 +1535,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ------------------------------------------------------------------ state
   const S = {
     db: null, uid: null, rootRef: null, ready: false, failed: false,
-    root: null, exercises: {}, templates: {}, sessions: {}, notes: {},
-    loaded: { root: false, exercises: false, templates: false, sessions: false, notes: false, weeks: false, food: false },
+    root: null, exercises: {}, templates: {}, sessions: {}, notes: {}, meals: {}, myfoods: {},
+    loaded: { root: false, exercises: false, templates: false, sessions: false, notes: false, weeks: false, food: false, meals: false, myfoods: false },
     weeks: {}, editing: null, metric: 'load', weekStart: null,
     active: null, // {date, tpl}
     view: 'train', ptab: 'All', range: 30, picked: null, away: false, food: {}, fday: null, frange: 30, fmetric: 'kcal',
@@ -1738,6 +1753,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['6 Nov 2026', 'Your meals', ["Save a meal you eat often and log it again with one tap. In your day, open a meal with several foods and tap Save as a meal.", "Tap the amount of a food to change it. The numbers follow.", "Claude can save your meals and portion sizes too, and remembers which food you mean: your cheese, your bread."]],
     ['6 Nov 2026', 'Log food by talking to Claude', ["If you connected Claude, tell it what you ate, for example “2 slices of bread with egg, cheese and mustard”. It finds the foods, picks the portions and saves the meal in your Food tab.", "A meal with several foods is one line. Tap What is in it to see the foods. A ~ marks an amount that was a guess.", "Claude reads the numbers from the same food tables the app uses. It does not make them up."]],
     ['6 Nov 2026', 'Smaller things', ["The rest timer now takes you back to the exercise it belongs to.", "Moving between exercises now slides smoothly and scrolls to your first open set.", "A new personal record now slams onto the set, and your records slide in on the finish screen."]],
     ['5 Nov 2026', 'New start page', ["The start page for visitors now shows the app on three screens and what makes it different. Pick your language with the button at the top.", "This list of changes moved to More, under What's new."]],
@@ -4862,6 +4878,181 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     showToast('Removed ' + gone.name + '.', () => { addFood(gone, date); });
   };
 
+  // ---- your meals: usual meals you log with one tap (the connected AI can save them too), and amounts you can change in place
+  const isN = (v) => typeof v === 'number' && Number.isFinite(v);
+  const r1 = (n) => Math.round(n * 10) / 10;
+  const openMeals = new Set(); // entries whose foods are open, kept across redraws
+  const goodItem = (i) => !!(i && typeof i === 'object' && typeof i.name === 'string' && i.name && isN(i.g) && i.g > 0);
+  const sumItems = (items) => items.reduce((t, i) => ({ kcal: t.kcal + n0(i.kcal), p: t.p + n0(i.p), c: t.c + n0(i.c), f: t.f + n0(i.f) }), { kcal: 0, p: 0, c: 0, f: 0 });
+  const mealsRef = () => S.rootRef.collection('meals');
+  const mealsList = () => Object.entries(S.meals || {})
+    .filter(([, m]) => m && typeof m === 'object' && !m.gone && typeof m.name === 'string' && m.name && Array.isArray(m.items) && m.items.some(goodItem))
+    .map(([id, m]) => { const items = m.items.filter(goodItem); const t = sumItems(items); return { id, name: m.name, items, n: n0(m.n), last: n0(m.last), kcal: Math.round(t.kcal), p: r1(t.p), c: r1(t.c), f: r1(t.f) }; })
+    .sort((a, b) => b.last - a.last || b.n - a.n || a.name.localeCompare(b.name)); // the one you used or saved last is on top
+  // one food becomes a normal entry the app can reopen; several become one entry with the foods inside
+  const mealEntry = (m) => {
+    if (m.items.length === 1) {
+      const x = m.items[0];
+      const e = { name: m.name, kcal: n0(x.kcal), p: n0(x.p), c: n0(x.c), f: n0(x.f) };
+      if (x.src) Object.assign(e, { src: x.src, ref: x.ref, g: x.g, u: x.u === 'ml' ? 'ml' : 'g' });
+      if (x.est) e.est = true;
+      return e;
+    }
+    return { name: m.name, kcal: m.kcal, p: m.p, c: m.c, f: m.f, items: m.items.map((x) => Object.assign({}, x)) };
+  };
+  let mealTap = { id: '', t: 0 };
+  const undoAdd = (id, date) => {
+    const doc = clone(S.food[date]);
+    if (!doc || !doc.entries || !doc.entries[id]) return;
+    delete doc.entries[id];
+    S.food[date] = doc;
+    renderFood();
+    foodRef(date).set(doc).catch(() => showToast('Not removed. Check your connection.', null));
+  };
+  const logMeal = async (m) => {
+    if (mealTap.id === m.id && Date.now() - mealTap.t < 600) return; // a double tap on the same meal is one meal
+    mealTap = { id: m.id, t: Date.now() };
+    const date = S.fday;
+    const id = await addFood(mealEntry(m), date);
+    mealsRef().doc(m.id).update({ n: m.n + 1, last: Date.now() }).catch(() => {});
+    showToast('Added ' + m.name + '.', () => undoAdd(id, date));
+  };
+  const removeMeal = (m) => {
+    const was = clone(S.meals[m.id]);
+    delete S.meals[m.id];
+    renderFood();
+    mealsRef().doc(m.id).delete().catch(() => showToast('Not removed. Check your connection.', null));
+    showToast('Removed ' + m.name + '.', () => { S.meals[m.id] = was; renderFood(); mealsRef().doc(m.id).set(was).catch(() => {}); });
+  };
+  const mealSlug = (t) => foldW(t).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'meal';
+  const saveMeal = (name, items) => {
+    const clean = items.filter(goodItem).slice(0, 12).map((i) => {
+      const o = { name: String(i.name).slice(0, 120), g: i.g, u: i.u === 'ml' ? 'ml' : 'g', kcal: n0(i.kcal), p: n0(i.p), c: n0(i.c), f: n0(i.f) };
+      if (i.src) Object.assign(o, { src: i.src, ref: i.ref });
+      if (i.est) o.est = true;
+      return o;
+    });
+    if (!clean.length) return;
+    const same = mealsList().find((m) => foldW(m.name) === foldW(name));
+    if (!same && mealsList().length >= 200) { showToast('You have 200 saved meals. Remove one first.', null); return; }
+    let id = same ? same.id : mealSlug(name);
+    if (!same) for (let k = 2; S.meals[id] && !S.meals[id].gone; k += 1) id = mealSlug(name) + '-' + k;
+    const t = sumItems(clean);
+    const doc = { name, items: clean, kcal: Math.round(t.kcal), p: r1(t.p), c: r1(t.c), f: r1(t.f), n: same ? same.n : 0, last: Date.now() };
+    S.meals[id] = doc;
+    renderFood();
+    mealsRef().doc(id).set(doc).then(() => showToast('Saved as a meal.', null)).catch(() => showToast('Not saved. Check your connection.', null));
+  };
+  // under the foods of a logged meal: keep it as one of your meals
+  const saveMealUi = (e) => {
+    const wrap = h('div', 'fd-save');
+    const open = plainBtn('textbtn', 'Save as a meal', null, null);
+    const form = () => {
+      wrap.replaceChildren();
+      const inp = h('input');
+      inp.type = 'text';
+      inp.maxLength = 60;
+      inp.value = e.name;
+      inp.enterKeyHint = 'done';
+      inp.setAttribute('aria-label', 'Name this meal');
+      const go = plainBtn('skew small', 'Save', null, null);
+      const no = plainBtn('textbtn', 'Cancel', null, () => { wrap.replaceChildren(open); });
+      const send = () => { const name = inp.value.trim().slice(0, 60); if (name) saveMeal(name, e.items || []); };
+      go.addEventListener('click', send);
+      inp.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); send(); } if (ev.key === 'Escape') wrap.replaceChildren(open); });
+      wrap.append(inp, go, no);
+      inp.focus();
+      inp.select();
+    };
+    open.addEventListener('click', form);
+    wrap.append(open);
+    return wrap;
+  };
+  const paintMeals = () => {
+    const list = mealsList();
+    $('#fd-meals').hidden = !list.length;
+    const box = $('#fd-sm-list');
+    box.replaceChildren();
+    if (!list.length) return;
+    const row = (m) => {
+      const r = h('div', 'fd-sm');
+      r.append(h('span', 'fd-sm-name', m.name));
+      const mac = [m.p ? 'P ' + num(m.p) + ' g' : '', showCal() ? big(m.kcal) + ' kcal' : ''].filter(Boolean).join(' · ');
+      if (mac) r.append(h('span', 'fd-sm-mac', mac));
+      const add = btn('skew small', 'Add', 'Add ' + m.name + ' to ' + (S.fday === today() ? 'today' : isoDow(S.fday) + ' ' + dm(S.fday)));
+      add.addEventListener('click', () => logMeal(m));
+      r.append(add, plainBtn('icon', '×', 'Remove ' + m.name, () => removeMeal(m)));
+      return r;
+    };
+    list.slice(0, 6).forEach((m) => box.append(row(m)));
+    if (list.length > 6) {
+      const more = h('details', 'fd-sm-more');
+      more.append(h('summary', '', 'More meals'));
+      list.slice(6).forEach((m) => more.append(row(m)));
+      box.append(more);
+    }
+  };
+  // the amount of a food in an entry: tap it, type another, press enter. A food from the tables gets its numbers worked out again.
+  const amountEl = (g, u, est, label, onSet) => {
+    const b = h('button', 'fd-amt', (est ? '~' : '') + num(g) + ' ' + u);
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Change the amount of ' + label + ': ' + num(g) + ' ' + u);
+    b.addEventListener('click', () => {
+      const inp = h('input', 'fd-amt-in');
+      inp.type = 'text';
+      inp.inputMode = 'decimal';
+      inp.enterKeyHint = 'done';
+      inp.value = num(g);
+      inp.setAttribute('aria-label', 'Amount of ' + label + ' in ' + u);
+      let done = false;
+      const finish = (save) => {
+        if (done) return;
+        done = true;
+        const v = fnum(inp.value);
+        if (save && v != null && !Number.isNaN(v) && v > 0 && v <= 5000) { if (v !== g) onSet(v); else paintFoodList(); } else {
+          if (save) showToast('Enter an amount above 0, up to 5000.', null);
+          paintFoodList();
+        }
+      };
+      inp.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); finish(true); } if (ev.key === 'Escape') finish(false); });
+      inp.addEventListener('blur', () => finish(true));
+      b.replaceWith(inp);
+      inp.focus();
+      inp.select();
+    });
+    return b;
+  };
+  const changeAmount = async (date, id, idx, g) => {
+    let tables = null;
+    try { tables = await loadFoodDb(); } catch (err) { tables = null; } // offline: the stored numbers are scaled instead
+    const nutrients = (it) => {
+      const hit = tables && tables.items.find((x) => x.src === it.src && String(x.ref) === String(it.ref));
+      if (hit) { const k = g / 100; return { kcal: Math.round(hit.kcal * k), p: r1((hit.p || 0) * k), c: r1((hit.c || 0) * k), f: r1((hit.f || 0) * k) }; }
+      const k = g / it.g;
+      return { kcal: Math.round(n0(it.kcal) * k), p: r1(n0(it.p) * k), c: r1(n0(it.c) * k), f: r1(n0(it.f) * k) };
+    };
+    const cur = ((S.food[date] || {}).entries || {})[id]; // read after the tables loaded: the entry may have changed meanwhile
+    if (!cur || typeof cur !== 'object') return;
+    let next;
+    if (idx == null) {
+      if (!isN(cur.g) || !(cur.g > 0) || !cur.src) return;
+      next = Object.assign({}, cur, nutrients(cur), { g, est: false });
+    } else {
+      const items = Array.isArray(cur.items) ? cur.items.slice() : [];
+      const it = items[idx];
+      if (!goodItem(it) || !it.src) return;
+      const upd = Object.assign({}, it, nutrients(it), { g });
+      delete upd.est;
+      items[idx] = upd;
+      const t = sumItems(items.filter(goodItem));
+      next = Object.assign({}, cur, { items, kcal: Math.round(t.kcal), p: r1(t.p), c: r1(t.c), f: r1(t.f) });
+    }
+    S.food[date] = Object.assign({ date }, S.food[date]);
+    S.food[date].entries = Object.assign({}, S.food[date].entries, { [id]: next });
+    renderFood();
+    foodRef(date).update({ entries: { [id]: next } }).catch(() => showToast('Not saved. Check your connection.', null));
+  };
+
   const renderFood = () => {
     if (S.view !== 'food') return;
     const ready = S.ready && S.rootRef;
@@ -4874,6 +5065,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#fd-off').hidden = showCal();
     $('#fd-next').disabled = S.fday >= today();
     paintMeter();
+    paintMeals();
     paintFoodList();
     paintFoodTrend();
     paintTargets();
@@ -4919,19 +5111,34 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (!list.length) { box.append(h('p', 'note', 'Nothing logged ' + (S.fday === today() ? 'today' : 'on this day') + ' yet.')); return; }
     list.forEach(([id, e]) => {
       const row = h('div', 'fd-row');
-      const isN = (v) => typeof v === 'number' && Number.isFinite(v);
       const mac = [isN(e.p) ? 'P ' + num(e.p) + ' g' : '', isN(e.c) ? 'C ' + num(e.c) + ' g' : '', isN(e.f) ? 'F ' + num(e.f) + ' g' : ''].filter(Boolean).join(' · ');
       const x = plainBtn('icon', '×', 'Remove ' + e.name, () => removeFood(id));
       const cal = showCal();
-      row.append(h('span', 'fd-row-name', e.name + (isN(e.g) && e.g > 0 ? ' · ' + (e.est ? '~' : '') + num(e.g) + ' ' + (e.u === 'ml' ? 'ml' : 'g') : '')), h('span', 'fd-row-kcal', cal && isN(e.kcal) ? big(e.kcal) + ' kcal' : ''), x);
+      const nameEl = h('span', 'fd-row-name');
+      nameEl.append(e.name);
+      if (isN(e.g) && e.g > 0) {
+        nameEl.append(' · ');
+        // a food from the tables has its amount changed in place; the numbers follow
+        nameEl.append(e.src && e.ref != null ? amountEl(e.g, e.u === 'ml' ? 'ml' : 'g', !!e.est, e.name, (g) => changeAmount(S.fday, id, null, g)) : (e.est ? '~' : '') + num(e.g) + ' ' + (e.u === 'ml' ? 'ml' : 'g'));
+      }
+      row.append(nameEl, h('span', 'fd-row-kcal', cal && isN(e.kcal) ? big(e.kcal) + ' kcal' : ''), x);
       if (mac) row.append(h('span', 'fd-row-mac', mac));
       // a meal with several foods stays one line; what is in it opens underneath
-      const items = Array.isArray(e.items) ? e.items.filter((i) => i && typeof i === 'object' && typeof i.name === 'string') : [];
+      const items = (Array.isArray(e.items) ? e.items : []).map((i, idx) => [i, idx]).filter(([i]) => i && typeof i === 'object' && typeof i.name === 'string');
       if (items.length > 1) {
         const det = h('details', 'fd-items');
+        det.open = openMeals.has(id);
+        det.addEventListener('toggle', () => { if (det.open) openMeals.add(id); else openMeals.delete(id); });
         const ul = h('ul');
-        items.forEach((i) => ul.append(h('li', '', i.name + (isN(i.g) ? ' · ' + (i.est ? '~' : '') + num(i.g) + ' ' + (i.u === 'ml' ? 'ml' : 'g') : '') + (isN(i.p) ? ' · P ' + num(i.p) + ' g' : ''))));
-        det.append(h('summary', '', 'What is in it'), ul);
+        items.forEach(([i, idx]) => {
+          const li = h('li');
+          const u = i.u === 'ml' ? 'ml' : 'g';
+          li.append(i.name);
+          if (isN(i.g)) { li.append(' · '); li.append(i.src && i.ref != null ? amountEl(i.g, u, !!i.est, i.name, (g) => changeAmount(S.fday, id, idx, g)) : (i.est ? '~' : '') + num(i.g) + ' ' + u); }
+          if (isN(i.p)) li.append(' · P ' + num(i.p) + ' g');
+          ul.append(li);
+        });
+        det.append(h('summary', '', 'What is in it'), ul, saveMealUi(e));
         row.append(det);
       }
       box.append(row);
@@ -5632,7 +5839,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#ex-csv').addEventListener('click', async () => flash($('#ex-state'), await download(exportName('csv'), buildCsv())));
   $('#ex-json').addEventListener('click', () => {
     const strip = (m) => { const o = {}; Object.keys(m).forEach((k) => { const d = Object.assign({}, m[k]); delete d._local; o[k] = d; }); return o; };
-    const backup = { app: 'yes-coach', schema: 1, exported_at: new Date().toISOString(), root: S.root, exercises: S.exercises, templates: S.templates, sessions: strip(S.sessions), notes: S.notes, weeks: S.weeks, food: S.food };
+    const backup = { app: 'yes-coach', schema: 1, exported_at: new Date().toISOString(), root: S.root, exercises: S.exercises, templates: S.templates, sessions: strip(S.sessions), notes: S.notes, weeks: S.weeks, food: S.food, meals: S.meals, myfoods: S.myfoods };
     download(exportName('json'), JSON.stringify(backup, null, 1)).then((m) => flash($('#bk-state'), m));
   });
 
@@ -7424,7 +7631,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#toast-undo').addEventListener('click', () => { const fn = toastUndo; hideToast(); if (fn) fn(); });
 
   // ------------------------------------------------------------------ restore a backup: adds what is missing, never overwrites
-  const KINDS_RESTORE = ['exercises', 'templates', 'notes', 'weeks', 'food'];
+  const KINDS_RESTORE = ['exercises', 'templates', 'notes', 'weeks', 'food', 'meals', 'myfoods'];
   let restorePlan = null;
   const planRestore = (bk) => {
     const plan = { docs: [], sessions: [], sessionSets: [], counts: {} };
@@ -7488,10 +7695,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (msg) box.append(h('p', 'note sm-msg', msg));
     if (!plan) return;
     const c = plan.counts;
-    const adds = c.sessions + c.sets + c.exercises + c.templates + c.notes + c.weeks + c.root + (c.food || 0) + (c.foodEntries || 0);
+    const adds = c.sessions + c.sets + c.exercises + c.templates + c.notes + c.weeks + c.root + (c.food || 0) + (c.foodEntries || 0) + (c.meals || 0) + (c.myfoods || 0);
     const planChange = plan.days.length + (plan.schedule ? 1 : 0);
     if (!adds && !planChange) { box.append(h('p', 'note', 'Nothing to restore: everything in this backup is already here.')); return; }
-    const parts = [[c.sessions, 'session'], [c.sets, 'set', ' missing from sessions you have'], [c.exercises, 'exercise'], [c.templates, 'training day'], [c.notes, 'note'], [c.weeks, 'week plan'], [c.food || 0, 'day', ' of food'], [c.foodEntries || 0, 'food entry', ' missing from days you have'], [c.root, 'setting']]
+    const parts = [[c.sessions, 'session'], [c.sets, 'set', ' missing from sessions you have'], [c.exercises, 'exercise'], [c.templates, 'training day'], [c.notes, 'note'], [c.weeks, 'week plan'], [c.food || 0, 'day', ' of food'], [c.meals || 0, 'saved meal'], [c.myfoods || 0, 'remembered food'], [c.foodEntries || 0, 'food entry', ' missing from days you have'], [c.root, 'setting']]
       .filter(([n]) => n).map(([n, w, tail]) => (w === 'food entry' ? n + (n === 1 ? ' food entry' : ' food entries') : plural(n, w)) + (tail || ''));
     if (adds) box.append(h('p', '', 'This backup adds what is missing here: ' + parts.join(', ') + '.'));
     let withPlan = null;
@@ -7831,7 +8038,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       S.loaded.root = true;
       refresh();
     }, onErr);
-    ['exercises', 'templates', 'notes', 'weeks', 'food'].forEach((k) => {
+    ['exercises', 'templates', 'notes', 'weeks', 'food', 'meals', 'myfoods'].forEach((k) => {
       S.rootRef.collection(k).onSnapshot((snap) => { S[k] = toMap(snap); S.loaded[k] = true; refresh(); }, onErr);
     });
     S.rootRef.collection('sessions').onSnapshot((snap) => {
