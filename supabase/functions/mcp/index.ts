@@ -243,10 +243,12 @@ const caloriesShown = (root: Json): boolean => {
   return !!(root && root.nutrition && (root.nutrition.kcal || root.nutrition.protein));
 };
 const foodEntries = (doc: Json): [string, Json][] => Object.entries((doc && doc.entries) || {}).filter(([, e]) => e && typeof e === 'object' && typeof (e as Json).name === 'string' && (e as Json).name).sort((a, b) => ((a[1] as Json).at || 0) - ((b[1] as Json).at || 0)) as [string, Json][];
-const totalsOf = (entries: [string, Json][]) => entries.reduce((t, [, e]) => ({ kcal: t.kcal + n0(e.kcal), p: Math.round((t.p + n0(e.p)) * 10) / 10, c: Math.round((t.c + n0(e.c)) * 10) / 10, f: Math.round((t.f + n0(e.f)) * 10) / 10 }), { kcal: 0, p: 0, c: 0, f: 0 });
+// an entry the person noted with one tap and no details ("I ate something") holds no numbers and is left out of the totals
+const totalsOf = (entries: [string, Json][]) => entries.filter(([, e]) => !e.quick).reduce((t, [, e]) => ({ kcal: t.kcal + n0(e.kcal), p: Math.round((t.p + n0(e.p)) * 10) / 10, c: Math.round((t.c + n0(e.c)) * 10) / 10, f: Math.round((t.f + n0(e.f)) * 10) / 10 }), { kcal: 0, p: 0, c: 0, f: 0 });
 const macros = (n: { kcal: number; p: number; c: number; f: number }, cal: boolean) => ({ ...(cal ? { kcal: n.kcal } : {}), protein_g: n.p, carbs_g: n.c, fat_g: n.f });
+const isoOf = (at: Json): string | null => { const d = new Date(n0(at)); return n0(at) > 0 && Number.isFinite(d.getTime()) ? d.toISOString() : null; };
 const entryOut = (id: string, e: Json, cal: boolean) => ({
-  id, name: e.name, ...macros({ kcal: n0(e.kcal), p: n0(e.p), c: n0(e.c), f: n0(e.f) }, cal), ...(n0(e.g) ? { amount: (e.est ? '~' : '') + e.g + ' ' + (e.u || 'g') } : {}),
+  id, name: e.name, ...(e.quick ? { placeholder: true, logged_at: isoOf(e.at) } : {}), ...macros({ kcal: n0(e.kcal), p: n0(e.p), c: n0(e.c), f: n0(e.f) }, cal), ...(n0(e.g) ? { amount: (e.est ? '~' : '') + e.g + ' ' + (e.u || 'g') } : {}),
   ...(Array.isArray(e.items) ? { items: e.items.filter((i: Json) => i && typeof i === 'object').map((i: Json) => ({ name: String(i.name || ''), amount: (i.est ? '~' : '') + n0(i.g) + ' ' + (i.u || 'g'), ...macros({ kcal: n0(i.kcal), p: n0(i.p), c: n0(i.c), f: n0(i.f) }, cal) })) } : {}),
 });
 const foodDayOut = (date: string, doc: Json, root: Json) => {
@@ -567,7 +569,7 @@ const TOOLS: Tool[] = [
   {
     name: 'get_food_day', title: 'Get food day', annotations: RO,
     inputSchema: obj({ date: { type: 'string', description: 'YYYY-MM-DD. Leave out for today in the person\'s own time zone.' } }),
-    description: 'What the person ate on one day: every entry with its id, name, nutrients and items, the day totals, and their daily targets.',
+    description: 'What the person ate on one day: every entry with its id, name, nutrients and items, the day totals, and their daily targets. An entry marked placeholder is a meal the person noted with one tap and no details; it has the time it was noted and counts for nothing in the totals.',
     run: async (db, a) => {
       if (badDate(a.date)) fail(DATE_ERR);
       const root = await db.get('yc');

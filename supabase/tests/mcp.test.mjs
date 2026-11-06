@@ -534,6 +534,24 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok((sql.match(/yc\/myfoods\/%/g) || []).length === 3 && (sql.match(/yc\/meals\/%/g) || []).length === 3 && !/for delete[\s\S]{0,80}yc\/(food|meals|myfoods)/.test(sql), 'connector.sql allows insert and update on both, and still no deletes');
 }
 
+// ---- "I ate something": an entry with no details is shown as a placeholder and counts for nothing
+{
+  const T = 'tok.anna.x';
+  const rowA = (path) => rows.find((x) => x.user_id === A && x.path === path);
+  const at0 = Date.parse('2026-09-15T12:32:00Z');
+  seed(A, 'yc/food/2026-09-15', { date: '2026-09-15', entries: { q1: { name: 'Ate something', quick: true, at: at0, p: null, c: null, f: null }, r1: { name: 'Apple', p: 0.3, c: 14, f: 0.2, kcal: 62, at: at0 + 1 }, q2: { name: 'Ate something', quick: true, at: 'soon' } } });
+  let r = await call(T, 'get_food_day', { date: '2026-09-15' });
+  const q1 = r.json.entries.find((e) => e.id === 'q1');
+  ok(!r.err && r.json.entries.length === 3 && q1.placeholder === true && q1.logged_at === '2026-09-15T12:32:00.000Z', 'a placeholder is listed, flagged and timed: ' + JSON.stringify(q1));
+  ok(r.json.entries.find((e) => e.id === 'q2').logged_at === null && !r.json.entries.find((e) => e.id === 'r1').placeholder, 'a bad time is null, a normal entry is not flagged');
+  ok(r.json.totals.protein_g === 0.3 && r.json.totals.carbs_g === 14, 'the totals leave placeholders out');
+  r = await call(T, 'remove_food_entry', { date: '2026-09-15', entry_id: 'q1' });
+  ok(!r.err && r.json.removed.placeholder === true && !(await call(T, 'get_food_day', { date: '2026-09-15' })).json.entries.some((e) => e.id === 'q1'), 'once the person says what it was, the placeholder can be removed');
+  const bread = (await call(T, 'search_foods', { query: 'tarwebrood bruin', limit: 1 })).json.results[0].food;
+  r = await call(T, 'log_meals', { date: '2026-09-15', meals: [{ name: 'Sandwich', items: [{ food: bread, grams: 70 }] }] });
+  ok(!r.err && r.json.day.totals.protein_g > 0.3 && r.json.day.entries.some((e) => e.id === 'q2' && e.placeholder), 'logging a meal on a day with placeholders adds to the totals and leaves them listed');
+}
+
 // ---- database errors surface as tool errors, not crashes
 {
   const h2 = createHandler({ url: base, anonKey: 'anon', publicUrl: PUB, siteUrl: base + '/site/' }, async (u, i) => (String(u).includes('/rest/') ? new Response('{}', { status: 500 }) : fetch(u, i)));
