@@ -4,12 +4,6 @@ from playwright.sync_api import sync_playwright
 from harness import *
 from harness import EXTERNAL
 
-passed = failed = 0
-def check(name, cond, extra=''):
-    global passed, failed
-    if cond: passed += 1
-    else: failed += 1; print('FAIL', name, extra)
-
 T = datetime.date.today().isoformat(); PAST = (datetime.date.today() - datetime.timedelta(days=4)).isoformat()
 wd = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][datetime.date.today().weekday()]
 def ex(name, unit, group, **kw): return dict({'name': name, 'group': group, 'category': 'strength', 'unit': unit, 'better': 'lower' if unit == 'assist' else 'higher'}, **kw)
@@ -69,5 +63,4 @@ try:
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
-print('passed', passed, 'failed', failed)
-raise SystemExit(1 if failed else 0)
+done()

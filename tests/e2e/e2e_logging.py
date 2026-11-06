@@ -4,12 +4,6 @@ from playwright.sync_api import sync_playwright
 from harness import *
 from harness import EXTERNAL
 
-passed = failed = 0
-def check(name, cond, extra=''):
-    global passed, failed
-    if cond: passed += 1
-    else: failed += 1; print('FAIL', name, extra)
-
 TODAY = datetime.date.today().isoformat()
 
 class Flaky(Backend):
@@ -34,18 +28,7 @@ def doc(be, path):
 def stored(be, key):
     return (doc(be, 'yc/sessions/' + TODAY).get('sets') or {}).get(key) or {}
 
-PAGE = {}  # the page being driven: waiting must go through Playwright, or its route handlers (the fake server) never run
-def until(fn, secs=6):
-    end = time.time() + secs
-    while time.time() < end:
-        try:
-            if fn(): return True
-        except Exception: pass
-        PAGE['p'].wait_for_timeout(100)
-    return False
-
 def start_day(page):
-    PAGE['p'] = page
     page.wait_for_selector('text=Start Push day', timeout=8000)
     page.click('text=Start Push day')
     page.wait_for_selector('#f-bench_1-load', state='visible')
@@ -114,5 +97,4 @@ try:
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
-print('passed', passed, 'failed', failed)
-raise SystemExit(1 if failed else 0)
+done()

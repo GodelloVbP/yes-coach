@@ -4,23 +4,7 @@ from playwright.sync_api import sync_playwright
 from harness import *
 from harness import EXTERNAL
 
-passed = failed = 0
-def check(name, cond, extra=''):
-    global passed, failed
-    if cond: passed += 1
-    else: failed += 1; print('FAIL', name, extra)
-
 TODAY = datetime.date.today().isoformat()
-PAGE = {}
-def until(fn, secs=6):
-    end = time.time() + secs
-    while time.time() < end:
-        try:
-            if fn(): return True
-        except Exception: pass
-        PAGE['p'].wait_for_timeout(100)
-    return False
-
 # real rows of the food table, so the numbers can be checked against it
 NEVO = json.load(open(REPO + '/foods-nevo.json'))['foods']
 def row(name): return next(r for r in NEVO if r[1] == name)
@@ -50,7 +34,6 @@ def seed(be, show_cal=False):
     }}})
 def day(be): return next(d['data'] for d in be.docs if d['path'] == 'yc/food/' + TODAY)
 def meal_doc(be, id): return next((d['data'] for d in be.docs if d['path'] == 'yc/meals/' + id), None)
-def vis(page, sel): return page.is_visible(sel)
 
 server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)
@@ -58,7 +41,6 @@ try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)
         def phone(page):
-            PAGE['p'] = page
             page.click('#tab-food'); page.wait_for_selector('#fd-list .fd-row', timeout=8000)
             # ---- the list
             rows = page.locator('#fd-sm-list > .fd-sm')
@@ -146,7 +128,6 @@ try:
         # ---- calories shown
         be = Backend(); seed(be, True)
         def shown(page):
-            PAGE['p'] = page
             page.click('#tab-food'); page.wait_for_selector('#fd-list .fd-row', timeout=8000)
             check('with calories on, a saved meal shows them', 'kcal' in page.locator('.fd-sm').first.inner_text())
         errs = session(pw, be, ALICE, shown, width=390); check('no page errors (calories shown)', not errs, errs)
@@ -154,12 +135,10 @@ try:
         # ---- nothing saved: no empty section
         be = Backend(); be.docs.append({'path': 'yc', 'data': {'app': 'yes-coach', 'schema': 1, 'intro_seen': True}})
         def none(page):
-            PAGE['p'] = page
             page.click('#tab-food'); page.wait_for_selector('#fd-body', state='visible', timeout=8000); page.wait_for_timeout(300)
             check('no saved meals, no Your meals section', not vis(page, '#fd-meals'))
         errs = session(pw, be, ALICE, none, width=390); check('no page errors (none saved)', not errs, errs)
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
-print('passed', passed, 'failed', failed)
-raise SystemExit(1 if failed else 0)
+done()

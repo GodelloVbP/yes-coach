@@ -4,12 +4,6 @@ from playwright.sync_api import sync_playwright
 from harness import *
 from harness import EXTERNAL
 
-passed = failed = 0
-def check(name, cond, extra=''):
-    global passed, failed
-    if cond: passed += 1
-    else: failed += 1; print('FAIL', name, extra)
-
 def card_of(page, title, root='#tk-admin-list'):
     return page.locator(root + ' .tk-card').filter(has=page.locator('.tk-title', has_text=title))
 
@@ -664,5 +658,4 @@ try:
     check('nothing left the site except Supabase (no fonts, CDNs or analytics)', not [u for u in EXTERNAL if not u.startswith('data:') and not u.startswith(SUPA)], sorted(set(EXTERNAL))[:5])
 finally:
     server.terminate()
-print('passed %d, failed %d' % (passed, failed))
-sys.exit(1 if failed else 0)
+done()

@@ -4,23 +4,7 @@ from playwright.sync_api import sync_playwright
 from harness import *
 from harness import EXTERNAL
 
-passed = failed = 0
-def check(name, cond, extra=''):
-    global passed, failed
-    if cond: passed += 1
-    else: failed += 1; print('FAIL', name, extra)
-
 TODAY = datetime.date.today().isoformat()
-PAGE = {}
-def until(fn, secs=6):
-    end = time.time() + secs
-    while time.time() < end:
-        try:
-            if fn(): return True
-        except Exception: pass
-        PAGE['p'].wait_for_timeout(100)
-    return False
-
 def seed(be):
     be.docs.append({'path': 'yc', 'data': {'app': 'yes-coach', 'schema': 1, 'intro_seen': True}})
     be.docs.append({'path': 'yc/exercises/row', 'data': {'name': 'Barbell row', 'library_id': 'l092', 'group': 'Back', 'category': 'strength', 'unit': 'kg', 'better': 'higher'}})
@@ -37,7 +21,6 @@ try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)
         def s1(page):
-            PAGE['p'] = page
             page.goto(BASE); page.wait_for_selector('text=Start Pull day', timeout=8000); page.click('text=Start Pull day')
             page.wait_for_selector('#f-row_1-load', state='visible')
             check('a barbell exercise has a Plates button', page.locator('.ex:not(.off) .ex-plates').count() == 1)
@@ -64,7 +47,6 @@ try:
 
         be = Backend(); seed(be)
         def s2(page):
-            PAGE['p'] = page
             page.goto(BASE); page.wait_for_selector('#tab-settings'); page.click('#tab-settings')
             page.wait_for_selector('#h-pref'); 
             if page.get_attribute('#h-pref ~ * , #h-pref', 'aria-expanded') is None: pass
@@ -86,5 +68,4 @@ try:
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
-print('passed', passed, 'failed', failed)
-raise SystemExit(1 if failed else 0)
+done()

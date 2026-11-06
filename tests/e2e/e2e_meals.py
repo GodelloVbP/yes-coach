@@ -4,23 +4,7 @@ from playwright.sync_api import sync_playwright
 from harness import *
 from harness import EXTERNAL
 
-passed = failed = 0
-def check(name, cond, extra=''):
-    global passed, failed
-    if cond: passed += 1
-    else: failed += 1; print('FAIL', name, extra)
-
 TODAY = datetime.date.today().isoformat()
-PAGE = {}
-def until(fn, secs=6):
-    end = time.time() + secs
-    while time.time() < end:
-        try:
-            if fn(): return True
-        except Exception: pass
-        PAGE['p'].wait_for_timeout(100)
-    return False
-
 MEAL = '2 slices bread with egg and cheese'
 ITEMS = [
     {'src': 'nevo', 'ref': '1', 'name': 'Tarwebrood bruin', 'g': 70, 'u': 'g', 'kcal': 160, 'p': 5.2, 'c': 29.0, 'f': 1.4, 'est': True},
@@ -37,7 +21,6 @@ def seed(be, show_cal):
     }}})
 def food_doc(be): return next(d['data'] for d in be.docs if d['path'] == 'yc/food/' + TODAY)
 def live(be): return [e for e in food_doc(be)['entries'].values() if e]  # a removed entry stays as null
-def vis(page, sel): return page.is_visible(sel)
 
 server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)
@@ -46,7 +29,6 @@ try:
         # ---- calories hidden: the default for people who never switched them on
         be = Backend(); seed(be, False)
         def phone(page):
-            PAGE['p'] = page
             page.click('#tab-food'); page.wait_for_selector('#fd-list .fd-row', timeout=8000)
             rows = page.locator('#fd-list .fd-row')
             check('three entries, a meal is one of them, not four lines', rows.count() == 3 and page.locator('.fd-items').count() == 1, rows.count())
@@ -87,7 +69,6 @@ try:
         # ---- calories shown
         be = Backend(); seed(be, True)
         def shown(page):
-            PAGE['p'] = page
             page.click('#tab-food'); page.wait_for_selector('#fd-list .fd-row', timeout=8000)
             check('with calories on, the meal shows its total', '307 kcal' in page.locator('.fd-row:has(.fd-items)').inner_text())
             check('and the foods inside stay one line each', (page.click('.fd-items summary'), page.locator('.fd-items li').count())[1] == 3)
@@ -100,7 +81,6 @@ try:
             'fine': {'name': 'Fine', 'p': 2, 'kcal': 40, 'at': 2}}}})
         tzw = lambda: [r for r in be.requests if r[3] and '"tz"' in __import__('json').dumps(r[3])]
         def odd(page):
-            PAGE['p'] = page
             page.click('#tab-food'); page.wait_for_selector('#fd-list .fd-row', timeout=8000)
             names = [page.locator('#fd-list .fd-row-name').nth(i).inner_text() for i in range(page.locator('#fd-list .fd-row').count())]
             check('only real entries are listed, the rest of the day still shows', names == ['Odd meal', 'Fine'], names)
@@ -116,5 +96,4 @@ try:
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
-print('passed', passed, 'failed', failed)
-raise SystemExit(1 if failed else 0)
+done()

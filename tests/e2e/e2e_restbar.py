@@ -4,23 +4,7 @@ from playwright.sync_api import sync_playwright
 from harness import *
 from harness import EXTERNAL
 
-passed = failed = 0
-def check(name, cond, extra=''):
-    global passed, failed
-    if cond: passed += 1
-    else: failed += 1; print('FAIL', name, extra)
-
 TODAY = datetime.date.today().isoformat()
-PAGE = {}
-def until(fn, secs=6):
-    end = time.time() + secs
-    while time.time() < end:
-        try:
-            if fn(): return True
-        except Exception: pass
-        PAGE['p'].wait_for_timeout(100)
-    return False
-
 def seed(be):
     be.docs.append({'path': 'yc', 'data': {'app': 'yes-coach', 'schema': 1, 'intro_seen': True}})
     for ex, nm, g in (('bench', 'Bench press', 'Chest'), ('row', 'Row', 'Back'), ('curl', 'Curl', 'Arms')):
@@ -29,7 +13,6 @@ def seed(be):
     wd = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][datetime.date.today().weekday()]
     be.docs.append({'path': 'yc/templates/push', 'data': {'name': 'Push day', 'order': 1, 'kind': 'Push', 'focus': 'Chest', 'weekday': wd, 'items': [it('bench', 1, 3), it('row', 2, 2), it('curl', 3, 2)]}})
 
-def vis(page, sel): return page.is_visible(sel)
 def tick(page, key): page.locator('.set:has(#f-%s-load) .set-tick' % key).click()
 
 server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -38,7 +21,6 @@ try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)
         def phone(page):
-            PAGE['p'] = page
             page.goto(BASE); page.wait_for_selector('#v-train', state='visible')
             page.wait_for_selector('text=Start Push day', timeout=8000)
             page.click('text=Start Push day')
@@ -82,5 +64,4 @@ try:
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
-print('passed', passed, 'failed', failed)
-raise SystemExit(1 if failed else 0)
+done()
