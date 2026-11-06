@@ -14,7 +14,7 @@ table { border-collapse: collapse; width: 100%; } td, th { border-top: 1px solid
 </style></head><body><main>
 <p><a href="./">‹ Yes Coach!</a></p>
 <h1>Yes Coach! connector for Claude</h1>
-<p>Connect your own Claude to your Yes Coach! account. Claude can read your plan, your logged sessions and your notes, and change your plan, so you can ask "what is my training plan today?" or "make Thursday lighter on the shoulder" and see it in the app straight away.</p>
+<p>Connect your own Claude to your Yes Coach! account. Claude can read your plan, your logged sessions and your notes, change your plan, and log what you eat, so you can ask "what is my training plan today?", "make Thursday lighter on the shoulder" or say "2 slices of bread with egg, cheese and mustard" and see it in the app straight away.</p>
 
 <h2>What you need</h2>
 <ul><li>A Yes Coach! account (<a href="./">create one</a>, free).</li>
@@ -43,12 +43,16 @@ table { border-collapse: collapse; width: 100%; } td, th { border-top: 1px solid
 <tr><td>Save training day</td><td>Creates a training day or replaces the exercise list of an existing one.</td></tr>
 <tr><td>Set weekly schedule</td><td>Chooses which days are in the week and when. The app keeps your previous schedule so you can undo it.</td></tr>
 <tr><td>Answer note</td><td>Writes a reply under one of your notes.</td></tr>
+<tr><td>Search foods</td><td>Finds foods in the Dutch (NEVO) and international (USDA) tables the app uses, with nutrients per 100 g and the portions each comes in, such as a slice or a piece.</td></tr>
+<tr><td>Get food day</td><td>What you ate on one day, the day's totals and your daily targets.</td></tr>
+<tr><td>Log meals</td><td>Saves meals to your food log. Claude picks the foods and amounts; the app reads calories, protein, carbs and fat from its own tables, so Claude does not make the numbers up. A meal with several foods is one entry with its items inside.</td></tr>
+<tr><td>Remove food entry</td><td>Removes one entry from your food log, when you ask or when Claude logged it by mistake.</td></tr>
 </table>
 <p>Claude asks you before it changes anything.</p>
 
 <h2>What it can not do</h2>
 <ul><li>Change or delete anything you logged in a session.</li>
-<li>Delete your plan, exercises or account, or touch your feedback tickets. The database refuses these for connected apps, whatever the app tries.</li></ul>
+<li>Delete your plan, exercises or account, or touch your feedback tickets. Food entries are the one thing it can remove, one at a time. The database refuses these for connected apps, whatever the app tries.</li></ul>
 
 <h2>Disconnect</h2>
 <p>In Yes Coach!: Settings, Connected AI apps, Disconnect. The app loses access straight away. You can also remove the connector in Claude.</p>

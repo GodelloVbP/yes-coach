@@ -1,18 +1,19 @@
 -- Yes Coach! connector: keeps a connected AI app inside its bounds, in the database itself.
 -- Supabase gives an OAuth token the same database access as the user unless policies say otherwise (scopes limit nothing).
 -- With this file, a connected app can READ the user's own data and WRITE only the plan (root settings, exercises,
--- training days) and notes. It can not write sessions or anything else, delete anything, touch tickets, act as
--- the owner, or delete the account (see delete_me and is_admin). Whatever the app tries, the database says no.
+-- training days), notes and food entries (one document per day, yc/food/<date>). It can not write sessions or anything
+-- else, delete a document, touch tickets, act as the owner, or delete the account (see delete_me and is_admin).
+-- Removing a food entry is an update of that day's document, not a delete. Whatever the app tries, the database says no.
 -- Run after schema.sql and tickets.sql (both define is_oauth_client and the checks that use it). Safe to run again.
 
 drop policy if exists "connected apps: plan writes only (insert)" on public.docs;
 create policy "connected apps: plan writes only (insert)" on public.docs as restrictive for insert to authenticated
-  with check (not public.is_oauth_client() or path = 'yc' or path like 'yc/exercises/%' or path like 'yc/templates/%' or path like 'yc/notes/%');
+  with check (not public.is_oauth_client() or path = 'yc' or path like 'yc/exercises/%' or path like 'yc/templates/%' or path like 'yc/notes/%' or path like 'yc/food/%');
 
 drop policy if exists "connected apps: plan writes only (update)" on public.docs;
 create policy "connected apps: plan writes only (update)" on public.docs as restrictive for update to authenticated
-  using (not public.is_oauth_client() or path = 'yc' or path like 'yc/exercises/%' or path like 'yc/templates/%' or path like 'yc/notes/%')
-  with check (not public.is_oauth_client() or path = 'yc' or path like 'yc/exercises/%' or path like 'yc/templates/%' or path like 'yc/notes/%');
+  using (not public.is_oauth_client() or path = 'yc' or path like 'yc/exercises/%' or path like 'yc/templates/%' or path like 'yc/notes/%' or path like 'yc/food/%')
+  with check (not public.is_oauth_client() or path = 'yc' or path like 'yc/exercises/%' or path like 'yc/templates/%' or path like 'yc/notes/%' or path like 'yc/food/%');
 
 drop policy if exists "connected apps: no deletes" on public.docs;
 create policy "connected apps: no deletes" on public.docs as restrictive for delete to authenticated

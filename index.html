@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-fmgqjidisvNwpNhC+3wfZot4M3vx0mhdNacxAerA+tk=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-Bx6KuRkqK5hWcEyB4S0Jso7vndoprsjUmxIkf0PrOdo=' 'sha256-sYxHaaSY0iQKSWBek4rA/4bjOd+KmMYHnETkolmq36E=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-05 23:37Z">
+<meta name="yc-build" content="2026-11-06 16:32Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -912,6 +912,9 @@ body.fin-open { overflow: hidden; }
 .fd-list { display: flex; flex-direction: column; }
 .fd-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 0 0.75rem; min-height: 52px; padding: 0.375rem 0; border-bottom: 1px solid var(--line); }
 .fd-row-name { font-weight: 700; overflow-wrap: anywhere; }
+.fd-items { grid-column: 1 / -1; margin: 0.25rem 0 0.125rem; font-size: var(--t1); color: var(--ink-soft); }
+.fd-items summary { cursor: pointer; min-height: 32px; display: flex; align-items: center; font-weight: 600; }
+.fd-items ul { margin: 0.25rem 0 0; padding-left: 1.1rem; display: grid; gap: 0.125rem; font-variant-numeric: tabular-nums; }
 .fd-row-mac { grid-column: 1; font-size: var(--t2); color: var(--ink-soft); font-weight: 500; font-variant-numeric: tabular-nums; }
 .fd-row-kcal { grid-row: 1 / span 2; grid-column: 2; font-family: var(--f-head); font-weight: 700; font-size: var(--t3); font-variant-numeric: tabular-nums; }
 .fd-row .icon { grid-row: 1 / span 2; grid-column: 3; }
@@ -1335,7 +1338,7 @@ body.fin-open { overflow: hidden; }
         <h2 id="h-conn">Connected AI apps</h2>
         <p class="note">Connect your own Claude: in Claude open Customize, Connectors, Add custom connector, paste this address, then Connect and Allow. <a class="link" href="connect.html">Step by step</a></p>
         <div class="foot-row"><input type="text" id="conn-url" class="conn-url" readonly aria-label="Connector address"><button class="skew small" type="button" id="conn-copy"><span>Copy</span></button></div>
-        <p class="note">AI apps you allowed to read your data and change your plan. Disconnect one and it loses access straight away.</p>
+        <p class="note">AI apps you allowed to read your data, change your plan and log your food. Disconnect one and it loses access straight away.</p>
         <div id="conn-list"></div>
         <span id="conn-state" class="note" aria-live="polite"></span>
       </section>
@@ -4738,7 +4741,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   });
 
   // ------------------------------------------------------------------ food: your own entries per day, and trends like Progress
-  // yc/food/<date> = { date, entries: { id: { name, kcal, p, c, f, at } } }; targets live in root.nutrition = { kcal, protein }
+  // yc/food/<date> = { date, entries: { id: { name, kcal, p, c, f, at, [src, ref, g, u, est], [items] } } }; targets live in root.nutrition = { kcal, protein }
+  // A meal logged by a connected AI is one entry with its foods in items: [{ src, ref, name, g, u, kcal, p, c, f, est }]; est marks a guessed amount.
   const foodRef = (date) => S.rootRef.collection('food').doc(date);
   const fnum = (v) => { const t = String(v == null ? '' : v).trim().replace(',', '.'); if (!t) return null; const n = Number(t); return Number.isFinite(n) && n >= 0 ? Math.round(n * 10) / 10 : NaN; };
   const big = (n) => Math.round(n).toLocaleString('en-US');
@@ -4830,6 +4834,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const id = 'e' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
     const entry = { name: e.name, kcal: e.kcal, p: e.p == null ? null : e.p, c: e.c == null ? null : e.c, f: e.f == null ? null : e.f, at: Date.now() };
     if (e.src) Object.assign(entry, { src: e.src, ref: e.ref, g: e.g == null ? null : e.g, u: e.u || 'g' });
+    if (e.est) entry.est = true;
+    if (Array.isArray(e.items) && e.items.length) entry.items = e.items;
     const had = !!S.food[date];
     S.food[date] = Object.assign({ date }, S.food[date] || {});
     S.food[date].entries = Object.assign({}, S.food[date].entries || {}, { [id]: entry });
@@ -4911,8 +4917,16 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const mac = [e.p != null ? 'P ' + num(e.p) + ' g' : '', e.c != null ? 'C ' + num(e.c) + ' g' : '', e.f != null ? 'F ' + num(e.f) + ' g' : ''].filter(Boolean).join(' · ');
       const x = plainBtn('icon', '×', 'Remove ' + e.name, () => removeFood(id));
       const cal = showCal();
-      row.append(h('span', 'fd-row-name', e.name + (e.g ? ' · ' + num(e.g) + ' ' + (e.u || 'g') : '')), h('span', 'fd-row-kcal', cal && e.kcal != null ? big(e.kcal) + ' kcal' : ''), x);
+      row.append(h('span', 'fd-row-name', e.name + (e.g ? ' · ' + (e.est ? '~' : '') + num(e.g) + ' ' + (e.u || 'g') : '')), h('span', 'fd-row-kcal', cal && e.kcal != null ? big(e.kcal) + ' kcal' : ''), x);
       if (mac) row.append(h('span', 'fd-row-mac', mac));
+      // a meal with several foods stays one line; what is in it opens underneath
+      if (Array.isArray(e.items) && e.items.length > 1) {
+        const det = h('details', 'fd-items');
+        const ul = h('ul');
+        e.items.forEach((i) => ul.append(h('li', '', i.name + ' · ' + (i.est ? '~' : '') + num(i.g) + ' ' + (i.u || 'g') + (i.p != null ? ' · P ' + num(i.p) + ' g' : ''))));
+        det.append(h('summary', '', 'What is in it'), ul);
+        row.append(det);
+      }
       box.append(row);
     });
   };
@@ -5039,7 +5053,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (!(history.state && history.state.fdCard)) { try { history.pushState({ fdCard: 1 }, ''); } catch (e) { /* sandboxed preview */ } }
     enter($('#fd-form'));
   };
-  const hideCard = () => { $('#fd-form').hidden = true; $('#fd-src').hidden = true; $('.fd-find').hidden = false; FD.pick = null; FD.mode = null; };
+  const hideCard = () => { $('#fd-form').hidden = true; $('#fd-src').hidden = true; $('.fd-find').hidden = false; FD.pick = null; FD.mode = null; FD.mineFrom = null; };
   // closing the card also drops its history entry, so the back button never has to be pressed twice
   const closeCard = () => { hideCard(); if (history.state && history.state.fdCard) { try { history.back(); } catch (e) { /* sandboxed preview */ } } };
   window.addEventListener('popstate', () => { if (!$('#fd-form').hidden) hideCard(); });
@@ -5200,6 +5214,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         if (it) { pickFood({ it, label: e.name, full: e.name }, e.g); return; }
         openCard('mine', e.name, h('span', 'note', 'The same as last time'));
         FD.mineName = e.name;
+        FD.mineFrom = e;
         [['#fd-kcal', e.kcal], ['#fd-p', e.p], ['#fd-c', e.c], ['#fd-f', e.f]].forEach(([sel, v]) => { $(sel).value = v == null ? '' : num(v); });
         paintResult();
         $('#fd-name').value = '';
@@ -5250,6 +5265,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (bad) { msg.textContent = 'Grams are numbers, or leave them empty.'; $('#fd-nums').hidden = false; $(bad[1]).focus(); return; }
     msg.textContent = '';
     const from = FD.pick && FD.pick.label === name ? { src: FD.pick.it.src, ref: FD.pick.it.ref, g: fnum($('#fd-g').value), u: FD.pick.it.u } : {};
+    // a meal from your log again, with the numbers as they were: its foods come along
+    const was = FD.mode === 'mine' ? FD.mineFrom : null;
+    if (was && Array.isArray(was.items) && (showCal() ? ['kcal', 'p', 'c', 'f'] : ['p', 'c', 'f']).every((k) => (vals[k] == null ? null : vals[k]) === (was[k] == null ? null : was[k]))) from.items = was.items;
     closeCard();
     closeHits();
     $('#fd-name').value = '';
