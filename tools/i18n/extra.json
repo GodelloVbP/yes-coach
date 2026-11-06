@@ -1510,5 +1510,61 @@
   "de": "KI-Apps, denen du erlaubt hast, deine Daten zu lesen, deinen Plan zu ändern und dein Essen zu loggen. Wenn du eine trennst, verliert sie sofort den Zugriff.",
   "fr": "Applis d’IA autorisées à lire tes données, à modifier ton programme et à enregistrer ce que tu manges. Déconnecte-en une et elle perd l’accès aussitôt.",
   "it": "App AI a cui hai permesso di leggere i tuoi dati, modificare il tuo piano e registrare ciò che mangi. Se ne scolleghi una, perde subito l'accesso."
+ },
+ "Log food by talking to Claude": {
+  "nl": "Eten loggen door met Claude te praten",
+  "es": "Registra tu comida hablando con Claude",
+  "de": "Essen loggen, indem du mit Claude sprichst",
+  "fr": "Enregistre ton repas en parlant à Claude",
+  "it": "Registra i pasti parlando con Claude"
+ },
+ "Smaller things": {
+  "nl": "Kleinere dingen",
+  "es": "Cosas más pequeñas",
+  "de": "Kleinere Dinge",
+  "fr": "Petites choses",
+  "it": "Cose più piccole"
+ },
+ "If you connected Claude, tell it what you ate, for example “2 slices of bread with egg, cheese and mustard”. It finds the foods, picks the portions and saves the meal in your Food tab.": {
+  "nl": "Als je Claude hebt gekoppeld, vertel dan wat je at, bijvoorbeeld “2 sneetjes brood met ei, kaas en mosterd”. Claude zoekt de voedingsmiddelen, kiest de porties en slaat de maaltijd op in je tab Eten.",
+  "es": "Si conectaste a Claude, cuéntale lo que comiste, por ejemplo “2 rebanadas de pan con huevo, queso y mostaza”. Busca los alimentos, elige las porciones y guarda la comida en tu pestaña Comida.",
+  "de": "Wenn du Claude verbunden hast, sag ihm, was du gegessen hast, zum Beispiel „2 Scheiben Brot mit Ei, Käse und Senf“. Es sucht die Lebensmittel, wählt die Portionen und speichert die Mahlzeit in deinem Tab Ernährung.",
+  "fr": "Si tu as connecté Claude, dis-lui ce que tu as mangé, par exemple « 2 tranches de pain avec œuf, fromage et moutarde ». Il trouve les aliments, choisit les portions et enregistre le repas dans ton onglet Alimentation.",
+  "it": "Se hai collegato Claude, digli cosa hai mangiato, per esempio “2 fette di pane con uovo, formaggio e senape”. Trova gli alimenti, sceglie le porzioni e salva il pasto nella tua scheda Cibo."
+ },
+ "A meal with several foods is one line. Tap What is in it to see the foods. A ~ marks an amount that was a guess.": {
+  "nl": "Een maaltijd met meerdere voedingsmiddelen is één regel. Tik op Wat erin zit om ze te zien. Een ~ betekent dat de hoeveelheid een schatting was.",
+  "es": "Una comida con varios alimentos es una sola línea. Toca Qué contiene para ver los alimentos. Una ~ marca una cantidad estimada.",
+  "de": "Eine Mahlzeit mit mehreren Lebensmitteln ist eine Zeile. Tippe auf Was drin ist, um sie zu sehen. Eine ~ markiert eine geschätzte Menge.",
+  "fr": "Un repas avec plusieurs aliments tient sur une seule ligne. Touche Ce qu’il y a dedans pour les voir. Un ~ marque une quantité estimée.",
+  "it": "Un pasto con più alimenti è una sola riga. Tocca Cosa c’è dentro per vederli. Una ~ indica una quantità stimata."
+ },
+ "Claude reads the numbers from the same food tables the app uses. It does not make them up.": {
+  "nl": "Claude leest de cijfers uit dezelfde voedingstabellen als de app. Het verzint ze niet.",
+  "es": "Claude lee los números de las mismas tablas de alimentos que usa la app. No se los inventa.",
+  "de": "Claude liest die Zahlen aus denselben Nährwerttabellen wie die App. Es erfindet sie nicht.",
+  "fr": "Claude lit les chiffres dans les mêmes tables d’aliments que l’appli. Il ne les invente pas.",
+  "it": "Claude legge i numeri dalle stesse tabelle degli alimenti usate dall’app. Non li inventa."
+ },
+ "The rest timer now takes you back to the exercise it belongs to.": {
+  "nl": "De rusttimer brengt je nu terug naar de oefening waar hij bij hoort.",
+  "es": "El temporizador de descanso ahora te lleva de vuelta al ejercicio al que pertenece.",
+  "de": "Der Pausentimer bringt dich jetzt zurück zur Übung, zu der er gehört.",
+  "fr": "Le minuteur de repos te ramène maintenant à l’exercice auquel il appartient.",
+  "it": "Il timer del recupero ora ti riporta all’esercizio a cui appartiene."
+ },
+ "Moving between exercises now slides smoothly and scrolls to your first open set.": {
+  "nl": "Wisselen tussen oefeningen schuift nu soepel en scrolt naar je eerste open set.",
+  "es": "Cambiar de ejercicio ahora se desliza con suavidad y se desplaza a tu primera serie abierta.",
+  "de": "Der Wechsel zwischen Übungen gleitet jetzt sanft und scrollt zu deinem ersten offenen Satz.",
+  "fr": "Passer d’un exercice à l’autre glisse maintenant en douceur et défile jusqu’à ta première série ouverte.",
+  "it": "Passare da un esercizio all’altro ora scorre in modo fluido e porta alla tua prima serie aperta."
+ },
+ "A new personal record now slams onto the set, and your records slide in on the finish screen.": {
+  "nl": "Een nieuw persoonlijk record knalt nu op de set, en je records schuiven binnen op het afrondscherm.",
+  "es": "Un nuevo récord personal ahora golpea la serie, y tus récords entran deslizándose en la pantalla final.",
+  "de": "Ein neuer Rekord knallt jetzt auf den Satz, und deine Rekorde gleiten auf dem Abschlussbildschirm herein.",
+  "fr": "Un nouveau record personnel s’abat maintenant sur la série, et tes records glissent sur l’écran de fin.",
+  "it": "Un nuovo record personale ora si abbatte sulla serie e i tuoi record scivolano nella schermata finale."
  }
 }
