@@ -1804,5 +1804,96 @@
   "de": "Claude sieht, welche Einträge du noch ausfüllen musst, also kannst du ihn fragen, was du heute vergessen hast.",
   "fr": "Claude voit quelles entrées il te reste à compléter, tu peux donc lui demander ce que tu as oublié aujourd’hui.",
   "it": "Claude vede quali voci devi ancora completare, quindi puoi chiedergli cosa hai dimenticato oggi."
+ },
+ "Target reached.": {
+  "nl": "Doel bereikt.",
+  "es": "Objetivo alcanzado.",
+  "de": "Ziel erreicht.",
+  "fr": "Objectif atteint.",
+  "it": "Obiettivo raggiunto."
+ },
+ "On target.": {
+  "nl": "Op doel.",
+  "es": "En el objetivo.",
+  "de": "Im Ziel.",
+  "fr": "Dans l’objectif.",
+  "it": "In obiettivo."
+ },
+ "Some entries have no calories yet.": {
+  "nl": "Sommige invoeren hebben nog geen calorieën.",
+  "es": "Algunas entradas aún no tienen calorías.",
+  "de": "Manche Einträge haben noch keine Kalorien.",
+  "fr": "Certaines entrées n’ont pas encore de calories.",
+  "it": "Alcune voci non hanno ancora le calorie."
+ },
+ "Fill in the calories (kcal) or the protein.": {
+  "nl": "Vul de calorieën (kcal) of de eiwitten in.",
+  "es": "Escribe las calorías (kcal) o las proteínas.",
+  "de": "Gib die Kalorien (kcal) oder das Eiweiß an.",
+  "fr": "Saisis les calories (kcal) ou les protéines.",
+  "it": "Inserisci le calorie (kcal) o le proteine."
+ },
+ "Rough guess": {
+  "nl": "Grove schatting",
+  "es": "Estimación aproximada",
+  "de": "Grobe Schätzung",
+  "fr": "Estimation approximative",
+  "it": "Stima approssimativa"
+ },
+ "Small · ~10 g protein": {
+  "nl": "Klein · ~10 g eiwit",
+  "es": "Pequeña · ~10 g de proteína",
+  "de": "Klein · ~10 g Eiweiß",
+  "fr": "Petit · ~10 g de protéines",
+  "it": "Piccolo · ~10 g di proteine"
+ },
+ "Medium · ~25 g protein": {
+  "nl": "Gemiddeld · ~25 g eiwit",
+  "es": "Mediana · ~25 g de proteína",
+  "de": "Mittel · ~25 g Eiweiß",
+  "fr": "Moyen · ~25 g de protéines",
+  "it": "Medio · ~25 g di proteine"
+ },
+ "Large · ~40 g protein": {
+  "nl": "Groot · ~40 g eiwit",
+  "es": "Grande · ~40 g de proteína",
+  "de": "Groß · ~40 g Eiweiß",
+  "fr": "Grand · ~40 g de protéines",
+  "it": "Grande · ~40 g di proteine"
+ },
+ "Gentler numbers": {
+  "nl": "Mildere cijfers",
+  "es": "Números más amables",
+  "de": "Sanftere Zahlen",
+  "fr": "Des chiffres plus doux",
+  "it": "Numeri più gentili"
+ },
+ "Reaching your protein target is enough: more is never shown as above.": {
+  "nl": "Je eiwitdoel halen is genoeg: meer wordt nooit als te veel getoond.",
+  "es": "Llegar a tu objetivo de proteína es suficiente: más nunca se muestra como exceso.",
+  "de": "Dein Eiweißziel zu erreichen reicht: mehr wird nie als zu viel angezeigt.",
+  "fr": "Atteindre ton objectif de protéines suffit : plus n’est jamais affiché comme un excès.",
+  "it": "Raggiungere il tuo obiettivo di proteine basta: di più non viene mai mostrato come eccesso."
+ },
+ "Calories get a band: within 10% of your target counts as on target.": {
+  "nl": "Calorieën krijgen een marge: binnen 10% van je doel telt als op doel.",
+  "es": "Las calorías tienen un margen: a menos de un 10 % de tu objetivo cuenta como en el objetivo.",
+  "de": "Kalorien bekommen einen Spielraum: innerhalb von 10 % deines Ziels gilt als im Ziel.",
+  "fr": "Les calories ont une marge : à moins de 10 % de ton objectif, c’est dans l’objectif.",
+  "it": "Le calorie hanno un margine: entro il 10% del tuo obiettivo conta come in obiettivo."
+ },
+ "A day with entries that have no calories now says so, instead of looking low.": {
+  "nl": "Een dag met invoeren zonder calorieën zegt dat nu, in plaats van laag te lijken.",
+  "es": "Un día con entradas sin calorías ahora lo dice, en vez de parecer bajo.",
+  "de": "Ein Tag mit Einträgen ohne Kalorien sagt das jetzt, statt niedrig auszusehen.",
+  "fr": "Une journée avec des entrées sans calories le dit maintenant, au lieu de sembler basse.",
+  "it": "Un giorno con voci senza calorie ora lo dice, invece di sembrare basso."
+ },
+ "Short on time? Add a food with your own numbers and pick a rough guess: small, medium or large.": {
+  "nl": "Weinig tijd? Voeg een eten toe met je eigen cijfers en kies een grove schatting: klein, gemiddeld of groot.",
+  "es": "¿Poco tiempo? Añade un alimento con tus propios números y elige una estimación aproximada: pequeña, mediana o grande.",
+  "de": "Wenig Zeit? Füge ein Lebensmittel mit eigenen Zahlen hinzu und wähle eine grobe Schätzung: klein, mittel oder groß.",
+  "fr": "Peu de temps ? Ajoute un aliment avec tes propres chiffres et choisis une estimation approximative : petit, moyen ou grand.",
+  "it": "Poco tempo? Aggiungi un alimento con i tuoi numeri e scegli una stima approssimativa: piccolo, medio o grande."
  }
 }
