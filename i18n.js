@@ -5,10 +5,12 @@
   'use strict';
   const LANGS = [['nl', 'Nederlands', 'Dutch'], ['en', 'English', 'English'], ['es', 'Español', 'Spanish'], ['de', 'Deutsch', 'German'], ['fr', 'Français', 'French'], ['it', 'Italiano', 'Italian']];
   const KEY = 'yc-lang';
+  const EX_KEY = 'yc-lang-ex'; // '1': translate the names of exercises too
   const store = {
     get() { try { return localStorage.getItem(KEY); } catch (e) { return null; } },
     set(v) { try { localStorage.setItem(KEY, v); } catch (e) { /* private mode: the choice lasts until the page closes */ } },
   };
+  const exercisesOn = () => { try { return localStorage.getItem(EX_KEY) === '1'; } catch (e) { return false; } };
   // small inline flags (emoji flags do not show on Windows)
   const NS = 'http://www.w3.org/2000/svg';
   const FLAGS = {
@@ -251,7 +253,10 @@
     document.documentElement.append(hide);
     const timer = setTimeout(reveal, 2500);
     fetch('i18n/' + lang + '.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : {})).then((d) => {
-      build(d || {});
+      d = d || {};
+      // exercise names stay in English unless asked for: most people know an exercise by its English name
+      if (!exercisesOn() && Array.isArray(d.__names)) d.__names.forEach((n) => { delete d[n]; });
+      build(d);
       ready(() => { walk(document.documentElement); title(); observe(); clearTimeout(timer); reveal(); });
     }).catch(() => { clearTimeout(timer); reveal(); });
   };
@@ -302,6 +307,8 @@
   window.YC_I18N = {
     langs: LANGS.map(([code, name, english]) => ({ code, name, english })),
     current: () => lang,
+    exercises: exercisesOn,
+    setExercises: (on) => { try { localStorage.setItem(EX_KEY, on ? '1' : '0'); } catch (e) { /* private mode */ } if (lang !== 'en') location.reload(); },
     t: (x) => translate(String(x)),
     flag,
     set: (code) => { if (!valid(code) || code === lang) return; store.set(code); location.reload(); },

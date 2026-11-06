@@ -2021,5 +2021,40 @@
   "de": "deinem gesamten Verlauf",
   "fr": "tout ton historique",
   "it": "tutto il tuo storico"
+ },
+ "Translate exercise names": {
+  "nl": "Oefeningnamen vertalen",
+  "es": "Traducir los nombres de los ejercicios",
+  "de": "Übungsnamen übersetzen",
+  "fr": "Traduire les noms des exercices",
+  "it": "Traduci i nomi degli esercizi"
+ },
+ "Most people know an exercise by its English name, so the names stay in English. Switch this on to see them translated.": {
+  "nl": "De meeste mensen kennen een oefening onder de Engelse naam, dus de namen blijven Engels. Zet dit aan om ze vertaald te zien.",
+  "es": "La mayoría de la gente conoce un ejercicio por su nombre en inglés, así que los nombres se quedan en inglés. Activa esto para verlos traducidos.",
+  "de": "Die meisten kennen eine Übung unter ihrem englischen Namen, deshalb bleiben die Namen englisch. Schalte das ein, um sie übersetzt zu sehen.",
+  "fr": "La plupart des gens connaissent un exercice par son nom anglais, donc les noms restent en anglais. Active ceci pour les voir traduits.",
+  "it": "La maggior parte delle persone conosce un esercizio con il suo nome inglese, quindi i nomi restano in inglese. Attiva questa opzione per vederli tradotti."
+ },
+ "Exercise names stay in English": {
+  "nl": "Oefeningnamen blijven Engels",
+  "es": "Los nombres de los ejercicios se quedan en inglés",
+  "de": "Übungsnamen bleiben englisch",
+  "fr": "Les noms des exercices restent en anglais",
+  "it": "I nomi degli esercizi restano in inglese"
+ },
+ "Most people know an exercise by its English name, so the names now stay in English in every language.": {
+  "nl": "De meeste mensen kennen een oefening onder de Engelse naam, dus de namen blijven nu in elke taal Engels.",
+  "es": "La mayoría de la gente conoce un ejercicio por su nombre en inglés, así que los nombres ahora se quedan en inglés en todos los idiomas.",
+  "de": "Die meisten kennen eine Übung unter ihrem englischen Namen, deshalb bleiben die Namen jetzt in jeder Sprache englisch.",
+  "fr": "La plupart des gens connaissent un exercice par son nom anglais, donc les noms restent désormais en anglais dans toutes les langues.",
+  "it": "La maggior parte delle persone conosce un esercizio con il suo nome inglese, quindi i nomi ora restano in inglese in tutte le lingue."
+ },
+ "Prefer them translated? Settings, Languages, Translate exercise names.": {
+  "nl": "Liever vertaald? Instellingen, Talen, Oefeningnamen vertalen.",
+  "es": "¿Prefieres verlos traducidos? Ajustes, Idiomas, Traducir los nombres de los ejercicios.",
+  "de": "Lieber übersetzt? Einstellungen, Sprachen, Übungsnamen übersetzen.",
+  "fr": "Tu les préfères traduits ? Réglages, Langues, Traduire les noms des exercices.",
+  "it": "Li preferisci tradotti? Impostazioni, Lingue, Traduci i nomi degli esercizi."
  }
 }
