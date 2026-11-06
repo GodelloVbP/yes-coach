@@ -4,23 +4,7 @@ from playwright.sync_api import sync_playwright
 from harness import *
 from harness import EXTERNAL
 
-passed = failed = 0
-def check(name, cond, extra=''):
-    global passed, failed
-    if cond: passed += 1
-    else: failed += 1; print('FAIL', name, extra)
-
 TODAY = datetime.date.today().isoformat()
-PAGE = {}
-def until(fn, secs=8):
-    end = time.time() + secs
-    while time.time() < end:
-        try:
-            if fn(): return True
-        except Exception: pass
-        PAGE['p'].wait_for_timeout(100)
-    return False
-def vis(page, sel): return page.is_visible(sel)
 
 def seed(be, kcal, protein, show_cal=True, targets=(2000, 100), no_kcal=False):
     be.docs.append({'path': 'yc', 'data': {'app': 'yes-coach', 'schema': 1, 'intro_seen': True, 'settings': {'show_calories': show_cal}, 'nutrition': {'kcal': targets[0], 'protein': targets[1]}}})
@@ -38,7 +22,6 @@ try:
         def meter(kcal, protein, **kw):
             be = Backend(); seed(be, kcal, protein, **kw); out = {}
             def sc(page):
-                PAGE['p'] = page
                 page.click('#tab-food'); page.wait_for_selector('#fd-meter .fd-mrow', timeout=8000); page.wait_for_timeout(300)
                 out['text'] = page.inner_text('#fd-meter')
                 out['over'] = page.locator('#fd-meter .fd-bar.over').count()
@@ -68,7 +51,6 @@ try:
         be = Backend(); seed(be, 0, 0, no_kcal=True)
         be.docs[-1]['data']['entries'] = {}
         def rough(page):
-            PAGE['p'] = page
             page.click('#tab-food'); page.wait_for_selector('#fd-name', state='visible', timeout=8000)
             def own(name):
                 page.fill('#fd-name', name); until(lambda: vis(page, '#fd-hits') and page.locator('#fd-hits .fd-new').count() > 0); page.wait_for_timeout(150)
@@ -103,7 +85,6 @@ try:
         # ---- calories hidden: rough works there too
         be = Backend(); seed(be, 0, 0, show_cal=False); be.docs[-1]['data']['entries'] = {}
         def hidden(page):
-            PAGE['p'] = page
             page.click('#tab-food'); page.wait_for_selector('#fd-name', state='visible', timeout=8000)
             page.fill('#fd-name', 'Salad'); until(lambda: page.locator('#fd-hits .fd-new').count() > 0); page.wait_for_timeout(150)
             page.click('#fd-hits .fd-new'); page.wait_for_selector('#fd-form', state='visible')
@@ -113,5 +94,4 @@ try:
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
-print('passed', passed, 'failed', failed)
-raise SystemExit(1 if failed else 0)
+done()

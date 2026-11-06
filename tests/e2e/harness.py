@@ -117,6 +117,25 @@ class Backend:
                 return empty(201)
         return ok({'message': 'unhandled ' + path}, 404)
 
+PAGE = {}  # the page being driven: waiting must go through Playwright, or its route handlers (the fake server) never run
+_tally = {'passed': 0, 'failed': 0}
+def check(name, cond, extra=''):
+    _tally['passed' if cond else 'failed'] += 1
+    if not cond: print('FAIL', name, extra)
+def done():
+    """Print the result and exit non-zero when a check failed. The last line of every suite."""
+    print('passed', _tally['passed'], 'failed', _tally['failed'])
+    raise SystemExit(1 if _tally['failed'] else 0)
+def until(fn, secs=8):
+    end = time.time() + secs
+    while time.time() < end:
+        try:
+            if fn(): return True
+        except Exception: pass
+        PAGE['p'].wait_for_timeout(100)
+    return False
+def vis(page, sel): return page.is_visible(sel)
+
 EXTERNAL = []  # every request that tried to leave localhost and the Supabase stand-in
 
 def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, lang='en'):
@@ -126,7 +145,6 @@ def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, l
             'user': {'id': uid, 'email': EMAILS[uid], 'aud': 'authenticated', 'role': 'authenticated'}}
     ctx.add_init_script("localStorage.setItem('sb-qazvzhhoalkyyasakphs-auth-token', %s)" % json.dumps(json.dumps(sess)))
     if lang: ctx.add_init_script("if (!sessionStorage.getItem('lang-init')) { localStorage.setItem('yc-lang', %s); sessionStorage.setItem('lang-init', '1'); }" % json.dumps(lang))
-    ctx.route(SUPA + '/**', be.handle)
     ctx.route('**/*', lambda r: r.continue_() if r.request.url.startswith('http://localhost') else (EXTERNAL.append(r.request.url), r.abort()))  # nothing else leaves the machine
     ctx.route(SUPA + '/**', be.handle)
     page = ctx.new_page(); errors = []
@@ -138,6 +156,7 @@ def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, l
         page.wait_for_selector('#v-home', state='visible')  # the app opens on Home
         try: page.click('#hm-train', timeout=4000)
         except Exception: pass  # a dialog on top (ticket pop-up) leaves the user on Home
+    PAGE['p'] = page
     try: scenario(page)
     except Exception:
         print('PAGE ERRORS:', errors[:5])

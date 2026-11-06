@@ -4,23 +4,7 @@ from playwright.sync_api import sync_playwright
 from harness import *
 from harness import EXTERNAL
 
-passed = failed = 0
-def check(name, cond, extra=''):
-    global passed, failed
-    if cond: passed += 1
-    else: failed += 1; print('FAIL', name, extra)
-
 TODAY = datetime.date.today().isoformat()
-PAGE = {}
-def until(fn, secs=8):
-    end = time.time() + secs
-    while time.time() < end:
-        try:
-            if fn(): return True
-        except Exception: pass
-        PAGE['p'].wait_for_timeout(100)
-    return False
-
 NEVO = json.load(open(REPO + '/foods-nevo.json'))['foods']
 def row(name): return next(r for r in NEVO if r[1] == name)
 def fold(t): return unicodedata.normalize('NFD', str(t)).encode('ascii', 'ignore').decode().lower()
@@ -52,7 +36,6 @@ def seed(be, show_cal=False):
     be.docs.append({'path': 'yc/myfoods/broken', 'data': {'food': 5, 'name': 7}})
 def day(be): return next((d['data'] for d in be.docs if d['path'] == 'yc/food/' + TODAY), {'entries': {}})
 def entries(be): return [e for e in day(be).get('entries', {}).values() if e]
-def vis(page, sel): return page.is_visible(sel)
 
 server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)
@@ -60,7 +43,6 @@ try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)
         def phone(page):
-            PAGE['p'] = page
             page.click('#tab-food'); page.wait_for_selector('#fd-name', state='visible', timeout=8000)
             def search(q):
                 page.fill('#fd-name', q)
@@ -146,7 +128,6 @@ try:
         # ---- calories shown
         be = Backend(); seed(be, True)
         def shown(page):
-            PAGE['p'] = page
             page.click('#tab-food'); page.wait_for_selector('#fd-name', state='visible', timeout=8000)
             page.fill('#fd-name', 'mosterd'); until(lambda: page.locator('#fd-hits .fd-hit').count() > 0); page.wait_for_timeout(150)
             check('with calories on, a result shows them on its one line', 'kcal' in page.locator('#fd-hits .fd-hit').first.locator('.fd-mini').inner_text())
@@ -154,5 +135,4 @@ try:
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
-print('passed', passed, 'failed', failed)
-raise SystemExit(1 if failed else 0)
+done()

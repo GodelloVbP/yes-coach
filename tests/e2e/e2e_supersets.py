@@ -4,23 +4,7 @@ from playwright.sync_api import sync_playwright
 from harness import *
 from harness import EXTERNAL
 
-passed = failed = 0
-def check(name, cond, extra=''):
-    global passed, failed
-    if cond: passed += 1
-    else: failed += 1; print('FAIL', name, extra)
-
 TODAY = datetime.date.today().isoformat()
-PAGE = {}
-def until(fn, secs=6):
-    end = time.time() + secs
-    while time.time() < end:
-        try:
-            if fn(): return True
-        except Exception: pass
-        PAGE['p'].wait_for_timeout(100)
-    return False
-
 def seed(be, group=None):
     be.docs.append({'path': 'yc', 'data': {'app': 'yes-coach', 'schema': 1, 'intro_seen': True}})
     for k, n, g in (('bench', 'Bench press', 'Chest'), ('row', 'Row', 'Back'), ('squat', 'Squat', 'Legs')):
@@ -40,7 +24,6 @@ def plan(be):
     return next(d['data'] for d in be.docs if d['path'] == 'yc/templates/push')
 
 def start_day(page):
-    PAGE['p'] = page
     page.goto(BASE); page.wait_for_selector('text=Start Push day', timeout=8000)
     page.click('text=Start Push day')
     page.wait_for_selector('#f-bench_1-load', state='visible')
@@ -54,7 +37,6 @@ try:
         # ---- 1. the plan editor
         be = Backend(); seed(be)
         def s1(page):
-            PAGE['p'] = page
             page.goto(BASE); page.wait_for_selector('text=Start Push day', timeout=8000)
             page.click('#tab-plan'); page.wait_for_selector('#v-plan', state='visible')
             page.click('text=Edit day'); page.wait_for_selector('.pw-tap', timeout=6000)
@@ -114,5 +96,4 @@ try:
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
-print('passed', passed, 'failed', failed)
-raise SystemExit(1 if failed else 0)
+done()

@@ -4,22 +4,6 @@ from playwright.sync_api import sync_playwright
 from harness import *
 from harness import EXTERNAL
 
-passed = failed = 0
-def check(name, cond, extra=''):
-    global passed, failed
-    if cond: passed += 1
-    else: failed += 1; print('FAIL', name, extra)
-
-PAGE = {}
-def until(fn, secs=8):
-    end = time.time() + secs
-    while time.time() < end:
-        try:
-            if fn(): return True
-        except Exception: pass
-        PAGE['p'].wait_for_timeout(100)
-    return False
-def vis(page, sel): return page.is_visible(sel)
 
 NAMES = ['Pull-up', 'Barbell bench press', 'My own move']
 def seed(be):
@@ -65,7 +49,6 @@ try:
         # ---- French: English names by default, the rest of the screen translated
         be = Backend(); seed(be)
         def fr(page):
-            PAGE['p'] = page
             page.wait_for_selector('#v-train', state='visible'); page.wait_for_timeout(500)
             t = page.evaluate
             check('by default exercise names are not translated', t("window.YC_I18N.t('Barbell bench press')") is None and t("window.YC_I18N.t('Pull-up')") is None)
@@ -94,7 +77,6 @@ try:
         # ---- Dutch: the same, and a library name that Dutch does translate
         be = Backend(); seed(be)
         def nl(page):
-            PAGE['p'] = page
             page.wait_for_selector('#v-train', state='visible'); page.wait_for_timeout(500)
             check('nl: off by default', page.evaluate("window.YC_I18N.t('Barbell bench press')") is None and page.evaluate("window.YC_I18N.t('Chest')") == 'Borst')
             page.evaluate("localStorage.setItem('yc-lang-ex', '1')"); page.reload(); back_in(page)
@@ -104,7 +86,6 @@ try:
         # ---- English: nothing to switch
         be = Backend(); seed(be)
         def en(page):
-            PAGE['p'] = page
             page.wait_for_selector('#v-train', state='visible'); page.wait_for_timeout(300)
             open_settings(page); page.wait_for_selector('#lang', state='visible')
             check('in English the switch is not shown', not vis(page, '#lang-ex-row') and not vis(page, '#lang-ex-note'))
@@ -112,5 +93,4 @@ try:
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
-print('passed', passed, 'failed', failed)
-raise SystemExit(1 if failed else 0)
+done()

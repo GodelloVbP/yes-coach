@@ -4,25 +4,9 @@ from playwright.sync_api import sync_playwright
 from harness import *
 from harness import EXTERNAL
 
-passed = failed = 0
-def check(name, cond, extra=''):
-    global passed, failed
-    if cond: passed += 1
-    else: failed += 1; print('FAIL', name, extra)
-
 TODAY = datetime.date.today().isoformat()
 BACK = (datetime.date.today() - datetime.timedelta(days=5)).isoformat()
 OLD = (datetime.date.today() - datetime.timedelta(days=60)).isoformat()
-PAGE = {}
-def until(fn, secs=6):
-    end = time.time() + secs
-    while time.time() < end:
-        try:
-            if fn(): return True
-        except Exception: pass
-        PAGE['p'].wait_for_timeout(100)
-    return False
-
 def seed(be, reps=(8, 8, 8), loads=(60, 60, 60), target='', target_at=TODAY, settings=None, inc=None, last=BACK, plan_reps='8'):
     root = {'app': 'yes-coach', 'schema': 1, 'intro_seen': True}
     if settings: root['settings'] = settings
@@ -43,7 +27,6 @@ def stored(be, key):
     return (d.get('sets') or {}).get(key) or {}
 
 def open_day(page):
-    PAGE['p'] = page
     page.goto(BASE); page.wait_for_selector('text=Start Push day', timeout=8000)
     page.click('text=Start Push day')
     page.wait_for_selector('#f-bench_1-load', state='visible')
@@ -134,7 +117,6 @@ try:
         # ---- 9. the switch in Settings
         be = Backend(); seed(be)
         def s9(page):
-            PAGE['p'] = page
             page.goto(BASE + '#more'); page.wait_for_selector('#tab-settings', state='attached')
             page.evaluate("document.querySelector('#tab-settings').click()")
             page.wait_for_selector('#set-prog', state='attached')
@@ -156,5 +138,4 @@ try:
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
-print('passed', passed, 'failed', failed)
-raise SystemExit(1 if failed else 0)
+done()

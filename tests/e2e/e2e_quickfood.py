@@ -4,31 +4,14 @@ from playwright.sync_api import sync_playwright
 from harness import *
 from harness import EXTERNAL
 
-passed = failed = 0
-def check(name, cond, extra=''):
-    global passed, failed
-    if cond: passed += 1
-    else: failed += 1; print('FAIL', name, extra)
-
 TODAY = datetime.date.today().isoformat()
 YDAY = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
 BACK = (datetime.date.today() - datetime.timedelta(days=5)).isoformat()
-PAGE = {}
-def until(fn, secs=8):
-    end = time.time() + secs
-    while time.time() < end:
-        try:
-            if fn(): return True
-        except Exception: pass
-        PAGE['p'].wait_for_timeout(100)
-    return False
-
 def root(be, extra=None):
     be.docs.append({'path': 'yc', 'data': dict({'app': 'yes-coach', 'schema': 1, 'intro_seen': True, 'settings': {'show_calories': False}}, **(extra or {}))})
 def entries(be, date=TODAY):
     d = next((x['data'] for x in be.docs if x['path'] == 'yc/food/' + date), {'entries': {}})
     return {k: v for k, v in d.get('entries', {}).items() if v}
-def vis(page, sel): return page.is_visible(sel)
 
 # ---- the manifest
 man = json.load(open(REPO + '/manifest.webmanifest'))
@@ -44,7 +27,6 @@ try:
         # ---- the shortcut opens Food
         be = Backend(); root(be)
         def shortcut(page):
-            PAGE['p'] = page
             page.goto(BASE + '?from=shortcut#food')
             check('a signed-in person who taps the shortcut lands on Food', until(lambda: vis(page, '#v-food') and vis(page, '#fd-body')), page.url)
             page.goto(BASE + '?from=shortcut2#train')
@@ -54,7 +36,6 @@ try:
         # ---- I ate something, then fill it in
         be = Backend(); root(be)
         def ate(page):
-            PAGE['p'] = page
             page.click('#tab-food'); page.wait_for_selector('#fd-ate', state='visible', timeout=8000)
             page.click('#fd-ate')
             check('one tap saves a placeholder with the time', until(lambda: page.locator('#fd-list .fd-quickrow').count() == 1) and re.search(r'Ate something · \d\d:\d\d', page.locator('#fd-list .fd-quickrow').inner_text()) is not None, page.inner_text('#fd-list'))
@@ -110,7 +91,6 @@ try:
         meal = {'name': 'Lunch', 'kcal': 400, 'p': 20, 'c': 40, 'f': 10, 'at': 1, 'via': 'connector', 'items': [{'name': 'Bread', 'g': 70, 'u': 'g', 'kcal': 160, 'p': 5, 'c': 29, 'f': 1, 'src': 'nevo', 'ref': '1', 'est': True}, {'name': 'Egg', 'g': 50, 'u': 'g', 'kcal': 75, 'p': 6, 'c': 0, 'f': 5, 'src': 'nevo', 'ref': '2'}]}
         be.docs.append({'path': 'yc/food/' + YDAY, 'data': {'date': YDAY, 'entries': {'a': meal, 'b': {'name': 'Apple', 'kcal': 62, 'p': 0.3, 'c': 14, 'f': 0.2, 'at': 2}, 'c': {'name': 'Ate something', 'quick': True, 'at': 3}, 'd': None}}})
         def yday(page):
-            PAGE['p'] = page
             page.click('#tab-food'); page.wait_for_selector('#fd-body', state='visible', timeout=8000)
             check('an empty day after a logged one offers Same as yesterday', until(lambda: vis(page, '#fd-yday')))
             page.click('#fd-yday')
@@ -128,7 +108,6 @@ try:
         be.docs.append({'path': 'yc/food/' + YDAY, 'data': {'date': YDAY, 'entries': {'a': {'name': 'Apple', 'p': 0.3, 'at': 1}}}})
         be.docs.append({'path': 'yc/food/' + TODAY, 'data': {'date': TODAY, 'entries': {'x': {'name': 'Banana', 'p': 1, 'at': 1}}}})
         def has_today(page):
-            PAGE['p'] = page
             page.click('#tab-food'); page.wait_for_selector('#fd-body', state='visible', timeout=8000); page.wait_for_timeout(300)
             check('no Same as yesterday when today already has food', not vis(page, '#fd-yday'))
         errs = session(pw, be, ALICE, has_today, width=390); check('no page errors (has food)', not errs, errs)
@@ -141,7 +120,6 @@ try:
             be.docs.append({'path': 'yc/templates/push', 'data': {'name': 'Push day', 'order': 1, 'kind': 'Push', 'focus': 'Chest', 'weekday': wd, 'items': [{'ex': 'bench', 'order': 1, 'sets': 1, 'reps': '8', 'target': '', 'target_at': TODAY, 'rest_s': 90, 'note': None}]}})
             if food_today: be.docs.append({'path': 'yc/food/' + TODAY, 'data': {'date': TODAY, 'entries': {'x': {'name': 'Banana', 'p': 1, 'at': 1}}}})
         def finish_day(page):
-            PAGE['p'] = page
             page.goto(BASE); page.wait_for_selector('text=Start Push day', timeout=8000); page.click('text=Start Push day')
             page.wait_for_selector('#f-bench_1-load', state='visible'); page.wait_for_timeout(300)
             page.fill('#f-bench_1-load', '60'); page.fill('#f-bench_1-reps', '8'); page.locator('.set:has(#f-bench_1-load) .set-tick').click(); page.wait_for_timeout(400)
@@ -156,7 +134,6 @@ try:
         # the day you looked at last on Food is not where the nudge sends you: the food is about today
         be = Backend(); workout_seed(be, False)
         def nudge_today(page):
-            PAGE['p'] = page
             page.goto(BASE); page.wait_for_selector('text=Start Push day', timeout=8000)
             page.click('#tab-food'); page.wait_for_selector('#fd-prev', state='visible'); page.click('#fd-prev'); page.wait_for_timeout(300)
             page.click('#tab-train'); page.click('text=Start Push day')
@@ -174,5 +151,4 @@ try:
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
-print('passed', passed, 'failed', failed)
-raise SystemExit(1 if failed else 0)
+done()

@@ -4,12 +4,6 @@ from playwright.sync_api import sync_playwright
 from harness import *
 from harness import EXTERNAL
 
-passed = failed = 0
-def check(name, cond, extra=''):
-    global passed, failed
-    if cond: passed += 1
-    else: failed += 1; print('FAIL', name, extra)
-
 TODAY = datetime.date.today()
 ISO = TODAY.isoformat()
 DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -30,16 +24,6 @@ def week_doc(be):
     d = next((d for d in be.docs if d['path'] == 'yc/weeks/' + MONDAY.isoformat()), None)
     return d['data'] if d else {}
 
-PAGE = {}
-def until(fn, secs=6):
-    end = time.time() + secs
-    while time.time() < end:
-        try:
-            if fn(): return True
-        except Exception: pass
-        PAGE['p'].wait_for_timeout(100)
-    return False
-
 def blk(page, i): return page.locator('.wk-blk[data-date="%s"]' % date_at(i))
 def planned(page, i): return 'drag' in (blk(page, i).get_attribute('class') or '')
 
@@ -49,7 +33,6 @@ try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)
         def s1(page):
-            PAGE['p'] = page
             page.wait_for_selector('#wk-rows .wk-blk', timeout=8000)
             check('seven blocks', page.locator('.wk-blk').count() == 7, page.locator('.wk-blk').count())
             check('today is selected and its sheet names the day', blk(page, T).get_attribute('aria-pressed') == 'true' and 'Push day' in page.text_content('#wk-sheet'), page.text_content('#wk-sheet'))
@@ -81,7 +64,6 @@ try:
 
         be = Backend(); seed(be)
         def s2(page):
-            PAGE['p'] = page
             page.wait_for_selector('#wk-rows .wk-blk', timeout=8000)
             page.click('#wk-next'); page.wait_for_timeout(300)
             check('next week: no block marked today and a sheet shows', page.locator('.wk-blk[aria-pressed=true]').count() == 1 and page.locator('.wk-day.is-today').count() == 0)
@@ -93,5 +75,4 @@ try:
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
-print('passed', passed, 'failed', failed)
-raise SystemExit(1 if failed else 0)
+done()
