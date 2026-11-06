@@ -123,16 +123,16 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok(authCalls === before, 'token check is cached');
   const list = await rpc('tok.anna.x', 'tools/list');
   const names = list.body.result.tools.map((t) => t.name);
-  ok(names.length === 14 && !names.some((x) => /delete|remove|session/.test(x) && !['get_sessions', 'remove_food_entry'].includes(x)), 'tool list: ' + names);
+  ok(names.length === 18 && !names.some((x) => /delete|remove|session/.test(x) && !['get_sessions', 'remove_food_entry', 'remove_saved'].includes(x)), 'tool list: ' + names);
   ok(list.body.result.tools.every((t) => t.inputSchema.type === 'object' && t.annotations && t.description && t.title && t.annotations.title === t.title && t.name.length <= 64 && (t.annotations.readOnlyHint === true || typeof t.annotations.destructiveHint === 'boolean')), 'schemas, titles, hints');
   const toolNames = list.body.result.tools.map((t) => t.name);
   ok(list.body.result.tools.every((t) => !toolNames.some((n) => n !== t.name && (t.description + JSON.stringify(t.inputSchema)).includes(n))), 'descriptions do not mention other tools');
   ok(list.body.result.tools.every((t) => !/\b(always|never|must|should|instruction|ignore|before calling|call this)/i.test(t.description)), 'descriptions are plain, no directives');
   const init = (await rpc('tok.anna.x', 'initialize', {})).body.result.instructions;
   ok(!/\b(call|first|never|must|should)\b/i.test(init), 'server instructions are descriptive: ' + init);
-  ok(list.body.result.tools.filter((t) => t.annotations.destructiveHint === true).map((t) => t.name).sort().join() === 'answer_note,remove_food_entry,save_training_day,set_schedule', 'overwriting tools are destructive');
+  ok(list.body.result.tools.filter((t) => t.annotations.destructiveHint === true).map((t) => t.name).sort().join() === 'answer_note,remove_food_entry,remove_saved,save_meal,save_training_day,set_schedule', 'overwriting tools are destructive');
   ok(list.body.result.tools.find((t) => t.name === 'log_meals').annotations.idempotentHint === false, 'logging a meal twice adds it twice, so it is not idempotent');
-  ok(list.body.result.tools.filter((t) => t.annotations.readOnlyHint).length === 8, 'read-only hints');
+  ok(list.body.result.tools.filter((t) => t.annotations.readOnlyHint).length === 9, 'read-only hints');
   ok((await rpc('tok.anna.x', 'tools/call', { name: 'zzz' })).body.error.code === -32602, 'unknown tool');
 }
 
@@ -397,6 +397,141 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   seed(A, 'yc/food/2026-09-01', { date: '2026-09-01', entries: { a: null, b: 'x', c: { name: 42, p: 5 }, d: { name: 'Odd meal', p: '5', kcal: 'lots', items: [null, 'x', { name: 'Ok', g: 10, p: 1 }] }, e: { name: 'Fine', p: 2, at: 2 } } });
   r = await call(T, 'get_food_day', { date: '2026-09-01' });
   ok(!r.err && r.json.entries.map((e) => e.name).sort().join() === 'Fine,Odd meal' && r.json.totals.protein_g === 2 && r.json.entries.find((e) => e.name === 'Odd meal').items.length === 1, 'malformed entries are skipped and text is never added up as a number: ' + r.text.slice(0, 160));
+}
+
+// ---- the person's own foods, portion sizes and saved meals
+{
+  const T = 'tok.anna.x', TB = 'tok.ben.x';
+  const rowA = (path) => rows.find((x) => x.user_id === A && x.path === path);
+  rowA('yc').data.settings = { ...(rowA('yc').data.settings || {}), show_calories: false }; // earlier checks switched calories on
+  const mineRows = (u = A) => rows.filter((x) => x.user_id === u && x.path.startsWith('yc/myfoods/') && x.data && !x.data.gone);
+  const first = async (q, tok = T) => (await call(tok, 'search_foods', { query: q, limit: 1 })).json.results[0];
+  const pb = await first('pindakaas'), bread = await first('tarwebrood bruin'), egg = await first('ei gekookt');
+  ok(pb && !pb.yours, 'peanut butter has not been logged yet, so it is not "yours": ' + JSON.stringify(pb && pb.name));
+
+  // a food is remembered when it is logged, with the word the person used
+  let r = await call(T, 'log_meals', { meals: [{ items: [{ food: pb.food, grams: 15, said: 'Pindakaas ' }] }] });
+  ok(!r.err, r.text);
+  let doc = mineRows().find((x) => x.data.food === pb.food);
+  ok(doc && doc.data.n === 1 && doc.data.aka.pindakaas === 1 && doc.data.name === pb.name && doc.data.last > 0, 'logging remembers the food, how often and the word: ' + JSON.stringify(doc && doc.data));
+  r = await call(T, 'log_meals', { meals: [{ items: [{ food: pb.food, grams: 20, said: 'PB' }] }] });
+  doc = mineRows().find((x) => x.data.food === pb.food);
+  ok(doc.data.n === 2 && doc.data.aka.pb === 1 && doc.data.aka.pindakaas === 1, 'again: counted twice, both words kept: ' + JSON.stringify(doc.data));
+  let s1 = (await call(T, 'search_foods', { query: 'pb' })).json.results;
+  ok(s1[0].food === pb.food && s1[0].yours === true && s1[0].times_logged === 2 && s1[0].said.includes('pb'), 'a search for her word puts her food first: ' + JSON.stringify(s1[0]));
+  s1 = (await call(T, 'search_foods', { query: 'pindakaas', limit: 10 })).json.results;
+  ok(s1.filter((x) => x.food === pb.food).length === 1 && s1[0].yours, 'her food is listed once, at the top, not again from the tables');
+  ok((await call(TB, 'search_foods', { query: 'pb' })).json.results.every((x) => !x.yours), 'another person does not get her foods');
+  s1 = (await call(T, 'search_foods', { query: 'pb', type: 'Cheese' })).json.results;
+  ok(s1.every((x) => !x.yours), 'a group filter keeps her foods in their own group');
+
+  // her own portion sizes
+  r = await call(T, 'save_my_food', { food: pb.food, said: ['peanut butter'], portions: [{ label: 'Spoon', grams: 12 }] });
+  ok(!r.err && r.json.saved.portions.Spoon === 12 && r.json.saved.said.includes('peanut butter') && r.json.saved.said.includes('pb'), 'portion sizes and words are saved, the old words stay: ' + r.text);
+  s1 = (await call(T, 'search_foods', { query: 'peanut butter' })).json.results[0];
+  ok(s1.food === pb.food && s1.portions[0].label === 'Spoon' && s1.portions[0].grams === 12 && s1.portions[0].yours === true && /own portion sizes first/.test(s1.portions_are), 'her portion sizes come first in the result');
+  r = await call(T, 'log_meals', { meals: [{ items: [{ food: pb.food, portion: { label: 'spoon', count: 2 } }] }] });
+  const lastE = Object.values(r.json ? rowA('yc/food/' + r.json.day.date).data.entries : {}).filter(Boolean).sort((a, b) => b.at - a.at)[0];
+  ok(!r.err && lastE.g === 24 && lastE.est === true, 'her portion times the count gives the grams, case-insensitively: ' + r.text.slice(0, 120));
+  r = await call(T, 'log_meals', { meals: [{ items: [{ food: pb.food, portion: { label: 'bucket' } }] }] });
+  ok(r.err && /Spoon \(12 g\)/.test(r.text), 'an unknown portion lists her own first: ' + r.text);
+  r = await call(T, 'save_my_food', { food: pb.food, portions: [{ label: 'spoon', grams: 10 }] });
+  ok(!r.err && Object.keys(rowA('yc/myfoods/' + doc.path.split('/').pop()).data.portions).length === 2, 'a portion with the same name in another case is a new key, not a crash');
+  ok((await call(T, 'save_my_food', { food: 'nevo:99999999' })).err, 'unknown food refused');
+  ok((await call(T, 'save_my_food', { food: pb.food, portions: [{ label: 'x', grams: 0 }] })).err, 'a portion without grams refused');
+  ok((await call(T, 'save_my_food', { food: pb.food, portions: [{ label: 'x', grams: 99999 }] })).err, 'an absurd portion refused');
+  for (let i = 0; i < 6; i += 1) await call(T, 'save_my_food', { food: pb.food, portions: [{ label: 'p' + i, grams: 5 + i }] });
+  ok((await call(T, 'save_my_food', { food: pb.food, portions: [{ label: 'one too many', grams: 5 }] })).err, 'at most 8 portion sizes per food');
+  ok(!(await call(T, 'save_my_food', { food: pb.food, portions: [{ label: 'p0', grams: 7 }] })).err, 'but an existing one can be changed');
+
+  // words: at most 12 per food
+  for (let i = 0; i < 14; i += 1) await call(T, 'log_meals', { meals: [{ items: [{ food: egg.food, grams: 50, said: 'ei' + i }] }] });
+  const eggDoc = mineRows().find((x) => x.data.food === egg.food);
+  ok(Object.keys(eggDoc.data.aka).length === 12 && eggDoc.data.n >= 14, 'a food keeps at most 12 words but still counts every use: ' + Object.keys(eggDoc.data.aka).length);
+
+  // saved meals
+  const items = [{ food: bread.food, portion: { label: bread.portions[0].label, count: 2 } }, { food: egg.food, grams: 50, estimated: false }, { food: pb.food, grams: 15 }];
+  r = await call(T, 'save_meal', { name: 'My usual breakfast', items });
+  ok(!r.err && r.json.saved.id === 'my-usual-breakfast' && r.json.saved.items.length === 3 && r.json.saved.protein_g > 0 && r.json.replaced === false && !('kcal' in r.json.saved), 'a meal is saved with its foods and totals: ' + r.text.slice(0, 160));
+  const mealDoc = rowA('yc/meals/my-usual-breakfast').data;
+  ok(mealDoc.name === 'My usual breakfast' && mealDoc.items.length === 3 && mealDoc.items[0].g === bread.portions[0].grams * 2 && mealDoc.items[0].est === true && !('est' in mealDoc.items[1]) && mealDoc.n === 0, 'stored like the items of an entry');
+  r = await call(T, 'save_meal', { name: ' my USUAL breakfast', items: items.slice(0, 2) });
+  ok(!r.err && r.json.replaced === true && r.json.saved.id === 'my-usual-breakfast' && rowA('yc/meals/my-usual-breakfast').data.items.length === 2, 'the same name replaces it');
+  r = await call(T, 'save_meal', { name: 'My usual breakfast!', items: items.slice(0, 1) });
+  ok(!r.err && r.json.saved.id === 'my-usual-breakfast-2', 'a different name with the same slug gets its own id: ' + r.text.slice(0, 100));
+  ok((await call(T, 'save_meal', { name: '', items })).err && (await call(T, 'save_meal', { name: 'x' })).err && (await call(T, 'save_meal', { name: 'x', items: [] })).err, 'a name and foods are needed');
+  ok((await call(T, 'save_meal', { name: 'x', items: Array.from({ length: 13 }, () => items[1]) })).err, 'at most 12 foods in a saved meal');
+
+  // from an entry already in the log
+  const day = (await call(T, 'log_meals', { meals: [{ name: 'Lunch', items: items.slice(0, 2) }, { items: [{ food: egg.food, grams: 60 }] }] })).json.day;
+  const [lunch, single] = day.entries.slice(-2);
+  r = await call(T, 'save_meal', { name: 'Usual lunch', from_entry: { date: day.date, entry_id: lunch.id } });
+  ok(!r.err && r.json.saved.items.length === 2 && r.json.saved.id === 'usual-lunch', 'a logged meal is saved as it was: ' + r.text.slice(0, 120));
+  r = await call(T, 'save_meal', { name: 'Just an egg', from_entry: { date: day.date, entry_id: single.id } });
+  ok(!r.err && r.json.saved.items.length === 1 && rowA('yc/meals/just-an-egg').data.items[0].g === 60, 'a single food entry is saved as one food');
+  seed(A, 'yc/food/2026-08-01', { date: '2026-08-01', entries: { hand: { name: 'Typed by hand', kcal: 100, p: 3, at: 1 } } });
+  ok((await call(T, 'save_meal', { name: 'Hand', from_entry: { date: '2026-08-01', entry_id: 'hand' } })).err, 'an entry typed by hand has no foods to save');
+  ok((await call(T, 'save_meal', { name: 'Hand', from_entry: { date: '2026-08-01', entry_id: 'constructor' } })).err, 'only real entries');
+  ok((await call(T, 'save_meal', { name: 'Hand', from_entry: { date: '2026-13-01', entry_id: 'x' } })).err, 'a real date');
+
+  // reading them back
+  const mine = (await call(T, 'get_my_foods')).json;
+  ok(mine.foods[0].times_logged >= mine.foods[mine.foods.length - 1].times_logged && mine.foods.some((f) => f.food === pb.food && f.portions.Spoon === 12), 'foods most used first, with portions');
+  ok(mine.meals.map((m) => m.id).sort().join() === 'just-an-egg,my-usual-breakfast,my-usual-breakfast-2,usual-lunch' && !('kcal' in mine.meals[0]) && /hidden/.test(mine.calories), 'meals listed, no calories while hidden');
+
+  // logging a saved meal
+  r = await call(T, 'log_meals', { date: '2026-10-25', meals: [{ saved: 'usual-lunch' }, { saved: 'usual-lunch', name: 'Lunch at work' }, { saved: 'just-an-egg' }] });
+  const ents = Object.values(rowA('yc/food/2026-10-25').data.entries).sort((a, b) => a.at - b.at);
+  ok(!r.err && ents.length === 3 && ents[0].name === 'Usual lunch' && ents[1].name === 'Lunch at work' && ents[0].items.length === 2 && JSON.stringify(ents[0].items) === JSON.stringify(rowA('yc/meals/usual-lunch').data.items) && ents[2].src && ents[2].g === 60, 'a saved meal is logged with its foods; one food becomes a normal entry: ' + r.text.slice(0, 120));
+  ok(rowA('yc/meals/usual-lunch').data.n === 2 && rowA('yc/meals/just-an-egg').data.n === 1, 'and counted');
+  ok((await call(T, 'log_meals', { meals: [{ saved: 'nope' }] })).err && (await call(TB, 'log_meals', { meals: [{ saved: 'usual-lunch' }] })).err, 'an unknown id, or someone else\'s saved meal, is refused');
+  ok((await call(T, 'log_meals', { meals: [{}] })).err, 'a meal needs foods or a saved meal');
+  ok((await call(TB, 'get_my_foods')).json.meals.length === 0 && mineRows(B).length === 0 && !rows.some((x) => x.user_id === B && x.path.startsWith('yc/meals/')), 'another person has none of it');
+
+  // removing: forgotten foods and removed meals go away, and a forgotten food can come back
+  ok((await call(T, 'remove_saved', {})).err && (await call(T, 'remove_saved', { food: pb.food, meal: 'usual-lunch' })).err, 'exactly one of food or meal');
+  ok((await call(T, 'remove_saved', { food: 'nevo:123456' })).err && (await call(T, 'remove_saved', { meal: 'nope' })).err && (await call(T, 'remove_saved', { meal: 'constructor' })).err, 'unknown ones are refused');
+  r = await call(T, 'remove_saved', { food: pb.food });
+  ok(!r.err && r.json.removed.food === pb.food && (await first('pb')).yours !== true, 'a forgotten food is no longer "yours"');
+  ok(!(await call(T, 'get_my_foods')).json.foods.some((f) => f.food === pb.food), 'nor listed');
+  await call(T, 'log_meals', { meals: [{ items: [{ food: pb.food, grams: 10, said: 'pb' }] }] });
+  const back = (await call(T, 'search_foods', { query: 'pb' })).json.results[0];
+  ok(back.yours === true && back.times_logged === 1 && !back.portions.some((x) => x.yours), 'logging it again brings it back, starting from one, without the old portions');
+  r = await call(T, 'remove_saved', { meal: 'usual-lunch' });
+  ok(!r.err && !(await call(T, 'get_my_foods')).json.meals.some((m) => m.id === 'usual-lunch') && (await call(T, 'log_meals', { meals: [{ saved: 'usual-lunch' }] })).err, 'a removed meal is gone and can not be logged');
+  ok(!(await call(T, 'save_meal', { name: 'Usual lunch', items: items.slice(0, 1) })).err && (await call(T, 'get_my_foods')).json.meals.some((m) => m.id === 'usual-lunch'), 'and can be saved again');
+  ok((await call(T, 'get_food_day', { date: '2026-10-25' })).json.entries.length === 3, 'entries already logged stay when a saved meal is removed');
+
+  // whatever is stored
+  seed(A, 'yc/myfoods/zzz', { food: 5 }); seed(A, 'yc/myfoods/yyy', { food: 'nevo:99999999', name: 'Ghost', n: 9 }); seed(A, 'yc/myfoods/xxx', 'text'); seed(A, 'yc/myfoods/www', { food: egg.food, name: 'Egg', n: 'lots', aka: { a: 'x', b: -1 }, portions: { big: 'huge', ok: 50 } });
+  seed(A, 'yc/meals/bad', { name: 'Bad meal', items: [null, 'a', { name: 'x' }] }); seed(A, 'yc/meals/bad2', { name: 5, items: [] }); seed(A, 'yc/meals/bad3', 7);
+  r = await call(T, 'get_my_foods');
+  ok(!r.err && !r.json.meals.some((m) => /bad/i.test(m.id)) && r.json.foods.every((f) => typeof f.times_logged === 'number' && Object.values(f.portions).every((g) => typeof g === 'number')), 'malformed saved data is skipped, not shown or added up: ' + r.text.slice(0, 120));
+  r = await call(T, 'search_foods', { query: 'ghost' });
+  ok(!r.err && !r.json.results.some((x) => x.name === 'Ghost'), 'a remembered food that is no longer in the tables is not offered');
+
+  // remembering is best effort: with the list unreadable the meal is still logged
+  const flaky = createHandler({ url: base, anonKey: 'anon', publicUrl: PUB, siteUrl: base + '/site/' }, async (u, i) => (decodeURIComponent(String(u)).includes('yc/myfoods') || String((i && i.body) || '').includes('yc/myfoods') ? new Response('{}', { status: 500 }) : fetch(u, i)));
+  const askF = async (name, args) => (await (await flaky(new Request(PUB, { method: 'POST', headers: { authorization: 'Bearer ' + T }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) }))).json()).result;
+  const before = Object.keys(rowA('yc/food/2026-10-26') ? rowA('yc/food/2026-10-26').data.entries : {}).length;
+  const lf = await askF('log_meals', { date: '2026-10-26', meals: [{ name: 'While the list is down', items: [{ food: egg.food, grams: 50, said: 'ei' }] }] });
+  ok(!lf.isError && Object.keys(rowA('yc/food/2026-10-26').data.entries).length === before + 1, 'the meal is logged although the remembered foods can neither be read nor written: ' + JSON.stringify(lf).slice(0, 120));
+  ok(!(await askF('search_foods', { query: 'kaas' })).isError, 'and search still works');
+
+  // at most 500 remembered foods
+  for (let i = 0; i < 500; i += 1) seed(B, 'yc/myfoods/f' + i, { food: 'nevo:' + (1000 + i), name: 'F' + i, n: 1, last: 1 });
+  const cheese2 = (await call(TB, 'search_foods', { query: 'kaas goudse 48+', limit: 1 })).json.results[0];
+  r = await call(TB, 'log_meals', { meals: [{ items: [{ food: cheese2.food, grams: 20 }] }] });
+  ok(!r.err && mineRows(B).length === 500, 'a full list stays at 500 and the meal is still logged: ' + mineRows(B).length);
+
+  // two meals at once that remember the same new food
+  const ham = await first('rookvlees');
+  const rs = await Promise.all([call(T, 'log_meals', { date: '2026-10-27', meals: [{ items: [{ food: ham.food, grams: 30, said: 'ham' }] }] }), call(T, 'log_meals', { date: '2026-10-27', meals: [{ items: [{ food: ham.food, grams: 40, said: 'ham' }] }] })]);
+  ok(rs.every((x) => !x.err) && mineRows().filter((x) => x.data.food === ham.food).length === 1 && Object.keys(rowA('yc/food/2026-10-27').data.entries).length === 2, 'two calls at once remember the food once and keep both meals');
+
+  // the database rule lets a connected app write these places
+  const sql = readFileSync(new URL('../../connector.sql', import.meta.url), 'utf8');
+  ok((sql.match(/yc\/myfoods\/%/g) || []).length === 3 && (sql.match(/yc\/meals\/%/g) || []).length === 3 && !/for delete[\s\S]{0,80}yc\/(food|meals|myfoods)/.test(sql), 'connector.sql allows insert and update on both, and still no deletes');
 }
 
 // ---- database errors surface as tool errors, not crashes
