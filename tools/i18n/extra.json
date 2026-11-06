@@ -1566,5 +1566,75 @@
   "de": "Ein neuer Rekord knallt jetzt auf den Satz, und deine Rekorde gleiten auf dem Abschlussbildschirm herein.",
   "fr": "Un nouveau record personnel s’abat maintenant sur la série, et tes records glissent sur l’écran de fin.",
   "it": "Un nuovo record personale ora si abbatte sulla serie e i tuoi record scivolano nella schermata finale."
+ },
+ "Your meals": {
+  "nl": "Jouw maaltijden",
+  "es": "Tus comidas",
+  "de": "Deine Mahlzeiten",
+  "fr": "Tes repas",
+  "it": "I tuoi pasti"
+ },
+ "More meals": {
+  "nl": "Meer maaltijden",
+  "es": "Más comidas",
+  "de": "Weitere Mahlzeiten",
+  "fr": "Plus de repas",
+  "it": "Altri pasti"
+ },
+ "Save as a meal": {
+  "nl": "Bewaar als maaltijd",
+  "es": "Guardar como comida",
+  "de": "Als Mahlzeit speichern",
+  "fr": "Enregistrer comme repas",
+  "it": "Salva come pasto"
+ },
+ "Name this meal": {
+  "nl": "Geef deze maaltijd een naam",
+  "es": "Ponle nombre a esta comida",
+  "de": "Gib dieser Mahlzeit einen Namen",
+  "fr": "Donne un nom à ce repas",
+  "it": "Dai un nome a questo pasto"
+ },
+ "Saved as a meal.": {
+  "nl": "Bewaard als maaltijd.",
+  "es": "Guardada como comida.",
+  "de": "Als Mahlzeit gespeichert.",
+  "fr": "Enregistré comme repas.",
+  "it": "Salvato come pasto."
+ },
+ "Enter an amount above 0, up to 5000.": {
+  "nl": "Vul een hoeveelheid in boven 0, tot 5000.",
+  "es": "Escribe una cantidad mayor que 0, hasta 5000.",
+  "de": "Gib eine Menge über 0 ein, bis 5000.",
+  "fr": "Saisis une quantité au-dessus de 0, jusqu’à 5000.",
+  "it": "Inserisci una quantità sopra 0, fino a 5000."
+ },
+ "You have 200 saved meals. Remove one first.": {
+  "nl": "Je hebt 200 bewaarde maaltijden. Verwijder er eerst een.",
+  "es": "Tienes 200 comidas guardadas. Quita una primero.",
+  "de": "Du hast 200 gespeicherte Mahlzeiten. Entferne zuerst eine.",
+  "fr": "Tu as 200 repas enregistrés. Retires-en un d’abord.",
+  "it": "Hai 200 pasti salvati. Rimuovine prima uno."
+ },
+ "Save a meal you eat often and log it again with one tap. In your day, open a meal with several foods and tap Save as a meal.": {
+  "nl": "Bewaar een maaltijd die je vaak eet en log hem weer met één tik. Open in je dag een maaltijd met meerdere voedingsmiddelen en tik op Bewaar als maaltijd.",
+  "es": "Guarda una comida que haces a menudo y regístrala de nuevo con un toque. En tu día, abre una comida con varios alimentos y toca Guardar como comida.",
+  "de": "Speichere eine Mahlzeit, die du oft isst, und logge sie wieder mit einem Tipp. Öffne in deinem Tag eine Mahlzeit mit mehreren Lebensmitteln und tippe auf Als Mahlzeit speichern.",
+  "fr": "Enregistre un repas que tu manges souvent et ajoute-le à nouveau d’une seule touche. Dans ta journée, ouvre un repas avec plusieurs aliments et touche Enregistrer comme repas.",
+  "it": "Salva un pasto che mangi spesso e registralo di nuovo con un tocco. Nella tua giornata, apri un pasto con più alimenti e tocca Salva come pasto."
+ },
+ "Tap the amount of a food to change it. The numbers follow.": {
+  "nl": "Tik op de hoeveelheid van een voedingsmiddel om die te veranderen. De cijfers volgen mee.",
+  "es": "Toca la cantidad de un alimento para cambiarla. Los números se ajustan.",
+  "de": "Tippe auf die Menge eines Lebensmittels, um sie zu ändern. Die Zahlen passen sich an.",
+  "fr": "Touche la quantité d’un aliment pour la changer. Les chiffres suivent.",
+  "it": "Tocca la quantità di un alimento per cambiarla. I numeri si aggiornano."
+ },
+ "Claude can save your meals and portion sizes too, and remembers which food you mean: your cheese, your bread.": {
+  "nl": "Claude kan ook je maaltijden en portiegroottes bewaren en onthoudt welk voedingsmiddel je bedoelt: jouw kaas, jouw brood.",
+  "es": "Claude también puede guardar tus comidas y tamaños de porción, y recuerda a qué alimento te refieres: tu queso, tu pan.",
+  "de": "Claude kann auch deine Mahlzeiten und Portionsgrößen speichern und merkt sich, welches Lebensmittel du meinst: deinen Käse, dein Brot.",
+  "fr": "Claude peut aussi enregistrer tes repas et tes tailles de portion, et retient de quel aliment tu parles : ton fromage, ton pain.",
+  "it": "Claude può salvare anche i tuoi pasti e le dimensioni delle porzioni, e ricorda a quale alimento ti riferisci: il tuo formaggio, il tuo pane."
  }
 }

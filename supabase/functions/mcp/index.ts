@@ -722,9 +722,9 @@ const TOOLS: Tool[] = [
       let id = same ? same.id : slug(name) || 'meal';
       if (!same) for (let n = 2; all.some((m) => m.id === id); n += 1) id = (slug(name) || 'meal') + '-' + n;
       const t = sumItems(items);
-      await db.put('yc/meals/' + id, { name, items, kcal: Math.round(t.kcal), p: round1(t.p), c: round1(t.c), f: round1(t.f), n: same ? same.n : 0, last: same ? same.last : 0 });
+      await db.put('yc/meals/' + id, { name, items, kcal: Math.round(t.kcal), p: round1(t.p), c: round1(t.c), f: round1(t.f), n: same ? same.n : 0, last: Date.now() });
       const root = await db.get('yc');
-      return { saved: savedOut({ id, name, items, n: same ? same.n : 0, last: 0 }, caloriesShown(root)), replaced: !!same };
+      return { saved: savedOut({ id, name, items, n: same ? same.n : 0, last: Date.now() }, caloriesShown(root)), replaced: !!same };
     },
   },
   {
