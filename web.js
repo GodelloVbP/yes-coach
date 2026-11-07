@@ -148,6 +148,10 @@
     $('#au-pass').autocomplete = mode === 'in' ? 'current-password' : 'new-password';
     $('#au-pw-hint').hidden = !(mode === 'up' || mode === 'newpass');
     $('#au-resend').hidden = true;
+    // a new mode starts with the password hidden again
+    $('#au-pass').type = 'password';
+    $('#au-show').setAttribute('aria-pressed', 'false');
+    $('#au-show').textContent = 'Show password';
     say('');
   };
   // signed out, people see Home first; the sign-in form opens from its buttons

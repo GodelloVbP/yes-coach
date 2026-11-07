@@ -482,6 +482,9 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok((await call(T, 'save_custom_food', { name: 'Too much 2', kcal_per_100: 100, protein_per_100: 60, carbs_per_100: 40, fat_per_100: 30 })).err, 'macros adding up to more than 100 g are refused');
   ok((await call(T, 'save_custom_food', { name: 'Hot', kcal_per_100: 1200, protein_per_100: 1, carbs_per_100: 1, fat_per_100: 1 })).err, 'an absurd calorie number is refused');
   ok((await call(T, 'save_custom_food', { name: '!!!', kcal_per_100: 10, protein_per_100: 1, carbs_per_100: 1, fat_per_100: 1 })).err, 'a name without letters is refused');
+  // a name with accents gets the same id the app gives it, so one food saved from both sides is one food
+  r = await call(T, 'save_custom_food', { name: 'Crème fraîche', kcal_per_100: 292, protein_per_100: 2.4, carbs_per_100: 2.9, fat_per_100: 30 });
+  ok(!r.err && r.json.saved.food === 'own:creme-fraiche' && rowA('yc/myfoods/own-creme-fraiche'), 'accents are folded in the food id: ' + r.text);
   // a product looked up on the internet by the person's AI: the page it used is kept with the food
   r = await call(T, 'save_custom_food', { name: 'Skyr vanille', kcal_per_100: 63, protein_per_100: 11, carbs_per_100: 4, fat_per_100: 0.2, source: 'https://www.example.nl/producten/skyr-vanille?x=1' });
   ok(!r.err && r.json.saved.source === 'https://www.example.nl/producten/skyr-vanille?x=1' && !r.json.check, 'a source page is kept and shown: ' + r.text);

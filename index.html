@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-z1A69zwlU2+U0OHxQkXsXIBccOX+hKxToCKxzw/1o1M=' 'sha256-KkDuLARGAF/zY4m8etgt2UO/npkc4FA0Wmn/wGIIdDs=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-z1A69zwlU2+U0OHxQkXsXIBccOX+hKxToCKxzw/1o1M=' 'sha256-qmtQdD6U0KkjnVGrktAT4dZrB6HPaAamO/ydDSLk2ss=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-07 19:16Z">
+<meta name="yc-build" content="2026-11-07 21:12Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -1994,6 +1994,21 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     try { await navigator.clipboard.writeText(text); return true; } catch (e) { /* fall back below */ }
     try { if (field) field.select(); return document.execCommand('copy'); } catch (e) { return false; }
   };
+  // Opens Claude with a request. A real link click (target _blank) is what home-screen web apps handle best; window.open is dropped by some of them.
+  // The request is also copied, for when the chat opens empty.
+  const openInClaude = async (prompt) => {
+    let opened = false;
+    try {
+      const a = document.createElement('a');
+      a.href = 'https://claude.ai/new?q=' + encodeURIComponent(prompt);
+      a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.style.display = 'none';
+      document.body.append(a); a.click(); a.remove();
+      opened = true;
+    } catch (e) { /* the copied request below still works */ }
+    const ok = await copyPlain(prompt);
+    showToast(ok ? (opened ? 'Opening Claude. The request is also copied: paste it if the chat is empty.' : 'The request is copied. Paste it in Claude.') : 'Opening Claude.', null);
+  };
   const paintHomeConn = async () => {
     const c = await connInfo();
     const b = $('#hm-claude');
@@ -2063,18 +2078,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         // Land on Train first: opening Claude can take the page out of sight, and the person must come back to the week, not to a blank page
         close();
         backToTrain();
-        // a real link click (target _blank) is what home-screen web apps handle best; window.open is dropped by some of them
-        let opened = false;
-        try {
-          const a = document.createElement('a');
-          a.href = 'https://claude.ai/new?q=' + encodeURIComponent(prompt);
-          a.target = '_blank'; a.rel = 'noopener noreferrer';
-          a.style.display = 'none';
-          document.body.append(a); a.click(); a.remove();
-          opened = true;
-        } catch (e) { /* the copied request below still works */ }
-        const ok = await copyPlain(prompt);
-        showToast(ok ? (opened ? 'Opening Claude. The request is also copied: paste it if the chat is empty.' : 'The request is copied. Paste it in Claude.') : 'Opening Claude.', null);
+        await openInClaude(prompt);
       },
       onKeep: close,
     });
@@ -5619,7 +5623,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const u = o.u === 'ml' ? 'ml' : 'g';
     return { src: 'own', ref: String(d.food).slice(4), name: d.name, alt: '', type: 'Your own', kcal: n0(o.kcal), p: n0(o.p), c: n0(o.c), f: n0(o.f), unit: u, sug: null, fib: null, w: wordsOf(d.name), wsyn: [], w2: [], drink: u === 'ml', u, disp: d.name, dispAlt: '', flags: [] };
   };
-  const ownFoodDoc = (ref) => Object.values(S.myfoods || {}).find((d) => d && typeof d === 'object' && !d.gone && d.food === 'own:' + ref && d.own && typeof d.own === 'object' && typeof d.name === 'string') || null;
+  const ownOk = (d, ref) => !!d && typeof d === 'object' && !d.gone && d.food === 'own:' + ref && !!d.own && typeof d.own === 'object' && typeof d.name === 'string';
+  const ownFoodDoc = (ref) => { const d = (S.myfoods || {})['own-' + ref]; return ownOk(d, ref) ? d : Object.values(S.myfoods || {}).find((x) => ownOk(x, ref)) || null; };
   const foodByKey = (src, ref, db = FDB) => { // one lookup, not a scan of the whole table
     if (src === 'own') { const d = ownFoodDoc(ref); return d ? ownItemOf(d) : null; }
     return (db && db.byKey.get(src + ':' + ref)) || null;
@@ -5772,7 +5777,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     msg.textContent = '';
     const id = 'own-' + slug;
     const old = S.myfoods[id] && !S.myfoods[id].gone ? S.myfoods[id] : null;
-    if (!old && Object.keys(S.myfoods || {}).length >= 500) { fail('The list of your foods is full. Forget one first.'); return; }
+    if (!old && Object.values(S.myfoods || {}).filter((x) => x && !x.gone).length >= 500) { fail('The list of your foods is full. Forget one first.'); return; }
     const doc = Object.assign({ aka: {}, n: 0, last: 0, portions: {} }, old || {}, { food: 'own:' + slug, name, own: { kcal: v.kcal, p: v.p, c: v.c, f: v.f, u } });
     if (old && old.source && ['kcal', 'p', 'c', 'f', 'u'].some((k) => (old.own || {})[k] !== doc.own[k])) delete doc.source; // new numbers, so the old source no longer covers them
     S.myfoods[id] = doc;
@@ -5843,15 +5848,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   $('#fd-own-claude').addEventListener('click', async () => {
     const prompt = 'Add a food to my Yes Coach! with my Yes Coach connector. I will tell you the product. Look up its calories, protein, carbs and fat per 100 g or per 100 ml on the maker\'s or a shop\'s page, tell me where you found them, and save it as my own food with that page as the source. If you cannot find the numbers, ask me for the ones on the package.';
-    try {
-      const a = document.createElement('a');
-      a.href = 'https://claude.ai/new?q=' + encodeURIComponent(prompt);
-      a.target = '_blank'; a.rel = 'noopener noreferrer';
-      a.style.display = 'none';
-      document.body.append(a); a.click(); a.remove();
-    } catch (e) { /* the copied request still works */ }
-    const ok = await copyPlain(prompt);
-    showToast(ok ? 'Opening Claude. The request is also copied: paste it if the chat is empty.' : 'Opening Claude.', null);
+    await openInClaude(prompt);
   });
   const fillFromPick = () => {
     const it = FD.pick.it;
@@ -6926,12 +6923,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       weekdays: DAY_PATTERNS[n],
       days: days.map(([name, kind, focus, ids]) => {
         const used = new Set();
+        const swapped = new Set(); // history lifts already taken by an earlier pick of this day
         const items = ids.map((id) => (p.experience === 'new' && STARTER_NEW[id] && fitsPlace(LIB_BY_ID.get(STARTER_NEW[id]), where) ? STARTER_NEW[id] : id)).map((id) => {
           // a lift from their history for the same muscles takes the place of the picked one, when they trained it often
           const l = LIB_BY_ID.get(id);
           if (hist && !stats.has(id)) {
-            const mine = [...stats.entries()].filter(([x, o]) => o.dates.size >= 3 && !used.has(x) && !ids.includes(x) && LIB_BY_ID.get(x).group === l.group && fitsPlace(LIB_BY_ID.get(x), where)).sort((a, b) => b[1].dates.size - a[1].dates.size)[0];
-            if (mine) return mine[0];
+            const mine = [...stats.entries()].filter(([x, o]) => o.dates.size >= 3 && !swapped.has(x) && !ids.includes(x) && LIB_BY_ID.get(x).group === l.group && fitsPlace(LIB_BY_ID.get(x), where)).sort((a, b) => b[1].dates.size - a[1].dates.size)[0];
+            if (mine) { swapped.add(mine[0]); return mine[0]; }
           }
           return id;
         }).filter((id) => { if (used.has(id)) return false; used.add(id); return true; }).slice(0, len).map((id, k) => {
@@ -7096,8 +7094,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (W.src !== 'none' && W.src !== 'backup' && W.file && !W.rows && !(window.YC_WEB && W.src === 'other')) { wizStep('busy', 'Reading your ' + optName(WIZ_SOURCES, W.src) + ' export…'); W.rows = await parseExport(W.file, W.src); }
   };
   const buildLocal = async () => {
+    W.failed = null;
     try {
       await readRows();
+      // a file that cannot be read here (a file from another app on the web needs an AI) is not silently dropped
+      if (W.imp && W.file && !W.rows && W.src !== 'none' && W.src !== 'backup') { wizStep('error', 'This file needs an AI to read it. Build a plan with your AI, or use the copy-and-paste way in Settings.'); return; }
       if (W.rows && W.imp) {
         const ds = [...new Set(W.rows.map((r) => r.date))].sort();
         const last = ds[ds.length - 1];
@@ -7117,6 +7118,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   // only the history: for someone who keeps their plan, or wants to build one later
   const importOnly = async () => {
+    W.failed = null;
     try {
       await readRows();
       if (!W.rows) { wizStep('error', 'This file needs an AI to read it. Build a plan with your AI, or use the copy-and-paste way in Settings.'); return; }
@@ -7128,10 +7130,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       showToast('Imported ' + plural(n, 'session') + '.', null);
     } catch (e) {
       if (e && e.code === 'bad_file') W.rows = null;
+      W.failed = 'import';
       wizStep('error', (e && e.code) ? coachError(e) : 'Saving stopped part way (' + ((e && e.message) || 'unknown error') + '). Check your connection and try again; what was saved is not saved twice.');
     }
   };
   const buildPlan = async () => {
+    W.failed = null;
     W.ctl = new AbortController();
     try {
       if (W.src !== 'none' && W.file && !W.rows && !(window.YC_WEB && W.src === 'other')) { wizStep('busy', 'Reading your ' + optName(WIZ_SOURCES, W.src) + ' export…'); W.rows = await parseExport(W.file, W.src); }
@@ -7350,7 +7354,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       box.append(h('p', 'wz-msg', W.msg));
       const fr = h('div', 'foot-row');
       fr.append(btn('skew pop', 'Try again'), plainBtn('textbtn', 'Back', null, () => wizStep('start')), plainBtn('textbtn', 'Use the copy-and-paste way', null, () => { if (window.YC_WEB && W.failed !== 'save') { wizStep('manual'); return; } imp.src = W.src; imp.file = W.file; closeWizard(); openSettingFor($('#imp'), 'start'); }));
-      fr.firstChild.addEventListener('click', () => (W.failed === 'save' ? saveAndClose() : W.adjust || W.chat.length ? buildPlan() : buildLocal()));
+      fr.firstChild.addEventListener('click', () => (W.failed === 'save' ? saveAndClose() : W.failed === 'import' ? importOnly() : W.adjust || W.chat.length ? buildPlan() : buildLocal()));
       box.append(fr);
       return;
     }
@@ -8598,7 +8602,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     });
   };
   const queueTone = () => { if (!toneQueued) { toneQueued = true; requestAnimationFrame(toneBlocks); } };
-  new MutationObserver(queueTone).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
+  // a timer ticking or a row being typed into changes the page all the time; only blocks coming, going, shown or hidden change the tones
+  const blkNode = (n) => n.nodeType === 1 && (n.matches('.blk, .view') || !!n.querySelector('.blk'));
+  new MutationObserver((muts) => { if (muts.some((m) => m.type === 'attributes' || [...m.addedNodes, ...m.removedNodes].some(blkNode))) queueTone(); }).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
 
   // Settings: every section folds; all start closed, so the list of sections is the first thing you see
   function foldSettings() {

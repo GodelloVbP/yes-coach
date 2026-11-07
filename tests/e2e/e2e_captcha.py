@@ -102,6 +102,13 @@ with sync_playwright() as pw:
     ok(not log['errors'], 'no page or CSP errors on sign-in: %s' % log['errors'])
     ok(not log['other'], 'nothing else left the site: %s' % log['other'])
     br.close()
+    # the show-password toggle does not carry over to the next form
+    br, pg, log = make(pw); pg.goto(BASE); pg.wait_for_selector('#hm-login', state='visible')
+    pg.click('#hm-login'); pg.wait_for_selector('#au-show', state='visible'); pg.click('#au-show')
+    ok(pg.get_attribute('#au-pass', 'type') == 'text' and pg.get_attribute('#au-show', 'aria-pressed') == 'true' and 'Hide' in pg.inner_text('#au-show'), 'Show password shows it')
+    pg.click('#au-alt')
+    ok(pg.get_attribute('#au-pass', 'type') == 'password' and pg.get_attribute('#au-show', 'aria-pressed') == 'false' and 'Show' in pg.inner_text('#au-show'), 'switching to the other form hides the password again and resets the button')
+    br.close()
     br, pg, log = make(pw); pg.goto(BASE); pg.wait_for_selector('#hm-login', state='visible')
     pg.click('#hm-chip'); pg.click('#hm-lang button[lang=de]'); pg.wait_for_load_state('load'); pg.wait_for_selector('#hm-login', state='visible')
     ok(pg.evaluate("localStorage.getItem('yc-lang')") == 'de' and pg.evaluate('document.documentElement.lang') == 'de', 'Home picker switches the language')
