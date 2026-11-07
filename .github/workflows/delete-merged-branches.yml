@@ -1,0 +1,71 @@
+# One run, then this file is removed again: deletes remote branches whose pull requests are already merged.
+name: Delete merged branches
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete the listed branches
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for b in \
+            chore/review-simplify-hygiene \
+            chore/search-and-caches \
+            chore/test-helpers \
+            chore/tests-and-i18n-tools \
+            feat/app-meals \
+            feat/calm-search \
+            feat/dictate-meals \
+            feat/gentle-numbers \
+            feat/group-similar-foods \
+            feat/my-foods \
+            feat/quick-food \
+            feat/translate-exercises \
+            feat/whats-new \
+            feature/connect-docs \
+            feature/connector \
+            feature/connector-descriptions \
+            feature/connector-titles \
+            feature/contact-email \
+            feature/day-click \
+            feature/feedback-tab \
+            feature/finish \
+            feature/home-language \
+            feature/hover-popup-theme \
+            feature/landing \
+            feature/languages \
+            feature/logging-desktop \
+            feature/logging-focus \
+            feature/nav-and-more \
+            feature/owner-card-layout \
+            feature/plan-home-connect \
+            feature/plate-calc \
+            feature/popup-layout \
+            feature/press-hover \
+            feature/progress-layout \
+            feature/progression \
+            feature/public-home \
+            feature/security-hardening \
+            feature/signin-count \
+            feature/supersets \
+            feature/tickets \
+            feature/tickets-batch1 \
+            feature/train-week \
+            feature/turnstile \
+            feature/warmup \
+            fix/advisor \
+            fix/e2e-consent-path \
+            fix/focus-scroll-between-exercises \
+            fix/pr-animations \
+            fix/pranim-flake \
+            fix/rest-bar-back-to-exercise \
+            fix/ticket-1 \
+            fix/translate-units \
+            chore/delete-merged-branches \
+            ; do
+            case "$b" in main|claude/eloquent-darwin-26j1kf|paste-coach-reply) echo "skip $b"; continue;; esac
+            if gh api -X DELETE "repos/${{ github.repository }}/git/refs/heads/$b" >/dev/null 2>&1; then echo "deleted $b"; else echo "not found $b"; fi
+          done
