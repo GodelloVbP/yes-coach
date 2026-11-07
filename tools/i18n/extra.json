@@ -3477,5 +3477,33 @@
   "de": "Unter Mehr teilt sich jede Gruppe von Einstellungen einen Farbton.",
   "fr": "Dans Plus, chaque groupe de réglages partage une teinte.",
   "it": "In Altro, ogni gruppo di impostazioni condivide una tinta."
+ },
+ "Source: ": {
+  "nl": "Bron: ",
+  "es": "Fuente: ",
+  "de": "Quelle: ",
+  "fr": "Source : ",
+  "it": "Fonte: "
+ },
+ "Add a product by name": {
+  "nl": "Een product toevoegen met de naam",
+  "es": "Añade un producto por su nombre",
+  "de": "Ein Produkt über den Namen hinzufügen",
+  "fr": "Ajouter un produit par son nom",
+  "it": "Aggiungi un prodotto dal nome"
+ },
+ "Tell Claude a product and it can look up the numbers on the internet and save it as your own food. The page it used is shown under the food.": {
+  "nl": "Noem Claude een product en het kan de waarden op internet opzoeken en het opslaan als je eigen voedingsmiddel. De pagina die het gebruikte staat onder het product.",
+  "es": "Dile a Claude un producto y puede buscar los valores en internet y guardarlo como tu propia comida. La página que usó aparece debajo de la comida.",
+  "de": "Nenne Claude ein Produkt, und es kann die Werte im Internet nachschlagen und es als dein eigenes Lebensmittel speichern. Die verwendete Seite steht unter dem Lebensmittel.",
+  "fr": "Dis un produit à Claude et il peut chercher les valeurs sur internet et l’enregistrer comme ton propre aliment. La page utilisée s’affiche sous l’aliment.",
+  "it": "Di’ a Claude un prodotto e può cercare i valori su internet e salvarlo come tuo alimento. La pagina usata compare sotto l’alimento."
+ },
+ "Calories that do not fit the protein, carbs and fat get flagged, which catches a per-serving number slipped in for a per-100 g one.": {
+  "nl": "Calorieën die niet bij de eiwitten, koolhydraten en vetten passen worden gemarkeerd, zodat een waarde per portie in plaats van per 100 g opvalt.",
+  "es": "Las calorías que no encajan con las proteínas, carbohidratos y grasas se marcan, lo que detecta un valor por ración en lugar de por 100 g.",
+  "de": "Kalorien, die nicht zu Eiweiß, Kohlenhydraten und Fett passen, werden markiert, so fällt ein Wert pro Portion statt pro 100 g auf.",
+  "fr": "Les calories qui ne collent pas aux protéines, glucides et lipides sont signalées, ce qui repère une valeur par portion à la place de celle pour 100 g.",
+  "it": "Le calorie che non tornano con proteine, carboidrati e grassi vengono segnalate, così si nota un valore per porzione al posto di quello per 100 g."
  }
 }

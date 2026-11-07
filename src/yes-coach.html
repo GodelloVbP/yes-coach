@@ -1831,6 +1831,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['8 Nov 2026', 'Add a product by name', ["Tell Claude a product and it can look up the numbers on the internet and save it as your own food. The page it used is shown under the food.", "Calories that do not fit the protein, carbs and fat get flagged, which catches a per-serving number slipped in for a per-100 g one."]],
     ['8 Nov 2026', "Easier to see where things start", ["Every part of a page now sits in its own block, and blocks next to each other take turns between a cool and a warm tint. On Train: today, your week, and the month ahead.", "In More, each group of settings shares a tint."]],
     ['8 Nov 2026', "A quicker start", ["New here? Three questions, one per screen, and your plan is ready: how often, where, and how long you have trained. A tap answers and moves on.", "Coming from another app? Import your history from the first screen; the plan takes your days a week from it.", "Calories are asked in Food, the first time you open it, instead of during setup.", "Leave setup half way, or go copy something to your AI, and it picks up where you were.", "Signing up: show your password while typing, and send the confirmation email again if it did not arrive."]],
     ['8 Nov 2026', "A first plan in seconds", ["Build my plan now makes your plan right away, in the app: full body for 2 or 3 days a week, upper and lower body for more, for the gym, home or bodyweight only.", "Your own AI is still there: open Change it with your AI under the plan.", "Coming from Strong, Hevy or FitNotes? Your history comes over without an AI, and the plan starts from your recent weights. Only import my history skips the plan."]],
@@ -5726,6 +5727,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const old = S.myfoods[id] && !S.myfoods[id].gone ? S.myfoods[id] : null;
     if (!old && Object.keys(S.myfoods || {}).length >= 500) { fail('The list of your foods is full. Forget one first.'); return; }
     const doc = Object.assign({ aka: {}, n: 0, last: 0, portions: {} }, old || {}, { food: 'own:' + slug, name, own: { kcal: v.kcal, p: v.p, c: v.c, f: v.f, u } });
+    if (old && old.source && ['kcal', 'p', 'c', 'f', 'u'].some((k) => (old.own || {})[k] !== doc.own[k])) delete doc.source; // new numbers, so the old source no longer covers them
     S.myfoods[id] = doc;
     S.rootRef.collection('myfoods').doc(id).set(doc).catch(() => showToast('The food was not saved. Check your connection.', null));
     FD.customRef = null;
@@ -5748,6 +5750,23 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     });
   };
   $('#fd-own-new').addEventListener('click', () => openCustom());
+  // where a food's numbers came from: a web address becomes a link to that page, anything else stays plain text
+  const sourceOf = (v) => {
+    const t = typeof v === 'string' ? v.trim() : '';
+    if (!t) return null;
+    const box = h('span', 'note fd-source');
+    box.append('Source: ');
+    let u = null;
+    if (/^https?:\/\//i.test(t)) { try { u = new URL(t); } catch (e) { u = null; } }
+    if (u && (u.protocol === 'https:' || u.protocol === 'http:')) {
+      const a = h('a', 'link', u.hostname.replace(/^www\./, ''));
+      a.href = u.href;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      box.append(a);
+    } else box.append(t.slice(0, 120));
+    return box;
+  };
   const ownFoodsList = () => Object.values(S.myfoods || {}).filter((d) => d && typeof d === 'object' && !d.gone && typeof d.food === 'string' && d.food.startsWith('own:') && d.own && typeof d.own === 'object' && typeof d.name === 'string' && d.name)
     .sort((a, b) => (a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1));
   const paintOwnFoods = () => {
@@ -5761,6 +5780,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const row = h('div', 'fd-own-row');
       const info = h('div', 'fd-own-info');
       info.append(h('b', '', d.name), h('span', 'note', per100(it)));
+      const src = sourceOf(d.source);
+      if (src) info.append(src);
       const acts = h('div', 'fd-own-acts');
       const log = btn('skew small', 'Log it', 'Log ' + d.name);
       log.addEventListener('click', () => { pickFood({ it, label: d.name, full: d.name }); $('#fd-form').scrollIntoView({ block: 'center', behavior: 'smooth' }); });
@@ -5774,7 +5795,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     connInfo().then((c) => { $('#fd-own-claude').hidden = !(c && c.apps && c.apps.length); }).catch(() => {});
   };
   $('#fd-own-claude').addEventListener('click', async () => {
-    const prompt = 'Add a food to my Yes Coach! with my Yes Coach connector. Ask me for the name, whether it is a food or a drink, and the calories, protein, carbs and fat per 100 g or per 100 ml from the package. Then save it as my own food.';
+    const prompt = 'Add a food to my Yes Coach! with my Yes Coach connector. I will tell you the product. Look up its calories, protein, carbs and fat per 100 g or per 100 ml on the maker\'s or a shop\'s page, tell me where you found them, and save it as my own food with that page as the source. If you cannot find the numbers, ask me for the ones on the package.';
     try {
       const a = document.createElement('a');
       a.href = 'https://claude.ai/new?q=' + encodeURIComponent(prompt);

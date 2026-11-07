@@ -219,6 +219,30 @@ try:
             check('the shortcut fills in the name', page.input_value('#fd-own-name') == 'grandmas soup')
         errs = session(pw, be, ALICE, s3, width=390); check('no page errors (own food)', not errs, errs)
 
+        # ---- 3a. a food Claude looked up shows where its numbers came from
+        be = Backend(); seed(be)
+        be.docs.append({'path': 'yc/myfoods/own-skyr', 'data': {'food': 'own:skyr', 'name': 'Skyr vanille', 'aka': {}, 'n': 0, 'last': 0, 'portions': {}, 'own': {'kcal': 63, 'p': 11, 'c': 4, 'f': 0.2, 'u': 'g'}, 'source': 'https://www.example.nl/producten/skyr'}})
+        be.docs.append({'path': 'yc/myfoods/own-pasta', 'data': {'food': 'own:pasta', 'name': 'Pasta sauce', 'aka': {}, 'n': 0, 'last': 0, 'portions': {}, 'own': {'kcal': 60, 'p': 1.5, 'c': 9, 'f': 2, 'u': 'g'}, 'source': 'javascript:alert(1)'}})
+        def s3a(page):
+            page.click('#tab-food'); page.wait_for_selector('#fd-own-list .fd-own-row', timeout=8000)
+            row = page.locator('#fd-own-list .fd-own-row', has_text='Skyr vanille')
+            a = row.locator('a')
+            check('the source is a link to the page', a.count() == 1 and a.get_attribute('href') == 'https://www.example.nl/producten/skyr' and a.text_content() == 'example.nl', a.count())
+            check('it opens in a new tab without handing over the page', a.get_attribute('target') == '_blank' and 'noopener' in a.get_attribute('rel') and 'noreferrer' in a.get_attribute('rel'))
+            check('the row says Source', 'Source: example.nl' in row.text_content(), row.text_content())
+            odd = page.locator('#fd-own-list .fd-own-row', has_text='Pasta sauce')
+            check('a source that is not a web address is shown as text, never a link', odd.locator('a').count() == 0 and 'javascript:alert(1)' in odd.text_content(), odd.text_content())
+            row.get_by_text('Edit').click()
+            check('edit opens', until(lambda: page.input_value('#fd-own-name') == 'Skyr vanille'))
+            page.click('#fd-add'); page.wait_for_timeout(500)
+            check('saving with the same numbers keeps the source', (doc(be, 'yc/myfoods/own-skyr') or {}).get('source') == 'https://www.example.nl/producten/skyr', doc(be, 'yc/myfoods/own-skyr'))
+            page.click('#fd-cancel'); page.wait_for_timeout(300)
+            page.locator('#fd-own-list .fd-own-row', has_text='Skyr vanille').get_by_text('Edit').click()
+            until(lambda: page.input_value('#fd-own-name') == 'Skyr vanille')
+            page.fill('#fd-kcal', '70'); page.click('#fd-add')
+            check('new numbers typed by hand drop the old source', until(lambda: (doc(be, 'yc/myfoods/own-skyr') or {}).get('own', {}).get('kcal') == 70 and 'source' not in (doc(be, 'yc/myfoods/own-skyr') or {})), doc(be, 'yc/myfoods/own-skyr'))
+        errs = session(pw, be, ALICE, s3a, width=390); check('no page errors (source)', not errs, errs)
+
         # ---- 3b. with Claude connected, a food can be added by asking it
         be = Backend(); seed(be); be.grants = [{'client': {'id': 'c-claude', 'name': 'Claude', 'uri': 'https://claude.ai'}, 'scopes': [], 'granted_at': now()}]
         def s3b(page):
@@ -230,6 +254,7 @@ try:
             import urllib.parse
             q = urllib.parse.unquote(u)
             check('it opens Claude with a request that asks for the numbers per 100 g or ml', u.startswith('https://claude.ai/new?q=') and 'per 100 g or per 100 ml' in q and 'connector' in q, u)
+            check('the request lets Claude look the product up and name the page', 'Look up' in q and 'tell me where you found them' in q and 'source' in q and 'ask me for the ones on the package' in q, q)
         errs = session(pw, be, ALICE, s3b, width=390, home=True); check('no page errors (ask Claude)', not errs, errs)
 
         # ---- 5. the schedule: ticked weekdays are days you CAN train; sessions a week decides how many are used
