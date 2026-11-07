@@ -116,6 +116,8 @@ html { scroll-padding-top: calc(var(--stick-h, 56px) + 0.75rem); scrollbar-gutte
 .mainnav { position: fixed; z-index: 15; left: 0; right: 0; bottom: 0; display: flex; background: var(--paper); border-top: 2px solid var(--ink); padding-bottom: var(--nav-safe); }
 .nav-mark { display: none; }
 .mainnav .tab { position: relative; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: var(--nav-h); padding: 0 0.125rem; border: 0; font-size: 0.8125rem; letter-spacing: 0.05em; font-weight: 700; color: var(--ink-soft); isolation: isolate; }
+/* six entries share the bar: the labels shrink with the screen so the longest words (Fortschritt, Entraînement) still fit */
+@media (max-width: 63.99rem) { .mainnav .tab { font-size: clamp(0.625rem, 2.7vw, 0.8125rem); letter-spacing: 0.02em; } }
 .mainnav .tab svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 .mainnav .tab[aria-selected="true"], .mainnav .tab.in-more { color: var(--ink); }
 .mainnav .tab[aria-selected="true"]::after, .mainnav .tab.in-more::after { content: ''; position: absolute; top: -2px; left: 22%; right: 22%; height: 2px; background: var(--pop); transform: skewX(-14deg); }
@@ -1117,9 +1119,9 @@ body.fin-open { overflow: hidden; }
     <button class="tab" role="tab" type="button" id="tab-plan" data-view="plan" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Plan</span></button>
     <button class="tab" role="tab" type="button" id="tab-progress" data-view="progress" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg><span>Progress</span></button>
     <button class="tab" role="tab" type="button" id="tab-food" data-view="food" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v8M5 3v5a2 2 0 004 0V3M7 11v10M17 3c-2 2-3 5-3 8h3v10"/></svg><span>Food</span></button>
-    <button class="tab" role="tab" type="button" id="tab-settings" data-view="settings" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>More</span><i class="nav-dot" aria-hidden="true"></i></button>
+    <button class="tab" role="tab" type="button" id="tab-feedback" data-view="feedback" aria-selected="false" aria-label="Feedback and requests" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v12H9l-5 4z"/><path d="M12 7.5v5M9.5 10h5"/></svg><span>Request</span><i class="nav-dot" aria-hidden="true"></i></button>
+    <button class="tab" role="tab" type="button" id="tab-settings" data-view="settings" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>More</span></button>
     <button class="tab tab-sub" role="tab" type="button" id="tab-exercises" data-view="exercises" aria-selected="false">Exercises</button>
-    <button class="tab tab-sub" role="tab" type="button" id="tab-feedback" data-view="feedback" aria-selected="false" hidden>Feedback &amp; Requests</button>
   </nav>
 
 <main>
@@ -1812,7 +1814,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     S.view = v;
     $$('[data-view]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.view === v)));
     [$('#mark'), $('#mark2')].forEach((m) => { if (v === 'home') m.setAttribute('aria-current', 'page'); else m.removeAttribute('aria-current'); });
-    $('#tab-settings').classList.toggle('in-more', v === 'exercises' || v === 'feedback' || v === 'news');
+    $('#tab-settings').classList.toggle('in-more', v === 'exercises' || v === 'news');
     VIEWS.forEach((x) => { $('#v-' + x).hidden = x !== v; });
     const cur = $('[data-view][aria-selected="true"]');
     $('#menu-cur').textContent = cur ? cur.getAttribute('aria-label') || cur.textContent.trim() : '';
@@ -1831,6 +1833,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['8 Nov 2026', "Request is in the bar", ["Feedback and requests has its own tab at the bottom, next to More, instead of being hidden in More. A dot shows there when we have asked you something.", "The labels in the bottom bar get a little smaller on a phone so all six fit, in every language."]],
     ['8 Nov 2026', 'Add a product by name', ["Tell Claude a product and it can look up the numbers on the internet and save it as your own food. The page it used is shown under the food.", "Calories that do not fit the protein, carbs and fat get flagged, which catches a per-serving number slipped in for a per-100 g one."]],
     ['8 Nov 2026', "Easier to see where things start", ["Every part of a page now sits in its own block, and blocks next to each other take turns between a cool and a warm tint. On Train: today, your week, and the month ahead.", "In More, each group of settings shares a tint."]],
     ['8 Nov 2026', "A quicker start", ["New here? Three questions, one per screen, and your plan is ready: how often, where, and how long you have trained. A tap answers and moves on.", "Coming from another app? Import your history from the first screen; the plan takes your days a week from it.", "Calories are asked in Food, the first time you open it, instead of during setup.", "Leave setup half way, or go copy something to your AI, and it picks up where you were.", "Signing up: show your password while typing, and send the confirmation email again if it did not arrive."]],
