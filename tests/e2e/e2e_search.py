@@ -48,7 +48,7 @@ try:
                 page.fill('#fd-name', q)
                 until(lambda: vis(page, '#fd-hits') and page.locator('#fd-hits .fd-hit').count() > 0)
                 page.wait_for_timeout(150)
-            def names(): return [page.locator('#fd-hits .fd-hit b').nth(i).inner_text() for i in range(page.locator('#fd-hits .fd-hit').count())]
+            def names(): return [page.locator('#fd-hits .fd-hit b').nth(i).inner_text() for i in range(page.locator('#fd-hits .fd-hit b').count())]
 
             # ---- calm rows, and no synonym noise
             search('mosterd')
@@ -132,6 +132,38 @@ try:
             page.fill('#fd-name', 'mosterd'); until(lambda: page.locator('#fd-hits .fd-hit').count() > 0); page.wait_for_timeout(150)
             check('with calories on, a result shows them on its one line', 'kcal' in page.locator('#fd-hits .fd-hit').first.locator('.fd-mini').inner_text())
         errs = session(pw, be, ALICE, shown, width=390); check('no page errors (calories shown)', not errs, errs)
+        # ---- foods that come out the same are one result
+        be = Backend(); seed(be)
+        def alike(page):
+            page.click('#tab-food'); page.wait_for_selector('#fd-name', state='visible', timeout=8000)
+            def hits(q):
+                page.fill('#fd-name', q); until(lambda: page.locator('#fd-hits .fd-hit:not(.fd-new)').count() > 0)
+                page.wait_for_timeout(200)
+                return [(page.locator('#fd-hits .fd-hit').nth(i).get_attribute('class'), page.locator('#fd-hits .fd-hit').nth(i).inner_text().replace('\n', ' ')) for i in range(page.locator('#fd-hits .fd-hit').count())]
+            r = hits('appel')
+            check('apples that come out the same are one result with a count under it', r[0][1].startswith('Appel z schil gem') and 'fd-alike' in r[1][0] and re.fullmatch(r'\+\d+ almost the same', r[1][1]), r[:3])
+            n = int(re.search(r'\d+', r[1][1]).group())
+            before = page.locator('#fd-hits .fd-hit').count()
+            page.locator('#fd-hits .fd-alike').first.click()
+            r2 = [t for c, t in [(page.locator('#fd-hits .fd-hit').nth(i).get_attribute('class'), page.locator('#fd-hits .fd-hit').nth(i).inner_text()) for i in range(page.locator('#fd-hits .fd-hit').count())]]
+            check('tapping it lists the others in its place', page.locator('#fd-hits .fd-hit').count() == before - 1 + n and all(t.startswith('Appel') for t in r2[1:1 + n]), r2[:n + 2])
+            page.locator('#fd-hits .fd-hit').nth(1).click(); page.wait_for_selector('#fd-form', state='visible')
+            check('one of them can be picked like any food', page.inner_text('#fd-card-title').lower().startswith('appel'), page.inner_text('#fd-card-title'))
+            page.click('#fd-add'); page.wait_for_timeout(400)
+            e = [x for d in be.docs if d['path'].startswith('yc/food/') for x in d['data']['entries'].values() if x]
+            check('and is logged', len(e) == 1 and e[0]['name'].startswith('Appel'), e)
+            # not the same: raw and fried eggs differ in protein and stay apart; different cheeses are not squashed together
+            r = hits('ei')
+            check('eggs that differ stay as separate results', sum(1 for c, t in r if t.startswith('Ei kippen- gebakken')) == 1 and sum(1 for c, t in r if t.startswith('Ei kippen- rauw gem')) == 1, r)
+            r = hits('kaas')
+            check('different cheeses stay as separate results', [t for c, t in r][:5] and sum(1 for c, t in r if t.startswith('Kaas ')) >= 4, r)
+        errs = session(pw, be, ALICE, alike, width=390); check('no page errors (alike)', not errs, errs)
+        be = Backend(); seed(be)
+        def alike_nl(page):
+            page.click('#tab-food'); page.wait_for_selector('#fd-name', state='visible', timeout=8000)
+            page.fill('#fd-name', 'appel'); until(lambda: page.locator('#fd-hits .fd-alike').count() > 0)
+            check('the count is translated', re.fullmatch(r'\+\d+ bijna hetzelfde', page.locator('#fd-hits .fd-alike').first.inner_text().strip()), page.locator('#fd-hits .fd-alike').first.inner_text())
+        errs = session(pw, be, ALICE, alike_nl, width=390, lang='nl'); check('no page errors (alike nl)', not errs, errs)
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
