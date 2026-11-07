@@ -30,17 +30,11 @@ try:
             check('no horizontal overflow', page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
         errs = session(pw, be, ALICE, phone, width=390); check('no page errors', not errs, errs)
 
-        # notes about your body (start screen) grow with the text, so they never need a scroll bar
+        # the start screen asks with taps only: notes about your body moved to Settings, where they are used
         be = Backend(); be.docs.append({'path': 'yc', 'data': {'app': 'yes-coach', 'schema': 1}})
         def wizard(page):
-            page.wait_for_selector('#intro-notes', state='attached', timeout=8000)
-            page.click('details.wz-more > summary'); page.wait_for_selector('#intro-notes', state='visible')
-            n = page.locator('#intro-notes'); n.fill('Short note'); page.wait_for_timeout(150)
-            s1 = page.evaluate(GEOM, '#intro-notes')
-            n.fill(LONG); page.wait_for_timeout(250)
-            s2 = page.evaluate(GEOM, '#intro-notes')
-            check('a short note fits its box', s1['sh'] <= s1['ch'] + 1, s1)
-            check('a long note makes the box taller, nothing is cut off', s2['ch'] > s1['ch'] + 100 and s2['sh'] <= s2['ch'] + 1, (s1, s2))
+            page.wait_for_selector('#wz-go', state='visible', timeout=8000)
+            check('start screen: nothing to type', page.locator('#wiz textarea, #wiz input:not([type=file])').count() == 0)
         errs = session(pw, be, ALICE, wizard, width=390); check('no page errors (start screen)', not errs, errs)
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:

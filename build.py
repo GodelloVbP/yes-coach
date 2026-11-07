@@ -27,6 +27,8 @@ body:not(.signed-out) .hm-login, body.signed-out #hm-trainrow, body.signed-out #
 .au-form input:focus { outline: none; border-bottom-color: var(--ink); box-shadow: 0 1px 0 var(--ink); }
 #au-msg { min-height: 1.5em; }
 #au-msg.bad { color: var(--warn); font-weight: 600; }
+#au-msg.good { font-weight: 600; border-left: 4px solid var(--good); padding-left: 0.75rem; }
+.au-show { align-self: flex-start; font-size: var(--t1); min-height: 36px; }
 </style>
 '''
 auth = f'''<section class="auth in" id="auth" hidden aria-labelledby="au-h">
@@ -35,11 +37,11 @@ auth = f'''<section class="auth in" id="auth" hidden aria-labelledby="au-h">
   <p class="note">A free, ad-free workout tracker. Your account keeps your log and plan in sync between your devices.</p>
   <form id="au-form" class="au-form" novalidate>
     <label class="ed-f" id="au-email-f"><span class="lab">Email</span><input id="au-email" type="email" autocomplete="email" inputmode="email"></label>
-    <label class="ed-f" id="au-pass-f"><span class="lab">Password</span><input id="au-pass" type="password" autocomplete="current-password"></label>
+    <label class="ed-f" id="au-pass-f"><span class="lab">Password</span><input id="au-pass" type="password" autocomplete="current-password" aria-describedby="au-pw-hint"><span class="note" id="au-pw-hint" hidden>At least 8 characters.</span><button class="textbtn au-show" type="button" id="au-show" aria-pressed="false" aria-controls="au-pass">Show password</button></label>
     <div id="au-cap" translate="no"></div>
     <button class="skew pop big" type="submit" id="au-go"><span>Sign in</span></button>
     <p class="note" id="au-msg" aria-live="polite"></p>
-    <div class="foot-row"><button class="textbtn" type="button" id="au-back">Back to the home page</button></div>
+    <div class="foot-row"><button class="textbtn" type="button" id="au-resend" hidden>Send the email again</button><button class="textbtn" type="button" id="au-back">Back to the home page</button></div>
     <div class="foot-row"><button class="textbtn" type="button" id="au-alt"></button><button class="textbtn" type="button" id="au-forgot">Forgot password?</button></div>
   </form>
   <p class="note"><a class="link" href="privacy.html">Privacy</a></p>

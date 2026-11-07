@@ -663,7 +663,22 @@ body.typing .restbar { display: none; }
 .ed-f.wide { grid-column: 1 / -1; }
 #imp { scroll-margin-top: 4rem; }
 #wiz { display: flex; flex-direction: column; gap: 1rem; }
-.wz-top { display: flex; align-items: flex-start; gap: 1rem; }
+.wz-top { display: flex; align-items: center; gap: 1rem; }
+.wz-dots { flex: 1; display: flex; gap: 0.375rem; align-items: center; min-height: 44px; }
+.wz-dots span { width: 2rem; height: 4px; background: var(--line); transform: skewX(-14deg); }
+.wz-dots span.on { background: var(--pop); }
+.wz-qh { font-family: var(--f-head); font-size: var(--t4); line-height: 1.15; margin: 0.75rem 0 0.25rem; text-transform: uppercase; }
+.wz-opts { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0 1.25rem; }
+.wz-opts.wide { flex-direction: column; }
+.wz-opt { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 0.125rem; min-height: 56px; min-width: 56px; padding: 0.5rem 1rem; border: 2px solid var(--line); border-radius: 12px; background: var(--paper); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.wz-opts:not(.wide) .wz-opt { align-items: center; flex: 1 1 3rem; font-size: var(--t3); }
+.wz-opt b { font-weight: 700; font-size: var(--t3); }
+.wz-opt .wz-sub { color: var(--ink-soft); font-size: var(--t2); }
+.wz-opt[aria-checked="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); background: var(--faint); }
+.wz-opt:focus-visible { outline: 3px solid var(--pop); outline-offset: 2px; }
+.wz-implink { margin-top: 0.5rem; text-align: left; }
+.fd-askcal { border: 2px solid var(--line); border-radius: 12px; padding: 0.75rem 1rem; margin-block: 0.75rem; }
+.fd-askcal .note { margin: 0.25rem 0 0.5rem; }
 .wz-top p { flex: 1; }
 .wz-skip { flex: none; margin-top: -0.6rem; }
 .wz-q { display: flex; flex-direction: column; gap: 0.25rem; }
@@ -1111,8 +1126,8 @@ body.fin-open { overflow: hidden; }
         <h2 class="hm-h" id="h-home"><span>Log your sets.</span><span>Plan your week.</span><span>See your progress.</span></h2>
         <p class="hm-tag">Free, no ads, on every device. It suggests your next weight, and your own AI can coach you.</p>
         <div class="foot-row" id="hm-trainrow"><button class="skew pop big" type="button" id="hm-train"><span>Today's training</span></button></div>
-        <div class="foot-row hm-login"><button class="skew pop big" type="button" id="hm-login"><span>Sign in</span></button></div>
-        <div class="foot-row hm-login"><button class="skew small" type="button" id="hm-signup"><span>Create an account</span></button></div>
+        <div class="foot-row hm-login"><button class="skew pop big" type="button" id="hm-signup"><span>Create an account</span></button></div>
+        <div class="foot-row hm-login"><button class="skew big" type="button" id="hm-login"><span>Sign in</span></button></div>
         <p class="hm-users" id="hm-users" hidden></p>
       </div>
       <ul class="hm-shots" aria-label="Screenshots">
@@ -1285,6 +1300,7 @@ body.fin-open { overflow: hidden; }
           <h2 id="fd-date" aria-live="polite"></h2>
           <button class="icon" type="button" id="fd-next" aria-label="Next day">&#8250;</button>
         </div>
+        <div class="fd-askcal" id="fd-askcal" hidden></div>
         <div class="fd-meter" id="fd-meter"></div>
         <div class="fd-sug" id="fd-sug-top" hidden></div>
         <div class="fd-quick" id="fd-quick">
@@ -1330,7 +1346,7 @@ body.fin-open { overflow: hidden; }
           <div class="p-head"><h2 id="h-fd-own">Your own foods</h2><span class="p-count" id="fd-own-count"></span></div>
           <p class="note">Something that is not in the food list, like a product from your shop or a home-made dish? Save its numbers once and search finds it from then on. The numbers are on the package, per 100 g or per 100 ml.</p>
           <div class="foot-row">
-            <button class="skew pop small" type="button" id="fd-own-new"><span>Create a food</span></button>
+            <button class="skew small" type="button" id="fd-own-new"><span>Create a food</span></button>
             <button class="skew small" type="button" id="fd-own-claude" hidden><span>Add with Claude</span></button>
           </div>
           <div class="fd-own-list" id="fd-own-list"></div>
@@ -1800,6 +1816,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['8 Nov 2026', "A quicker start", ["New here? Three questions, one per screen, and your plan is ready: how often, where, and how long you have trained. A tap answers and moves on.", "Coming from another app? Import your history from the first screen; the plan takes your days a week from it.", "Calories are asked in Food, the first time you open it, instead of during setup.", "Leave setup half way, or go copy something to your AI, and it picks up where you were.", "Signing up: show your password while typing, and send the confirmation email again if it did not arrive."]],
     ['8 Nov 2026', "A first plan in seconds", ["Build my plan now makes your plan right away, in the app: full body for 2 or 3 days a week, upper and lower body for more, for the gym, home or bodyweight only.", "Your own AI is still there: open Change it with your AI under the plan.", "Coming from Strong, Hevy or FitNotes? Your history comes over without an AI, and the plan starts from your recent weights. Only import my history skips the plan."]],
     ['8 Nov 2026', "A new plan starts today", ["A plan you build starts today, or tomorrow if you pick that, instead of on the next Monday.", "Sessions a week are saved with your plan. Changing About you no longer moves your week.", "On the web, Build my plan goes straight to the copy-and-paste step, and the request is shorter: only exercises for where you train, and the answer comes in your language."]],
     ['7 Nov 2026', 'Your schedule and your own foods', ["Plan: the days you tick are the days you can train. Set how many sessions a week you want, and they are spread over those days.", "Your own foods have their own place in Food: create one, edit it, or ask Claude to add it.", "The undo bar no longer covers the page on a tablet or computer.", "I ate something is gone.", "Switching tabs no longer slides or resizes the page."]],
@@ -2283,12 +2300,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     box.append(h('div', 'lab', 'Today · ' + isoDow(today()) + ' ' + dm(today())));
     const ts = templatesSorted();
     if (!ts.length) {
-      box.append(h('div', 't-head', 'No training days yet'), h('p', 'note', 'Build your first training day by hand, or let an AI coach build your plan from your details or your old app.'));
-      const mk = btn('skew pop big', 'Create a training day');
-      mk.addEventListener('click', () => goPlan('list'));
-      const ai = btn('skew big', 'Build my plan or import');
+      box.append(h('div', 't-head', 'No training days yet'), h('p', 'note', 'Three quick answers give you a plan. Or build a day by hand.'));
+      const ai = btn('skew pop big', 'Build my plan');
+      ai.id = 'btn-build';
       ai.addEventListener('click', () => openWizard());
-      box.append(mk, ai);
+      const mk = btn('skew big', 'Create a training day');
+      mk.addEventListener('click', () => goPlan('list'));
+      box.append(ai, mk);
       return;
     }
     const td = weekModel(mondayOf(today())).byDate[today()];
@@ -5361,6 +5379,23 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   $('#fd-yday').addEventListener('click', copyYesterday);
 
+  // asked once, on the first visit after setup: count calories too, or only protein, carbs and fat
+  const paintAskCal = () => {
+    const box = $('#fd-askcal');
+    const st = (S.root && S.root.settings) || {};
+    box.hidden = !(S.root && S.root.ask_cal && typeof st.show_calories !== 'boolean');
+    if (box.hidden) return;
+    box.replaceChildren();
+    const pick = (on) => { S.root.ask_cal = false; setShowCal(on); saveRoot({ ask_cal: false }).catch(() => {}); renderFood(); };
+    const yes = btn('skew small', 'Show calories');
+    yes.id = 'fd-cal-on';
+    yes.addEventListener('click', () => pick(true));
+    const no = plainBtn('textbtn', 'Not now', null, () => pick(false));
+    no.id = 'fd-cal-off';
+    const fr = h('div', 'foot-row');
+    fr.append(yes, no);
+    box.append(h('b', '', 'Count calories too?'), h('p', 'note', 'Protein, carbs and fat always count. Change it any time in Settings, Food.'), fr);
+  };
   const renderFood = () => {
     if (S.view !== 'food') return;
     const ready = S.ready && S.rootRef;
@@ -5372,6 +5407,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#fd-body').classList.toggle('fd-plain', !showCal());
     $('#fd-off').hidden = showCal();
     $('#fd-next').disabled = S.fday >= today();
+    paintAskCal();
     paintMeter();
     paintQuick();
     paintOwnFoods();
@@ -6888,7 +6924,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     }
     const prev = S.root && S.root.schedule && S.root.schedule.enabled && !W.before ? clone(S.root.schedule) : null;
     if (prev) W.before = prev;
-    await saveRoot(Object.assign({ schedule: { enabled: true, mode: 'rotation', days: [...plan.weekdays].sort((a, b) => WEEKDAYS.indexOf(a) - WEEKDAYS.indexOf(b)), rotation: ids, per_week: plan.weekdays.length }, profile: W.profile, export_ctx: exportCtx, intro_seen: true }, prev ? { schedule_before: prev } : {}));
+    await saveRoot(Object.assign({ schedule: { enabled: true, mode: 'rotation', days: [...plan.weekdays].sort((a, b) => WEEKDAYS.indexOf(a) - WEEKDAYS.indexOf(b)), rotation: ids, per_week: plan.weekdays.length }, profile: W.profile, intro_seen: true }, S.root && S.root.intro_seen ? {} : { ask_cal: true }, prev ? { schedule_before: prev } : {}));
     await saveHistory(rows, exIds, step);
   };
   // the imported sessions, one per date; dates that already have a session are left alone. Returns how many were written.
@@ -6924,7 +6960,29 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     prompt_too_large: 'Your history is too large to send in one go. Use the copy-and-paste way and attach the file instead.',
   };
   const coachError = (e) => COACH_ERRORS[e && e.code] || (['sampling_disabled', 'not_declared', 'session_expired'].includes(e && e.code) ? COACH_ERRORS.unavailable : 'The plan did not come back in a usable form. Try again.');
-  const newWizard = (preset = {}) => ({ adjust: !!preset.adjust, local: false, ask: '', start: 0, step: 'start', src: preset.src && WIZ_SOURCES.some(([k]) => k === preset.src) ? preset.src : 'none', file: preset.file || null, rows: null, plan: null, chat: [], msg: '', profile: Object.assign({}, profile()), notes: exportCtx });
+  // the setup's answers so far, on this device, so a reload or a switch to another app does not lose them
+  const DRAFT = 'yc-wiz-draft';
+  const saveDraft = () => {
+    if (!W || W.adjust) return;
+    const keep = !W.file && ['preview', 'manual'].includes(W.step);
+    const pr = {};
+    ['days_per_week', 'where', 'experience', 'session_length'].forEach((k) => { if (W.profile[k] != null) pr[k] = W.profile[k]; });
+    try { localStorage.setItem(DRAFT, JSON.stringify({ uid: S.uid || '', q: W.q, imp: W.imp, src: W.src, profile: pr, start: W.start, step: keep ? W.step : 'start', plan: keep ? W.plan : null, chat: keep ? W.chat : [], local: W.local })); } catch (e) { /* private mode: no draft */ }
+  };
+  const dropDraft = () => { try { localStorage.removeItem(DRAFT); } catch (e) { /* nothing stored */ } };
+  const withDraft = (w) => {
+    let d = null;
+    try { d = JSON.parse(localStorage.getItem(DRAFT) || 'null'); } catch (e) { d = null; }
+    if (!d || typeof d !== 'object' || (d.uid || '') !== (S.uid || '')) return w;
+    Object.assign(w.profile, d.profile || {});
+    w.q = Math.min(2, Math.max(0, Number(d.q) || 0));
+    w.imp = !!d.imp;
+    if (WIZ_SOURCES.some(([k]) => k === d.src)) w.src = d.src;
+    w.start = d.start === 1 ? 1 : 0;
+    if (d.plan && d.step !== 'start') { w.plan = d.plan; w.chat = Array.isArray(d.chat) ? d.chat : []; w.local = !!d.local; w.step = d.step; }
+    return w;
+  };
+  const newWizard = (preset = {}) => (preset.adjust || preset.src ? (x) => x : withDraft)({ adjust: !!preset.adjust, local: false, q: 0, imp: !!preset.src, ask: '', start: 0, step: 'start', src: preset.src && WIZ_SOURCES.some(([k]) => k === preset.src) ? preset.src : 'none', file: preset.file || null, rows: null, plan: null, chat: [], msg: '', profile: Object.assign({}, profile()), notes: exportCtx });
   const openWizard = (preset) => {
     W = newWizard(preset);
     S.wiz = true;
@@ -6932,7 +6990,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     renderTrain();
     window.scrollTo({ top: 0 });
   };
-  const closeWizard = () => { W = null; S.wiz = false; renderTrain(); window.scrollTo({ top: 0 }); };
+  const closeWizard = () => { W = null; S.wiz = false; dropDraft(); renderTrain(); window.scrollTo({ top: 0 }); };
   const chipRow = (label, opts, value, onPick) => {
     const box = h('div', 'wz-q');
     const row = h('div', 'sm-days');
@@ -6950,6 +7008,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const buildLocal = async () => {
     try {
       await readRows();
+      if (W.rows && W.imp) {
+        const ds = [...new Set(W.rows.map((r) => r.date))].sort();
+        const last = ds[ds.length - 1];
+        const per = Math.round(ds.filter((d) => d >= addDays(last, -56)).length / 8);
+        if (per >= 2 && per <= 6) W.profile.days_per_week = per;
+        if (!W.profile.experience) W.profile.experience = ds[0] <= addDays(last, -365) ? 'years' : 'some';
+      }
       W.plan = cleanPlan(localPlan(W.profile, W.rows));
       W.chat = [];
       W.local = true;
@@ -6968,7 +7033,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       wizStep('saving', 'Saving your history…');
       const exIds = await resolveHistory(W.rows, {});
       const n = await saveHistory(W.rows, exIds, (i, total) => { const m = $('#wiz .wz-msg'); if (m) m.textContent = 'Saving your history: ' + i + ' of ' + total + ' sessions…'; });
-      if (!(S.root && S.root.intro_seen)) await saveRoot({ profile: W.profile, export_ctx: exportCtx, intro_seen: true });
+      if (!(S.root && S.root.intro_seen)) await saveRoot({ profile: W.profile, intro_seen: true, ask_cal: true });
       closeWizard();
       showToast('Imported ' + plural(n, 'session') + '.', null);
     } catch (e) {
@@ -7025,9 +7090,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const readWizProfile = () => { if (W.f) { Object.assign(W.profile, readProfile(W.f)); W.notes = W.f.notes.value; exportCtx = W.notes; } };
   const renderWizard = (force) => {
     const box = $('#wiz');
-    if (!force && W.shown === W.step && box.childElementCount) return;
-    if (W.shown !== W.step) enter(box); // a new step slides in; a tap on the same step just repaints
-    W.shown = W.step;
+    const shown = W.step + ':' + (W.imp ? 'imp' : W.q);
+    if (!force && W.shown === shown && box.childElementCount) return;
+    if (W.shown !== shown) enter(box); // a new step or question slides in; a tap on the same one just repaints
+    W.shown = shown;
+    saveDraft();
     box.replaceChildren();
     $('#h-intro').textContent = { manual: 'Ask your AI', start: W.adjust ? 'Adjust my plan' : S.root && S.root.intro_seen ? 'Build my plan' : 'Welcome to Yes Coach!', busy: 'Building your plan', saving: 'Saving your plan', error: 'That did not work', preview: 'Your plan' }[W.step];
     const p = W.profile;
@@ -7054,64 +7121,96 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       return;
     }
     if (W.step === 'start') {
-      const skip = () => { readWizProfile(); if (!(S.root && S.root.intro_seen)) saveRoot({ profile: W.profile, export_ctx: exportCtx, intro_seen: true }); closeWizard(); };
+      const skip = () => { if (!(S.root && S.root.intro_seen)) saveRoot({ profile: W.profile, intro_seen: true, ask_cal: true }); closeWizard(); };
       const top = h('div', 'wz-top');
-      top.append(h('p', '', 'A few quick answers and you get a first plan. Coming from another app? Bring your history along.'), plainBtn('textbtn wz-skip', S.wiz ? 'Cancel' : 'Skip setup', null, skip));
+      const dots = h('div', 'wz-dots');
+      dots.setAttribute('aria-hidden', 'true');
+      if (!W.imp) [0, 1, 2].forEach((i) => dots.append(h('span', i <= W.q ? 'on' : '')));
+      top.append(dots, plainBtn('textbtn wz-skip', S.wiz ? 'Cancel' : 'I will build my own', null, skip));
       box.append(top);
-      const re = () => { readWizProfile(); renderWizard(true); };
-      box.append(chipRow('Days a week', [2, 3, 4, 5, 6].map((n) => [n, String(n)]), p.days_per_week, (v) => { p.days_per_week = v; re(); }));
-      box.append(chipRow('Session length', [['short', '45 min'], ['medium', '60 min'], ['long', '90 min']], p.session_length, (v) => { p.session_length = v; re(); }));
-      box.append(chipRow('Where you train', WHERE.slice(1), p.where, (v) => { p.where = v; re(); }));
-      box.append(chipRow('Your goal', GOALS.slice(1), p.goal, (v) => { p.goal = v; re(); }));
-      const calRow = chipRow('Calories in Food', [['off', 'Hidden'], ['on', 'Show them']], showCal() ? 'on' : 'off', (v) => { setShowCal(v === 'on'); re(); });
-      calRow.append(h('p', 'note', 'Food tracks what you eat with protein, carbs and fat, without calories. Want to count calories too? Pick Show them, or switch it on later in Settings, Food.'));
-      box.append(calRow);
-      box.append(chipRow('Coming from', WIZ_SOURCES, W.src, (v) => { W.src = v; W.rows = null; re(); }));
-      if (W.src !== 'none') {
-        const fileBox = h('div', 'wz-file');
-        fileBox.append(h('p', 'note', W.src === 'backup' ? 'The .json file from Settings, Full backup. Your log, plan, schedule and notes come back as they were.' : IMPORTS[W.src].how.replace(' Then choose the file here.', '').replace(/ Choose the file or paste below\.$/, '')));
-        const lab = h('label', 'skew filebtn');
-        const inp = h('input');
-        inp.type = 'file';
-        inp.id = 'wz-file';
-        inp.accept = W.src === 'backup' ? '.json,application/json' : '.csv,.txt,.tsv,.json,text/csv,text/plain,application/json';
-        lab.htmlFor = 'wz-file';
-        lab.append(h('span', '', W.file ? 'Choose another file' : 'Choose export file'), inp);
-        inp.addEventListener('change', () => {
-          const file = inp.files && inp.files[0];
-          if (!file) return;
-          const rd = new FileReader();
-          rd.onload = () => { W.file = { name: file.name, text: String(rd.result) }; W.rows = null; const k = readBackup(W.file.text) ? 'backup' : detectImport(W.file.text); if (k && WIZ_SOURCES.some(([s]) => s === k)) W.src = k; re(); };
-          rd.readAsText(file);
-        });
-        const row = h('div', 'ex-acts');
-        row.append(lab, h('span', 'note', W.file ? W.file.name + ' · ' + Math.max(1, Math.round(W.file.text.length / 1000)) + ' kB' : 'No file yet. You can also start fresh and import later in Settings.'));
-        fileBox.append(row);
-        box.append(fileBox);
+      if (W.imp) {
+        // coming from another app: the history answers the questions
+        box.append(h('h3', 'wz-qh', 'Bring your history'));
+        if (W.src === 'none') W.src = '';
+        box.append(chipRow('Coming from', WIZ_SOURCES.filter(([k]) => k !== 'none'), W.src, (v) => { W.src = v; W.rows = null; renderWizard(true); }));
+        if (W.src) {
+          const fileBox = h('div', 'wz-file');
+          fileBox.append(h('p', 'note', W.src === 'backup' ? 'The .json file from Settings, Full backup. Your log, plan, schedule and notes come back as they were.' : IMPORTS[W.src].how.replace(' Then choose the file here.', '').replace(/ Choose the file or paste below\.$/, '')));
+          const lab = h('label', 'skew filebtn');
+          const inp = h('input');
+          inp.type = 'file';
+          inp.id = 'wz-file';
+          inp.accept = W.src === 'backup' ? '.json,application/json' : '.csv,.txt,.tsv,.json,text/csv,text/plain,application/json';
+          lab.htmlFor = 'wz-file';
+          lab.append(h('span', '', W.file ? 'Choose another file' : 'Choose export file'), inp);
+          inp.addEventListener('change', () => {
+            const file = inp.files && inp.files[0];
+            if (!file) return;
+            const rd = new FileReader();
+            rd.onload = () => { W.file = { name: file.name, text: String(rd.result) }; W.rows = null; const k = readBackup(W.file.text) ? 'backup' : detectImport(W.file.text); if (k && WIZ_SOURCES.some(([x]) => x === k)) W.src = k; renderWizard(true); };
+            rd.readAsText(file);
+          });
+          const row = h('div', 'ex-acts');
+          row.append(lab, h('span', 'note', W.file ? W.file.name + ' · ' + Math.max(1, Math.round(W.file.text.length / 1000)) + ' kB' : 'No file yet.'));
+          fileBox.append(row);
+          box.append(fileBox);
+        }
+        const go = btn('skew pop big', W.src === 'backup' ? 'Restore my data' : 'Import and build my plan');
+        go.id = 'wz-go';
+        const missing = !W.src || !W.file;
+        go.disabled = missing;
+        go.addEventListener('click', () => { if (W.src === 'backup') restoreFromWizard(); else buildLocal(); });
+        const fr = h('div', 'foot-row');
+        fr.append(go);
+        if (W.src && W.src !== 'backup' && W.file && !(window.YC_WEB && W.src === 'other')) {
+          const only = plainBtn('textbtn', 'Only import my history', null, importOnly);
+          only.id = 'wz-history';
+          fr.append(only);
+        }
+        fr.append(plainBtn('textbtn', 'Back', null, () => { W.imp = false; if (!W.src) W.src = 'none'; W.file = null; W.rows = null; renderWizard(true); }));
+        if (missing) box.append(h('p', 'why', W.src ? 'Choose your export file first.' : 'Pick the app you come from.'));
+        box.append(fr);
+        return;
       }
-      const more = h('details', 'wz-more');
-      more.append(h('summary', 'lab', 'More about you (optional)'));
-      const fields = h('div', 'ed-fields');
-      more.append(fields);
-      box.append(more);
-      W.f = profileFields(fields, 'intro', true, ['days_per_week', 'session_length', 'where', 'goal'], p, W.notes);
-      box.append(h('p', 'privacy', 'Your answers and history stay in your own account. Yes Coach makes the plan straight away; your own AI can change it after.'));
-      const go = btn('skew pop big', W.src === 'backup' ? 'Restore my data' : W.src !== 'none' && W.file ? 'Import and build my plan' : 'Build my plan');
+      const p = W.profile;
+      const Q = [
+        { key: 'days_per_week', title: 'How often do you want to train?', note: 'Days a week. You can change it any time.', def: 3, opts: [2, 3, 4, 5, 6].map((n) => [n, String(n)]) },
+        { key: 'where', title: 'Where do you train?', def: 'gym', wide: true, opts: [['gym', 'Gym', 'Machines, cables and barbells'], ['home', 'At home', 'With dumbbells'], ['bodyweight', 'Bodyweight only', 'No equipment']] },
+        { key: 'experience', title: 'How long have you been training?', def: 'some', wide: true, opts: [['new', 'New to it', 'Less than half a year'], ['some', 'A while', 'About a year, on and off'], ['years', 'Years', 'Steadily, for two years or more']] },
+      ];
+      const q = Q[W.q];
+      if (p[q.key] == null || p[q.key] === '') p[q.key] = q.def;
+      const next = () => { if (W.q < 2) { W.q += 1; renderWizard(true); } else buildLocal(); };
+      const qh = h('h3', 'wz-qh', q.title);
+      qh.id = 'wz-qh';
+      box.append(qh);
+      if (q.note) box.append(h('p', 'note', q.note));
+      const row = h('div', 'wz-opts' + (q.wide ? ' wide' : ''));
+      row.setAttribute('role', 'radiogroup');
+      row.setAttribute('aria-labelledby', 'wz-qh');
+      q.opts.forEach(([v, l, sub]) => {
+        const b = h('button', 'wz-opt');
+        b.type = 'button';
+        b.setAttribute('role', 'radio');
+        b.setAttribute('aria-checked', String(p[q.key] === v));
+        b.append(h('b', '', l));
+        if (sub) b.append(h('span', 'wz-sub', sub));
+        b.addEventListener('click', () => { p[q.key] = v; next(); }); // a tap answers and moves on
+        row.append(b);
+      });
+      box.append(row);
+      const go = btn('skew pop big', W.q < 2 ? 'Next' : 'Build my plan');
       go.id = 'wz-go';
-      const missing = W.src !== 'none' && !W.file;
-      go.disabled = missing;
-      go.addEventListener('click', () => { readWizProfile(); if (W.src === 'backup') restoreFromWizard(); else buildLocal(); });
-      const hand = plainBtn('textbtn', S.wiz ? 'Cancel' : 'Skip setup', null, skip);
+      go.addEventListener('click', next);
       const fr = h('div', 'foot-row');
       fr.append(go);
-      if (W.src !== 'none' && W.src !== 'backup' && W.file && !(window.YC_WEB && W.src === 'other')) {
-        const only = plainBtn('textbtn', 'Only import my history', null, () => { readWizProfile(); importOnly(); });
-        only.id = 'wz-history';
-        fr.append(only);
-      }
-      fr.append(hand);
+      if (W.q > 0) fr.append(plainBtn('textbtn', 'Back', null, () => { W.q -= 1; renderWizard(true); }));
       box.append(fr);
-      if (missing) box.append(h('p', 'why', 'Choose your export file first, or pick Starting fresh.'));
+      if (W.q === 0) {
+        const imp = plainBtn('textbtn wz-implink', 'Coming from Strong, Hevy or FitNotes? Import your history', null, () => { W.imp = true; renderWizard(true); });
+        imp.id = 'wz-import';
+        box.append(imp);
+      }
       return;
     }
     if (W.step === 'busy' || W.step === 'saving') {
@@ -7176,6 +7275,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       else { const ul = h('ul', 'wz-items'); diff.forEach((x) => ul.append(h('li', '', x))); ch.append(ul); }
       box.append(ch);
     }
+    if (W.local && !W.chat.length && !W.adjust) {
+      box.append(chipRow('Session length', [['short', '45 min'], ['medium', '60 min'], ['long', '90 min']], W.profile.session_length || 'medium', (v) => {
+        W.profile.session_length = v;
+        W.plan = cleanPlan(localPlan(W.profile, W.rows));
+        renderWizard(true);
+      }));
+    }
     if (!W.adjust) {
       box.append(chipRow('First workout', [[0, 'Today'], [1, 'Tomorrow']], W.start || 0, (v) => {
         if ((W.start || 0) === v) return;
@@ -7225,12 +7331,17 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const ai = h('details', 'wz-more wz-aibox');
     ai.open = W.chat.length > 0;
     ai.append(h('summary', 'lab', 'Change it with your AI (optional)'), ta, cr);
+    if (window.YC_WEB) {
+      const a = h('a', 'link', 'How to connect');
+      a.href = 'connect.html';
+      ai.append(h('p', 'note', 'Using Claude? Connect it once, and it changes your plan and logs your food without copying.'), a);
+    }
     box.append(ai);
     const start = btn('skew pop big', W.adjust ? 'Apply changes' : 'Start training');
     start.id = 'wz-start';
     start.addEventListener('click', saveAndClose);
     const fr = h('div', 'foot-row');
-    fr.append(start, plainBtn('textbtn', 'Back', null, () => wizStep('start')));
+    fr.append(start, plainBtn('textbtn', W.adjust ? 'Back' : 'Change my answers', null, () => wizStep('start')));
     box.append(fr);
   };
 
@@ -7629,6 +7740,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   // ---- the month: every planned (•) and trained (✓) day of the month on one page. Tap a day to open its week above.
   const renderMonth = () => {
+    const none = !templatesSorted().length; // nothing to plan yet: no empty month and no calendar to add
+    $('#month').hidden = none;
+    $('.cal-cta').hidden = none;
+    if (none) { $('#cal-panel').hidden = true; return; }
     if (!S.moStart) S.moStart = today().slice(0, 8) + '01';
     const first = S.moStart;
     const mo = first.slice(0, 7);
@@ -8607,6 +8722,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const SEXES = [['', 'Not given'], ['female', 'Female'], ['male', 'Male'], ['other', 'Other']];
   const WEEK_DAYS = [['', 'Not given']].concat([1, 2, 3, 4, 5, 6, 7].map((n) => [String(n), plural(n, 'day')]));
   const LENGTHS = [['', 'Not given'], ['short', 'Short, about 45 min'], ['medium', 'Medium, about 60 min'], ['long', 'Long, about 90 min']];
+  const EXPERIENCE = [['', 'Not given'], ['new', 'New to it'], ['some', 'A while'], ['years', 'Years']];
+  const EXPERIENCE_LINE = { new: 'new to strength training', some: 'has trained on and off for about a year', years: 'has trained steadily for years' };
   const GOALS = [['', 'Not given'], ['lose', 'Lose weight'], ['muscle', 'Gain muscle'], ['both', 'Both']];
   const GOAL_LINE = { lose: 'goal: lose weight', muscle: 'goal: gain muscle', both: 'goal: lose fat and gain muscle at the same time' };
   const ACTIVITY = [['', 'Not given'], ['sit', 'Mostly sitting'], ['feet', 'On my feet a lot'], ['physical', 'Physical work']];
@@ -8622,6 +8739,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     { key: 'where', label: 'Where you train', opts: WHERE, line: (v) => WHERE_LINE[v] || '' },
     { key: 'session_length', label: 'Session length', opts: LENGTHS, line: (v) => 'wants ' + v + ' sessions (' + optName(LENGTHS, v).split(', ')[1] + ')' },
     { key: 'goal', label: 'Your goal', opts: GOALS, line: (v) => GOAL_LINE[v] || '' },
+    { key: 'experience', label: 'Training experience', opts: EXPERIENCE, line: (v) => EXPERIENCE_LINE[v] || '' },
     { key: 'activity', label: 'Daily life outside training', opts: ACTIVITY, line: (v) => ACTIVITY_LINE[v] || '' },
   ];
   const profile = () => (S.root && S.root.profile) || {};
