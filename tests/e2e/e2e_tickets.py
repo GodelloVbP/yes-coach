@@ -547,19 +547,20 @@ try:
             return be
         def fin_claude(page):
             page.evaluate("localStorage.setItem('yc-active', JSON.stringify({date: new Date().toISOString().slice(0, 10), tpl: 'push'}))"); page.reload(); page.wait_for_selector('#resume-fin', state='visible')
-            page.evaluate("window.__opened = []; window.open = (u) => { window.__opened.push(u); return null; }; 0")
+            page.evaluate("window.__opened = []; if (!window.__oc) { window.__oc = HTMLAnchorElement.prototype.click; HTMLAnchorElement.prototype.click = function () { if (/claude\\.ai/.test(this.href)) { window.__opened.push(this.href); return; } return window.__oc.call(this); }; } 0")
             page.click('#resume-fin'); page.wait_for_selector('#claude-review-go')
             check('asks: Send day to Coach Claude for review?', 'Send day to Coach Claude for review?' in page.inner_text('.ydlg'))
             check('focus is on the Send button', page.evaluate("document.activeElement.id") == 'claude-review-go')
             page.click('.ydlg >> text=Not now'); check('Not now closes it', page.locator('.ydlg').count() == 0)
             page.evaluate("localStorage.setItem('yc-active', JSON.stringify({date: new Date().toISOString().slice(0, 10), tpl: 'push'}))"); page.reload(); page.wait_for_selector('#resume-fin', state='visible')
-            page.evaluate("window.__opened = []; window.open = (u) => { window.__opened.push(u); return null; }; 0")
+            page.evaluate("window.__opened = []; if (!window.__oc) { window.__oc = HTMLAnchorElement.prototype.click; HTMLAnchorElement.prototype.click = function () { if (/claude\\.ai/.test(this.href)) { window.__opened.push(this.href); return; } return window.__oc.call(this); }; } 0")
             page.click('#resume-fin'); page.wait_for_selector('#claude-review-go'); page.keyboard.press('Escape'); check('Escape closes it', page.locator('.ydlg').count() == 0)
             page.evaluate("localStorage.setItem('yc-active', JSON.stringify({date: new Date().toISOString().slice(0, 10), tpl: 'push'}))"); page.reload(); page.wait_for_selector('#resume-fin', state='visible')
-            page.evaluate("window.__opened = []; window.open = (u) => { window.__opened.push(u); return null; }; 0")
+            page.evaluate("window.__opened = []; if (!window.__oc) { window.__oc = HTMLAnchorElement.prototype.click; HTMLAnchorElement.prototype.click = function () { if (/claude\\.ai/.test(this.href)) { window.__opened.push(this.href); return; } return window.__oc.call(this); }; } 0")
             page.click('#resume-fin'); page.wait_for_selector('#claude-review-go'); page.click('#claude-review-go'); page.wait_for_timeout(300)
             u = page.evaluate('window.__opened[0]') or ''
             check('Send opens Claude with the request', u.startswith('https://claude.ai/new?q=') and 'Push day' in urllib.parse.unquote(u) and 'connector' in urllib.parse.unquote(u), u)
+            check('after Send the app is back on the Train screen', page.is_visible('#pickday') and page.locator('.ydlg, .fin').count() == 0 and not page.evaluate("document.body.classList.contains('fin-open')"))
             check('request is also on the clipboard', 'Push day' in page.evaluate('navigator.clipboard.readText()'))
         errs = session(pw, finish_be([{'client': {'id': 'c-claude', 'name': 'Claude'}, 'scopes': [], 'granted_at': now()}]), ALICE, fin_claude, width=390) if False else session(pw, finish_be([{'client': {'id': 'c-claude', 'name': 'Claude'}, 'scopes': [], 'granted_at': now()}]), ALICE, fin_claude, width=390)
         check('no page errors (finish asks)', not errs, errs)

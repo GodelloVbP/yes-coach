@@ -124,7 +124,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok(authCalls === before, 'token check is cached');
   const list = await rpc('tok.anna.x', 'tools/list');
   const names = list.body.result.tools.map((t) => t.name);
-  ok(names.length === 18 && !names.some((x) => /delete|remove|session/.test(x) && !['get_sessions', 'remove_food_entry', 'remove_saved'].includes(x)), 'tool list: ' + names);
+  ok(names.length === 19 && !names.some((x) => /delete|remove|session/.test(x) && !['get_sessions', 'remove_food_entry', 'remove_saved'].includes(x)), 'tool list: ' + names);
   ok(list.body.result.tools.every((t) => t.inputSchema.type === 'object' && t.annotations && t.description && t.title && t.annotations.title === t.title && t.name.length <= 64 && (t.annotations.readOnlyHint === true || typeof t.annotations.destructiveHint === 'boolean')), 'schemas, titles, hints');
   const toolNames = list.body.result.tools.map((t) => t.name);
   ok(list.body.result.tools.every((t) => !toolNames.some((n) => n !== t.name && (t.description + JSON.stringify(t.inputSchema)).includes(n))), 'descriptions do not mention other tools');
@@ -454,6 +454,36 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   for (let i = 0; i < 14; i += 1) await call(T, 'log_meals', { meals: [{ items: [{ food: egg.food, grams: 50, said: 'ei' + i }] }] });
   const eggDoc = mineRows().find((x) => x.data.food === egg.food);
   ok(Object.keys(eggDoc.data.aka).length === 12 && eggDoc.data.n >= 14, 'a food keeps at most 12 words but still counts every use: ' + Object.keys(eggDoc.data.aka).length);
+
+  // her own foods: numbers per 100 g or 100 ml that she typed in, not from the tables
+  r = await call(T, 'save_custom_food', { name: "Mama's lasagne", kcal_per_100: 165, protein_per_100: 9.5, carbs_per_100: 14, fat_per_100: 8, portions: [{ label: 'plate', grams: 350 }], said: ['lasagna'] });
+  ok(!r.err && r.json.saved.food === 'own:mama-s-lasagne' && r.json.saved.per_100.protein_g === 9.5 && r.json.saved.unit === 'g' && r.json.replaced === false, 'a custom food is saved: ' + r.text);
+  s1 = (await call(T, 'search_foods', { query: 'lasagne' })).json.results[0];
+  ok(s1.food === 'own:mama-s-lasagne' && s1.yours === true && s1.unit === 'g' && s1.per_100.protein_g === 9.5 && s1.per_100.carbs_g === 14 && s1.portions[0].label === 'plate', 'search finds her own food first with her numbers and portion: ' + JSON.stringify(s1));
+  ok((await call(T, 'search_foods', { query: 'lasagna' })).json.results[0].food === 'own:mama-s-lasagne', 'and by the other word she uses');
+  ok((await call(TB, 'search_foods', { query: 'lasagne' })).json.results.every((v) => v.food !== 'own:mama-s-lasagne'), 'another person does not get her custom food');
+  r = await call(T, 'log_meals', { meals: [{ items: [{ food: 'own:mama-s-lasagne', grams: 200 }] }] });
+  let own1 = Object.values(r.json ? rowA('yc/food/' + r.json.day.date).data.entries : {}).filter(Boolean).sort((a, b) => b.at - a.at)[0];
+  ok(!r.err && own1.kcal === 330 && own1.p === 19 && own1.c === 28 && own1.f === 16 && own1.src === 'own' && own1.ref === 'mama-s-lasagne' && own1.g === 200, 'logging by grams scales her numbers: ' + JSON.stringify(own1));
+  r = await call(T, 'log_meals', { meals: [{ items: [{ food: 'own:mama-s-lasagne', portion: { label: 'plate' } }] }] });
+  own1 = Object.values(r.json ? rowA('yc/food/' + r.json.day.date).data.entries : {}).filter(Boolean).sort((a, b) => b.at - a.at)[0];
+  ok(!r.err && own1.g === 350 && own1.kcal === 578, 'and by her own portion: ' + JSON.stringify(own1));
+  ok(rowA('yc/myfoods/own-mama-s-lasagne').data.n === 2, 'logging it counts the use');
+  r = await call(T, 'save_custom_food', { name: "Mama's lasagne", kcal_per_100: 180, protein_per_100: 10, carbs_per_100: 14, fat_per_100: 9 });
+  ok(!r.err && r.json.replaced === true && rowA('yc/myfoods/own-mama-s-lasagne').data.own.kcal === 180 && rowA('yc/myfoods/own-mama-s-lasagne').data.n === 2 && rowA('yc/myfoods/own-mama-s-lasagne').data.portions.plate === 350, 'saving it again replaces the numbers and keeps the uses and portions');
+  r = await call(T, 'save_custom_food', { name: 'Oat drink', unit: 'ml', kcal_per_100: 46, protein_per_100: 1, carbs_per_100: 6.7, fat_per_100: 1.5 });
+  ok(!r.err && (await call(T, 'search_foods', { query: 'oat drink' })).json.results[0].unit === 'ml', 'a drink is kept in millilitres');
+  ok((await call(T, 'save_custom_food', { name: 'No numbers', kcal_per_100: 100 })).err, 'numbers that are missing are refused, not guessed');
+  ok((await call(T, 'save_custom_food', { name: 'Too much', kcal_per_100: 100, protein_per_100: 120, carbs_per_100: 0, fat_per_100: 0 })).err, 'more than 100 g of protein in 100 g is refused');
+  ok((await call(T, 'save_custom_food', { name: 'Too much 2', kcal_per_100: 100, protein_per_100: 60, carbs_per_100: 40, fat_per_100: 30 })).err, 'macros adding up to more than 100 g are refused');
+  ok((await call(T, 'save_custom_food', { name: 'Hot', kcal_per_100: 1200, protein_per_100: 1, carbs_per_100: 1, fat_per_100: 1 })).err, 'an absurd calorie number is refused');
+  ok((await call(T, 'save_custom_food', { name: '!!!', kcal_per_100: 10, protein_per_100: 1, carbs_per_100: 1, fat_per_100: 1 })).err, 'a name without letters is refused');
+  r = await call(T, 'save_my_food', { food: 'own:mama-s-lasagne', portions: [{ label: 'slice', grams: 120 }] });
+  ok(!r.err && r.json.saved.portions.slice === 120 && r.json.saved.portions.plate === 350, 'portions can be added to a custom food');
+  r = await call(T, 'log_meals', { meals: [{ name: 'Lasagne dinner', items: [{ food: 'own:mama-s-lasagne', grams: 250 }, { food: egg.food, grams: 50 }] }] });
+  ok(!r.err, 'a custom food can be part of a meal with table foods: ' + r.text.slice(0, 160));
+  r = await call(T, 'remove_saved', { food: 'own:oat-drink' });
+  ok(!r.err && (await call(T, 'search_foods', { query: 'oat drink' })).json.results.every((v) => v.food !== 'own:oat-drink'), 'a custom food can be forgotten');
 
   // saved meals
   const items = [{ food: bread.food, portion: { label: bread.portions[0].label, count: 2 } }, { food: egg.food, grams: 50, estimated: false }, { food: pb.food, grams: 15 }];

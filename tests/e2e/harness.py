@@ -64,7 +64,9 @@ class Backend:
             if req.method == 'GET': return ok(self.grants)
             if req.method == 'DELETE':
                 self.calls.append(('revoke', q.get('client_id', [None])[0])); self.grants = [g for g in self.grants if g['client']['id'] != q.get('client_id', [None])[0]]; return empty()
-        if path == '/rest/v1/docs' and req.method == 'GET': return ok(self.docs)
+        if path == '/rest/v1/docs' and req.method == 'GET':
+            want = q.get('path', [''])[0]
+            return ok([d for d in self.docs if d['path'] == want[3:]] if want.startswith('eq.') else self.docs)  # a lookup of one path finds that path only
         if path == '/rest/v1/rpc/yc_update':
             def dm(a, b):
                 a = dict(a) if isinstance(a, dict) else {}
