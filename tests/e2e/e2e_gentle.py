@@ -53,8 +53,8 @@ try:
         def rough(page):
             page.click('#tab-food'); page.wait_for_selector('#fd-name', state='visible', timeout=8000)
             def own(name):
-                page.fill('#fd-name', name); until(lambda: vis(page, '#fd-hits') and page.locator('#fd-hits .fd-new').count() > 0); page.wait_for_timeout(150)
-                page.click('#fd-hits .fd-new'); page.wait_for_selector('#fd-form', state='visible')
+                page.fill('#fd-name', name); until(lambda: vis(page, '#fd-hits') and page.locator('#fd-hits .fd-once').count() > 0); page.wait_for_timeout(150)
+                page.click('#fd-hits .fd-once'); page.wait_for_selector('#fd-form', state='visible')
             own('Big lunch')
             check('own numbers offers a rough guess', vis(page, '#fd-rough') and page.locator('#fd-rough .fd-chip').count() == 3)
             page.click('#fd-add')
@@ -86,8 +86,8 @@ try:
         be = Backend(); seed(be, 0, 0, show_cal=False); be.docs[-1]['data']['entries'] = {}
         def hidden(page):
             page.click('#tab-food'); page.wait_for_selector('#fd-name', state='visible', timeout=8000)
-            page.fill('#fd-name', 'Salad'); until(lambda: page.locator('#fd-hits .fd-new').count() > 0); page.wait_for_timeout(150)
-            page.click('#fd-hits .fd-new'); page.wait_for_selector('#fd-form', state='visible')
+            page.fill('#fd-name', 'Salad'); until(lambda: page.locator('#fd-hits .fd-once').count() > 0); page.wait_for_timeout(150)
+            page.click('#fd-hits .fd-once'); page.wait_for_selector('#fd-form', state='visible')
             page.click('#fd-rough .fd-chip:has-text("Large")'); page.click('#fd-add')
             check('with calories hidden a rough entry is saved too', until(lambda: any(e.get('name') == 'Salad' and e.get('p') == 40 and e.get('rough') for e in entries(be))), entries(be))
         errs = session(pw, be, ALICE, hidden, width=390); check('no page errors (hidden)', not errs, errs)

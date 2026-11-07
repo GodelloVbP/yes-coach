@@ -2567,5 +2567,215 @@
   "de": "Bei Läufen wird das Tempo in min/km oder km/h angezeigt, du entscheidest.",
   "fr": "Pour les courses, l'allure s'affiche en min/km ou km/h, au choix.",
   "it": "Nelle corse il ritmo si mostra in min/km o km/h, a tua scelta."
+ },
+ "Your own foods": {
+  "nl": "Je eigen eten",
+  "es": "Tus propios alimentos",
+  "de": "Deine eigenen Lebensmittel",
+  "fr": "Tes propres aliments",
+  "it": "I tuoi alimenti"
+ },
+ "Something that is not in the food list, like a product from your shop or a home-made dish? Save its numbers once and search finds it from then on. The numbers are on the package, per 100 g or per 100 ml.": {
+  "nl": "Iets dat niet in de lijst staat, zoals een product uit je winkel of een zelfgemaakt gerecht? Sla de waarden één keer op en zoeken vindt het daarna. De waarden staan op de verpakking, per 100 g of per 100 ml.",
+  "es": "¿Algo que no está en la lista, como un producto de tu tienda o un plato casero? Guarda sus valores una vez y la búsqueda lo encontrará. Los valores están en el envase, por 100 g o por 100 ml.",
+  "de": "Etwas, das nicht in der Liste steht, etwa ein Produkt aus deinem Laden oder ein selbst gekochtes Gericht? Speichere die Werte einmal, dann findet die Suche es. Die Werte stehen auf der Packung, pro 100 g oder pro 100 ml.",
+  "fr": "Quelque chose qui n'est pas dans la liste, comme un produit de ton magasin ou un plat maison ? Enregistre ses valeurs une fois et la recherche le trouvera. Les valeurs sont sur l'emballage, pour 100 g ou 100 ml.",
+  "it": "Qualcosa che non è nell'elenco, come un prodotto del tuo negozio o un piatto fatto in casa? Salva i suoi valori una volta e la ricerca lo troverà. I valori sono sulla confezione, per 100 g o per 100 ml."
+ },
+ "Create a food": {
+  "nl": "Eten maken",
+  "es": "Crear un alimento",
+  "de": "Lebensmittel anlegen",
+  "fr": "Créer un aliment",
+  "it": "Crea un alimento"
+ },
+ "Add with Claude": {
+  "nl": "Toevoegen met Claude",
+  "es": "Añadir con Claude",
+  "de": "Mit Claude hinzufügen",
+  "fr": "Ajouter avec Claude",
+  "it": "Aggiungi con Claude"
+ },
+ "Nothing saved yet.": {
+  "nl": "Nog niets opgeslagen.",
+  "es": "Aún no hay nada guardado.",
+  "de": "Noch nichts gespeichert.",
+  "fr": "Rien d'enregistré pour l'instant.",
+  "it": "Ancora niente di salvato."
+ },
+ "Log it": {
+  "nl": "Loggen",
+  "es": "Registrar",
+  "de": "Eintragen",
+  "fr": "Enregistrer",
+  "it": "Registra"
+ },
+ "Edit": {
+  "nl": "Aanpassen",
+  "es": "Editar",
+  "de": "Bearbeiten",
+  "fr": "Modifier",
+  "it": "Modifica"
+ },
+ "Forget": {
+  "nl": "Vergeten",
+  "es": "Olvidar",
+  "de": "Vergessen",
+  "fr": "Oublier",
+  "it": "Dimentica"
+ },
+ "+ Log “{0}” once": {
+  "nl": "+ “{0}” eenmalig loggen",
+  "es": "+ Registrar «{0}» una vez",
+  "de": "+ „{0}“ einmal eintragen",
+  "fr": "+ Enregistrer « {0} » une fois",
+  "it": "+ Registra «{0}» una volta"
+ },
+ "Just the calories of this portion, or a rough guess. Not saved for later.": {
+  "nl": "Alleen de calorieën van deze portie, of een grove schatting. Niet bewaard voor later.",
+  "es": "Solo las calorías de esta ración, o una estimación. No se guarda para después.",
+  "de": "Nur die Kalorien dieser Portion oder eine grobe Schätzung. Wird nicht für später gespeichert.",
+  "fr": "Seulement les calories de cette portion, ou une estimation. Non conservé pour plus tard.",
+  "it": "Solo le calorie di questa porzione, o una stima. Non viene salvato per dopo."
+ },
+ "+ Save “{0}” as your own food": {
+  "nl": "+ “{0}” opslaan als je eigen eten",
+  "es": "+ Guardar «{0}» como tu propio alimento",
+  "de": "+ „{0}“ als eigenes Lebensmittel speichern",
+  "fr": "+ Enregistrer « {0} » comme ton propre aliment",
+  "it": "+ Salva «{0}» come tuo alimento"
+ },
+ "Numbers from the package. Saved, so you can log it again.": {
+  "nl": "Waarden van de verpakking. Opgeslagen, zodat je het opnieuw kunt loggen.",
+  "es": "Valores del envase. Se guarda para que puedas registrarlo de nuevo.",
+  "de": "Werte von der Packung. Wird gespeichert, damit du es wieder eintragen kannst.",
+  "fr": "Valeurs de l'emballage. Conservé, pour pouvoir l'enregistrer à nouveau.",
+  "it": "Valori dalla confezione. Salvato, così puoi registrarlo di nuovo."
+ },
+ "Calories (kcal) per 100 {0}": {
+  "nl": "Calorieën (kcal) per 100 {0}",
+  "es": "Calorías (kcal) por 100 {0}",
+  "de": "Kalorien (kcal) pro 100 {0}",
+  "fr": "Calories (kcal) pour 100 {0}",
+  "it": "Calorie (kcal) per 100 {0}"
+ },
+ "Protein (g) per 100 {0}": {
+  "nl": "Eiwit (g) per 100 {0}",
+  "es": "Proteína (g) por 100 {0}",
+  "de": "Eiweiß (g) pro 100 {0}",
+  "fr": "Protéines (g) pour 100 {0}",
+  "it": "Proteine (g) per 100 {0}"
+ },
+ "Carbs (g) per 100 {0}": {
+  "nl": "Koolhydraten (g) per 100 {0}",
+  "es": "Hidratos (g) por 100 {0}",
+  "de": "Kohlenhydrate (g) pro 100 {0}",
+  "fr": "Glucides (g) pour 100 {0}",
+  "it": "Carboidrati (g) per 100 {0}"
+ },
+ "Fat (g) per 100 {0}": {
+  "nl": "Vet (g) per 100 {0}",
+  "es": "Grasa (g) por 100 {0}",
+  "de": "Fett (g) pro 100 {0}",
+  "fr": "Lipides (g) pour 100 {0}",
+  "it": "Grassi (g) per 100 {0}"
+ },
+ "Saved. How much did you have? Or Cancel: it stays saved.": {
+  "nl": "Opgeslagen. Hoeveel had je? Of Annuleer: het blijft opgeslagen.",
+  "es": "Guardado. ¿Cuánto tomaste? O Cancelar: se queda guardado.",
+  "de": "Gespeichert. Wie viel hattest du? Oder Abbrechen: Es bleibt gespeichert.",
+  "fr": "Enregistré. Combien en as-tu mangé ? Ou Annuler : il reste enregistré.",
+  "it": "Salvato. Quanto ne hai mangiato? Oppure Annulla: resta salvato."
+ },
+ "Updated. How much did you have? Or Cancel: it stays saved.": {
+  "nl": "Bijgewerkt. Hoeveel had je? Of Annuleer: het blijft opgeslagen.",
+  "es": "Actualizado. ¿Cuánto tomaste? O Cancelar: se queda guardado.",
+  "de": "Aktualisiert. Wie viel hattest du? Oder Abbrechen: Es bleibt gespeichert.",
+  "fr": "Mis à jour. Combien en as-tu mangé ? Ou Annuler : il reste enregistré.",
+  "it": "Aggiornato. Quanto ne hai mangiato? Oppure Annulla: resta salvato."
+ },
+ "Days you can train": {
+  "nl": "Dagen waarop je kunt trainen",
+  "es": "Días en los que puedes entrenar",
+  "de": "Tage, an denen du trainieren kannst",
+  "fr": "Jours où tu peux t'entraîner",
+  "it": "Giorni in cui puoi allenarti"
+ },
+ "Sessions a week": {
+  "nl": "Trainingen per week",
+  "es": "Sesiones por semana",
+  "de": "Einheiten pro Woche",
+  "fr": "Séances par semaine",
+  "it": "Sessioni a settimana"
+ },
+ "Every day you can train is a training day. Pick how many sessions a week you want, and they are spread over those days.": {
+  "nl": "Elke dag waarop je kunt trainen is een trainingsdag. Kies hoeveel trainingen per week je wilt, dan worden ze over die dagen verspreid.",
+  "es": "Cada día en que puedes entrenar es un día de entrenamiento. Elige cuántas sesiones por semana quieres y se reparten entre esos días.",
+  "de": "Jeder Tag, an dem du trainieren kannst, ist ein Trainingstag. Wähle, wie viele Einheiten pro Woche du willst, dann werden sie auf diese Tage verteilt.",
+  "fr": "Chaque jour où tu peux t'entraîner est un jour d'entraînement. Choisis combien de séances par semaine tu veux, elles sont réparties sur ces jours.",
+  "it": "Ogni giorno in cui puoi allenarti è un giorno di allenamento. Scegli quante sessioni a settimana vuoi e verranno distribuite su quei giorni."
+ },
+ "Your {0} a week are spread over the {1} days you can train. They can land on different weekdays as the weeks go.": {
+  "nl": "Je {0} per week worden verspreid over de {1} dagen waarop je kunt trainen. Ze kunnen per week op andere dagen vallen.",
+  "es": "Tus {0} por semana se reparten entre los {1} días en que puedes entrenar. Pueden caer en días distintos cada semana.",
+  "de": "Deine {0} pro Woche werden auf die {1} Tage verteilt, an denen du trainieren kannst. Sie können von Woche zu Woche auf andere Wochentage fallen.",
+  "fr": "Tes {0} par semaine sont réparties sur les {1} jours où tu peux t'entraîner. Elles peuvent tomber des jours différents d'une semaine à l'autre.",
+  "it": "Le tue {0} a settimana sono distribuite sui {1} giorni in cui puoi allenarti. Possono cadere in giorni diversi di settimana in settimana."
+ },
+ "That is {0} a week but only {1} you can train. Pick more days, or fewer sessions.": {
+  "nl": "Dat zijn {0} per week, maar je kunt maar op {1} trainen. Kies meer dagen, of minder trainingen.",
+  "es": "Son {0} por semana pero solo puedes entrenar {1}. Elige más días o menos sesiones.",
+  "de": "Das sind {0} pro Woche, aber du kannst nur an {1} trainieren. Wähle mehr Tage oder weniger Einheiten.",
+  "fr": "Cela fait {0} par semaine mais tu ne peux t'entraîner que {1}. Choisis plus de jours, ou moins de séances.",
+  "it": "Sono {0} a settimana ma puoi allenarti solo {1}. Scegli più giorni o meno sessioni."
+ },
+ "Every day you can train is a training day.": {
+  "nl": "Elke dag waarop je kunt trainen is een trainingsdag.",
+  "es": "Cada día en que puedes entrenar es un día de entrenamiento.",
+  "de": "Jeder Tag, an dem du trainieren kannst, ist ein Trainingstag.",
+  "fr": "Chaque jour où tu peux t'entraîner est un jour d'entraînement.",
+  "it": "Ogni giorno in cui puoi allenarti è un giorno di allenamento."
+ },
+ "It moves up: your days repeat in this order on your training days, so nothing is skipped.": {
+  "nl": "Het schuift door: je dagen herhalen in deze volgorde op je trainingsdagen, dus er wordt niets overgeslagen.",
+  "es": "Se adelanta: tus días se repiten en este orden en tus días de entrenamiento, así que no se salta nada.",
+  "de": "Er rückt nach: Deine Tage wiederholen sich in dieser Reihenfolge an deinen Trainingstagen, also fällt nichts aus.",
+  "fr": "Elle avance : tes jours se répètent dans cet ordre sur tes jours d'entraînement, donc rien n'est sauté.",
+  "it": "Slitta in avanti: i tuoi giorni si ripetono in quest'ordine nei tuoi giorni di allenamento, quindi non si salta nulla."
+ },
+ "Your schedule and your own foods": {
+  "nl": "Je schema en je eigen eten",
+  "es": "Tu calendario y tus propios alimentos",
+  "de": "Dein Plan und deine eigenen Lebensmittel",
+  "fr": "Ton planning et tes propres aliments",
+  "it": "Il tuo piano e i tuoi alimenti"
+ },
+ "Plan: the days you tick are the days you can train. Set how many sessions a week you want, and they are spread over those days.": {
+  "nl": "Plan: de dagen die je aanvinkt zijn de dagen waarop je kunt trainen. Stel in hoeveel trainingen per week je wilt, dan worden ze over die dagen verspreid.",
+  "es": "Plan: los días que marcas son los días en que puedes entrenar. Indica cuántas sesiones por semana quieres y se reparten entre esos días.",
+  "de": "Plan: Die Tage, die du ankreuzt, sind die Tage, an denen du trainieren kannst. Lege fest, wie viele Einheiten pro Woche du willst, und sie werden auf diese Tage verteilt.",
+  "fr": "Plan : les jours que tu coches sont les jours où tu peux t'entraîner. Indique combien de séances par semaine tu veux, elles sont réparties sur ces jours.",
+  "it": "Piano: i giorni che spunti sono i giorni in cui puoi allenarti. Imposta quante sessioni a settimana vuoi e verranno distribuite su quei giorni."
+ },
+ "Your own foods have their own place in Food: create one, edit it, or ask Claude to add it.": {
+  "nl": "Je eigen eten heeft een eigen plek in Eten: maak er een, pas het aan, of vraag Claude het toe te voegen.",
+  "es": "Tus propios alimentos tienen su sitio en Comida: crea uno, edítalo o pide a Claude que lo añada.",
+  "de": "Deine eigenen Lebensmittel haben einen eigenen Platz in Ernährung: anlegen, bearbeiten oder Claude bitten, es hinzuzufügen.",
+  "fr": "Tes propres aliments ont leur place dans Alimentation : crées-en un, modifie-le, ou demande à Claude de l'ajouter.",
+  "it": "I tuoi alimenti hanno un posto in Cibo: creane uno, modificalo o chiedi a Claude di aggiungerlo."
+ },
+ "The undo bar no longer covers the page on a tablet or computer.": {
+  "nl": "De ongedaan-balk bedekt de pagina niet meer op een tablet of computer.",
+  "es": "La barra de deshacer ya no tapa la página en una tableta u ordenador.",
+  "de": "Die Rückgängig-Leiste verdeckt die Seite auf Tablet oder Computer nicht mehr.",
+  "fr": "La barre d'annulation ne cache plus la page sur tablette ou ordinateur.",
+  "it": "La barra di annullamento non copre più la pagina su tablet o computer."
+ },
+ "I ate something is gone.": {
+  "nl": "Ik at iets is verdwenen.",
+  "es": "«He comido algo» ha desaparecido.",
+  "de": "„Ich habe etwas gegessen“ ist weg.",
+  "fr": "« J'ai mangé quelque chose » a disparu.",
+  "it": "«Ho mangiato qualcosa» non c'è più."
  }
 }

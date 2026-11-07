@@ -120,7 +120,7 @@ try:
             check('it lands on Train', until(lambda: page.is_visible('#pickday')))
             check('the day and its hidden template are gone', until(lambda: doc(be, 'yc/templates/custom-' + T + '-2') is None and doc(be, 'yc/sessions/' + T + '~custom-' + T + '-2') is None), [d['path'] for d in be.docs if 'custom' in d['path']])
             check('the first one is untouched', doc(be, 'yc/templates/custom-' + T) is not None and doc(be, 'yc/sessions/' + T) is not None)
-            check('a toast says so, with Undo', 'Second deleted' in page.text_content('#toast-text') and page.is_visible('#toast-undo'))
+            check('a toast says so, with Undo', until(lambda: 'Second deleted' in page.text_content('#toast-text') and page.is_visible('#toast-undo')))
             page.click('#toast-undo')
             check('Undo brings it back', until(lambda: doc(be, 'yc/templates/custom-' + T + '-2') is not None and doc(be, 'yc/sessions/' + T + '~custom-' + T + '-2') is not None), [d['path'] for d in be.docs if 'custom' in d['path']])
             # delete the first from the week
@@ -157,16 +157,21 @@ try:
         be.docs.append({'path': 'yc/myfoods/own-bad', 'data': {'food': 'own:bad', 'name': 'Broken thing', 'own': 'nope'}})
         def s3(page):
             page.click('#tab-food'); page.wait_for_selector('#fd-body', state='visible', timeout=8000)
-            page.click('#fd-custom')
+            check('the Food page has a Your own foods section with a Create button', page.is_visible('#fd-ownfoods') and page.is_visible('#fd-own-new') and 'Nothing saved yet' in page.inner_text('#fd-own-list'))
+            check('and no Claude button while Claude is not connected', not page.is_visible('#fd-own-claude'))
+            page.click('#fd-own-new')
             check('the create card opens, per 100', page.is_visible('#fd-own-name') and page.is_visible('#fd-unit') and 'per 100 g' in page.inner_text('#fd-per'))
             page.fill('#fd-own-name', 'Oat drink'); page.select_option('#fd-unit', 'ml')
             check('the unit changes the note', 'per 100 ml' in page.inner_text('#fd-per'))
+            check('and every number says what it is per', 'Calories (kcal) per 100 ml' in page.text_content('label:has(#fd-kcal)') and 'Protein (g) per 100 ml' in page.text_content('label:has(#fd-p)'), page.text_content('label:has(#fd-kcal)'))
             page.fill('#fd-kcal', '46'); page.fill('#fd-p', '60'); page.fill('#fd-c', '40'); page.fill('#fd-f', '30'); page.click('#fd-add')
             check('numbers that cannot be right are refused', 'cannot be more than 100' in page.inner_text('#fd-msg'), page.inner_text('#fd-msg'))
             page.fill('#fd-p', ''); page.click('#fd-add')
             check('a missing number is refused', 'protein' in page.inner_text('#fd-msg'), page.inner_text('#fd-msg'))
             page.fill('#fd-p', '1'); page.fill('#fd-c', '6.7'); page.fill('#fd-f', '1.5'); page.click('#fd-add')
             check('saved, and on to how much', until(lambda: doc(be, 'yc/myfoods/own-oat-drink') is not None and page.is_visible('#fd-g')), doc(be, 'yc/myfoods/own-oat-drink'))
+            check('the card says it is saved and what to do next', 'Saved' in page.text_content('#fd-card-title') and 'Cancel' in page.text_content('#fd-card-title'), page.text_content('#fd-card-title'))
+            check('it is listed under Your own foods', until(lambda: 'Oat drink' in page.inner_text('#fd-own-list')) and 'per 100 ml' in page.inner_text('#fd-own-list'), page.inner_text('#fd-own-list'))
             d = doc(be, 'yc/myfoods/own-oat-drink')
             check('stored per 100 ml with its key', d['food'] == 'own:oat-drink' and d['own'] == {'kcal': 46, 'p': 1, 'c': 6.7, 'f': 1.5, 'u': 'ml'} and d['name'] == 'Oat drink', d)
             page.fill('#fd-g', '250')
@@ -182,35 +187,115 @@ try:
             check('search lists it first, as yours', 'Oat drink' in first.inner_text() and 'Yours' in first.inner_text(), first.inner_text())
             check('a broken saved food is skipped', 'Broken thing' not in page.inner_text('#fd-hits'))
             check('the line shows its per-portion numbers, no per-100 text', 'per 100' not in first.inner_text())
-            check('searching offers to save a new food', 'as a food to use again' in page.inner_text('#fd-hits'))
+            check('searching offers to save a new food, and to log one once', 'as your own food' in page.inner_text('#fd-hits') and 'once' in page.inner_text('#fd-hits'))
+            check('the two say what they do', 'Not saved for later' in page.inner_text('#fd-hits') and 'Saved, so you can log it again' in page.inner_text('#fd-hits'))
             first.click()
             page.wait_for_selector('#fd-g', state='visible')
             check('a drink starts at a glass and offers drink sizes, no guessed food sizes', page.input_value('#fd-g') == '200' and 'GLASS' in page.inner_text('#fd-amount').upper() and 'SMALL' not in page.inner_text('#fd-amount').upper(), page.inner_text('#fd-amount'))
             check('credit line says it is your own', 'Your own food' in page.inner_text('#fd-src'))
+            # the list under Your own foods
+            page.click('#fd-cancel'); page.wait_for_timeout(300)
+            page.click('#fd-own-list .fd-own-row >> text=Log it')
+            check('Log it in the list opens the amount', until(lambda: page.is_visible('#fd-g')) and 'Oat drink' in page.text_content('#fd-card-title'))
+            page.click('#fd-cancel'); page.wait_for_timeout(300)
+            page.fill('#fd-name', 'oat'); until(lambda: page.locator('#fd-hits .fd-hit').count() > 0)
+            page.locator('#fd-hits .fd-hit').first.click(); page.wait_for_selector('#fd-g', state='visible')
             # edit the numbers
             page.click('text=Edit this food')
             check('edit opens with the saved numbers', page.input_value('#fd-own-name') == 'Oat drink' and page.input_value('#fd-kcal') == '46' and page.input_value('#fd-unit') == 'ml')
             page.fill('#fd-kcal', '50'); page.click('#fd-add')
             check('the numbers are replaced, the name stays', until(lambda: (doc(be, 'yc/myfoods/own-oat-drink') or {}).get('own', {}).get('kcal') == 50), doc(be, 'yc/myfoods/own-oat-drink'))
             check('the old entry keeps the numbers it was logged with', (entry() or {}).get('kcal') == 115)
-            page.click('text=Forget this food')
+            page.click('#fd-cancel'); page.wait_for_timeout(300)
+            page.click('#fd-own-list .fd-own-row >> text=Forget')
             check('forgetting marks it gone', until(lambda: (doc(be, 'yc/myfoods/own-oat-drink') or {}).get('gone') is True), doc(be, 'yc/myfoods/own-oat-drink'))
+            check('and takes it off the list', until(lambda: 'Oat drink' not in page.inner_text('#fd-own-list')), page.inner_text('#fd-own-list'))
+            page.click('#toast-undo')
+            check('Undo puts it back', until(lambda: (doc(be, 'yc/myfoods/own-oat-drink') or {}).get('gone') is None and 'Oat drink' in page.inner_text('#fd-own-list')))
             check('the entry already logged stays', entry() is not None)
             # the new-food shortcut from a search keeps what was typed
-            page.fill('#fd-name', 'grandmas soup'); until(lambda: page.locator('#fd-hits .fd-new').count() > 0)
-            page.locator('#fd-hits .fd-new', has_text='as a food to use again').click()
+            page.fill('#fd-name', 'grandmas soup'); until(lambda: page.locator('#fd-hits .fd-save').count() > 0)
+            page.locator('#fd-hits .fd-save').click()
             check('the shortcut fills in the name', page.input_value('#fd-own-name') == 'grandmas soup')
         errs = session(pw, be, ALICE, s3, width=390); check('no page errors (own food)', not errs, errs)
 
-        # ---- 4. desktop: room at the top for the toast and the save bar
+        # ---- 3b. with Claude connected, a food can be added by asking it
+        be = Backend(); seed(be); be.grants = [{'client': {'id': 'c-claude', 'name': 'Claude', 'uri': 'https://claude.ai'}, 'scopes': [], 'granted_at': now()}]
+        def s3b(page):
+            page.evaluate("window.__opened = []; window.__oc = HTMLAnchorElement.prototype.click; HTMLAnchorElement.prototype.click = function () { if (/claude\\.ai/.test(this.href)) { window.__opened.push(this.href); return; } return window.__oc.call(this); }; 0")
+            page.click('#tab-food'); page.wait_for_selector('#fd-body', state='visible', timeout=8000)
+            check('Add with Claude shows once Claude is connected', until(lambda: page.is_visible('#fd-own-claude')))
+            page.click('#fd-own-claude'); page.wait_for_timeout(400)
+            u = page.evaluate('window.__opened[0]') or ''
+            import urllib.parse
+            q = urllib.parse.unquote(u)
+            check('it opens Claude with a request that asks for the numbers per 100 g or ml', u.startswith('https://claude.ai/new?q=') and 'per 100 g or per 100 ml' in q and 'connector' in q, u)
+        errs = session(pw, be, ALICE, s3b, width=390, home=True); check('no page errors (ask Claude)', not errs, errs)
+
+        # ---- 5. the schedule: ticked weekdays are days you CAN train; sessions a week decides how many are used
+        ALL = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        be = Backend()
+        be.docs.append({'path': 'yc', 'data': {'app': 'yes-coach', 'schema': 1, 'intro_seen': True, 'profile': {'days_per_week': 4}, 'schedule': {'enabled': True, 'mode': 'rotation', 'days': ALL, 'rotation': ['a', 'b', 'c', 'd']}}})
+        for i, n in enumerate('abcd'):
+            be.docs.append({'path': 'yc/templates/' + n, 'data': {'name': 'Day ' + n.upper(), 'order': i + 1, 'kind': 'Other', 'focus': '', 'items': []}})
+        def s5(page):
+            page.goto(BASE); page.wait_for_selector('#wk-rows .wk-blk', timeout=8000)
+            def planned_next(k=1):
+                for _ in range(k): page.click('#wk-next')
+                page.wait_for_timeout(200)
+                n = page.locator('#wk-rows .wk-blk:has-text("•")').count()
+                for _ in range(k): page.click('#wk-prev')
+                return n
+            check('all seven days ticked, 4 sessions a week from the set-up: next week has 4 training days, not 7', planned_next(1) == 4, planned_next(1))
+            check('and the week after that too', planned_next(2) == 4, planned_next(2))
+            page.click('#wk-next'); names = [page.get_attribute('#wk-rows .wk-blk >> nth=%d' % i, 'aria-label') for i in range(7)]; page.click('#wk-prev')
+            used = [n for n in names if 'planned' in n]
+            check('the days used are spread out, not a block of four in a row', all(not ('planned' in names[i] and 'planned' in names[i + 1] and 'planned' in names[i + 2]) for i in range(5)), names)
+            check('the four days are used in order', len(set(n.split(', ')[-1] for n in used)) == 4, used)
+            page.click('.mainnav [data-view="plan"]'); page.wait_for_selector('.pw-set', timeout=5000)
+            check('Plan says Days you can train and has Sessions a week', 'Days you can train' in page.text_content('.pw-set') and 'Sessions a week' in page.text_content('.pw-set'))
+            chips = page.locator('.pw-days[aria-label="Sessions a week"] .pk-chip')
+            check('the set-up value is selected', chips.count() == 7 and page.get_attribute('.pw-days[aria-label="Sessions a week"] .pk-chip >> nth=3', 'aria-pressed') == 'true')
+            check('and it explains the spread', 'spread over the 7 days' in page.text_content('.pw-per-note'), page.text_content('.pw-per-note'))
+            page.click('.pw-days[aria-label="Sessions a week"] .pk-chip >> nth=4')
+            check('picking 5 saves it', until(lambda: ((doc(be, 'yc') or {}).get('schedule') or {}).get('per_week') == 5), (doc(be, 'yc') or {}).get('schedule'))
+            check('the days you can train stay as they were', ((doc(be, 'yc') or {}).get('schedule') or {}).get('days') == ALL)
+            page.click('.mainnav [data-view="train"]'); page.wait_for_selector('#wk-rows .wk-blk')
+            check('next week now has 5', planned_next(1) == 5, planned_next(1))
+            page.click('.mainnav [data-view="plan"]'); page.wait_for_selector('.pw-set')
+            page.click('.pw-days[aria-label="Sessions a week"] .pk-chip >> nth=6')
+            page.click('.mainnav [data-view="train"]'); page.wait_for_selector('#wk-rows .wk-blk')
+            check('7 sessions a week uses every day', planned_next(1) == 7, planned_next(1))
+            # fewer days than sessions is said, not guessed
+            page.click('.mainnav [data-view="plan"]'); page.wait_for_selector('.pw-set')
+            for w in ('Sat', 'Sun', 'Fri'): page.click('.pw-days[aria-label="Days you train"] .pk-chip:has-text("%s")' % w)
+            check('too few days for the sessions: it says so', 'Pick more days, or fewer sessions' in page.text_content('.pw-per-note'), page.text_content('.pw-per-note'))
+        errs = session(pw, be, ALICE, s5, width=390); check('no page errors (schedule)', not errs, errs)
+
+        # ---- 4. the undo bar never covers the page: it takes its own room from tablet width up, floats on a phone
+        SHOW = "document.getElementById('toast-text').textContent = 'Saved.'; document.getElementById('toast').hidden = false; 0"
+        MEASURE = "(() => { const t = document.getElementById('toast').getBoundingClientRect(); const c = document.querySelector('#today-card').getBoundingClientRect(); return { tb: t.bottom, tl: t.left, ct: c.top, pos: getComputedStyle(document.getElementById('toast')).position }; })()"
+        for width, name in ((1280, 'desktop'), (900, 'tablet')):
+            be = Backend(); seed(be)
+            def s4(page, name=name):
+                page.goto(BASE); page.wait_for_selector('text=Start Push day', timeout=8000)
+                before = page.evaluate("document.querySelector('#today-card').getBoundingClientRect().top")
+                page.evaluate(SHOW); page.wait_for_timeout(200)
+                r = page.evaluate(MEASURE)
+                check(name + ': the undo bar is part of the page, not over it', r['pos'] == 'static' and r['ct'] >= r['tb'], r)
+                check(name + ': the page moves down by the bar, nothing is covered', abs((r['ct'] - before) - (r['tb'] - 0 if name == 'desktop' else r['tb'] - 53)) < 3, (before, r))
+                if name == 'desktop': check('desktop: it starts beside the sidebar, not under it', r['tl'] >= 200, r)
+                page.evaluate("window.scrollTo(0, 400)"); page.wait_for_timeout(200)
+                r2 = page.evaluate(MEASURE)
+                check(name + ': still at the top, with the page below it, when scrolled', r2['tb'] <= 120 and page.evaluate("document.elementFromPoint(" + str(int(r2['tl']) + 300) + ", " + str(int(r2['tb']) + 2) + ").closest('#toast') === null"), r2)
+            errs = session(pw, be, ALICE, s4, width=width); check('no page errors (' + name + ')', not errs, errs)
         be = Backend(); seed(be)
-        def s4(page):
+        def s4p(page):
             page.goto(BASE); page.wait_for_selector('text=Start Push day', timeout=8000)
-            pt = page.evaluate("parseFloat(getComputedStyle(document.querySelector('main')).paddingTop)")
-            check('desktop: the page starts below the notification strip', pt >= 56, pt)
-            left = page.evaluate("parseFloat(getComputedStyle(document.querySelector('#toast')).left)")
-            check('desktop: the toast starts beside the sidebar, not under it', left >= 200, left)
-        errs = session(pw, be, ALICE, s4, width=1280); check('no page errors (desktop)', not errs, errs)
+            page.evaluate(SHOW); page.wait_for_timeout(200)
+            r = page.evaluate(MEASURE)
+            check('phone: the undo bar floats under the top bar', r['pos'] == 'absolute' and r['tb'] > 100, r)
+        errs = session(pw, be, ALICE, s4p, width=390); check('no page errors (phone toast)', not errs, errs)
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
