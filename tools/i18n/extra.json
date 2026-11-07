@@ -3841,5 +3841,103 @@
   "de": "Ernährungstrends brauchen keinen Platz, bis es etwas zu zeigen gibt.",
   "fr": "Les tendances alimentaires ne prennent pas de place tant qu’il n’y a rien à montrer.",
   "it": "Gli andamenti del cibo non occupano spazio finché non c’è qualcosa da mostrare."
+ },
+ "Built by one person. Tell us what is broken or missing, and you hear back when it is built or fixed.": {
+  "nl": "Gemaakt door één persoon. Vertel wat kapot is of ontbreekt, en je hoort terug wanneer het gebouwd of gerepareerd is.",
+  "es": "Hecho por una sola persona. Cuéntanos qué falla o qué falta, y te avisamos cuando esté hecho o arreglado.",
+  "de": "Von einer Person gebaut. Sag uns, was kaputt ist oder fehlt, und du hörst von uns, wenn es gebaut oder behoben ist.",
+  "fr": "Fait par une seule personne. Dis-nous ce qui ne marche pas ou ce qui manque, et tu seras prévenu quand c’est fait ou corrigé.",
+  "it": "Fatto da una sola persona. Dicci cosa non va o cosa manca, e ti avvisiamo quando è fatto o risolto."
+ },
+ "What happened, and on which screen": {
+  "nl": "Wat er gebeurde, en op welk scherm",
+  "es": "Qué pasó y en qué pantalla",
+  "de": "Was passiert ist und auf welchem Bildschirm",
+  "fr": "Ce qui s’est passé, et sur quel écran",
+  "it": "Cosa è successo e su quale schermata"
+ },
+ "Something you want it to do": {
+  "nl": "Iets wat je het wilt laten doen",
+  "es": "Algo que quieres que haga",
+  "de": "Etwas, das es können soll",
+  "fr": "Quelque chose que tu veux qu’elle fasse",
+  "it": "Qualcosa che vuoi che faccia"
+ },
+ "What you like, what feels off": {
+  "nl": "Wat je goed vindt, wat niet klopt",
+  "es": "Lo que te gusta, lo que no encaja",
+  "de": "Was dir gefällt, was sich falsch anfühlt",
+  "fr": "Ce que tu aimes, ce qui cloche",
+  "it": "Cosa ti piace, cosa non va"
+ },
+ "What do you want to send?": {
+  "nl": "Wat wil je sturen?",
+  "es": "¿Qué quieres enviar?",
+  "de": "Was möchtest du senden?",
+  "fr": "Que veux-tu envoyer ?",
+  "it": "Cosa vuoi inviare?"
+ },
+ "Sent with it: your first name, the email you sign in with, the app version and your device. Never your training data.": {
+  "nl": "Wordt meegestuurd: je voornaam, het e-mailadres waarmee je inlogt, de appversie en je apparaat. Nooit je trainingsgegevens.",
+  "es": "Se envía contigo: tu nombre, el correo con el que inicias sesión, la versión de la app y tu dispositivo. Nunca tus datos de entrenamiento.",
+  "de": "Wird mitgesendet: dein Vorname, die E-Mail, mit der du dich anmeldest, die App-Version und dein Gerät. Nie deine Trainingsdaten.",
+  "fr": "Envoyés avec : ton prénom, l’e-mail avec lequel tu te connectes, la version de l’appli et ton appareil. Jamais tes données d’entraînement.",
+  "it": "Inviati con il messaggio: il tuo nome, l’email con cui accedi, la versione dell’app e il tuo dispositivo. Mai i tuoi dati di allenamento."
+ },
+ "We have a question": {
+  "nl": "We hebben een vraag",
+  "es": "Tenemos una pregunta",
+  "de": "Wir haben eine Frage",
+  "fr": "Nous avons une question",
+  "it": "Abbiamo una domanda"
+ },
+ "Your messages": {
+  "nl": "Je berichten",
+  "es": "Tus mensajes",
+  "de": "Deine Nachrichten",
+  "fr": "Tes messages",
+  "it": "I tuoi messaggi"
+ },
+ "Feature requests": {
+  "nl": "Functieverzoeken",
+  "es": "Peticiones de funciones",
+  "de": "Funktionswünsche",
+  "fr": "Demandes de fonctionnalités",
+  "it": "Richieste di funzioni"
+ },
+ "Bug reports": {
+  "nl": "Foutmeldingen",
+  "es": "Informes de errores",
+  "de": "Fehlermeldungen",
+  "fr": "Rapports de bugs",
+  "it": "Segnalazioni di bug"
+ },
+ "Could not load your requests right now.": {
+  "nl": "Je verzoeken konden nu niet worden geladen.",
+  "es": "No se pudieron cargar tus peticiones ahora.",
+  "de": "Deine Anfragen konnten gerade nicht geladen werden.",
+  "fr": "Impossible de charger tes demandes pour le moment.",
+  "it": "Impossibile caricare le tue richieste in questo momento."
+ },
+ "A clearer Request page": {
+  "nl": "Een duidelijkere Verzoek-pagina",
+  "es": "Una página de Sugerir más clara",
+  "de": "Eine klarere Wunsch-Seite",
+  "fr": "Une page Demande plus claire",
+  "it": "Una pagina Richiesta più chiara"
+ },
+ "Request: pick what you want to send, and the form opens under it. A question from us waits at the top, and your messages are grouped below.": {
+  "nl": "Verzoek: kies wat je wilt sturen en het formulier opent eronder. Een vraag van ons staat bovenaan, en je berichten staan hieronder gegroepeerd.",
+  "es": "Sugerir: elige lo que quieres enviar y el formulario se abre debajo. Una pregunta nuestra espera arriba y tus mensajes están agrupados abajo.",
+  "de": "Wunsch: Wähle, was du senden willst, und das Formular öffnet sich darunter. Eine Frage von uns steht oben, deine Nachrichten sind darunter gruppiert.",
+  "fr": "Demande : choisis ce que tu veux envoyer et le formulaire s’ouvre dessous. Une question de notre part attend en haut, et tes messages sont regroupés plus bas.",
+  "it": "Richiesta: scegli cosa vuoi inviare e il modulo si apre sotto. Una nostra domanda aspetta in alto e i tuoi messaggi sono raggruppati sotto."
+ },
+ "In Settings, a tap or hover on a section now covers the whole bar.": {
+  "nl": "In Instellingen geldt een tik of hover op een onderdeel nu voor de hele balk.",
+  "es": "En Ajustes, tocar o pasar el cursor por una sección ahora cubre toda la barra.",
+  "de": "In den Einstellungen gilt ein Tippen oder Darüberfahren bei einem Bereich jetzt für die ganze Leiste.",
+  "fr": "Dans Réglages, un appui ou un survol sur une section couvre maintenant toute la barre.",
+  "it": "In Impostazioni, un tocco o il passaggio del mouse su una sezione ora copre tutta la barra."
  }
 }

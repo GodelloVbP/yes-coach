@@ -86,6 +86,22 @@ try:
             page.click('#fd-off-go')
             check('it goes to Settings and does not switch calories on by itself', until(lambda: page.is_visible('#v-settings')) and page.evaluate("document.querySelector('#fd-off') && !document.querySelector('#fd-off').hidden"), page.evaluate("location.hash"))
         errs = session(pw, be, ALICE, s4, width=390); check('no page errors (calories hidden)', not errs, errs)
+        # ---- 5. Settings: a section's hover and press cover the whole bar, not a box round the text
+        be = Backend(); seed(be)
+        def s5(page):
+            page.click('#tab-settings'); page.wait_for_selector('#v-settings .set-tog', state='visible')
+            geo = page.evaluate("""() => [...document.querySelectorAll('#v-settings section.fold')].filter((s) => s.getClientRects().length).map((s) => { const a = s.getBoundingClientRect(), b = s.querySelector('.set-tog').getBoundingClientRect(); return [Math.round(a.left - b.left), Math.round(a.right - b.right), Math.round(b.height)]; })""")
+            check('there are sections to check', len(geo) >= 3, geo)
+            check('each toggle spans its whole bar, edge to edge', all(g[0] == 0 and g[1] == 0 for g in geo), geo)
+            check('and is at least 44 px tall', all(g[2] >= 44 for g in geo), geo)
+            tog = page.locator('#v-settings section.fold .set-tog').first
+            tog.hover(); page.wait_for_timeout(500)
+            bg_tog = tog.evaluate("e => getComputedStyle(e).backgroundColor")
+            bg_sec = tog.evaluate("e => getComputedStyle(e.closest('section')).backgroundColor")
+            check('hovering colours the toggle, which is the whole bar', bg_tog not in ('rgba(0, 0, 0, 0)', 'transparent') and bg_tog != bg_sec, (bg_tog, bg_sec))
+            tog.click(); page.wait_for_timeout(300)
+            check('and a click opens it', tog.get_attribute('aria-expanded') == 'true')
+        errs = session(pw, be, ALICE, s5, width=390); check('no page errors (settings bars)', not errs, errs)
 finally:
     server.terminate()
 done()
