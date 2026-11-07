@@ -20,6 +20,7 @@ A free, ad-free workout tracker. Static site on GitHub Pages, accounts and data 
 | `fonts/` | Barlow and Barlow Condensed (SIL Open Font License), served from this site instead of Google Fonts. |
 | `manifest.webmanifest`, `icon-*.png` | Install to home screen. |
 | `privacy.html` | Privacy page, linked from sign-in and Settings. |
+| `CONTRIBUTING.md` | How to work on the app: what to edit, the build, the tests, design and translation rules, the connector deploy. |
 
 ## One-time setup
 
