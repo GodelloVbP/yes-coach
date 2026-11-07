@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-z1A69zwlU2+U0OHxQkXsXIBccOX+hKxToCKxzw/1o1M=' 'sha256-fJ2XKPBVXaEzgqk91hWpWyZOCdzZ5QuNyB3cy1KKmOU=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-07 12:21Z">
+<meta name="yc-build" content="2026-11-07 12:29Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -122,25 +122,25 @@ html { scroll-padding-top: calc(var(--stick-h, 56px) + 0.75rem); scrollbar-gutte
 .tab[aria-selected="true"], .tab[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--ink); }
 
 /* ---- main navigation: a bottom bar on phones, a sidebar on wide screens. One angled frame primitive for everything that is a rectangle in the app's style. ---- */
-:root { --nav-h: 64px; --side-w: 15rem; }
+:root { --nav-h: 52px; --nav-safe: calc(env(safe-area-inset-bottom, 0px) * 0.5); --side-w: 15rem; } /* half the home-indicator space is enough under the buttons */
 .angled { position: relative; isolation: isolate; }
 .angled::before { content: ''; position: absolute; inset: 0; z-index: -1; transform: skewX(-14deg); background: var(--ang-bg, var(--paper)); border: 2px solid var(--ang-bd, var(--ctl)); }
 .angled.pop { --ang-bg: var(--pop); --ang-bd: var(--pop); }
 .menu-cur { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink); }
 .ab-in { justify-content: flex-start; }
-.mainnav { position: fixed; z-index: 15; left: 0; right: 0; bottom: 0; display: flex; background: var(--paper); border-top: 2px solid var(--ink); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.mainnav { position: fixed; z-index: 15; left: 0; right: 0; bottom: 0; display: flex; background: var(--paper); border-top: 2px solid var(--ink); padding-bottom: var(--nav-safe); }
 .nav-mark { display: none; }
 .mainnav .tab { position: relative; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: var(--nav-h); padding: 0 0.125rem; border: 0; font-size: 0.8125rem; letter-spacing: 0.05em; font-weight: 700; color: var(--ink-soft); isolation: isolate; }
 .mainnav .tab svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 .mainnav .tab[aria-selected="true"], .mainnav .tab.in-more { color: var(--ink); }
-.mainnav .tab[aria-selected="true"]::after, .mainnav .tab.in-more::after { content: ''; position: absolute; top: -2px; left: 22%; right: 22%; height: 4px; background: var(--pop); transform: skewX(-14deg); }
+.mainnav .tab[aria-selected="true"]::after, .mainnav .tab.in-more::after { content: ''; position: absolute; top: -2px; left: 22%; right: 22%; height: 2px; background: var(--pop); transform: skewX(-14deg); }
 .tab-sub { display: none !important; }
 .nav-dot { display: none; position: absolute; top: 9px; left: calc(50% + 9px); width: 10px; height: 10px; border-radius: 50%; background: var(--pop); border: 2px solid var(--paper); }
 .mainnav:has(#tab-feedback.tk-dot) .nav-dot { display: block; }
-body { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px)); }
+body { padding-bottom: calc(var(--nav-h) + var(--nav-safe)); }
 body.in-session { padding-bottom: 0; }
 body.in-session .mainnav { display: none; }
-body:not(.in-session) .restbar { bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px)); padding-bottom: 0; }
+body:not(.in-session) .restbar { bottom: calc(var(--nav-h) + var(--nav-safe)); padding-bottom: 0; }
 @media (min-width: 64rem) {
   .appbar { display: none; }
   body, body.in-session { padding-bottom: 0; padding-left: var(--side-w); }
