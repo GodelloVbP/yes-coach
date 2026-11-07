@@ -108,7 +108,7 @@ const isWork = (st: Json): boolean => !!st && st.kind !== 'warmup' && st.kind !=
 const runOut = (st: Json): Json => {
   if (st.km == null && st.elev == null && !st.where) return {};
   const pace = st.km > 0 && st.minutes > 0 ? Math.round((st.minutes / st.km) * 60) : null;
-  return { distance_km: st.km ?? null, altitude_gain_m: st.elev ?? null, where: st.where === 'treadmill' ? 'treadmill' : st.where ? 'outdoors' : null, pace_min_per_km: pace == null ? null : Math.floor(pace / 60) + ':' + String(pace % 60).padStart(2, '0') };
+  return { distance_km: st.km ?? null, altitude_gain_m: st.elev ?? null, where: st.where === 'treadmill' ? 'treadmill' : st.where ? 'outdoors' : null, pace_min_per_km: pace == null ? null : Math.floor(pace / 60) + ':' + String(pace % 60).padStart(2, '0'), speed_kmh: st.km > 0 && st.minutes > 0 ? Math.round((st.km / (st.minutes / 60)) * 10) / 10 : null };
 };
 const sessionOut = (path: string, s: Json, ex: Record<string, Json>, days: Record<string, Json>): Json => {
   const by: Record<string, Json[]> = {};
@@ -436,7 +436,7 @@ const TOOLS: Tool[] = [
   {
     name: 'get_sessions', title: 'Get logged sessions', annotations: RO,
     inputSchema: obj({ from: { type: 'string', description: 'First date, YYYY-MM-DD. Optional.' }, to: { type: 'string', description: 'Last date, YYYY-MM-DD. Optional.' }, limit: { type: 'integer', description: 'How many sessions, newest first. Default 10, most 60.' } }),
-    description: 'Logged sessions, newest first, with every ticked set per exercise (reps, load, set type, reps in reserve, notes; for runs also distance, altitude gain, treadmill or outdoors, and pace).',
+    description: 'Logged sessions, newest first, with every ticked set per exercise (reps, load, set type, reps in reserve, notes; for runs also distance, altitude gain, treadmill or outdoors, pace and speed).',
     run: async (db, a) => {
       if (a.from != null && !isDate(a.from)) fail('from must be YYYY-MM-DD.');
       if (a.to != null && !isDate(a.to)) fail('to must be YYYY-MM-DD.');
