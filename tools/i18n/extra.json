@@ -2056,5 +2056,355 @@
   "de": "Lieber übersetzt? Einstellungen, Sprachen, Übungsnamen übersetzen.",
   "fr": "Tu les préfères traduits ? Réglages, Langues, Traduire les noms des exercices.",
   "it": "Li preferisci tradotti? Impostazioni, Lingue, Traduci i nomi degli esercizi."
+ },
+ "Put your planned days in Apple, Google or Outlook calendar.": {
+  "nl": "Zet je geplande dagen in je Apple-, Google- of Outlook-agenda.",
+  "es": "Pon tus días planificados en el calendario de Apple, Google u Outlook.",
+  "de": "Trage deine geplanten Tage in den Apple-, Google- oder Outlook-Kalender ein.",
+  "fr": "Ajoute tes jours prévus à ton agenda Apple, Google ou Outlook.",
+  "it": "Metti i tuoi giorni pianificati nel calendario Apple, Google o Outlook."
+ },
+ "Previous month": {
+  "nl": "Vorige maand",
+  "es": "Mes anterior",
+  "de": "Voriger Monat",
+  "fr": "Mois précédent",
+  "it": "Mese precedente"
+ },
+ "Next month": {
+  "nl": "Volgende maand",
+  "es": "Mes siguiente",
+  "de": "Nächster Monat",
+  "fr": "Mois suivant",
+  "it": "Mese successivo"
+ },
+ "• planned · ✓ done. Tap a day to open its week.": {
+  "nl": "• gepland · ✓ gedaan. Tik op een dag om de week te openen.",
+  "es": "• planificado · ✓ hecho. Toca un día para abrir su semana.",
+  "de": "• geplant · ✓ erledigt. Tippe auf einen Tag, um die Woche zu öffnen.",
+  "fr": "• prévu · ✓ fait. Touche un jour pour ouvrir sa semaine.",
+  "it": "• pianificato · ✓ fatto. Tocca un giorno per aprire la sua settimana."
+ },
+ "Custom workout": {
+  "nl": "Eigen training",
+  "es": "Entrenamiento libre",
+  "de": "Freies Training",
+  "fr": "Séance libre",
+  "it": "Allenamento libero"
+ },
+ "Starts blank. Add what you do today, like a run.": {
+  "nl": "Begint leeg. Voeg toe wat je vandaag doet, zoals een hardloopronde.",
+  "es": "Empieza en blanco. Añade lo que haces hoy, como una carrera.",
+  "de": "Startet leer. Füge hinzu, was du heute machst, zum Beispiel einen Lauf.",
+  "fr": "Démarre vide. Ajoute ce que tu fais aujourd'hui, par exemple une course.",
+  "it": "Parte vuoto. Aggiungi quello che fai oggi, per esempio una corsa."
+ },
+ "Start blank workout": {
+  "nl": "Start lege training",
+  "es": "Empezar en blanco",
+  "de": "Leer starten",
+  "fr": "Démarrer vide",
+  "it": "Inizia vuoto"
+ },
+ "Name of the workout": {
+  "nl": "Naam van de training",
+  "es": "Nombre del entrenamiento",
+  "de": "Name des Trainings",
+  "fr": "Nom de la séance",
+  "it": "Nome dell'allenamento"
+ },
+ "The workout was not saved. Check your connection.": {
+  "nl": "De training is niet opgeslagen. Controleer je verbinding.",
+  "es": "El entrenamiento no se guardó. Revisa tu conexión.",
+  "de": "Das Training wurde nicht gespeichert. Prüfe deine Verbindung.",
+  "fr": "La séance n'a pas été enregistrée. Vérifie ta connexion.",
+  "it": "L'allenamento non è stato salvato. Controlla la connessione."
+ },
+ "Outside": {
+  "nl": "Buiten",
+  "es": "Al aire libre",
+  "de": "Draußen",
+  "fr": "Dehors",
+  "it": "All'aperto"
+ },
+ "Treadmill": {
+  "nl": "Loopband",
+  "es": "Cinta",
+  "de": "Laufband",
+  "fr": "Tapis",
+  "it": "Tapis roulant"
+ },
+ "Distance in km": {
+  "nl": "Afstand in km",
+  "es": "Distancia en km",
+  "de": "Distanz in km",
+  "fr": "Distance en km",
+  "it": "Distanza in km"
+ },
+ "Altitude gain in metres": {
+  "nl": "Hoogtewinst in meters",
+  "es": "Desnivel positivo en metros",
+  "de": "Höhenmeter in Metern",
+  "fr": "Dénivelé positif en mètres",
+  "it": "Dislivello positivo in metri"
+ },
+ "Pace: add time and distance": {
+  "nl": "Tempo: vul tijd en afstand in",
+  "es": "Ritmo: añade tiempo y distancia",
+  "de": "Tempo: Zeit und Distanz eintragen",
+  "fr": "Allure : ajoute le temps et la distance",
+  "it": "Ritmo: aggiungi tempo e distanza"
+ },
+ "Pace {0}": {
+  "nl": "Tempo {0}",
+  "es": "Ritmo {0}",
+  "de": "Tempo {0}",
+  "fr": "Allure {0}",
+  "it": "Ritmo {0}"
+ },
+ "Create your own food": {
+  "nl": "Maak je eigen eten",
+  "es": "Crea tu propio alimento",
+  "de": "Eigenes Lebensmittel anlegen",
+  "fr": "Crée ton propre aliment",
+  "it": "Crea il tuo alimento"
+ },
+ "Edit your food": {
+  "nl": "Pas je eten aan",
+  "es": "Edita tu alimento",
+  "de": "Dein Lebensmittel bearbeiten",
+  "fr": "Modifie ton aliment",
+  "it": "Modifica il tuo alimento"
+ },
+ "Numbers per 100": {
+  "nl": "Waarden per 100",
+  "es": "Valores por 100",
+  "de": "Werte pro 100",
+  "fr": "Valeurs pour 100",
+  "it": "Valori per 100"
+ },
+ "grams (g)": {
+  "nl": "gram (g)",
+  "es": "gramos (g)",
+  "de": "Gramm (g)",
+  "fr": "grammes (g)",
+  "it": "grammi (g)"
+ },
+ "millilitres (ml)": {
+  "nl": "milliliter (ml)",
+  "es": "mililitros (ml)",
+  "de": "Milliliter (ml)",
+  "fr": "millilitres (ml)",
+  "it": "millilitri (ml)"
+ },
+ "Save food": {
+  "nl": "Eten opslaan",
+  "es": "Guardar alimento",
+  "de": "Lebensmittel speichern",
+  "fr": "Enregistrer l'aliment",
+  "it": "Salva alimento"
+ },
+ "Edit this food": {
+  "nl": "Dit eten aanpassen",
+  "es": "Editar este alimento",
+  "de": "Dieses Lebensmittel bearbeiten",
+  "fr": "Modifier cet aliment",
+  "it": "Modifica questo alimento"
+ },
+ "Forget this food": {
+  "nl": "Dit eten vergeten",
+  "es": "Olvidar este alimento",
+  "de": "Dieses Lebensmittel vergessen",
+  "fr": "Oublier cet aliment",
+  "it": "Dimentica questo alimento"
+ },
+ "All numbers are per 100 g, as printed on the package. Use 0 for none.": {
+  "nl": "Alle waarden zijn per 100 g, zoals op de verpakking staat. Gebruik 0 als er niets in zit.",
+  "es": "Todos los valores son por 100 g, como figuran en el envase. Usa 0 si no tiene.",
+  "de": "Alle Werte gelten pro 100 g, wie auf der Packung steht. Nimm 0, wenn nichts enthalten ist.",
+  "fr": "Toutes les valeurs sont pour 100 g, comme sur l'emballage. Mets 0 s'il n'y en a pas.",
+  "it": "Tutti i valori sono per 100 g, come sulla confezione. Usa 0 se non ce n'è."
+ },
+ "All numbers are per 100 ml, as printed on the package. Use 0 for none.": {
+  "nl": "Alle waarden zijn per 100 ml, zoals op de verpakking staat. Gebruik 0 als er niets in zit.",
+  "es": "Todos los valores son por 100 ml, como figuran en el envase. Usa 0 si no tiene.",
+  "de": "Alle Werte gelten pro 100 ml, wie auf der Packung steht. Nimm 0, wenn nichts enthalten ist.",
+  "fr": "Toutes les valeurs sont pour 100 ml, comme sur l'emballage. Mets 0 s'il n'y en a pas.",
+  "it": "Tutti i valori sono per 100 ml, come sulla confezione. Usa 0 se non ce n'è."
+ },
+ "Type the numbers from the package, to use again": {
+  "nl": "Typ de waarden van de verpakking over, om opnieuw te gebruiken",
+  "es": "Escribe los valores del envase para usarlos de nuevo",
+  "de": "Gib die Werte von der Packung ein, um sie wiederzuverwenden",
+  "fr": "Saisis les valeurs de l'emballage pour les réutiliser",
+  "it": "Scrivi i valori dalla confezione, per riusarli"
+ },
+ "+ Save “{0}” as a food to use again": {
+  "nl": "+ “{0}” opslaan als eten om opnieuw te gebruiken",
+  "es": "+ Guardar «{0}» como alimento para usarlo de nuevo",
+  "de": "+ „{0}“ als Lebensmittel speichern und wiederverwenden",
+  "fr": "+ Enregistrer « {0} » comme aliment à réutiliser",
+  "it": "+ Salva «{0}» come alimento da riusare"
+ },
+ "Give it a name with letters or numbers.": {
+  "nl": "Geef het een naam met letters of cijfers.",
+  "es": "Ponle un nombre con letras o números.",
+  "de": "Gib einen Namen mit Buchstaben oder Zahlen ein.",
+  "fr": "Donne-lui un nom avec des lettres ou des chiffres.",
+  "it": "Dagli un nome con lettere o numeri."
+ },
+ "The list of your foods is full. Forget one first.": {
+  "nl": "De lijst met je eigen eten is vol. Vergeet eerst iets.",
+  "es": "La lista de tus alimentos está llena. Olvida uno primero.",
+  "de": "Die Liste deiner Lebensmittel ist voll. Vergiss zuerst eines.",
+  "fr": "La liste de tes aliments est pleine. Oublie-en un d'abord.",
+  "it": "L'elenco dei tuoi alimenti è pieno. Dimentica prima un alimento."
+ },
+ "The food was not saved. Check your connection.": {
+  "nl": "Het eten is niet opgeslagen. Controleer je verbinding.",
+  "es": "El alimento no se guardó. Revisa tu conexión.",
+  "de": "Das Lebensmittel wurde nicht gespeichert. Prüfe deine Verbindung.",
+  "fr": "L'aliment n'a pas été enregistré. Vérifie ta connexion.",
+  "it": "L'alimento non è stato salvato. Controlla la connessione."
+ },
+ "Your own food. The numbers are per 100 g, as you entered them.": {
+  "nl": "Je eigen eten. De waarden zijn per 100 g, zoals je ze invulde.",
+  "es": "Tu propio alimento. Los valores son por 100 g, tal como los introdujiste.",
+  "de": "Dein eigenes Lebensmittel. Die Werte gelten pro 100 g, wie du sie eingegeben hast.",
+  "fr": "Ton propre aliment. Les valeurs sont pour 100 g, comme tu les as saisies.",
+  "it": "Il tuo alimento. I valori sono per 100 g, come li hai inseriti."
+ },
+ "Your own food. The numbers are per 100 ml, as you entered them.": {
+  "nl": "Je eigen eten. De waarden zijn per 100 ml, zoals je ze invulde.",
+  "es": "Tu propio alimento. Los valores son por 100 ml, tal como los introdujiste.",
+  "de": "Dein eigenes Lebensmittel. Die Werte gelten pro 100 ml, wie du sie eingegeben hast.",
+  "fr": "Ton propre aliment. Les valeurs sont pour 100 ml, comme tu les as saisies.",
+  "it": "Il tuo alimento. I valori sono per 100 ml, come li hai inseriti."
+ },
+ "Your own": {
+  "nl": "Eigen",
+  "es": "Propio",
+  "de": "Eigenes",
+  "fr": "Perso",
+  "it": "Tuo"
+ },
+ "Fill in the {0} per 100 {1} as a number up to 100. Use 0 for none.": {
+  "nl": "Vul de {0} per 100 {1} in als getal tot 100. Gebruik 0 als er niets in zit.",
+  "es": "Rellena {0} por 100 {1} como un número hasta 100. Usa 0 si no tiene.",
+  "de": "Trage {0} pro 100 {1} als Zahl bis 100 ein. Nimm 0, wenn nichts enthalten ist.",
+  "fr": "Renseigne {0} pour 100 {1} avec un nombre jusqu'à 100. Mets 0 s'il n'y en a pas.",
+  "it": "Inserisci {0} per 100 {1} come numero fino a 100. Usa 0 se non ce n'è."
+ },
+ "Protein, carbs and fat together cannot be more than 100 g in 100 {0}.": {
+  "nl": "Eiwit, koolhydraten en vet samen kunnen niet meer zijn dan 100 g in 100 {0}.",
+  "es": "Proteína, hidratos y grasa juntos no pueden superar 100 g en 100 {0}.",
+  "de": "Eiweiß, Kohlenhydrate und Fett zusammen können nicht mehr als 100 g in 100 {0} sein.",
+  "fr": "Protéines, glucides et lipides ensemble ne peuvent pas dépasser 100 g dans 100 {0}.",
+  "it": "Proteine, carboidrati e grassi insieme non possono superare 100 g in 100 {0}."
+ },
+ "Calories per 100 {0} are a number up to 900.": {
+  "nl": "Calorieën per 100 {0} zijn een getal tot 900.",
+  "es": "Las calorías por 100 {0} son un número hasta 900.",
+  "de": "Kalorien pro 100 {0} sind eine Zahl bis 900.",
+  "fr": "Les calories pour 100 {0} sont un nombre jusqu'à 900.",
+  "it": "Le calorie per 100 {0} sono un numero fino a 900."
+ },
+ "Fill in the calories (kcal) per 100 {0}.": {
+  "nl": "Vul de calorieën (kcal) per 100 {0} in.",
+  "es": "Rellena las calorías (kcal) por 100 {0}.",
+  "de": "Trage die Kalorien (kcal) pro 100 {0} ein.",
+  "fr": "Renseigne les calories (kcal) pour 100 {0}.",
+  "it": "Inserisci le calorie (kcal) per 100 {0}."
+ },
+ "Saved {0}. Search finds it first from now on.": {
+  "nl": "{0} opgeslagen. Zoeken vindt het voortaan als eerste.",
+  "es": "{0} guardado. La búsqueda lo mostrará primero a partir de ahora.",
+  "de": "{0} gespeichert. Die Suche zeigt es ab jetzt zuerst.",
+  "fr": "{0} enregistré. La recherche le propose désormais en premier.",
+  "it": "{0} salvato. La ricerca lo mostra per primo da ora."
+ },
+ "Updated {0}. Search finds it first from now on.": {
+  "nl": "{0} bijgewerkt. Zoeken vindt het voortaan als eerste.",
+  "es": "{0} actualizado. La búsqueda lo mostrará primero a partir de ahora.",
+  "de": "{0} aktualisiert. Die Suche zeigt es ab jetzt zuerst.",
+  "fr": "{0} mis à jour. La recherche le propose désormais en premier.",
+  "it": "{0} aggiornato. La ricerca lo mostra per primo da ora."
+ },
+ "Forgot {0}. Entries you already logged stay as they are.": {
+  "nl": "{0} vergeten. Wat je al hebt gelogd blijft zoals het is.",
+  "es": "{0} olvidado. Lo que ya registraste se queda como está.",
+  "de": "{0} vergessen. Bereits eingetragene Einträge bleiben, wie sie sind.",
+  "fr": "{0} oublié. Ce que tu as déjà enregistré reste tel quel.",
+  "it": "{0} dimenticato. Quello che hai già registrato resta com'è."
+ },
+ "The request is copied. Paste it in Claude.": {
+  "nl": "Het verzoek is gekopieerd. Plak het in Claude.",
+  "es": "La petición está copiada. Pégala en Claude.",
+  "de": "Die Anfrage ist kopiert. Füge sie in Claude ein.",
+  "fr": "La demande est copiée. Colle-la dans Claude.",
+  "it": "La richiesta è copiata. Incollala in Claude."
+ },
+ "Running on a treadmill. Log minutes, distance and climb; the pace is worked out for you.": {
+  "nl": "Hardlopen op een loopband. Log minuten, afstand en hoogtewinst; het tempo wordt voor je uitgerekend.",
+  "es": "Correr en una cinta. Registra minutos, distancia y desnivel; el ritmo se calcula por ti.",
+  "de": "Laufen auf dem Laufband. Trage Minuten, Distanz und Höhenmeter ein; das Tempo wird für dich berechnet.",
+  "fr": "Course sur tapis. Note les minutes, la distance et le dénivelé ; l'allure est calculée pour toi.",
+  "it": "Corsa sul tapis roulant. Registra minuti, distanza e dislivello; il ritmo viene calcolato per te."
+ },
+ "A run outside. Log minutes, distance and climb; the pace is worked out for you.": {
+  "nl": "Een hardloopronde buiten. Log minuten, afstand en hoogtewinst; het tempo wordt voor je uitgerekend.",
+  "es": "Una carrera al aire libre. Registra minutos, distancia y desnivel; el ritmo se calcula por ti.",
+  "de": "Ein Lauf draußen. Trage Minuten, Distanz und Höhenmeter ein; das Tempo wird für dich berechnet.",
+  "fr": "Une course dehors. Note les minutes, la distance et le dénivelé ; l'allure est calculée pour toi.",
+  "it": "Una corsa all'aperto. Registra minuti, distanza e dislivello; il ritmo viene calcolato per te."
+ },
+ "Custom workouts, runs and your own foods": {
+  "nl": "Eigen trainingen, hardlopen en je eigen eten",
+  "es": "Entrenamientos libres, carreras y tus propios alimentos",
+  "de": "Freie Trainings, Läufe und eigene Lebensmittel",
+  "fr": "Séances libres, courses et tes propres aliments",
+  "it": "Allenamenti liberi, corse e i tuoi alimenti"
+ },
+ "Change today's workout now has Custom workout. It starts blank, for whatever you do today.": {
+  "nl": "Pas de training van vandaag aan heeft nu Eigen training. Die begint leeg, voor wat je vandaag ook doet.",
+  "es": "Cambiar el entrenamiento de hoy ahora incluye Entrenamiento libre. Empieza en blanco, para lo que hagas hoy.",
+  "de": "Heutiges Workout ändern hat jetzt Freies Training. Es startet leer, für alles, was du heute machst.",
+  "fr": "Modifier l’entraînement du jour propose maintenant Séance libre. Elle démarre vide, pour ce que tu fais aujourd’hui.",
+  "it": "Modifica l'allenamento di oggi ora ha Allenamento libero. Parte vuoto, per qualsiasi cosa fai oggi."
+ },
+ "Runs track distance, altitude gain and where you ran: outside or on a treadmill. The pace per km is worked out for you.": {
+  "nl": "Bij hardlopen houd je afstand, hoogtewinst en locatie bij: buiten of op de loopband. Het tempo per km wordt voor je uitgerekend.",
+  "es": "En las carreras se registran distancia, desnivel y dónde corriste: al aire libre o en cinta. El ritmo por km se calcula por ti.",
+  "de": "Bei Läufen werden Distanz, Höhenmeter und der Ort festgehalten: draußen oder auf dem Laufband. Das Tempo pro km wird für dich berechnet.",
+  "fr": "Les courses suivent la distance, le dénivelé et le lieu : dehors ou sur tapis. L'allure au km est calculée pour toi.",
+  "it": "Le corse tengono traccia di distanza, dislivello e luogo: all'aperto o sul tapis roulant. Il ritmo al km viene calcolato per te."
+ },
+ "Create your own food with the numbers per 100 g or 100 ml. Claude can add one too: tell it the numbers from the package.": {
+  "nl": "Maak je eigen eten met de waarden per 100 g of 100 ml. Claude kan er ook een toevoegen: geef de waarden van de verpakking door.",
+  "es": "Crea tu propio alimento con los valores por 100 g o 100 ml. Claude también puede añadir uno: dile los valores del envase.",
+  "de": "Lege ein eigenes Lebensmittel mit den Werten pro 100 g oder 100 ml an. Claude kann das auch: nenne ihm die Werte von der Packung.",
+  "fr": "Crée ton propre aliment avec les valeurs pour 100 g ou 100 ml. Claude peut aussi en ajouter un : donne-lui les valeurs de l'emballage.",
+  "it": "Crea il tuo alimento con i valori per 100 g o 100 ml. Anche Claude può aggiungerne uno: digli i valori della confezione."
+ },
+ "Train shows the whole month under the week, and Add to calendar is now a big button.": {
+  "nl": "Training toont de hele maand onder de week, en Aan agenda toevoegen is nu een grote knop.",
+  "es": "Entrenar muestra todo el mes bajo la semana, y Añadir al calendario ahora es un botón grande.",
+  "de": "Training zeigt den ganzen Monat unter der Woche, und Zum Kalender hinzufügen ist jetzt ein großer Button.",
+  "fr": "Entraînement affiche tout le mois sous la semaine, et Ajouter au calendrier est maintenant un grand bouton.",
+  "it": "Allenamento mostra l'intero mese sotto la settimana, e Aggiungi al calendario ora è un pulsante grande."
+ },
+ "After you send a day to Claude, you land back on Train.": {
+  "nl": "Nadat je een dag naar Claude stuurt, kom je terug op Training.",
+  "es": "Después de enviar un día a Claude, vuelves a Entrenar.",
+  "de": "Nachdem du einen Tag an Claude schickst, landest du wieder im Training.",
+  "fr": "Après avoir envoyé une journée à Claude, tu reviens sur Entraînement.",
+  "it": "Dopo aver inviato un giorno a Claude, torni su Allenamento."
+ },
+ "On a wide screen the notices at the top no longer cover the page.": {
+  "nl": "Op een breed scherm bedekken de meldingen bovenaan de pagina niet meer.",
+  "es": "En una pantalla ancha, los avisos de arriba ya no tapan la página.",
+  "de": "Auf einem breiten Bildschirm verdecken die Hinweise oben die Seite nicht mehr.",
+  "fr": "Sur un grand écran, les avis en haut ne cachent plus la page.",
+  "it": "Su uno schermo largo gli avvisi in alto non coprono più la pagina."
  }
 }
