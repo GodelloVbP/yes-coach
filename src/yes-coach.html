@@ -1363,7 +1363,7 @@ body.fin-open { overflow: hidden; }
     <div class="set-wrap in">
       <section aria-labelledby="h-me">
         <h2 id="h-me">About you</h2>
-        <p class="note">Only added to the text you copy for an AI coach or trainer (Copy day and the export). Stored privately in your own account.</p>
+        <p class="note">Used when a plan is built or adjusted, for food targets, and in the text you copy for an AI. Stored privately in your own account.</p>
         <div class="ed-fields" id="me-fields"></div>
         <span id="me-state" class="note" aria-live="polite"></span>
       </section>
@@ -1390,9 +1390,9 @@ body.fin-open { overflow: hidden; }
       </section>
       <section aria-labelledby="h-imp" id="imp">
         <h2 id="h-imp">Get a plan or import</h2>
-        <p class="note">Your coach builds a plan and brings your history over from another app, right here in Yes Coach.</p>
+        <p class="note">Build a plan from a few answers, and bring your history over from another app.</p>
         <div class="foot-row"><button class="skew pop" type="button" id="imp-wizard"><span>Build my plan or import</span></button></div>
-        <p class="note">Prefer your own chat, or is Claude not available here? The text below does the same in any AI chat: what your old app's export means, your details above, and how to write it all into Yes Coach.</p>
+        <p class="note">Prefer to work in your own AI chat? The text below gives it what your old app's export means and your details above.</p>
         <div class="ed-fields"><label class="ed-f wide"><span class="lab">Coming from</span><select id="imp-src"></select></label></div>
         <p class="note" id="imp-how"></p>
         <div class="ex-acts" id="imp-filerow">
@@ -1795,6 +1795,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['8 Nov 2026', "A new plan starts today", ["A plan you build starts today, or tomorrow if you pick that, instead of on the next Monday.", "Sessions a week are saved with your plan. Changing About you no longer moves your week.", "On the web, Build my plan goes straight to the copy-and-paste step, and the request is shorter: only exercises for where you train, and the answer comes in your language."]],
     ['7 Nov 2026', 'Your schedule and your own foods', ["Plan: the days you tick are the days you can train. Set how many sessions a week you want, and they are spread over those days.", "Your own foods have their own place in Food: create one, edit it, or ask Claude to add it.", "The undo bar no longer covers the page on a tablet or computer.", "I ate something is gone.", "Switching tabs no longer slides or resizes the page."]],
     ['7 Nov 2026', 'Custom days and run speed', ["Every custom workout is its own day, shows in the week and the month while it is in progress, and can be continued from there.", "Delete a day from the session menu or from the week. Undo brings it back.", "Runs show pace as min/km or km/h, your choice."]],
     ['7 Nov 2026', 'Fewer look-alike results', ["Foods that come out the same, like the different eggs or apples, now show as one result. Tap +2 almost the same to see the others."]],
@@ -6601,7 +6602,26 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (!sample) throw { code: 'unavailable' };
     return sample.json(prompt, { modelTier: tier, cache: false, signal: W && W.ctl ? W.ctl.signal : undefined });
   };
-  const LIB_LIST = LIB.map((l) => l.id + ' | ' + l.name + ' | ' + l.group + ' | ' + l.equipment + (l.shoulder === 'skip' ? ' | hard on shoulders' : '')).join('\n');
+  const libLine = (l) => l.id + ' | ' + l.name + ' | ' + l.group + ' | ' + l.equipment + (l.shoulder === 'skip' ? ' | hard on shoulders' : '');
+  const LIB_LIST = LIB.map(libLine).join('\n');
+  // What each place has. An exercise fits when one of its "or" options needs only these things.
+  const PLACE_KIT = {
+    home: /^(light )?(dumbbells?|bodyweight|none|bench|incline bench|decline bench|upright bench|box|step|wall|pad|mat|mini band|resistance band|jump rope|weighted backpack|bar|rings|ankle weight)$/,
+    bodyweight: /^(bodyweight|none|wall|step|pad|mat|bar|rings|box|bench|mini band|resistance band|jump rope|weighted backpack)$/,
+  };
+  const fitsPlace = (l, where) => {
+    const kit = PLACE_KIT[where];
+    if (!kit) return true;
+    return String(l.equipment || '').toLowerCase().split(/ or /).some((alt) => alt.split(/,\s*/).every((part) => kit.test(part.trim())));
+  };
+  // the exercise list for the AI: for home or bodyweight only what fits, plus every exercise already in the plan or the history
+  const libListFor = (where, keep = new Set()) => (PLACE_KIT[where] ? LIB.filter((l) => fitsPlace(l, where) || keep.has(l.id)).map(libLine).join('\n') : LIB_LIST);
+  const answerLang = () => {
+    const I = window.YC_I18N;
+    const code = I ? I.current() : 'en';
+    const l = I && code !== 'en' ? I.langs.find((x) => x.code === code) : null;
+    return l ? 'Write the summary, the day names, the focus and the notes in ' + l.english + '. Keep the JSON keys and the exercise ids as they are.' : '';
+  };
   const planPrompt = () => {
     const p = W.profile;
     const unmatched = W.rows ? [...new Set(W.rows.map((r) => r.ex))].filter((n) => !libMatch(n)).slice(0, 80) : [];
@@ -6610,7 +6630,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     o.push('## Their wishes', 'Days a week: ' + (p.days_per_week || 'not given, choose 3') + '. Session length: ' + (p.session_length ? LENGTH_PLAN[p.session_length] : 'not given, plan about 60 minutes') + '. Where: ' + (WHERE_LINE[p.where] || 'not given, assume a normal gym') + '.', '');
     if (W.adjust) o.push('## Their progress, last 3 months', adjustProgress(), '');
     else o.push('## Their history', W.rows ? historySummary(W.rows) : W.file && W.src === 'other' ? 'Their raw export (one row per set; read the columns from the header):\n' + W.file.text.slice(0, 60000) : 'None. They are starting fresh: the first week is for finding their weights (see the rules), and the summary should say so.', '');
-    o.push('## Exercises you may use (id | name | group | equipment)', LIB_LIST, '');
+    const keep = new Set();
+    if (W.rows) W.rows.forEach((r) => { const id = libMatch(r.ex); if (id) keep.add(id); });
+    if (W.adjust) currentPlanForAI().days.forEach((d) => d.items.forEach((it) => keep.add(it.ex)));
+    o.push('## Exercises you may use (id | name | group | equipment)', libListFor(p.where, keep), '');
     if (W.adjust) {
       const own = Object.entries(S.exercises).filter(([id]) => !libOfEx(id));
       if (own.length) o.push('## Their own exercises (not in the list; use them as "ex:<id>")', own.map(([id, e]) => 'ex:' + id + ' | ' + e.name + ' | ' + (e.group || '')).join('\n'), '');
@@ -6623,6 +6646,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     o.push('- reps is text such as "8", "8 to 10", "10 per arm", "max", "30 s". rest_s is rest in seconds. note is one short coaching cue or null.');
     o.push('- kind is Push (chest, shoulders, triceps), Pull (back, biceps), Legs, or Other for full-body or mixed days.');
     if (unmatched.length) o.push('- mapping: for each of these names from their old app, the matching exercise id from the list, or null when nothing matches: ' + unmatched.map((n) => JSON.stringify(n)).join(', '));
+    if (answerLang()) o.push('- ' + answerLang());
     o.push('', 'Answer with JSON only, in this shape:', '{"summary": "2 or 3 sentences on why this plan suits them", "days": [{"name": "Push A", "kind": "Push", "focus": "a few words", "items": [{"ex": "l04", "sets": 3, "reps": "6 to 8", "target": "60", "rest_s": 150, "note": "short cue"}]}], "weekdays": ["Mon", "Wed", "Fri"], "mapping": {"old name": "l04"}}');
     return o.filter((x) => x !== '').join('\n');
   };
@@ -6674,6 +6698,17 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   const intIn = (v, lo, hi, dflt) => { const n = Math.round(Number(v)); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : dflt; };
   // keep only what Yes Coach can use: known exercise ids, sane numbers, real weekdays
+  // The same weekly pattern, turned so that its first day falls on start: Mon, Wed, Fri from a Saturday is Sat, Mon, Wed.
+  // The list stays in that order, first day first; the schedule sorts it when it is saved.
+  const startOn = (wd, start) => {
+    const s0 = WEEKDAYS.indexOf(isoDow(start));
+    // where the pattern begins: the day after its longest gap (Mon in Mon, Wed, Fri; Sat in Sat, Mon, Wed)
+    const ix = wd.map((w) => WEEKDAYS.indexOf(w)).sort((a, b) => a - b);
+    let base = ix[0];
+    let gap = -1;
+    ix.forEach((d, i) => { const g = (d - ix[(i + ix.length - 1) % ix.length] + 7) % 7 || 7; if (g > gap) { gap = g; base = d; } });
+    return wd.map((w) => WEEKDAYS[(WEEKDAYS.indexOf(w) - base + s0 + 7) % 7]).sort((a, b) => ((WEEKDAYS.indexOf(a) - s0 + 7) % 7) - ((WEEKDAYS.indexOf(b) - s0 + 7) % 7));
+  };
   const cleanPlan = (p) => {
     const days = (Array.isArray(p && p.days) ? p.days : []).slice(0, 7).map((d, i) => ({
       name: String((d && d.name) || 'Day ' + (i + 1)).slice(0, 40),
@@ -6688,6 +6723,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     let wd = [...new Set((Array.isArray(p.weekdays) ? p.weekdays : []).map((x) => String(x).slice(0, 3)).filter((x) => WEEKDAYS.includes(x)))];
     if (!wd.length) wd = DAY_PATTERNS[W.profile.days_per_week] || DAY_PATTERNS[Math.min(days.length, 7)] || DAY_PATTERNS[3];
     wd.sort((a, b) => WEEKDAYS.indexOf(a) - WEEKDAYS.indexOf(b));
+    if (!W.adjust) wd = startOn(wd, addDays(today(), W.start || 0));
     const mapping = {};
     Object.entries((p.mapping && typeof p.mapping === 'object') ? p.mapping : {}).forEach(([k, v]) => { if (LIB_BY_ID.has(v)) mapping[k] = v; });
     return { days, weekdays: wd, summary: String(p.summary || '').slice(0, 600), mapping };
@@ -6735,7 +6771,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const wd = plan.weekdays;
       const sched = schedModel().mode === 'fixed' && wd.length === ids.length
         ? { enabled: true, mode: 'fixed', week: Object.fromEntries(WEEKDAYS.map((w) => [w, wd.includes(w) ? ids[wd.indexOf(w)] : ''])) }
-        : { enabled: true, mode: 'rotation', days: wd, rotation: ids };
+        : { enabled: true, mode: 'rotation', days: [...wd].sort((a, b) => WEEKDAYS.indexOf(a) - WEEKDAYS.indexOf(b)), rotation: ids, per_week: before && before.per_week && [...(before.days || [])].sort().join() === [...wd].sort().join() ? before.per_week : wd.length };
       W.before = before;
       await saveRoot(Object.assign({ schedule: sched }, before ? { schedule_before: before } : {}));
       return;
@@ -6758,7 +6794,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     }
     const prev = S.root && S.root.schedule && S.root.schedule.enabled && !W.before ? clone(S.root.schedule) : null;
     if (prev) W.before = prev;
-    await saveRoot(Object.assign({ schedule: { enabled: true, mode: 'rotation', days: plan.weekdays, rotation: ids }, profile: W.profile, export_ctx: exportCtx, intro_seen: true }, prev ? { schedule_before: prev } : {}));
+    await saveRoot(Object.assign({ schedule: { enabled: true, mode: 'rotation', days: [...plan.weekdays].sort((a, b) => WEEKDAYS.indexOf(a) - WEEKDAYS.indexOf(b)), rotation: ids, per_week: plan.weekdays.length }, profile: W.profile, export_ctx: exportCtx, intro_seen: true }, prev ? { schedule_before: prev } : {}));
     const byDate = d3.group(rows, (r) => r.date);
     const dates = [...byDate.keys()].filter((d) => !S.sessions[d]).sort();
     for (const [k, date] of dates.entries()) {
@@ -6788,7 +6824,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     prompt_too_large: 'Your history is too large to send in one go. Use the copy-and-paste way and attach the file instead.',
   };
   const coachError = (e) => COACH_ERRORS[e && e.code] || (['sampling_disabled', 'not_declared', 'session_expired'].includes(e && e.code) ? COACH_ERRORS.unavailable : 'The plan did not come back in a usable form. Try again.');
-  const newWizard = (preset = {}) => ({ adjust: !!preset.adjust, ask: '', step: 'start', src: preset.src && WIZ_SOURCES.some(([k]) => k === preset.src) ? preset.src : 'none', file: preset.file || null, rows: null, plan: null, chat: [], msg: '', profile: Object.assign({}, profile()), notes: exportCtx });
+  const newWizard = (preset = {}) => ({ adjust: !!preset.adjust, ask: '', start: 0, step: 'start', src: preset.src && WIZ_SOURCES.some(([k]) => k === preset.src) ? preset.src : 'none', file: preset.file || null, rows: null, plan: null, chat: [], msg: '', profile: Object.assign({}, profile()), notes: exportCtx });
   const openWizard = (preset) => {
     W = newWizard(preset);
     S.wiz = true;
@@ -6811,6 +6847,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     W.ctl = new AbortController();
     try {
       if (W.src !== 'none' && W.file && !W.rows && !(window.YC_WEB && W.src === 'other')) { wizStep('busy', 'Reading your ' + optName(WIZ_SOURCES, W.src) + ' export…'); W.rows = await parseExport(W.file, W.src); }
+      if (!(window.claude && window.claude.use)) { wizStep(window.YC_WEB ? 'manual' : 'error', window.YC_WEB ? '' : COACH_ERRORS.unavailable); return; } // no AI in this page: straight to the copy-and-paste step
       wizStep('busy', W.chat.length ? 'Your coach is changing the plan…' : 'Your coach is building your plan…');
       const plan = cleanPlan(await askCoach(planPrompt()));
       if (!plan) throw { code: 'empty_plan' };
@@ -6827,7 +6864,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     wizStep('saving', 'Saving your plan…');
     try {
       await savePlan((i, total) => { W.msg = 'Saving your history: ' + i + ' of ' + total + ' sessions…'; const m = $('#wiz .wz-msg'); if (m) m.textContent = W.msg; });
-      const first = W.plan.days[0].name + ' is up first on ' + W.plan.weekdays[0] + '.';
+      const first = W.adjust ? '' : W.plan.days[0].name + ' is up first ' + (W.start ? 'tomorrow' : 'today') + '.';
       const before = W.before;
       const adj = W.adjust;
       closeWizard();
@@ -6984,7 +7021,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (W.step === 'error') {
       box.append(h('p', 'wz-msg', W.msg));
       const fr = h('div', 'foot-row');
-      fr.append(btn('skew pop', 'Try again'), plainBtn('textbtn', 'Back', null, () => wizStep('start')), plainBtn('textbtn', 'Use the copy-and-paste way', null, () => { imp.src = W.src; imp.file = W.file; closeWizard(); openSettingFor($('#imp'), 'start'); }));
+      fr.append(btn('skew pop', 'Try again'), plainBtn('textbtn', 'Back', null, () => wizStep('start')), plainBtn('textbtn', 'Use the copy-and-paste way', null, () => { if (window.YC_WEB && W.failed !== 'save') { wizStep('manual'); return; } imp.src = W.src; imp.file = W.file; closeWizard(); openSettingFor($('#imp'), 'start'); }));
       fr.firstChild.addEventListener('click', () => (W.failed === 'save' ? saveAndClose() : buildPlan()));
       box.append(fr);
       return;
@@ -7000,7 +7037,17 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       else { const ul = h('ul', 'wz-items'); diff.forEach((x) => ul.append(h('li', '', x))); ch.append(ul); }
       box.append(ch);
     }
-    if (!W.adjust) box.append(h('p', 'note', 'Rolling on ' + plan.weekdays.join(', ') + ': ' + plan.days.map((d) => d.name).join(' → ') + '. Miss a day and the next one simply waits.'));
+    if (!W.adjust) {
+      box.append(chipRow('First workout', [[0, 'Today'], [1, 'Tomorrow']], W.start || 0, (v) => {
+        if ((W.start || 0) === v) return;
+        W.start = v;
+        plan.weekdays = startOn(plan.weekdays, addDays(today(), v));
+        renderWizard(true);
+      }));
+      const when = plan.days[0].name + ' ' + (W.start ? 'tomorrow' : 'today');
+      box.append(h('p', 'note', plan.weekdays.length < 2 ? when + ', then every week on ' + plan.weekdays[0] + '.'
+        : when + ', then ' + plan.weekdays.slice(1).join(', ') + ' each week, in the order ' + plan.days.map((d) => d.name).join(' → ') + '. Miss a day and the next one simply waits.'));
+    }
     const list = h('div', 'ed-items');
     plan.days.forEach((d) => {
       const it = h('div', 'ed-item wz-day');
@@ -7185,12 +7232,23 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const trainedToday = Object.values(S.sessions).some((s) => s.date === today() && hasDone(s));
     return { from: trainedToday ? addDays(today(), 1) : today(), pos: rotationPos(sc.rotation) };
   };
-  // Rotation: the picked weekdays are the days you can train. Sessions a week (set in Plan, else the number said in the set-up)
+  // Rotation: the picked weekdays are the days you can train. Sessions a week (schedule.per_week, set in Plan or with the plan)
   // is how many of them are used. With fewer sessions than picked days they are spread evenly over the picked days, week after
   // week, so the same weekdays are not needed every week. With as many sessions as picked days (or none given) every picked day is used.
   const perWeekOf = (sc) => {
-    const n = Math.round(Number(sc && sc.per_week) || Number(profile().days_per_week) || 0);
+    const n = Math.round(Number(sc && sc.per_week) || 0);
     return n >= 1 && n <= 7 ? n : 0;
+  };
+  // Older schedules had no per_week and took the number from the profile. Copy it over once, so changing About you
+  // later no longer moves the week, and the app reads a schedule the same way the connector does.
+  // adds to the patch written once on load (with the time zone): nothing when it ran before
+  const migratePerWeek = (patch) => {
+    const st = patch.settings;
+    if (st.sched_v >= 2) return;
+    st.sched_v = 2;
+    const sc = S.root.schedule;
+    const per = Math.round(Number(profile().days_per_week) || 0);
+    if (sc && sc.enabled && sc.mode === 'rotation' && !sc.per_week && per >= 1 && per < (sc.days || []).length) patch.schedule = Object.assign({}, sc, { per_week: per });
   };
   const RHYTHM_ANCHOR = '2024-01-01'; // a Monday: the rhythm is counted from the same day for everyone, so it never shifts when you look at another week
   let rhythm = { sig: '', upto: '', dates: [], credit: 0 };
@@ -7796,7 +7854,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     });
     set.append(h('span', 'lab', m.mode === 'fixed' ? 'You train on' : 'Days you can train'), chips);
     if (m.mode === 'rotation') {
-      // how many of those days are used: set here, else what was said in the set-up
+      // how many of those days are used
       const per = perWeekOf({ per_week: m.per });
       const pc = h('div', 'pw-days');
       pc.setAttribute('role', 'group');
@@ -8480,7 +8538,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     let tz = '';
     try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { tz = ''; }
     const st = S.root.settings || {};
-    if (tz && st.tz !== tz) saveRoot({ settings: Object.assign({}, st, { tz }) }).catch(() => {});
+    const patch = { settings: Object.assign({}, st, tz ? { tz } : {}) };
+    migratePerWeek(patch);
+    if (JSON.stringify(patch.settings) !== JSON.stringify(st) || patch.schedule) saveRoot(patch).catch(() => {});
   };
   const refresh = () => {
     S.ready = Object.values(S.loaded).every(Boolean);

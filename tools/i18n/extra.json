@@ -2784,5 +2784,110 @@
   "de": "Beim Wechseln der Tabs rutscht die Seite nicht mehr und ändert ihre Größe nicht mehr.",
   "fr": "Changer d'onglet ne fait plus glisser ni redimensionner la page.",
   "it": "Cambiare scheda non fa più scorrere né ridimensionare la pagina."
+ },
+ "First workout": {
+  "nl": "Eerste training",
+  "es": "Primer entrenamiento",
+  "de": "Erstes Training",
+  "fr": "Première séance",
+  "it": "Primo allenamento"
+ },
+ "Tomorrow": {
+  "nl": "Morgen",
+  "es": "Mañana",
+  "de": "Morgen",
+  "fr": "Demain",
+  "it": "Domani"
+ },
+ "{0} today, then {1} each week, in the order {2}. Miss a day and the next one simply waits.": {
+  "nl": "{0} vandaag, daarna elke week op {1}, in de volgorde {2}. Mis je een dag, dan wacht de volgende gewoon.",
+  "es": "{0} hoy, después {1} cada semana, en el orden {2}. Si te saltas un día, el siguiente simplemente espera.",
+  "de": "{0} heute, danach jede Woche am {1}, in der Reihenfolge {2}. Wenn du einen Tag verpasst, wartet der nächste einfach.",
+  "fr": "{0} aujourd’hui, puis chaque semaine le {1}, dans l’ordre {2}. Si tu manques un jour, le suivant attend simplement.",
+  "it": "{0} oggi, poi ogni settimana il {1}, nell’ordine {2}. Se salti un giorno, il successivo aspetta semplicemente."
+ },
+ "{0} tomorrow, then {1} each week, in the order {2}. Miss a day and the next one simply waits.": {
+  "nl": "{0} morgen, daarna elke week op {1}, in de volgorde {2}. Mis je een dag, dan wacht de volgende gewoon.",
+  "es": "{0} mañana, después {1} cada semana, en el orden {2}. Si te saltas un día, el siguiente simplemente espera.",
+  "de": "{0} morgen, danach jede Woche am {1}, in der Reihenfolge {2}. Wenn du einen Tag verpasst, wartet der nächste einfach.",
+  "fr": "{0} demain, puis chaque semaine le {1}, dans l’ordre {2}. Si tu manques un jour, le suivant attend simplement.",
+  "it": "{0} domani, poi ogni settimana il {1}, nell’ordine {2}. Se salti un giorno, il successivo aspetta semplicemente."
+ },
+ "{0} today, then every week on {1}.": {
+  "nl": "{0} vandaag, daarna elke week op {1}.",
+  "es": "{0} hoy, después cada semana el {1}.",
+  "de": "{0} heute, danach jede Woche am {1}.",
+  "fr": "{0} aujourd’hui, puis chaque semaine le {1}.",
+  "it": "{0} oggi, poi ogni settimana il {1}."
+ },
+ "{0} tomorrow, then every week on {1}.": {
+  "nl": "{0} morgen, daarna elke week op {1}.",
+  "es": "{0} mañana, después cada semana el {1}.",
+  "de": "{0} morgen, danach jede Woche am {1}.",
+  "fr": "{0} demain, puis chaque semaine le {1}.",
+  "it": "{0} domani, poi ogni settimana il {1}."
+ },
+ "{0} is up first today.": {
+  "nl": "{0} is vandaag als eerste aan de beurt.",
+  "es": "{0} va primero hoy.",
+  "de": "{0} ist heute als Erstes dran.",
+  "fr": "{0} passe en premier aujourd’hui.",
+  "it": "{0} è il primo oggi."
+ },
+ "{0} is up first tomorrow.": {
+  "nl": "{0} is morgen als eerste aan de beurt.",
+  "es": "{0} va primero mañana.",
+  "de": "{0} ist morgen als Erstes dran.",
+  "fr": "{0} passe en premier demain.",
+  "it": "{0} è il primo domani."
+ },
+ "Used when a plan is built or adjusted, for food targets, and in the text you copy for an AI. Stored privately in your own account.": {
+  "nl": "Gebruikt als er een plan wordt gemaakt of aangepast, voor je voedingsdoelen en in de tekst die je kopieert voor een AI. Privé opgeslagen in je eigen account.",
+  "es": "Se usa al crear o ajustar un plan, para tus objetivos de comida y en el texto que copias para una IA. Se guarda de forma privada en tu cuenta.",
+  "de": "Wird verwendet, wenn ein Plan erstellt oder angepasst wird, für deine Ernährungsziele und im Text, den du für eine KI kopierst. Privat in deinem eigenen Konto gespeichert.",
+  "fr": "Utilisé quand un plan est créé ou ajusté, pour tes objectifs alimentaires et dans le texte que tu copies pour une IA. Stocké en privé dans ton propre compte.",
+  "it": "Usato quando un piano viene creato o modificato, per i tuoi obiettivi alimentari e nel testo che copi per un’AI. Salvato in privato nel tuo account."
+ },
+ "Build a plan from a few answers, and bring your history over from another app.": {
+  "nl": "Maak een plan met een paar antwoorden en neem je geschiedenis mee uit een andere app.",
+  "es": "Crea un plan con unas pocas respuestas y trae tu historial desde otra app.",
+  "de": "Erstelle einen Plan aus ein paar Antworten und nimm deinen Verlauf aus einer anderen App mit.",
+  "fr": "Crée un plan en quelques réponses et récupère ton historique depuis une autre app.",
+  "it": "Crea un piano con poche risposte e porta la tua cronologia da un’altra app."
+ },
+ "Prefer to work in your own AI chat? The text below gives it what your old app's export means and your details above.": {
+  "nl": "Werk je liever in je eigen AI-chat? De tekst hieronder geeft die wat de export van je oude app betekent en je gegevens hierboven.",
+  "es": "¿Prefieres trabajar en tu propio chat de IA? El texto de abajo le explica qué significa la exportación de tu app anterior y le da tus datos de arriba.",
+  "de": "Arbeitest du lieber in deinem eigenen KI-Chat? Der Text unten erklärt ihm, was der Export deiner alten App bedeutet, und gibt ihm deine Angaben oben.",
+  "fr": "Tu préfères travailler dans ton propre chat IA ? Le texte ci-dessous lui explique ce que signifie l’export de ton ancienne app et lui donne tes informations ci-dessus.",
+  "it": "Preferisci lavorare nella tua chat AI? Il testo qui sotto le spiega cosa significa l’esportazione della tua vecchia app e le dà i tuoi dati qui sopra."
+ },
+ "A new plan starts today": {
+  "nl": "Een nieuw plan begint vandaag",
+  "es": "Un plan nuevo empieza hoy",
+  "de": "Ein neuer Plan beginnt heute",
+  "fr": "Un nouveau plan commence aujourd’hui",
+  "it": "Un nuovo piano inizia oggi"
+ },
+ "A plan you build starts today, or tomorrow if you pick that, instead of on the next Monday.": {
+  "nl": "Een plan dat je maakt begint vandaag, of morgen als je dat kiest, in plaats van op de volgende maandag.",
+  "es": "Un plan que creas empieza hoy, o mañana si lo eliges, en lugar del próximo lunes.",
+  "de": "Ein Plan, den du erstellst, beginnt heute oder morgen, wenn du das wählst, statt am nächsten Montag.",
+  "fr": "Un plan que tu crées commence aujourd’hui, ou demain si tu le choisis, au lieu du lundi suivant.",
+  "it": "Un piano che crei inizia oggi, o domani se lo scegli, invece del lunedì successivo."
+ },
+ "Sessions a week are saved with your plan. Changing About you no longer moves your week.": {
+  "nl": "Het aantal trainingen per week wordt met je plan opgeslagen. Over jou aanpassen verschuift je week niet meer.",
+  "es": "Las sesiones por semana se guardan con tu plan. Cambiar Sobre ti ya no mueve tu semana.",
+  "de": "Die Einheiten pro Woche werden mit deinem Plan gespeichert. Über dich zu ändern verschiebt deine Woche nicht mehr.",
+  "fr": "Les séances par semaine sont enregistrées avec ton plan. Modifier À propos de toi ne déplace plus ta semaine.",
+  "it": "Le sessioni a settimana vengono salvate con il tuo piano. Modificare Su di te non sposta più la tua settimana."
+ },
+ "On the web, Build my plan goes straight to the copy-and-paste step, and the request is shorter: only exercises for where you train, and the answer comes in your language.": {
+  "nl": "Op het web gaat Mijn plan maken direct naar de kopieer-en-plakstap, en het verzoek is korter: alleen oefeningen voor waar je traint, en het antwoord komt in jouw taal.",
+  "es": "En la web, Crear mi plan va directo al paso de copiar y pegar, y la solicitud es más corta: solo ejercicios para donde entrenas, y la respuesta llega en tu idioma.",
+  "de": "Im Web führt Meinen Plan erstellen direkt zum Kopieren-und-Einfügen-Schritt, und die Anfrage ist kürzer: nur Übungen für deinen Trainingsort, und die Antwort kommt in deiner Sprache.",
+  "fr": "Sur le web, Créer mon programme mène directement à l’étape copier-coller, et la demande est plus courte : seulement les exercices pour ton lieu d’entraînement, et la réponse arrive dans ta langue.",
+  "it": "Sul web, Crea il mio piano porta subito al passaggio copia e incolla, e la richiesta è più corta: solo esercizi per dove ti alleni, e la risposta arriva nella tua lingua."
  }
 }

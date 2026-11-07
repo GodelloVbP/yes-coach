@@ -140,7 +140,7 @@ def vis(page, sel): return page.is_visible(sel)
 
 EXTERNAL = []  # every request that tried to leave localhost and the Supabase stand-in
 
-def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, lang='en'):
+def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, lang='en', clock=None):
     br = pw.chromium.launch(executable_path='/usr/bin/google-chrome', args=['--no-sandbox'])
     ctx = br.new_context(device_scale_factor=float(__import__('os').environ.get('DSF', '1')), viewport={'width': width, 'height': 900}, permissions=['clipboard-read', 'clipboard-write'], bypass_csp=not csp, **({'user_agent': ua} if ua else {}))
     sess = {'access_token': jwt(uid), 'token_type': 'bearer', 'expires_in': 3600, 'expires_at': 4102444800, 'refresh_token': 'r',
@@ -149,6 +149,7 @@ def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, l
     if lang: ctx.add_init_script("if (!sessionStorage.getItem('lang-init')) { localStorage.setItem('yc-lang', %s); sessionStorage.setItem('lang-init', '1'); }" % json.dumps(lang))
     ctx.route('**/*', lambda r: r.continue_() if r.request.url.startswith('http://localhost') else (EXTERNAL.append(r.request.url), r.abort()))  # nothing else leaves the machine
     ctx.route(SUPA + '/**', be.handle)
+    if clock: ctx.clock.install(time=clock)  # a fixed start time that then runs on, for tests about today
     page = ctx.new_page(); errors = []
     page.on('pageerror', lambda e: errors.append(str(e) + ' @ ' + str(getattr(e, 'stack', ''))[:600]))
     page.on('console', lambda m: errors.append('CSP: ' + m.text) if 'Content Security Policy' in m.text else None)
