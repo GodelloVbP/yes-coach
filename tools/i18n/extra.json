@@ -3176,5 +3176,285 @@
   "de": "Kommst du von Strong, Hevy oder FitNotes? Dein Verlauf kommt ohne KI mit, und der Plan startet bei deinen letzten Gewichten. Nur meinen Verlauf importieren überspringt den Plan.",
   "fr": "Tu viens de Strong, Hevy ou FitNotes ? Ton historique arrive sans IA, et le plan part de tes charges récentes. Importer seulement mon historique saute le plan.",
   "it": "Arrivi da Strong, Hevy o FitNotes? La tua cronologia arriva senza AI e il piano parte dai tuoi carichi recenti. Importa solo la mia cronologia salta il piano."
+ },
+ "New to it": {
+  "nl": "Nieuw",
+  "es": "Soy nuevo",
+  "de": "Neu dabei",
+  "fr": "Débutant",
+  "it": "Alle prime armi"
+ },
+ "A while": {
+  "nl": "Een tijdje",
+  "es": "Un tiempo",
+  "de": "Eine Weile",
+  "fr": "Un moment",
+  "it": "Da un po’"
+ },
+ "Years": {
+  "nl": "Jaren",
+  "es": "Años",
+  "de": "Jahre",
+  "fr": "Des années",
+  "it": "Anni"
+ },
+ "Training experience": {
+  "nl": "Trainingservaring",
+  "es": "Experiencia entrenando",
+  "de": "Trainingserfahrung",
+  "fr": "Expérience d’entraînement",
+  "it": "Esperienza di allenamento"
+ },
+ "I will build my own": {
+  "nl": "Ik maak het zelf",
+  "es": "Lo haré yo",
+  "de": "Ich baue selbst",
+  "fr": "Je fais le mien",
+  "it": "Lo creo io"
+ },
+ "Choose your export file first.": {
+  "nl": "Kies eerst je exportbestand.",
+  "es": "Elige primero tu archivo de exportación.",
+  "de": "Wähle zuerst deine Exportdatei.",
+  "fr": "Choisis d’abord ton fichier d’export.",
+  "it": "Scegli prima il file di esportazione."
+ },
+ "Pick the app you come from.": {
+  "nl": "Kies de app waar je vandaan komt.",
+  "es": "Elige la app de la que vienes.",
+  "de": "Wähle die App, von der du kommst.",
+  "fr": "Choisis l’app d’où tu viens.",
+  "it": "Scegli l’app da cui arrivi."
+ },
+ "No file yet.": {
+  "nl": "Nog geen bestand.",
+  "es": "Aún no hay archivo.",
+  "de": "Noch keine Datei.",
+  "fr": "Pas encore de fichier.",
+  "it": "Nessun file ancora."
+ },
+ "How often do you want to train?": {
+  "nl": "Hoe vaak wil je trainen?",
+  "es": "¿Cuántas veces quieres entrenar?",
+  "de": "Wie oft willst du trainieren?",
+  "fr": "Combien de fois veux-tu t’entraîner ?",
+  "it": "Quante volte vuoi allenarti?"
+ },
+ "Days a week. You can change it any time.": {
+  "nl": "Dagen per week. Je kunt het altijd aanpassen.",
+  "es": "Días a la semana. Puedes cambiarlo cuando quieras.",
+  "de": "Tage pro Woche. Du kannst es jederzeit ändern.",
+  "fr": "Jours par semaine. Tu peux le changer à tout moment.",
+  "it": "Giorni a settimana. Puoi cambiarlo quando vuoi."
+ },
+ "Where do you train?": {
+  "nl": "Waar train je?",
+  "es": "¿Dónde entrenas?",
+  "de": "Wo trainierst du?",
+  "fr": "Où t’entraînes-tu ?",
+  "it": "Dove ti alleni?"
+ },
+ "Machines, cables and barbells": {
+  "nl": "Machines, kabels en halters",
+  "es": "Máquinas, poleas y barras",
+  "de": "Maschinen, Kabelzüge und Langhanteln",
+  "fr": "Machines, poulies et barres",
+  "it": "Macchine, cavi e bilancieri"
+ },
+ "At home": {
+  "nl": "Thuis",
+  "es": "En casa",
+  "de": "Zu Hause",
+  "fr": "À la maison",
+  "it": "A casa"
+ },
+ "With dumbbells": {
+  "nl": "Met dumbbells",
+  "es": "Con mancuernas",
+  "de": "Mit Kurzhanteln",
+  "fr": "Avec des haltères",
+  "it": "Con manubri"
+ },
+ "No equipment": {
+  "nl": "Zonder materiaal",
+  "es": "Sin material",
+  "de": "Ohne Geräte",
+  "fr": "Sans matériel",
+  "it": "Senza attrezzi"
+ },
+ "How long have you been training?": {
+  "nl": "Hoe lang train je al?",
+  "es": "¿Cuánto tiempo llevas entrenando?",
+  "de": "Wie lange trainierst du schon?",
+  "fr": "Depuis combien de temps t’entraînes-tu ?",
+  "it": "Da quanto tempo ti alleni?"
+ },
+ "Less than half a year": {
+  "nl": "Korter dan een half jaar",
+  "es": "Menos de medio año",
+  "de": "Weniger als ein halbes Jahr",
+  "fr": "Moins de six mois",
+  "it": "Meno di sei mesi"
+ },
+ "About a year, on and off": {
+  "nl": "Ongeveer een jaar, af en aan",
+  "es": "Más o menos un año, a ratos",
+  "de": "Etwa ein Jahr, mit Pausen",
+  "fr": "Environ un an, par périodes",
+  "it": "Circa un anno, a periodi"
+ },
+ "Steadily, for two years or more": {
+  "nl": "Vast, twee jaar of langer",
+  "es": "De forma constante, dos años o más",
+  "de": "Regelmäßig, zwei Jahre oder länger",
+  "fr": "Régulièrement, depuis deux ans ou plus",
+  "it": "Con costanza, da due anni o più"
+ },
+ "Coming from Strong, Hevy or FitNotes? Import your history": {
+  "nl": "Kom je van Strong, Hevy of FitNotes? Importeer je geschiedenis",
+  "es": "¿Vienes de Strong, Hevy o FitNotes? Importa tu historial",
+  "de": "Kommst du von Strong, Hevy oder FitNotes? Importiere deinen Verlauf",
+  "fr": "Tu viens de Strong, Hevy ou FitNotes ? Importe ton historique",
+  "it": "Arrivi da Strong, Hevy o FitNotes? Importa la tua cronologia"
+ },
+ "Change my answers": {
+  "nl": "Mijn antwoorden aanpassen",
+  "es": "Cambiar mis respuestas",
+  "de": "Meine Antworten ändern",
+  "fr": "Modifier mes réponses",
+  "it": "Cambia le mie risposte"
+ },
+ "How to connect": {
+  "nl": "Zo verbind je",
+  "es": "Cómo conectar",
+  "de": "So verbindest du",
+  "fr": "Comment connecter",
+  "it": "Come collegare"
+ },
+ "Using Claude? Connect it once, and it changes your plan and logs your food without copying.": {
+  "nl": "Gebruik je Claude? Verbind het één keer, en het past je plan aan en logt je eten zonder kopiëren.",
+  "es": "¿Usas Claude? Conéctalo una vez y cambiará tu plan y registrará tu comida sin copiar nada.",
+  "de": "Nutzt du Claude? Verbinde es einmal, dann ändert es deinen Plan und trägt dein Essen ein, ohne Kopieren.",
+  "fr": "Tu utilises Claude ? Connecte-le une fois, et il modifie ton plan et note tes repas sans copier-coller.",
+  "it": "Usi Claude? Collegalo una volta e cambierà il tuo piano e registrerà il tuo cibo senza copiare."
+ },
+ "Three quick answers give you a plan. Or build a day by hand.": {
+  "nl": "Drie snelle antwoorden geven je een plan. Of maak zelf een dag.",
+  "es": "Tres respuestas rápidas te dan un plan. O crea un día a mano.",
+  "de": "Drei schnelle Antworten ergeben einen Plan. Oder baue einen Tag selbst.",
+  "fr": "Trois réponses rapides te donnent un plan. Ou crée une journée à la main.",
+  "it": "Tre risposte veloci ti danno un piano. Oppure crea un giorno a mano."
+ },
+ "Count calories too?": {
+  "nl": "Ook calorieën tellen?",
+  "es": "¿Contar también las calorías?",
+  "de": "Auch Kalorien zählen?",
+  "fr": "Compter aussi les calories ?",
+  "it": "Contare anche le calorie?"
+ },
+ "Protein, carbs and fat always count. Change it any time in Settings, Food.": {
+  "nl": "Eiwit, koolhydraten en vet tellen altijd mee. Pas het altijd aan in Instellingen, Eten.",
+  "es": "Las proteínas, los carbohidratos y las grasas siempre cuentan. Cámbialo cuando quieras en Ajustes, Comida.",
+  "de": "Eiweiß, Kohlenhydrate und Fett zählen immer. Ändere es jederzeit unter Einstellungen, Ernährung.",
+  "fr": "Les protéines, les glucides et les lipides comptent toujours. Change-le à tout moment dans Réglages, Alimentation.",
+  "it": "Proteine, carboidrati e grassi contano sempre. Cambialo quando vuoi in Impostazioni, Cibo."
+ },
+ "Show calories": {
+  "nl": "Calorieën tonen",
+  "es": "Mostrar calorías",
+  "de": "Kalorien zeigen",
+  "fr": "Afficher les calories",
+  "it": "Mostra le calorie"
+ },
+ "At least 8 characters.": {
+  "nl": "Minstens 8 tekens.",
+  "es": "Al menos 8 caracteres.",
+  "de": "Mindestens 8 Zeichen.",
+  "fr": "Au moins 8 caractères.",
+  "it": "Almeno 8 caratteri."
+ },
+ "Show password": {
+  "nl": "Wachtwoord tonen",
+  "es": "Mostrar contraseña",
+  "de": "Passwort zeigen",
+  "fr": "Afficher le mot de passe",
+  "it": "Mostra password"
+ },
+ "Hide password": {
+  "nl": "Wachtwoord verbergen",
+  "es": "Ocultar contraseña",
+  "de": "Passwort verbergen",
+  "fr": "Masquer le mot de passe",
+  "it": "Nascondi password"
+ },
+ "Send the email again": {
+  "nl": "Stuur de e-mail opnieuw",
+  "es": "Enviar el correo otra vez",
+  "de": "E-Mail erneut senden",
+  "fr": "Renvoyer l’e-mail",
+  "it": "Invia di nuovo l’email"
+ },
+ "We sent a confirmation link to {0}. Open it, then sign in here.": {
+  "nl": "We hebben een bevestigingslink gestuurd naar {0}. Open die en log daarna hier in.",
+  "es": "Hemos enviado un enlace de confirmación a {0}. Ábrelo y luego inicia sesión aquí.",
+  "de": "Wir haben einen Bestätigungslink an {0} geschickt. Öffne ihn und melde dich dann hier an.",
+  "fr": "Nous avons envoyé un lien de confirmation à {0}. Ouvre-le, puis connecte-toi ici.",
+  "it": "Abbiamo inviato un link di conferma a {0}. Aprilo, poi accedi qui."
+ },
+ "Sent again to {0}. Check your spam folder too.": {
+  "nl": "Opnieuw gestuurd naar {0}. Kijk ook in je spammap.",
+  "es": "Enviado de nuevo a {0}. Revisa también la carpeta de spam.",
+  "de": "Erneut an {0} gesendet. Sieh auch im Spam-Ordner nach.",
+  "fr": "Renvoyé à {0}. Vérifie aussi tes spams.",
+  "it": "Inviato di nuovo a {0}. Controlla anche la cartella spam."
+ },
+ "The email could not be sent. Try again in a minute.": {
+  "nl": "De e-mail kon niet worden verstuurd. Probeer het over een minuut opnieuw.",
+  "es": "No se pudo enviar el correo. Inténtalo de nuevo en un minuto.",
+  "de": "Die E-Mail konnte nicht gesendet werden. Versuche es in einer Minute erneut.",
+  "fr": "L’e-mail n’a pas pu être envoyé. Réessaie dans une minute.",
+  "it": "Non è stato possibile inviare l’email. Riprova tra un minuto."
+ },
+ "A quicker start": {
+  "nl": "Sneller van start",
+  "es": "Un comienzo más rápido",
+  "de": "Ein schnellerer Start",
+  "fr": "Un démarrage plus rapide",
+  "it": "Un inizio più rapido"
+ },
+ "New here? Three questions, one per screen, and your plan is ready: how often, where, and how long you have trained. A tap answers and moves on.": {
+  "nl": "Nieuw hier? Drie vragen, één per scherm, en je plan staat klaar: hoe vaak, waar, en hoe lang je al traint. Een tik beantwoordt en gaat door.",
+  "es": "¿Eres nuevo? Tres preguntas, una por pantalla, y tu plan está listo: cuántas veces, dónde y cuánto tiempo llevas entrenando. Un toque responde y avanza.",
+  "de": "Neu hier? Drei Fragen, eine pro Bildschirm, und dein Plan steht: wie oft, wo und wie lange du schon trainierst. Ein Tippen antwortet und geht weiter.",
+  "fr": "Nouveau ici ? Trois questions, une par écran, et ton plan est prêt : combien de fois, où, et depuis combien de temps tu t’entraînes. Un appui répond et passe à la suite.",
+  "it": "Sei nuovo? Tre domande, una per schermata, e il tuo piano è pronto: quante volte, dove e da quanto ti alleni. Un tocco risponde e va avanti."
+ },
+ "Coming from another app? Import your history from the first screen; the plan takes your days a week from it.": {
+  "nl": "Kom je van een andere app? Importeer je geschiedenis vanaf het eerste scherm; het plan haalt je dagen per week daaruit.",
+  "es": "¿Vienes de otra app? Importa tu historial desde la primera pantalla; el plan toma de ahí tus días por semana.",
+  "de": "Kommst du von einer anderen App? Importiere deinen Verlauf schon auf dem ersten Bildschirm; der Plan übernimmt daraus deine Tage pro Woche.",
+  "fr": "Tu viens d’une autre app ? Importe ton historique dès le premier écran ; le plan en tire tes jours par semaine.",
+  "it": "Arrivi da un’altra app? Importa la tua cronologia dalla prima schermata; il piano ne ricava i tuoi giorni a settimana."
+ },
+ "Calories are asked in Food, the first time you open it, instead of during setup.": {
+  "nl": "Calorieën worden gevraagd in Eten, de eerste keer dat je het opent, in plaats van tijdens het instellen.",
+  "es": "Las calorías se preguntan en Comida, la primera vez que la abres, en lugar de durante la configuración.",
+  "de": "Kalorien werden in Ernährung abgefragt, wenn du es zum ersten Mal öffnest, statt bei der Einrichtung.",
+  "fr": "Les calories sont demandées dans Alimentation, la première fois que tu l’ouvres, au lieu de pendant la configuration.",
+  "it": "Le calorie vengono chieste in Cibo, la prima volta che lo apri, invece che durante la configurazione."
+ },
+ "Leave setup half way, or go copy something to your AI, and it picks up where you were.": {
+  "nl": "Stop je halverwege, of ga je iets kopiëren naar je AI, dan gaat het verder waar je was.",
+  "es": "Si dejas la configuración a medias, o vas a copiar algo a tu IA, sigue donde lo dejaste.",
+  "de": "Brichst du die Einrichtung ab oder kopierst etwas für deine KI, geht es dort weiter, wo du warst.",
+  "fr": "Si tu quittes la configuration en cours de route, ou vas copier quelque chose pour ton IA, elle reprend là où tu étais.",
+  "it": "Se lasci la configurazione a metà, o vai a copiare qualcosa per la tua AI, riprende da dove eri."
+ },
+ "Signing up: show your password while typing, and send the confirmation email again if it did not arrive.": {
+  "nl": "Aanmelden: toon je wachtwoord tijdens het typen, en stuur de bevestigingsmail opnieuw als die niet aankwam.",
+  "es": "Registro: muestra tu contraseña mientras escribes y vuelve a enviar el correo de confirmación si no llegó.",
+  "de": "Registrieren: Zeig dein Passwort beim Tippen an und sende die Bestätigungs-E-Mail erneut, wenn sie nicht ankam.",
+  "fr": "Inscription : affiche ton mot de passe pendant la saisie, et renvoie l’e-mail de confirmation s’il n’est pas arrivé.",
+  "it": "Registrazione: mostra la password mentre scrivi e invia di nuovo l’email di conferma se non è arrivata."
  }
 }

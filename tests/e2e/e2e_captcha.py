@@ -114,7 +114,8 @@ with sync_playwright() as pw:
     br.close()
     # 2 sign up and reset send tokens, and a spent token is replaced
     br, pg, log = make(pw); pg.goto(BASE)
-    signin(pg, 'up'); until(pg, "document.querySelector('#au-msg').textContent.includes('Check your email')")
+    signin(pg, 'up'); until(pg, "document.querySelector('#au-msg').textContent.includes('We sent a confirmation link')")
+    ok(pg.is_visible('#au-resend'), 'sign-up: Send the email again is offered')
     s = [x for x in log['auth'] if x[0] == '/auth/v1/signup']
     ok(s and s[0][1] == 'TOKEN-1', 'sign-up sends the token: %s' % s)
     pg.click('#au-forgot'); until(pg, 'window.__n >= 2')

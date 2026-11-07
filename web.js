@@ -133,7 +133,8 @@
     reset: { h: 'Reset your password', go: 'Send reset link', alt: 'Back to sign in' },
     newpass: { h: 'Choose a new password', go: 'Save password', alt: '' },
   };
-  const say = (msg, bad) => { const m = $('#au-msg'); m.textContent = msg || ''; m.classList.toggle('bad', !!bad); };
+  const say = (msg, bad, good) => { const m = $('#au-msg'); m.textContent = msg || ''; m.classList.toggle('bad', !!bad); m.classList.toggle('good', !!good); };
+  let sentTo = ''; // the address a confirmation email went to, for Send the email again
   const paint = () => {
     const c = COPY[mode];
     $('#au-h').textContent = c.h;
@@ -145,6 +146,8 @@
     $('#au-forgot').hidden = mode !== 'in';
     $('#au-back').hidden = mode === 'newpass';
     $('#au-pass').autocomplete = mode === 'in' ? 'current-password' : 'new-password';
+    $('#au-pw-hint').hidden = !(mode === 'up' || mode === 'newpass');
+    $('#au-resend').hidden = true;
     say('');
   };
   // signed out, people see Home first; the sign-in form opens from its buttons
@@ -159,6 +162,26 @@
   $('#au-back').addEventListener('click', () => { document.body.classList.remove('authing'); window.scrollTo({ top: 0 }); });
   $('#au-alt').addEventListener('click', () => { mode = mode === 'in' ? 'up' : 'in'; paint(); });
   $('#au-forgot').addEventListener('click', () => { mode = 'reset'; paint(); });
+  $('#au-show').addEventListener('click', () => {
+    const on = $('#au-pass').type === 'password';
+    $('#au-pass').type = on ? 'text' : 'password';
+    $('#au-show').setAttribute('aria-pressed', String(on));
+    $('#au-show').textContent = on ? 'Hide password' : 'Show password';
+  });
+  $('#au-resend').addEventListener('click', async () => {
+    const b = $('#au-resend');
+    b.disabled = true;
+    say('One moment…');
+    let res;
+    try {
+      const captchaToken = await YC_CAPTCHA.get();
+      res = await sb.auth.resend({ type: 'signup', email: sentTo, options: { emailRedirectTo: cfg.appUrl, captchaToken } });
+    } catch (e) { res = { error: e }; }
+    YC_CAPTCHA.spent();
+    b.disabled = false;
+    if (res && res.error) say(/rate limit/i.test(res.error.message || '') ? 'Too many tries. Wait a few minutes and try again.' : 'The email could not be sent. Try again in a minute.', true);
+    else say('Sent again to ' + sentTo + '. Check your spam folder too.', false, true);
+  });
   $('#au-form').addEventListener('submit', async (ev) => {
     ev.preventDefault();
     const em = $('#au-email').value.trim();
@@ -194,7 +217,13 @@
       return;
     }
     if (mode === 'reset') { say('If that email has an account, a reset link is on its way.'); return; }
-    if (mode === 'up' && !(res.data && res.data.session)) { mode = 'in'; paint(); say('Check your email to confirm your account, then sign in.'); return; }
+    if (mode === 'up' && !(res.data && res.data.session)) {
+      mode = 'in'; paint();
+      sentTo = em;
+      say('We sent a confirmation link to ' + em + '. Open it, then sign in here.', false, true);
+      $('#au-resend').hidden = false;
+      return;
+    }
     if (mode === 'newpass') { history.replaceState(null, '', location.pathname); start(res.data.user); }
   });
 

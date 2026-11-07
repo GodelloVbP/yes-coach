@@ -17,10 +17,18 @@ PLAN = {"summary": "Three full-body days.", "weekdays": ["Mon", "Wed", "Fri"], "
 def root(be): return next(d['data'] for d in be.docs if d['path'] == 'yc')
 def tpl(be, i): return next(d['data'] for d in be.docs if d['path'] == 'yc/templates/' + i)
 
-def to_preview(page, ai=True):
-    """Build in the app, then (ai=True) change it with your AI on the web: the paste step, with PLAN pasted back."""
-    until(lambda: page.is_visible('#wz-go'))
-    page.click('#wz-go')
+def answer(page, *picks):
+    """The three setup screens. Each pick is an option's position, or None to keep the default (the Next button)."""
+    for i in range(3):
+        until(lambda: page.is_visible('#wz-go'))
+        pick = picks[i] if i < len(picks) else None
+        if pick is None: page.click('#wz-go')
+        else: page.locator('#wiz .wz-opt').nth(pick).click()
+        page.wait_for_timeout(150)
+
+def to_preview(page, ai=True, picks=()):
+    """Answer the setup, build in the app, then (ai=True) change it with your AI on the web: the paste step, with PLAN pasted back."""
+    answer(page, *picks)
     check('Build: a plan straight away, no paste step', until(lambda: page.is_visible('#wz-start'), 4) and not page.is_visible('#wz-answer'))
     if not ai: return
     page.click('.wz-aibox > summary')
@@ -73,10 +81,7 @@ session(pw, be, ALICE, tomorrow_run, width=390, clock=SAT)
 # ---- the request: home exercises only, and the answer in Dutch
 be = Backend()
 def request_run(page):
-    until(lambda: page.is_visible('#wz-go'))
-    page.locator('#wiz .wz-q').nth(0).locator('[role=radio]').nth(0).click()  # 2 days a week: picks something so the profile line is not empty
-    page.locator('#wiz .wz-q').nth(2).locator('[role=radio]').nth(1).click()  # where: home with dumbbells
-    page.click('#wz-go')
+    answer(page, 0, 1)  # 2 days a week, at home
     until(lambda: page.is_visible('#wz-start'))
     page.click('.wz-aibox > summary'); page.click('#wz-ai')
     until(lambda: page.is_visible('#wz-answer'))
@@ -138,12 +143,8 @@ session(pw, be, ALICE, local_run, width=390, clock=SAT)
 
 be = Backend()
 def home4_run(page):
-    until(lambda: page.is_visible('#wz-go'))
-    q = page.locator('#wiz .wz-q')
-    q.nth(0).locator('[role=radio]').nth(2).click()   # 4 days
-    q.nth(1).locator('[role=radio]').nth(0).click()   # 45 min
-    q.nth(2).locator('[role=radio]').nth(1).click()   # home with dumbbells
-    to_preview(page, ai=False)
+    to_preview(page, ai=False, picks=(2, 1))   # 4 days, at home
+    page.get_by_role('radiogroup', name='Session length').get_by_role('radio', name='45 min').click(); page.wait_for_timeout(200)
     txt = page.text_content('#wiz')
     check('local: 4 days is upper and lower body', all(x in txt for x in ('Upper A', 'Lower A', 'Upper B', 'Lower B')), txt[:300])
     check('local: home has no machines or barbells', not any(w in txt for w in ('Machine', 'Leg press', 'Barbell', 'Cable', 'pulldown')), txt)
@@ -162,7 +163,8 @@ for i, day in enumerate(['5', '8', '12', '15', '19', '22']):
         rows.append(','.join(['"Push"', when, when, '""', '"Squat (Barbell)"', '""', '""', str(k), '"normal"', '100', '5', '""', '""', '""']))
 CSV = '\n'.join(rows)
 def pick_hevy(page):
-    until(lambda: page.is_visible('#wz-go'))
+    until(lambda: page.is_visible('#wz-import'))
+    page.click('#wz-import')
     page.get_by_role('radiogroup', name='Coming from').get_by_role('radio', name='Hevy').click()
     page.set_input_files('#wz-file', files=[{'name': 'workouts.csv', 'mimeType': 'text/csv', 'buffer': CSV.encode()}])
     until(lambda: 'workouts.csv' in page.text_content('#wiz'))
@@ -192,6 +194,88 @@ def hevy_plan(page):
     until(lambda: page.is_visible('#btn-start'))
     check('import + plan: sessions written', until(lambda: sum(1 for d in be.docs if d['path'].startswith('yc/sessions/')) == 6))
 session(pw, be, ALICE, hevy_plan, width=390, clock=SAT)
+
+# ---- the setup screens: defaults, a tap moves on, Back, experience changes the plan
+be = Backend()
+def setup_run(page):
+    until(lambda: page.is_visible('#wz-go'))
+    check('setup: one question on screen', page.locator('#wiz .wz-opts').count() == 1 and 'How often' in page.text_content('#wz-qh'))
+    check('setup: 3 days picked by default', page.locator('#wiz .wz-opt[aria-checked=true]').text_content() == '3')
+    check('setup: first of three steps', page.locator('.wz-dots span.on').count() == 1 and page.locator('.wz-dots span').count() == 3)
+    check('setup: no calorie or goal question any more', 'Calories' not in page.text_content('#wiz') and 'goal' not in page.text_content('#wiz').lower())
+    words = len(page.text_content('#intro').split())
+    check('setup: a short screen (under 60 words)', words < 60, words)
+    page.locator('#wiz .wz-opt').nth(3).click()  # 5 days: the tap moves on
+    check('setup: a tap answers and moves on', until(lambda: 'Where' in page.text_content('#wz-qh')))
+    check('setup: Gym picked by default', 'Gym' in page.locator('#wiz .wz-opt[aria-checked=true]').text_content())
+    page.get_by_role('button', name='Back').click()
+    check('setup: Back keeps the answer', until(lambda: page.locator('#wiz .wz-opt[aria-checked=true]').text_content() == '5'))
+    page.click('#wz-go'); page.click('#wz-go')
+    check('setup: A while picked by default', until(lambda: 'How long' in page.text_content('#wz-qh')) and 'A while' in page.locator('#wiz .wz-opt[aria-checked=true]').text_content())
+    page.locator('#wiz .wz-opt').nth(0).click()  # new to it: builds
+    check('setup: the last answer builds the plan', until(lambda: page.is_visible('#wz-start'), 4))
+    txt = page.text_content('#wiz')
+    check('new lifter: goblet squat instead of the barbell squat', 'Goblet squat' in txt and 'Barbell bench press' not in txt, txt[:500])
+    check('5 days: upper and lower body', 'Upper A' in txt and 'Lower B' in txt)
+    page.get_by_role('button', name='Change my answers').click()
+    check('preview: Change my answers goes back to the questions', until(lambda: page.is_visible('#wz-qh')))
+    page.click('#wz-go')
+    until(lambda: page.is_visible('#wz-start'))
+    page.click('#wz-start'); until(lambda: page.is_visible('#btn-start'))
+    check('saved: experience and days in the profile', root(be)['profile'].get('experience') == 'new' and root(be)['profile'].get('days_per_week') == 5, root(be)['profile'])
+    check('saved: Food will ask about calories', root(be).get('ask_cal') is True)
+session(pw, be, ALICE, setup_run, width=390, clock=SAT)
+
+# ---- a reload in the middle of setup, or while pasting, keeps the answers
+be = Backend()
+def resume_run(page):
+    until(lambda: page.is_visible('#wz-go'))
+    page.locator('#wiz .wz-opt').nth(2).click()   # 4 days
+    until(lambda: 'Where' in page.text_content('#wz-qh'))
+    page.reload()
+    if until(lambda: page.is_visible('#hm-train'), 3): page.click('#hm-train')
+    check('reload: back on the second question', until(lambda: page.is_visible('#wz-qh') and 'Where' in page.text_content('#wz-qh')))
+    page.get_by_role('button', name='Back').click()
+    check('reload: the first answer kept', until(lambda: page.locator('#wiz .wz-opt[aria-checked=true]').text_content() == '4'))
+    page.click('#wz-go'); page.click('#wz-go'); page.click('#wz-go')
+    until(lambda: page.is_visible('#wz-start'))
+    page.click('.wz-aibox > summary'); page.click('#wz-ai')
+    until(lambda: page.is_visible('#wz-answer'))
+    page.reload()
+    if until(lambda: page.is_visible('#hm-train'), 3): page.click('#hm-train')
+    check('reload: back on the paste step, so the AI answer can still be pasted', until(lambda: page.is_visible('#wz-answer')))
+    page.get_by_role('button', name='Back').click()
+    check('reload: the plan is still there', until(lambda: page.is_visible('#wz-start')) and 'Upper A' in page.text_content('#wiz'))
+    page.click('#wz-start'); until(lambda: page.is_visible('#btn-start'))
+    check('saved: the draft is gone', page.evaluate("localStorage.getItem('yc-wiz-draft')") is None)
+session(pw, be, ALICE, resume_run, width=390, clock=SAT)
+
+# ---- I will build my own: no plan, an empty Train that points at the plan, and Food asks about calories once
+be = Backend()
+def own_run(page):
+    until(lambda: page.is_visible('.wz-skip'))
+    page.click('.wz-skip')
+    check('own: Train with no days', until(lambda: page.is_visible('#btn-build')))
+    check('own: Build my plan is the main button', 'pop' in page.get_attribute('#btn-build', 'class'))
+    check('own: no empty month or calendar button', page.is_hidden('#month') and page.is_hidden('.cal-cta'))
+    check('own: setup marked seen, calories still to ask', until(lambda: root(be).get('intro_seen') is True and root(be).get('ask_cal') is True))
+    page.click('#tab-food')
+    check('Food: asks about calories once', until(lambda: page.is_visible('#fd-askcal')) and 'Count calories too?' in page.text_content('#fd-askcal'))
+    check('Food: Create a food is not the main button', 'pop' not in page.get_attribute('#fd-own-new', 'class'))
+    page.click('#fd-cal-on')
+    check('Food: the answer is saved', until(lambda: (root(be).get('settings') or {}).get('show_calories') is True and root(be).get('ask_cal') is False))
+    check('Food: the question goes away', page.is_hidden('#fd-askcal'))
+    page.click('#tab-train')
+    page.click('#btn-build')
+    check('own: Build my plan opens the setup', until(lambda: page.is_visible('#wz-qh')))
+session(pw, be, ALICE, own_run, width=390, clock=SAT)
+
+be = Backend()
+be.docs.append({'path': 'yc', 'data': {'app': 'yes-coach', 'schema': 1, 'intro_seen': True}})
+def old_user(page):
+    page.click('#tab-food'); page.wait_for_timeout(800)
+    check('Food: people who set up before are not asked', page.is_hidden('#fd-askcal'))
+session(pw, be, ALICE, old_user, width=390, clock=SAT)
 
 check('nothing left the machine', not EXTERNAL, EXTERNAL[:3])
 pw.stop()
