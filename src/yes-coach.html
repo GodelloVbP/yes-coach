@@ -52,11 +52,6 @@
 html, body { overscroll-behavior-y: contain; } /* pulling down at the top must not reload the page and lose what you typed */
 [hidden] { display: none !important; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: var(--t2); line-height: 1.45; overflow-x: clip; }
-/* doodles behind every page: one line drawing, tinted with the ink color so it works in light and dark */
-body::after { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: var(--ink); opacity: var(--doodle, 0.08); -webkit-mask: url("doodles.png") 0 0 / 440px repeat; mask: url("doodles.png") 0 0 / 440px repeat; }
-:root[data-theme="dark"] { --doodle: 0.06; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --doodle: 0.06; } }
-@media (max-width: 600px) { body::after { -webkit-mask-size: 340px; mask-size: 340px; } }
 h1, h2, h3, p { margin: 0; }
 /* a block: one function or option on a page. Blocks take turns between two tints (data-tone, set by toneBlocks) */
 .blk { background: var(--blk-a); padding: 1rem 0.875rem 1.125rem; }
@@ -1209,13 +1204,13 @@ body.fin-open { overflow: hidden; }
       <div class="unfinished" id="unfinished"></div>
       <div class="week blk" id="week">
         <div class="bar"><h2 id="h-week"></h2><div class="wk-nav"><button type="button" class="arrow" id="wk-prev" aria-label="Previous week">&#8249;</button><button type="button" class="arrow" id="wk-next" aria-label="Next week">&#8250;</button></div></div>
-        <p class="note" id="wk-hint">Drag a planned day to another date to move it. Tap it to start it or remove it.</p>
+        <p class="note" id="wk-hint">Tap a day for details. Drag to reschedule.</p>
         <div class="wk-rows" id="wk-rows"></div>
         <div class="wk-sheet" id="wk-sheet" aria-live="polite"></div>
         <div class="wk-warns" id="wk-warns" aria-live="polite"></div>
       </div>
       <div class="month-blk blk" id="ahead">
-        <div class="cal-cta"><button class="skew pop big" type="button" id="btn-cal" aria-expanded="false" aria-controls="cal-panel"><span>Add to calendar</span></button><p class="note">Put your planned days in Apple, Google or Outlook calendar.</p></div>
+        <div class="cal-cta"><button class="skew big" type="button" id="btn-cal" aria-expanded="false" aria-controls="cal-panel"><span>Add to calendar</span></button><p class="note">Put your planned days in Apple, Google or Outlook calendar.</p></div>
         <div class="cal-panel" id="cal-panel" hidden></div>
         <section class="month" id="month" aria-labelledby="h-month">
           <div class="bar"><h2 id="h-month"></h2><div class="wk-nav"><button type="button" class="arrow" id="mo-prev" aria-label="Previous month">&#8249;</button><button type="button" class="arrow" id="mo-next" aria-label="Next month">&#8250;</button></div></div>
@@ -1318,7 +1313,6 @@ body.fin-open { overflow: hidden; }
         <div class="fd-askcal" id="fd-askcal" hidden></div>
         <div class="fd-top blk">
           <div class="fd-meter" id="fd-meter"></div>
-          <div class="fd-sug" id="fd-sug-top" hidden></div>
           <div class="fd-quick" id="fd-quick">
             <div class="fd-quick-row">
               <button class="textbtn" type="button" id="fd-yday" hidden>Same as yesterday</button>
@@ -1359,18 +1353,18 @@ body.fin-open { overflow: hidden; }
           </form>
           <p class="fd-credit fd-src" id="fd-src" hidden></p>
         </section>
+        <section class="p-sec blk" aria-labelledby="h-fd-list">
+          <div class="p-head"><h2 id="h-fd-list">Eaten</h2><span class="p-count" id="fd-count"></span></div>
+          <div class="fd-list" id="fd-list"></div>
+        </section>
         <section class="p-sec blk" aria-labelledby="h-fd-own" id="fd-ownfoods">
           <div class="p-head"><h2 id="h-fd-own">Your own foods</h2><span class="p-count" id="fd-own-count"></span></div>
-          <p class="note">Something that is not in the food list, like a product from your shop or a home-made dish? Save its numbers once and search finds it from then on. The numbers are on the package, per 100 g or per 100 ml.</p>
+          <p class="note">Save a food using the nutrition values on its label.</p>
           <div class="foot-row">
             <button class="skew small" type="button" id="fd-own-new"><span>Create a food</span></button>
             <button class="skew small" type="button" id="fd-own-claude" hidden><span>Add with Claude</span></button>
           </div>
           <div class="fd-own-list" id="fd-own-list"></div>
-        </section>
-        <section class="p-sec blk" aria-labelledby="h-fd-list">
-          <div class="p-head"><h2 id="h-fd-list">Eaten</h2><span class="p-count" id="fd-count"></span></div>
-          <div class="fd-list" id="fd-list"></div>
         </section>
         <section class="p-sec blk" aria-labelledby="h-fd-trend">
           <div class="p-head"><h2 id="h-fd-trend">Trends</h2></div>
@@ -1381,9 +1375,9 @@ body.fin-open { overflow: hidden; }
           <p class="note" id="fd-chart-note"></p>
           <div class="chart" id="fd-chart"></div>
         </section>
-        <p class="note fd-off" id="fd-off" hidden>Calories are hidden; protein, carbs and fat still count. <button class="textbtn" type="button" id="fd-off-go">Show calories in Settings</button></p>
         <details class="p-sec blk p-log" id="fd-targets">
           <summary class="p-head"><h2>Daily targets</h2><span class="p-count" id="fd-tgt-sum"></span><span class="p-caret" aria-hidden="true"></span></summary>
+          <p class="note fd-off" id="fd-off" hidden>Calories are hidden. <button class="textbtn" type="button" id="fd-off-go">Show calories</button></p>
           <div class="ed-fields">
             <label class="ed-f fd-kcalf"><span class="lab">Calories (kcal)</span><input id="fd-t-kcal" inputmode="numeric" placeholder="none"></label>
             <label class="ed-f"><span class="lab">Protein (g)</span><input id="fd-t-p" inputmode="numeric" placeholder="none"></label>
@@ -1833,6 +1827,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['8 Nov 2026', "Calmer screens", ["The background drawings are gone.", "Food: what you ate comes before Your own foods, and the suggested targets sit in Daily targets instead of above your day.", "Train and the plan preview say less: the first workout gets its date, and Add to calendar is no longer the loudest button."]],
     ['8 Nov 2026', "Request is in the bar", ["Feedback and requests has its own tab at the bottom, next to More, instead of being hidden in More. A dot shows there when we have asked you something.", "The labels in the bottom bar get a little smaller on a phone so all six fit, in every language."]],
     ['8 Nov 2026', 'Add a product by name', ["Tell Claude a product and it can look up the numbers on the internet and save it as your own food. The page it used is shown under the food.", "Calories that do not fit the protein, carbs and fat get flagged, which catches a per-serving number slipped in for a per-100 g one."]],
     ['8 Nov 2026', "Easier to see where things start", ["Every part of a page now sits in its own block, and blocks next to each other take turns between a cool and a warm tint. On Train: today, your week, and the month ahead.", "In More, each group of settings shares a tint."]],
@@ -2335,7 +2330,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const t = S.templates[s.template];
       box.dataset.k = kindKey(s.template);
       box.append(h('div', 't-head', 'Done: ' + (t ? t.name : s.label || s.split || 'session')));
-      box.append(h('p', 'note', setsDone(s) + ' sets logged. Tap it in the week below to look back or correct a set.'));
+      box.append(h('p', 'note', setsDone(s) + ' sets logged.'));
       return;
     }
     if (td.open.length) {
@@ -2358,9 +2353,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       box.append(go);
       return;
     }
-    box.append(h('div', 't-head', 'Rest day. Train anyway?'));
+    box.append(h('div', 't-head', 'Rest day'));
     const nx = nextTemplate();
-    box.append(h('p', 'note', 'Nothing is planned today. Pick any day below' + (nx ? ', or start the next one in your rotation.' : '.')));
+    box.append(h('p', 'note', 'No workout planned today.'));
     if (nx) {
       const go = btn('skew big', 'Start ' + S.templates[nx].name);
       go.id = 'btn-start';
@@ -5160,10 +5155,6 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       row.append(use);
       box.append(row, how);
     };
-    // above the day only while you have no target at all; always inside Daily targets
-    const top = $('#fd-sug-top');
-    top.hidden = showCal() ? !!(tg.kcal || tg.protein) : !!tg.protein;
-    if (!top.hidden) fill(top, true);
     fill($('#fd-sug'), false);
   };
   const fdDayWord = (d) => (d === today() ? 'Today, ' : d === addDays(today(), -1) ? 'Yesterday, ' : '') + fmtLong(parse(d));
@@ -7329,9 +7320,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         plan.weekdays = startOn(plan.weekdays, addDays(today(), v));
         renderWizard(true);
       }));
-      const when = plan.days[0].name + ' ' + (W.start ? 'tomorrow' : 'today');
-      box.append(h('p', 'note', plan.days.length < 2 ? when + '. Then every week on ' + plan.weekdays.join(', ') + '.'
-        : when + '. Then every week on ' + plan.weekdays.join(', ') + ', in the order ' + plan.days.map((d) => d.name).join(' → ') + '. Miss a day and the next one simply waits.'));
+      // the plan is saved as a rotation, so a missed workout waits for the next training day
+      const when = h('div', 'wz-when');
+      when.append(h('p', 'note', 'First workout: ' + plan.days[0].name + ', ' + fmtLong(parse(addDays(today(), W.start || 0))) + '.'), h('p', 'note', 'Training days: ' + plan.weekdays.join(', ') + '.'));
+      if (plan.days.length > 1) when.append(h('p', 'note', 'Missed workouts move to your next training day.'));
+      box.append(when);
     }
     const list = h('div', 'ed-items');
     plan.days.forEach((d) => {
@@ -7646,7 +7639,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const show = () => {
       box.classList.remove('confirm');
       const acts = h('div', 'wk-acts');
-      const start = btn('skew pop wk-start', 'Start day');
+      const start = btn('skew wk-start', 'Start day');
       start.addEventListener('click', () => openSession(d, pl.tpl));
       const sel = h('select');
       sel.append(Object.assign(h('option', '', 'Choose a day'), { value: '' }));
@@ -7732,7 +7725,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const dates = WEEKDAYS.map((_, i) => addDays(ws, i));
     const sc = activeSchedule();
     $('#h-week').textContent = dm(dates[0]) + ' – ' + dm(dates[6]);
-    $('#wk-hint').textContent = (sc ? 'Planned from your schedule. ' : 'Planned days follow each day\'s weekday. ') + 'Tap a day to see or change it. Drag a planned day to another date to move it.';
+    $('#wk-hint').textContent = 'Tap a day for details. Drag to reschedule.';
     const model = weekModel(ws);
     const { byDate } = model;
     const kinds = {};

@@ -3540,5 +3540,89 @@
   "de": "Die Beschriftungen in der unteren Leiste werden auf dem Handy etwas kleiner, damit alle sechs passen, in jeder Sprache.",
   "fr": "Les libellés de la barre du bas rétrécissent un peu sur téléphone pour que les six tiennent, dans toutes les langues.",
   "it": "Le etichette della barra in basso diventano un po’ più piccole sul telefono, così ci stanno tutte e sei, in ogni lingua."
+ },
+ "Tap a day for details. Drag to reschedule.": {
+  "nl": "Tik op een dag voor details. Sleep om te verplaatsen.",
+  "es": "Toca un día para ver detalles. Arrastra para cambiarlo.",
+  "de": "Tippe auf einen Tag für Details. Ziehen zum Verschieben.",
+  "fr": "Touche un jour pour les détails. Fais glisser pour le déplacer.",
+  "it": "Tocca un giorno per i dettagli. Trascina per spostarlo."
+ },
+ "Rest day": {
+  "nl": "Rustdag",
+  "es": "Día de descanso",
+  "de": "Ruhetag",
+  "fr": "Jour de repos",
+  "it": "Giorno di riposo"
+ },
+ "No workout planned today.": {
+  "nl": "Vandaag staat er geen training gepland.",
+  "es": "Hoy no hay entrenamiento previsto.",
+  "de": "Heute ist kein Training geplant.",
+  "fr": "Aucune séance prévue aujourd’hui.",
+  "it": "Oggi non c’è nessun allenamento in programma."
+ },
+ "Save a food using the nutrition values on its label.": {
+  "nl": "Sla een product op met de voedingswaarden van het etiket.",
+  "es": "Guarda un alimento con los valores nutricionales de su etiqueta.",
+  "de": "Speichere ein Lebensmittel mit den Nährwerten vom Etikett.",
+  "fr": "Enregistre un aliment avec les valeurs nutritionnelles de son étiquette.",
+  "it": "Salva un alimento con i valori nutrizionali della sua etichetta."
+ },
+ "Calories are hidden.": {
+  "nl": "Calorieën zijn verborgen.",
+  "es": "Las calorías están ocultas.",
+  "de": "Kalorien sind ausgeblendet.",
+  "fr": "Les calories sont masquées.",
+  "it": "Le calorie sono nascoste."
+ },
+ "First workout: {0}, {1}.": {
+  "nl": "Eerste training: {0}, {1}.",
+  "es": "Primer entrenamiento: {0}, {1}.",
+  "de": "Erstes Training: {0}, {1}.",
+  "fr": "Première séance : {0}, {1}.",
+  "it": "Primo allenamento: {0}, {1}."
+ },
+ "Training days: {0}.": {
+  "nl": "Trainingsdagen: {0}.",
+  "es": "Días de entrenamiento: {0}.",
+  "de": "Trainingstage: {0}.",
+  "fr": "Jours d’entraînement : {0}.",
+  "it": "Giorni di allenamento: {0}."
+ },
+ "Missed workouts move to your next training day.": {
+  "nl": "Gemiste trainingen schuiven door naar je volgende trainingsdag.",
+  "es": "Los entrenamientos que te saltes pasan a tu siguiente día de entrenamiento.",
+  "de": "Verpasste Trainings rücken auf deinen nächsten Trainingstag.",
+  "fr": "Les séances manquées passent à ton prochain jour d’entraînement.",
+  "it": "Gli allenamenti saltati passano al tuo prossimo giorno di allenamento."
+ },
+ "Calmer screens": {
+  "nl": "Rustigere schermen",
+  "es": "Pantallas más tranquilas",
+  "de": "Ruhigere Bildschirme",
+  "fr": "Écrans plus calmes",
+  "it": "Schermate più calme"
+ },
+ "The background drawings are gone.": {
+  "nl": "De tekeningen op de achtergrond zijn weg.",
+  "es": "Los dibujos del fondo ya no están.",
+  "de": "Die Zeichnungen im Hintergrund sind weg.",
+  "fr": "Les dessins en arrière-plan ont disparu.",
+  "it": "I disegni sullo sfondo non ci sono più."
+ },
+ "Food: what you ate comes before Your own foods, and the suggested targets sit in Daily targets instead of above your day.": {
+  "nl": "Eten: wat je at komt vóór Je eigen eten, en de voorgestelde doelen staan in Dagdoelen in plaats van boven je dag.",
+  "es": "Comida: lo que comiste va antes que Tus propios alimentos, y los objetivos sugeridos están en Objetivos diarios en vez de encima de tu día.",
+  "de": "Ernährung: Was du gegessen hast, steht vor Deine eigenen Lebensmittel, und die vorgeschlagenen Ziele stehen in Tagesziele statt über deinem Tag.",
+  "fr": "Alimentation : ce que tu as mangé passe avant Tes propres aliments, et les objectifs suggérés sont dans Objectifs quotidiens au lieu d’être au-dessus de ta journée.",
+  "it": "Cibo: quello che hai mangiato viene prima di I tuoi alimenti, e gli obiettivi suggeriti stanno in Obiettivi giornalieri invece che sopra la tua giornata."
+ },
+ "Train and the plan preview say less: the first workout gets its date, and Add to calendar is no longer the loudest button.": {
+  "nl": "Training en het planoverzicht zeggen minder: de eerste training krijgt zijn datum, en Aan agenda toevoegen is niet langer de luidste knop.",
+  "es": "Entrenar y la vista previa del plan dicen menos: el primer entrenamiento lleva su fecha, y Añadir al calendario ya no es el botón más llamativo.",
+  "de": "Training und die Planvorschau sagen weniger: Das erste Training bekommt sein Datum, und Zum Kalender hinzufügen ist nicht mehr der lauteste Button.",
+  "fr": "Entraînement et l’aperçu du plan en disent moins : la première séance reçoit sa date, et Ajouter au calendrier n’est plus le bouton le plus voyant.",
+  "it": "Allenamento e l’anteprima del piano dicono meno: il primo allenamento ha la sua data, e Aggiungi al calendario non è più il pulsante più vistoso."
  }
 }
