@@ -27,6 +27,8 @@
   --f-body: "Barlow", "Helvetica Neue", Arial, sans-serif;
   --t1: 0.875rem; --t2: 1rem; --t3: 1.25rem; --t4: 2rem; --t5: 2.75rem;
   --rest-h: 64px;
+  --blk-a: #f3f4fb;      /* blocks on a page take turns: a cool tint */
+  --blk-b: #fdf3ee;      /* and a warm one, so where one ends and the next begins is plain */
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -34,6 +36,7 @@
     --pop: #ff8a65; --on-pop: #10142b; --warn: #ff6b5e; --good: #4cc38a; --sbar: #1a2044; --logo-bar: #8f9cff;
     --c-back: #c6a4f5; --c-chest: #4fd1e0; --c-shoulders: #9ee8f0; --c-arms: #e0c8ff; --c-legs: #6cc69a; --c-core: #f29ac4; --c-other: #a1a8d4;
     --on-g: #10142b; --flat: #f2b155;
+    --blk-a: #161b3a; --blk-b: #1f1a33;
     color-scheme: dark;
   }
 }
@@ -42,6 +45,7 @@
   --pop: #ff8a65; --on-pop: #10142b; --warn: #ff6b5e; --good: #4cc38a; --sbar: #1a2044; --logo-bar: #8f9cff;
   --c-back: #c6a4f5; --c-chest: #4fd1e0; --c-shoulders: #9ee8f0; --c-arms: #e0c8ff; --c-legs: #6cc69a; --c-core: #f29ac4; --c-other: #a1a8d4;
   --on-g: #10142b; --flat: #f2b155;
+  --blk-a: #161b3a; --blk-b: #1f1a33;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -54,6 +58,9 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; pointer-event
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --doodle: 0.06; } }
 @media (max-width: 600px) { body::after { -webkit-mask-size: 340px; mask-size: 340px; } }
 h1, h2, h3, p { margin: 0; }
+/* a block: one function or option on a page. Blocks take turns between two tints (data-tone, set by toneBlocks) */
+.blk { background: var(--blk-a); padding: 1rem 0.875rem 1.125rem; }
+.blk[data-tone="b"] { background: var(--blk-b); }
 button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .in { max-width: 46rem; margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
@@ -138,6 +145,8 @@ body:not(.in-session) .restbar { bottom: calc(var(--nav-h) + var(--nav-safe)); p
 .more-row .nav-dot { display: none; position: static; margin-left: 0.25rem; }
 body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; }
 .set-wrap > section.fold { border-bottom: 1px solid var(--line); }
+.blk-row { background: var(--blk-a); padding-inline: 0.875rem; }
+.blk-row[data-tone="b"] { background: var(--blk-b); }
 .view[hidden] { display: none; }
 
 /* plate calculator */
@@ -555,9 +564,10 @@ td.nowrap { white-space: nowrap; }
 .wk-warn { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; color: var(--warn); font-weight: 600; }
 .wk-warns .wk-warn .icon { flex: none; color: inherit; margin-top: -0.25rem; }
 .cal-panel { display: flex; flex-direction: column; gap: 0.75rem; padding-block: 0.75rem; }
-.cal-cta { display: flex; flex-direction: column; gap: 0.375rem; margin-top: 0.5rem; }
+.cal-cta { display: flex; flex-direction: column; gap: 0.375rem; }
 .cal-cta .note { margin: 0; text-align: center; }
-.month { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.month-blk { display: flex; flex-direction: column; gap: 0.5rem; }
+.month { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
 .mo-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.25rem; padding-inline: 0.375rem; }
 .mo-grid .wk-wd { text-align: center; }
 .mo-blk { min-height: 44px; max-width: none; }
@@ -869,7 +879,8 @@ body.fin-open { overflow: hidden; }
 .xr-name { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.1; }
 /* food */
 .fd-wrap { padding-block: 1rem 3rem; }
-.fd-body { display: flex; flex-direction: column; gap: 1.75rem; }
+.fd-body { display: flex; flex-direction: column; gap: 0.75rem; }
+.fd-top { display: flex; flex-direction: column; gap: 1rem; }
 .fd-body[hidden] { display: none; }
 .fd-day { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
 .fd-day h2 { font-size: var(--t3); min-width: 12rem; text-align: center; }
@@ -1192,14 +1203,16 @@ body.fin-open { overflow: hidden; }
           </g>
         </svg>
       </h1>
-      <div class="today" id="today-card" aria-live="polite"></div>
+      <div class="today blk" id="today-card" aria-live="polite"></div>
       <div class="unfinished" id="unfinished"></div>
-      <div class="week" id="week">
+      <div class="week blk" id="week">
         <div class="bar"><h2 id="h-week"></h2><div class="wk-nav"><button type="button" class="arrow" id="wk-prev" aria-label="Previous week">&#8249;</button><button type="button" class="arrow" id="wk-next" aria-label="Next week">&#8250;</button></div></div>
         <p class="note" id="wk-hint">Drag a planned day to another date to move it. Tap it to start it or remove it.</p>
         <div class="wk-rows" id="wk-rows"></div>
         <div class="wk-sheet" id="wk-sheet" aria-live="polite"></div>
         <div class="wk-warns" id="wk-warns" aria-live="polite"></div>
+      </div>
+      <div class="month-blk blk" id="ahead">
         <div class="cal-cta"><button class="skew pop big" type="button" id="btn-cal" aria-expanded="false" aria-controls="cal-panel"><span>Add to calendar</span></button><p class="note">Put your planned days in Apple, Google or Outlook calendar.</p></div>
         <div class="cal-panel" id="cal-panel" hidden></div>
         <section class="month" id="month" aria-labelledby="h-month">
@@ -1226,24 +1239,24 @@ body.fin-open { overflow: hidden; }
       <p class="p-total" id="take">Loading your progress…</p>
       <div class="p-tiles" id="p-tiles" hidden></div>
       <div class="p-grid" id="p-grid">
-        <section class="p-sec" aria-labelledby="h-plist">
+        <section class="p-sec blk" aria-labelledby="h-plist">
           <div class="p-head"><h2 id="h-plist">Your lifts</h2><span class="p-count" id="plist-count"></span></div>
           <p class="note" id="plist-note"></p>
           <div class="plist" id="plist"></div>
         </section>
         <div class="p-col">
-          <section class="p-sec" aria-labelledby="h-days" id="p-days-sec">
+          <section class="p-sec blk" aria-labelledby="h-days" id="p-days-sec">
             <div class="p-head"><h2 id="h-days">Training days</h2></div>
             <p class="note" id="days-note"></p>
             <div class="chart p-days" id="p-days"></div>
             <div class="legend p-legend" id="days-legend"></div>
           </section>
-          <section class="p-sec" aria-labelledby="h-weekly">
+          <section class="p-sec blk" aria-labelledby="h-weekly">
             <div class="p-head"><h2 id="h-weekly">Volume</h2></div>
             <p class="note" id="weekly-note"></p>
             <div class="chart" id="weekly"></div>
           </section>
-          <details class="p-sec p-log" id="p-log">
+          <details class="p-sec blk p-log" id="p-log">
             <summary class="p-head"><h2 id="h-log">Session log</h2><span class="p-count" id="log-count"></span><span class="p-caret" aria-hidden="true"></span></summary>
             <p class="note">Newest first. Working sets exclude warm-ups.</p>
             <div class="scroll">
@@ -1262,12 +1275,12 @@ body.fin-open { overflow: hidden; }
     <div class="xl-wrap in">
       <p class="loading" id="xl-loading">Loading exercises…</p>
       <div class="xl-body" id="xl-body" hidden>
-        <section class="p-sec" aria-labelledby="h-xr" id="xr-sec">
+        <section class="p-sec blk" aria-labelledby="h-xr" id="xr-sec">
           <div class="p-head"><h2 id="h-xr">For you</h2></div>
           <p class="note" id="xr-note"></p>
           <div class="xr-list" id="xr-list"></div>
         </section>
-        <section class="p-sec" aria-labelledby="h-xl">
+        <section class="p-sec blk" aria-labelledby="h-xl">
           <div class="p-head"><h2 id="h-xl">All exercises</h2><span class="p-count" id="xl-count"></span></div>
           <input class="xl-search" type="search" id="xl-search" placeholder="Search by name, muscle or equipment" aria-label="Search exercises" autocomplete="off">
           <nav class="ptabs xl-tabs" role="tablist" aria-label="Body part" id="xl-tabs"></nav>
@@ -1301,18 +1314,20 @@ body.fin-open { overflow: hidden; }
           <button class="icon" type="button" id="fd-next" aria-label="Next day">&#8250;</button>
         </div>
         <div class="fd-askcal" id="fd-askcal" hidden></div>
-        <div class="fd-meter" id="fd-meter"></div>
-        <div class="fd-sug" id="fd-sug-top" hidden></div>
-        <div class="fd-quick" id="fd-quick">
-          <div class="fd-quick-row">
-            <button class="textbtn" type="button" id="fd-yday" hidden>Same as yesterday</button>
+        <div class="fd-top blk">
+          <div class="fd-meter" id="fd-meter"></div>
+          <div class="fd-sug" id="fd-sug-top" hidden></div>
+          <div class="fd-quick" id="fd-quick">
+            <div class="fd-quick-row">
+              <button class="textbtn" type="button" id="fd-yday" hidden>Same as yesterday</button>
+            </div>
           </div>
         </div>
-        <section class="p-sec" aria-labelledby="h-fd-meals" id="fd-meals" hidden>
+        <section class="p-sec blk" aria-labelledby="h-fd-meals" id="fd-meals" hidden>
           <div class="p-head"><h2 id="h-fd-meals">Your meals</h2></div>
           <div class="fd-sm-list" id="fd-sm-list"></div>
         </section>
-        <section class="p-sec" aria-labelledby="h-fd-add">
+        <section class="p-sec blk" aria-labelledby="h-fd-add">
           <div class="p-head"><h2 id="h-fd-add">Add food</h2></div>
           <div class="fd-find">
             <input class="xl-search" id="fd-name" type="search" placeholder="Search a food: kwark, banaan, rice…" autocomplete="off" enterkeyhint="search" aria-label="Search a food" aria-controls="fd-hits" aria-expanded="false">
@@ -1342,7 +1357,7 @@ body.fin-open { overflow: hidden; }
           </form>
           <p class="fd-credit fd-src" id="fd-src" hidden></p>
         </section>
-        <section class="p-sec" aria-labelledby="h-fd-own" id="fd-ownfoods">
+        <section class="p-sec blk" aria-labelledby="h-fd-own" id="fd-ownfoods">
           <div class="p-head"><h2 id="h-fd-own">Your own foods</h2><span class="p-count" id="fd-own-count"></span></div>
           <p class="note">Something that is not in the food list, like a product from your shop or a home-made dish? Save its numbers once and search finds it from then on. The numbers are on the package, per 100 g or per 100 ml.</p>
           <div class="foot-row">
@@ -1351,11 +1366,11 @@ body.fin-open { overflow: hidden; }
           </div>
           <div class="fd-own-list" id="fd-own-list"></div>
         </section>
-        <section class="p-sec" aria-labelledby="h-fd-list">
+        <section class="p-sec blk" aria-labelledby="h-fd-list">
           <div class="p-head"><h2 id="h-fd-list">Eaten</h2><span class="p-count" id="fd-count"></span></div>
           <div class="fd-list" id="fd-list"></div>
         </section>
-        <section class="p-sec" aria-labelledby="h-fd-trend">
+        <section class="p-sec blk" aria-labelledby="h-fd-trend">
           <div class="p-head"><h2 id="h-fd-trend">Trends</h2></div>
           <div class="seg" role="radiogroup" aria-label="Period" id="fd-range"></div>
           <p class="p-total" id="fd-take"></p>
@@ -1365,7 +1380,7 @@ body.fin-open { overflow: hidden; }
           <div class="chart" id="fd-chart"></div>
         </section>
         <p class="note fd-off" id="fd-off" hidden>Calories are hidden; protein, carbs and fat still count. <button class="textbtn" type="button" id="fd-off-go">Show calories in Settings</button></p>
-        <details class="p-sec p-log" id="fd-targets">
+        <details class="p-sec blk p-log" id="fd-targets">
           <summary class="p-head"><h2>Daily targets</h2><span class="p-count" id="fd-tgt-sum"></span><span class="p-caret" aria-hidden="true"></span></summary>
           <div class="ed-fields">
             <label class="ed-f fd-kcalf"><span class="lab">Calories (kcal)</span><input id="fd-t-kcal" inputmode="numeric" placeholder="none"></label>
@@ -1816,6 +1831,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['8 Nov 2026', "Easier to see where things start", ["Every part of a page now sits in its own block, and blocks next to each other take turns between a cool and a warm tint. On Train: today, your week, and the month ahead.", "In More, each group of settings shares a tint."]],
     ['8 Nov 2026', "A quicker start", ["New here? Three questions, one per screen, and your plan is ready: how often, where, and how long you have trained. A tap answers and moves on.", "Coming from another app? Import your history from the first screen; the plan takes your days a week from it.", "Calories are asked in Food, the first time you open it, instead of during setup.", "Leave setup half way, or go copy something to your AI, and it picks up where you were.", "Signing up: show your password while typing, and send the confirmation email again if it did not arrive."]],
     ['8 Nov 2026', "A first plan in seconds", ["Build my plan now makes your plan right away, in the app: full body for 2 or 3 days a week, upper and lower body for more, for the gym, home or bodyweight only.", "Your own AI is still there: open Change it with your AI under the plan.", "Coming from Strong, Hevy or FitNotes? Your history comes over without an AI, and the plan starts from your recent weights. Only import my history skips the plan."]],
     ['8 Nov 2026', "A new plan starts today", ["A plan you build starts today, or tomorrow if you pick that, instead of on the next Monday.", "Sessions a week are saved with your plan. Changing About you no longer moves your week.", "On the web, Build my plan goes straight to the copy-and-paste step, and the request is shorter: only exercises for where you train, and the answer comes in your language."]],
@@ -7741,8 +7757,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- the month: every planned (•) and trained (✓) day of the month on one page. Tap a day to open its week above.
   const renderMonth = () => {
     const none = !templatesSorted().length; // nothing to plan yet: no empty month and no calendar to add
-    $('#month').hidden = none;
-    $('.cal-cta').hidden = none;
+    $('#ahead').hidden = none;
     if (none) { $('#cal-panel').hidden = true; return; }
     if (!S.moStart) S.moStart = today().slice(0, 8) + '01';
     const first = S.moStart;
@@ -8104,7 +8119,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       box.append(p);
     }
     // which weekdays, and what a missed day does
-    const set = h('div', 'pw-set');
+    const set = h('div', 'pw-set blk');
     const chips = h('div', 'pw-days');
     chips.setAttribute('role', 'group');
     chips.setAttribute('aria-label', 'Days you train');
@@ -8145,7 +8160,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       box.append(n);
     }
     const ts = templatesSorted();
-    const board = h('div', 'pw-board');
+    const board = h('div', 'pw-board blk');
     if (m.mode === 'fixed') {
       board.classList.add('fixed');
       WEEKDAYS.forEach((w) => {
@@ -8179,7 +8194,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     // days that are not in the week, and making a new one
     const used = inWeek(m);
     const spare = ts.filter((t) => !used.has(t.id));
-    const more = h('div', 'pw-more');
+    const more = h('div', 'pw-more blk');
     if (spare.length) {
       more.append(h('div', 'lab', 'Not in your week'));
       const list = h('div', 'pw-spare');
@@ -8491,6 +8506,24 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (S.editing === 'list') { ED = null; renderPlanWeek(box); return; }
     renderDayEditor(box);
   };
+  // Blocks take turns between two tints. Only the blocks you can see count, so two neighbours never share a tint
+  // when one in between is hidden. Runs after a page is shown and whenever something on it is shown or hidden.
+  let toneQueued = false;
+  const toneBlocks = () => {
+    toneQueued = false;
+    const view = $('.view:not([hidden])');
+    if (!view) return;
+    let n = 0;
+    $$('.blk', view).forEach((b) => {
+      if (!b.getClientRects().length) return;
+      const t = n % 2 ? 'b' : 'a';
+      if (b.dataset.tone !== t) b.dataset.tone = t;
+      n += 1;
+    });
+  };
+  const queueTone = () => { if (!toneQueued) { toneQueued = true; requestAnimationFrame(toneBlocks); } };
+  new MutationObserver(queueTone).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
+
   // Settings: every section folds; all start closed, so the list of sections is the first thing you see
   function foldSettings() {
     $$('#v-settings .set-wrap > section').forEach((sec) => {
@@ -8553,6 +8586,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         const el = id[0] === '#' ? $(id) : (document.getElementById(id) || { closest: () => null }).closest('section');
         if (!el) return;
         el.style.order = String(gi * 100 + k + 1);
+        el.classList.add('blk-row');
+        el.dataset.tone = gi % 2 ? 'b' : 'a';
         if (!el.hidden) any = true;
       });
       const lab = $('#more-g' + gi);

@@ -3456,5 +3456,26 @@
   "de": "Registrieren: Zeig dein Passwort beim Tippen an und sende die Bestätigungs-E-Mail erneut, wenn sie nicht ankam.",
   "fr": "Inscription : affiche ton mot de passe pendant la saisie, et renvoie l’e-mail de confirmation s’il n’est pas arrivé.",
   "it": "Registrazione: mostra la password mentre scrivi e invia di nuovo l’email di conferma se non è arrivata."
+ },
+ "Easier to see where things start": {
+  "nl": "Makkelijker te zien waar iets begint",
+  "es": "Más fácil ver dónde empieza cada cosa",
+  "de": "Leichter zu sehen, wo etwas beginnt",
+  "fr": "Plus facile de voir où chaque partie commence",
+  "it": "Più facile vedere dove inizia ogni parte"
+ },
+ "Every part of a page now sits in its own block, and blocks next to each other take turns between a cool and a warm tint. On Train: today, your week, and the month ahead.": {
+  "nl": "Elk deel van een pagina staat nu in een eigen blok, en blokken naast elkaar wisselen af tussen een koele en een warme tint. Bij Training: vandaag, je week en de maand die komt.",
+  "es": "Cada parte de una página está ahora en su propio bloque, y los bloques vecinos alternan entre un tono frío y uno cálido. En Entrenar: hoy, tu semana y el mes que viene.",
+  "de": "Jeder Teil einer Seite steht jetzt in einem eigenen Block, und benachbarte Blöcke wechseln zwischen einem kühlen und einem warmen Farbton. Bei Training: heute, deine Woche und der kommende Monat.",
+  "fr": "Chaque partie d’une page est maintenant dans son propre bloc, et les blocs voisins alternent entre une teinte froide et une teinte chaude. Dans Entraînement : aujourd’hui, ta semaine et le mois à venir.",
+  "it": "Ogni parte di una pagina ora sta nel suo blocco, e i blocchi vicini si alternano tra una tinta fredda e una calda. In Allenamento: oggi, la tua settimana e il mese in arrivo."
+ },
+ "In More, each group of settings shares a tint.": {
+  "nl": "In Meer deelt elke groep instellingen een tint.",
+  "es": "En Más, cada grupo de ajustes comparte un tono.",
+  "de": "Unter Mehr teilt sich jede Gruppe von Einstellungen einen Farbton.",
+  "fr": "Dans Plus, chaque groupe de réglages partage une teinte.",
+  "it": "In Altro, ogni gruppo di impostazioni condivide una tinta."
  }
 }

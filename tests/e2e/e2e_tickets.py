@@ -382,6 +382,7 @@ try:
             tipvis = lambda: page.evaluate("(() => { const t = document.querySelector('#p-days .tip'); return !!t && !t.hidden && getComputedStyle(t).display !== 'none'; })()")
             for attempt in (1, 2, 3):
                 for i in trained:
+                    page.evaluate("document.querySelector('#p-days').scrollIntoView({ block: 'center' })")  # clear of the bottom bar
                     box = cells.nth(i).bounding_box(); page.mouse.move(box['x'] + box['width'] / 2, box['y'] + box['height'] / 2)
                     page.wait_for_timeout(120)
                     check('tooltip shows on hover #%d day %d' % (attempt, i), tipvis())
