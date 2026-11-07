@@ -1,4 +1,4 @@
-"""Quick food for the days you forget or can't be bothered: a home-screen shortcut, I ate something (fill it in later), the same as yesterday, a nudge after training."""
+"""Quick food for the days you forget or can't be bothered: a home-screen shortcut, the same as yesterday, a nudge after training. (I ate something is gone; old placeholders can be removed.)"""
 import subprocess, time, datetime, json, re
 from playwright.sync_api import sync_playwright
 from harness import *
@@ -33,58 +33,33 @@ try:
             check('and the Train shortcut lands on Train', until(lambda: vis(page, '#v-train')))
         errs = session(pw, be, ALICE, shortcut, width=390); check('no page errors (shortcut)', not errs, errs)
 
-        # ---- I ate something, then fill it in
+        # ---- I ate something is gone; a placeholder an earlier version saved can still be removed
         be = Backend(); root(be)
+        be.docs.append({'path': 'yc/food/' + TODAY, 'data': {'date': TODAY, 'entries': {
+            'old': {'name': 'Ate something', 'quick': True, 'at': 1700000000000},
+            'real': {'name': 'Apple', 'kcal': 62, 'p': 0.3, 'c': 14, 'f': 0.2, 'at': 5}}}})
         def ate(page):
-            page.click('#tab-food'); page.wait_for_selector('#fd-ate', state='visible', timeout=8000)
-            page.click('#fd-ate')
-            check('one tap saves a placeholder with the time', until(lambda: page.locator('#fd-list .fd-quickrow').count() == 1) and re.search(r'Ate something · \d\d:\d\d', page.locator('#fd-list .fd-quickrow').inner_text()) is not None, page.inner_text('#fd-list'))
-            q = list(entries(be).values())
-            check('stored without numbers, flagged, with the time', len(q) == 1 and q[0]['quick'] is True and q[0]['name'] == 'Ate something' and abs(q[0]['at'] - time.time() * 1000) < 120000 and q[0].get('kcal') is None, q)
-            check('the day says something is still to fill in', 'One meal is still to fill in.' in page.inner_text('#fd-meter'))
-            check('and counts for nothing in the totals', page.locator('#fd-meter .fd-mrow:has-text("Protein") b').first.inner_text() == '0')
-            check('and says so in the toast', 'Fill it in later' in page.inner_text('#toast-text'))
-            page.click('#fd-ate'); page.wait_for_timeout(300)
-            check('two of them: some meals are still to fill in', 'Some meals are still to fill in.' in page.inner_text('#fd-meter') and page.locator('#fd-list .fd-quickrow').count() == 2)
+            page.click('#tab-food'); page.wait_for_selector('#fd-body', state='visible', timeout=8000)
+            check('there is no I ate something button', page.locator('#fd-ate').count() == 0 and 'I ate something' not in page.inner_text('#v-food'))
+            check('and no fill-in note', page.locator('#fd-fill').count() == 0)
+            check('an old placeholder is still listed, with the time', until(lambda: page.locator('#fd-list .fd-quickrow').count() == 1) and re.search(r'Ate something · \d\d:\d\d', page.locator('#fd-list .fd-quickrow').inner_text()) is not None, page.inner_text('#fd-list'))
+            check('without a Fill in button', page.locator('#fd-list .fd-quickrow .skew').count() == 0)
+            check('the day no longer talks about meals to fill in', 'still to fill in' not in page.inner_text('#fd-meter'))
+            check('and the placeholder counts for nothing in the totals', '14 g' in page.inner_text('#fd-meter'), page.inner_text('#fd-meter'))  # only the apple counts
             page.fill('#fd-name', 'ate'); page.wait_for_timeout(500)
             check('a placeholder is not offered as one of your foods', 'Ate something' not in page.inner_text('#fd-hits') if vis(page, '#fd-hits') else True)
             page.fill('#fd-name', ''); page.keyboard.press('Escape')
-
-            # fill one in: the food replaces it
-            page.locator('#fd-list .fd-quickrow').first.locator('.skew').click()
-            check('Fill in asks what it was and puts you in the search', vis(page, '#fd-fill') and 'replaces this entry' in page.inner_text('#fd-fill') and page.evaluate("document.activeElement && document.activeElement.id") == 'fd-name')
-            page.fill('#fd-name', 'mosterd'); until(lambda: vis(page, '#fd-hits') and page.locator('#fd-hits .fd-hit').count() > 0); page.wait_for_timeout(150)
-            page.locator('#fd-hits .fd-hit').first.click(); page.wait_for_selector('#fd-form', state='visible'); page.click('#fd-add')
-            check('the food replaces the placeholder', until(lambda: page.locator('#fd-list .fd-quickrow').count() == 1 and page.locator('#fd-list .fd-row:has-text("Mosterd")').count() == 1))
-            check('in the data too', len([e for e in entries(be).values() if e.get('quick')]) == 1 and any(e.get('name') == 'Mosterd' for e in entries(be).values()), entries(be))
-            check('and the note is gone, with one meal left to fill in', not vis(page, '#fd-fill') and 'One meal is still to fill in.' in page.inner_text('#fd-meter'))
-            # cancel keeps it
-            page.locator('#fd-list .fd-quickrow .skew').click(); page.click('#fd-fill >> text=Cancel')
-            check('Cancel drops the filling in', not vis(page, '#fd-fill'))
-            page.fill('#fd-name', 'mosterd'); until(lambda: page.locator('#fd-hits .fd-hit').count() > 0); page.wait_for_timeout(150)
-            page.locator('#fd-hits .fd-hit').first.click(); page.wait_for_selector('#fd-form', state='visible'); page.click('#fd-add'); page.wait_for_timeout(500)
-            check('so the next food does not replace it', page.locator('#fd-list .fd-quickrow').count() == 1 and page.locator('#fd-list .fd-row:has-text("Mosterd")').count() == 2)
-            # remove and undo
             page.click('#fd-list .fd-quickrow .icon')
             check('a placeholder can be removed', until(lambda: page.locator('#fd-list .fd-quickrow').count() == 0))
             page.click('#toast-undo')
-            check('and comes back with Undo, still a placeholder', until(lambda: page.locator('#fd-list .fd-quickrow').count() == 1) and any(e.get('quick') for e in entries(be).values()))
-            # filling in is only for the food you pick for it: an undo while it is pending must not swallow the placeholder
-            page.locator('#fd-list .fd-quickrow .skew').click()
-            page.click('#fd-list .fd-row:has-text("Mosterd") .icon'); page.wait_for_timeout(300)
-            page.click('#toast-undo'); page.wait_for_timeout(500)
-            check('Undo of a removed food leaves the placeholder it is not filling', page.locator('#fd-list .fd-quickrow').count() == 1 and page.locator('#fd-list .fd-row:has-text("Mosterd")').count() == 2, page.inner_text('#fd-list'))
-            if vis(page, '#fd-fill'): page.click('#fd-fill >> text=Cancel')
+            check('and comes back with Undo', until(lambda: page.locator('#fd-list .fd-quickrow').count() == 1) and any(e.get('quick') for e in entries(be).values()))
             # removing sends only that entry: a food another phone or the connector added since is not wiped
             names = lambda: sorted(e['name'] for e in entries(be).values())
             next(d for d in be.docs if d['path'] == 'yc/food/' + TODAY)['data']['entries']['elsewhere'] = {'name': 'Added elsewhere', 'p': 3, 'at': 5}
-            page.click('#fd-list .fd-row:has-text("Mosterd") .icon'); page.wait_for_timeout(600)
-            check('removing an entry keeps what was added elsewhere', 'Added elsewhere' in names() and names().count('Mosterd') == 1, names())
-            # a past day has no I ate
-            page.click('#fd-prev')
-            check('on an earlier day there is no I ate something', not vis(page, '#fd-ate'))
+            page.click('#fd-list .fd-quickrow .icon'); page.wait_for_timeout(600)
+            check('removing an entry keeps what was added elsewhere', 'Added elsewhere' in names() and 'Apple' in names() and 'Ate something' not in names(), names())
             check('no horizontal overflow on a phone', page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
-        errs = session(pw, be, ALICE, ate, width=390); check('no page errors (I ate)', not errs, errs)
+        errs = session(pw, be, ALICE, ate, width=390); check('no page errors (old placeholder)', not errs, errs)
 
         # ---- the same as yesterday
         be = Backend(); root(be)

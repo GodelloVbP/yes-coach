@@ -207,6 +207,10 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   r = await call('tok.anna.x', 'set_schedule', { mode: 'rotation', weekdays: ['Fri', 'Mon', 'Mon', 'Wed'], day_ids: ['day-1', 'day-2', 'day-3'] });
   ok(!r.err && JSON.stringify(rows.find((x) => x.user_id === A && x.path === 'yc').data.schedule.days) === '["Mon","Wed","Fri"]', 'rotation sorted, deduped');
   ok((await call('tok.anna.x', 'set_schedule', { mode: 'rotation', weekdays: ['Mon'], day_ids: ['nope'] })).err, 'unknown day in schedule');
+  r = await call('tok.anna.x', 'set_schedule', { mode: 'rotation', weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], day_ids: ['day-1', 'day-2', 'day-3'], sessions_per_week: 4 });
+  ok(!r.err && r.json.schedule.sessions_per_week === 4 && /4 times a week, spread over those days/.test(r.json.schedule.note) && rowA('yc').data.schedule.per_week === 4, 'sessions a week is saved and read back: ' + r.text.slice(0, 200));
+  r = await call('tok.anna.x', 'set_schedule', { mode: 'rotation', weekdays: ['Mon', 'Wed', 'Fri'], day_ids: ['day-1', 'day-2', 'day-3'] });
+  ok(!r.err && r.json.schedule.sessions_per_week === undefined && rowA('yc').data.schedule.per_week === undefined, 'without it every weekday given is used');
   ok((await call('tok.anna.x', 'set_schedule', { mode: 'rotation', weekdays: [], day_ids: ['day-1'] })).err, 'rotation needs weekdays');
   ok((await call('tok.anna.x', 'set_schedule', { mode: 'fixed', week: {} })).err, 'fixed needs a day');
   ok((await call('tok.anna.x', 'set_schedule', { mode: 'weird' })).err, 'bad mode');

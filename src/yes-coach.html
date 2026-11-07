@@ -128,9 +128,6 @@ body:not(.in-session) .restbar { bottom: calc(var(--nav-h) + env(safe-area-inset
   .mainnav .tab[aria-selected="true"]::before, .mainnav .tab.in-more::before { content: ''; position: absolute; inset: 0; z-index: -1; transform: skewX(-14deg); background: var(--faint); border: 2px solid var(--ink); }
   .nav-dot { top: 12px; left: 38px; }
   body .restbar, body:not(.in-session) .restbar { left: var(--side-w); bottom: 0; padding-bottom: env(safe-area-inset-bottom, 0px); }
-  /* No app bar on a wide screen: the undo toast and the save warning hang from the very top, so leave them room and keep them off the sidebar */
-  body:not(.in-session) main { padding-top: 4rem; }
-  body .toast { left: var(--side-w); }
 }
 /* More: Settings regrouped, plus links to the other pages */
 .set-wrap { display: flex; flex-direction: column; }
@@ -626,7 +623,9 @@ body.typing .restbar { display: none; }
 .sm-save { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; }
 
 /* undo toast hangs under the top bar, clear of the keyboard and the rest bar */
-.toast { position: fixed; left: 0; right: 0; top: var(--stick-h, 48px); z-index: 11; background: var(--ink); color: var(--bg); box-shadow: 0 6px 16px rgba(16, 20, 43, 0.25); }
+.toast { position: absolute; left: 0; right: 0; top: 100%; z-index: 11; background: var(--ink); color: var(--bg); box-shadow: 0 6px 16px rgba(16, 20, 43, 0.25); }
+/* from tablet width up there is room: the undo bar and the save warning take their own space at the top, so they never cover the page */
+@media (min-width: 40rem) { .stick .toast, .stick .savebar { position: static; } }
 /* taps pass through the message to the page; only Undo (on the left, away from each card's red X) takes them */
 .toast { pointer-events: none; }
 .toast .skew { pointer-events: auto; }
@@ -925,8 +924,13 @@ body.fin-open { overflow: hidden; }
 .fd-quick .note { margin: 0; }
 .fd-partial { margin: 0.5rem 0 0; color: var(--ink-soft); font-weight: 600; }
 .fd-quickrow { background: var(--faint); padding-inline: 0.625rem; }
-.fd-quickrow .skew { grid-row: 1; grid-column: 2; }
 .fd-quickrow .icon { grid-row: 1; grid-column: 3; }
+.fd-own-list { display: flex; flex-direction: column; }
+.fd-own-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.25rem 0.75rem; padding-block: 0.5rem; border-bottom: 1px solid var(--line); }
+.fd-own-info { display: flex; flex-direction: column; min-width: 0; flex: 1 1 12rem; }
+.fd-own-info b { font-weight: 700; overflow-wrap: anywhere; }
+.fd-own-info .note { margin: 0; }
+.fd-own-acts { display: flex; align-items: center; flex-wrap: wrap; gap: 0.25rem 0.5rem; }
 .fin-eat { display: flex; justify-content: center; margin-top: 0.5rem; }
 .fd-sm-list { display: flex; flex-direction: column; }
 .fd-more { text-align: center; color: var(--ink-soft); }
@@ -1071,6 +1075,7 @@ body.fin-open { overflow: hidden; }
       <button class="textbtn" type="button" id="sb-date-cancel">Cancel</button>
     </div>
   </div>
+  <div class="toast" id="toast" hidden role="status" aria-live="polite"><div class="in toast-in"><button class="skew small" type="button" id="toast-undo"><span>Undo</span></button><span id="toast-text"></span></div></div>
 </div>
 <div class="resume in" id="resume" hidden><button type="button" class="resume-btn" id="resume-btn"><span id="resume-text"></span><b>Resume</b></button><button type="button" class="resume-fin" id="resume-fin">Finish day</button></div>
 
@@ -1278,10 +1283,8 @@ body.fin-open { overflow: hidden; }
         <div class="fd-sug" id="fd-sug-top" hidden></div>
         <div class="fd-quick" id="fd-quick">
           <div class="fd-quick-row">
-            <button class="skew small" type="button" id="fd-ate"><span>I ate something</span></button>
             <button class="textbtn" type="button" id="fd-yday" hidden>Same as yesterday</button>
           </div>
-          <p class="note" id="fd-fill" hidden></p>
         </div>
         <section class="p-sec" aria-labelledby="h-fd-meals" id="fd-meals" hidden>
           <div class="p-head"><h2 id="h-fd-meals">Your meals</h2></div>
@@ -1292,7 +1295,6 @@ body.fin-open { overflow: hidden; }
           <div class="fd-find">
             <input class="xl-search" id="fd-name" type="search" placeholder="Search a food: kwark, banaan, rice…" autocomplete="off" enterkeyhint="search" aria-label="Search a food" aria-controls="fd-hits" aria-expanded="false">
             <div class="fd-hits" id="fd-hits" hidden></div>
-            <button class="textbtn" type="button" id="fd-custom">Create your own food</button>
           </div>
           <form class="fd-card" id="fd-form" hidden novalidate autocomplete="off">
             <div class="fd-card-top"><div class="fd-card-title" id="fd-card-title"></div><button class="textbtn" type="button" id="fd-cancel">Cancel</button></div>
@@ -1317,6 +1319,15 @@ body.fin-open { overflow: hidden; }
             <div class="foot-row"><button class="skew pop" type="submit" id="fd-add"><span>Add</span></button><span class="note wz-err" id="fd-msg" role="alert"></span></div>
           </form>
           <p class="fd-credit fd-src" id="fd-src" hidden></p>
+        </section>
+        <section class="p-sec" aria-labelledby="h-fd-own" id="fd-ownfoods">
+          <div class="p-head"><h2 id="h-fd-own">Your own foods</h2><span class="p-count" id="fd-own-count"></span></div>
+          <p class="note">Something that is not in the food list, like a product from your shop or a home-made dish? Save its numbers once and search finds it from then on. The numbers are on the package, per 100 g or per 100 ml.</p>
+          <div class="foot-row">
+            <button class="skew pop small" type="button" id="fd-own-new"><span>Create a food</span></button>
+            <button class="skew small" type="button" id="fd-own-claude" hidden><span>Add with Claude</span></button>
+          </div>
+          <div class="fd-own-list" id="fd-own-list"></div>
         </section>
         <section class="p-sec" aria-labelledby="h-fd-list">
           <div class="p-head"><h2 id="h-fd-list">Eaten</h2><span class="p-count" id="fd-count"></span></div>
@@ -1437,7 +1448,6 @@ body.fin-open { overflow: hidden; }
   </div>
 </main>
 
-<div class="toast" id="toast" hidden role="status" aria-live="polite"><div class="in toast-in"><button class="skew small" type="button" id="toast-undo"><span>Undo</span></button><span id="toast-text"></span></div></div>
 <div class="restbar" id="restbar" hidden role="timer" aria-live="off">
   <div class="in rest-in">
     <button class="rest-l" type="button" id="rest-go" aria-label="Back to the exercise"><span class="rest-t" id="rest-t">0:00</span><span class="lab" id="rest-lab">Rest</span></button>
@@ -1783,6 +1793,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['7 Nov 2026', 'Your schedule and your own foods', ["Plan: the days you tick are the days you can train. Set how many sessions a week you want, and they are spread over those days.", "Your own foods have their own place in Food: create one, edit it, or ask Claude to add it.", "The undo bar no longer covers the page on a tablet or computer.", "I ate something is gone."]],
     ['7 Nov 2026', 'Custom days and run speed', ["Every custom workout is its own day, shows in the week and the month while it is in progress, and can be continued from there.", "Delete a day from the session menu or from the week. Undo brings it back.", "Runs show pace as min/km or km/h, your choice."]],
     ['7 Nov 2026', 'Fewer look-alike results', ["Foods that come out the same, like the different eggs or apples, now show as one result. Tap +2 almost the same to see the others."]],
     ['7 Nov 2026', 'Custom workouts, runs and your own foods', ["Change today's workout now has Custom workout. It starts blank, for whatever you do today.", "Runs track distance, altitude gain and where you ran: outside or on a treadmill. The pace per km is worked out for you.", "Create your own food with the numbers per 100 g or 100 ml. Claude can add one too: tell it the numbers from the package.", "Train shows the whole month under the week, and Add to calendar is now a big button.", "After you send a day to Claude, you land back on Train.", "On a wide screen the notices at the top no longer cover the page."]],
@@ -5126,7 +5137,6 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       else await foodRef(date).set({ date, entries: { [id]: entry } });
     } catch (err) { showToast('Not saved. Check your connection.', null); }
     // only a food picked to fill in a one-tap entry replaces it; a meal, an undo or another one-tap note does not
-    if (opts.fill && FD.replace && FD.replace.date === date) { const rid = FD.replace.id; FD.replace = null; dropEntries([rid], date); }
     return id;
   };
   // take entries off a day: the doc keeps the other entries, so another phone's or the connector's new entry is not wiped
@@ -5313,31 +5323,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     foodRef(date).update({ entries: { [id]: next } }).catch(() => showToast('Not saved. Check your connection.', null));
   };
 
-  // ---- quick food: note that you ate in one tap and fill it in later, or copy yesterday
+  // ---- quick food: copy yesterday in one tap
   const copyable = (date) => entriesOf(date).filter(([, e]) => !e.quick);
   const paintQuick = () => {
-    const isToday = S.fday === today();
-    $('#fd-ate').hidden = !isToday;
     $('#fd-yday').hidden = !(S.fday <= today() && !copyable(S.fday).length && copyable(addDays(S.fday, -1)).length);
-    const fill = $('#fd-fill');
-    fill.replaceChildren();
-    fill.hidden = !FD.replace;
-    if (FD.replace) {
-      const cancel = plainBtn('textbtn', 'Cancel', null, () => { FD.replace = null; paintQuick(); });
-      fill.append(h('span', '', 'Pick what it was and it replaces this entry.'), ' ', cancel);
-    }
   };
-  const startFill = (id) => {
-    FD.replace = { id, date: S.fday };
-    closeCard();
-    paintQuick();
-    $('#fd-name').focus();
-    $('#fd-name').scrollIntoView({ block: 'center' });
-  };
-  $('#fd-ate').addEventListener('click', async () => {
-    await addFood({ name: 'Ate something', quick: true }, S.fday);
-    showToast('Saved. Fill it in later.', null);
-  });
   const copyYesterday = async () => {
     const date = S.fday;
     const src = copyable(addDays(date, -1));
@@ -5373,9 +5363,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#fd-body').classList.toggle('fd-plain', !showCal());
     $('#fd-off').hidden = showCal();
     $('#fd-next').disabled = S.fday >= today();
-    if (FD.replace && FD.replace.date !== S.fday) FD.replace = null;
     paintMeter();
     paintQuick();
+    paintOwnFoods();
     paintMeals();
     paintFoodList();
     paintFoodTrend();
@@ -5417,7 +5407,6 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const a2 = h('span'); a2.append('Fat', h('b', '', big(t.f) + ' g'));
     split.append(a1, a2);
     box.append(split);
-    if (t.q) box.append(h('p', 'fd-partial', t.q === 1 ? 'One meal is still to fill in.' : 'Some meals are still to fill in.'));
   };
   const paintFoodList = () => {
     const box = $('#fd-list');
@@ -5426,14 +5415,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#fd-count').textContent = list.length ? String(list.length) : '';
     if (!list.length) { box.append(h('p', 'note', 'Nothing logged ' + (S.fday === today() ? 'today' : 'on this day') + ' yet.')); return; }
     list.forEach(([id, e]) => {
-      if (e.quick) {
+      if (e.quick) { // a one-tap entry from an earlier version: it holds no numbers, and can only be removed now
         const q = h('div', 'fd-row fd-quickrow');
         const when = new Date(isN(e.at) ? e.at : Date.now());
         const nm = h('span', 'fd-row-name');
         nm.append('Ate something', ' · ' + clock(when));
-        const fill = btn('skew small', 'Fill in', 'Fill in what you ate at ' + clock(when));
-        fill.addEventListener('click', () => startFill(id));
-        q.append(nm, fill, plainBtn('icon', '×', 'Remove this entry', () => removeFood(id)));
+        q.append(nm, plainBtn('icon', '×', 'Remove this entry', () => removeFood(id)));
         box.append(q);
         return;
       }
@@ -5605,6 +5592,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const typing = mode === 'new' || mode === 'custom'; // a card where you type the numbers yourself
     $$('.fd-custom-only').forEach((e) => { e.hidden = mode !== 'custom'; });
     [['#fd-p', 'optional'], ['#fd-c', 'optional'], ['#fd-f', 'optional'], ['#fd-kcal', '350']].forEach(([sel, ph]) => { $(sel).placeholder = ph; });
+    [['#fd-kcal', 'kcal'], ['#fd-p', 'Protein g'], ['#fd-c', 'Carbs g'], ['#fd-f', 'Fat g']].forEach(([sel, text]) => { $(sel).previousElementSibling.textContent = text; });
     $$('#fd-rough .fd-chip').forEach((c) => c.setAttribute('aria-pressed', 'false'));
     $('#fd-form').hidden = false;
     $('#fd-msg').textContent = '';
@@ -5639,7 +5627,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $$('#fd-rough .fd-chip').forEach((c) => c.addEventListener('click', () => { $('#fd-p').value = c.dataset.p; paintResult(); FD.rough = true; $$('#fd-rough .fd-chip').forEach((o) => o.setAttribute('aria-pressed', String(o === c))); }));
   // ---- your own foods: numbers per 100 g or 100 ml, kept for next time
   const ownSlug = (name) => foldW(name).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30);
-  const paintPer = () => { const u = $('#fd-unit').value === 'ml' ? 'ml' : 'g'; $('#fd-per').textContent = 'All numbers are per 100 ' + u + ', as printed on the package. Use 0 for none.'; };
+  const paintPer = () => {
+    const u = $('#fd-unit').value === 'ml' ? 'ml' : 'g';
+    $('#fd-per').textContent = 'All numbers are per 100 ' + u + ', as printed on the package. Use 0 for none.';
+    [['#fd-kcal', 'Calories (kcal)'], ['#fd-p', 'Protein (g)'], ['#fd-c', 'Carbs (g)'], ['#fd-f', 'Fat (g)']].forEach(([sel, text]) => { $(sel).previousElementSibling.textContent = text + ' per 100 ' + u; });
+  };
   $('#fd-unit').addEventListener('change', paintPer);
   const openCustom = (pre = {}) => {
     openCard('custom', pre.ref ? 'Edit your food' : 'Create your own food');
@@ -5648,10 +5640,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#fd-unit').value = pre.u === 'ml' ? 'ml' : 'g';
     [['#fd-kcal', pre.kcal], ['#fd-p', pre.p], ['#fd-c', pre.c], ['#fd-f', pre.f]].forEach(([sel, v]) => { $(sel).value = v == null ? '' : num(v); });
     ['#fd-p', '#fd-c', '#fd-f'].forEach((sel) => { $(sel).placeholder = '0'; });
+    $('#fd-kcal').placeholder = '';
     paintPer();
     $('#fd-add').firstChild.textContent = 'Save food';
     $('#fd-name').value = '';
     $('#fd-own-name').focus();
+    $('#fd-form').scrollIntoView({ block: 'center', behavior: 'smooth' });
   };
   const saveCustomFood = async () => {
     const msg = $('#fd-msg');
@@ -5675,6 +5669,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     S.rootRef.collection('myfoods').doc(id).set(doc).catch(() => showToast('The food was not saved. Check your connection.', null));
     FD.customRef = null;
     pickFood({ it: ownItemOf(doc), label: name, full: name }); // straight on to how much you had
+    $('#fd-card-title').append(h('span', 'note', (old ? 'Updated. ' : 'Saved. ') + 'How much did you have? Or Cancel: it stays saved.'));
     showToast((old ? 'Updated ' : 'Saved ') + name + '. Search finds it first from now on.', null);
   };
   const forgetOwn = (it) => {
@@ -5683,13 +5678,52 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (!doc) return;
     S.myfoods[id] = { gone: true };
     S.rootRef.collection('myfoods').doc(id).set({ gone: true }).catch(() => showToast('Not saved. Check your connection.', null));
-    closeCard();
+    if (!$('#fd-form').hidden) closeCard();
+    renderFood();
     showToast('Forgot ' + it.name + '. Entries you already logged stay as they are.', () => {
       S.myfoods[id] = doc;
       S.rootRef.collection('myfoods').doc(id).set(doc).catch(() => {});
+      renderFood();
     });
   };
-  $('#fd-custom').addEventListener('click', () => openCustom());
+  $('#fd-own-new').addEventListener('click', () => openCustom());
+  const ownFoodsList = () => Object.values(S.myfoods || {}).filter((d) => d && typeof d === 'object' && !d.gone && typeof d.food === 'string' && d.food.startsWith('own:') && d.own && typeof d.own === 'object' && typeof d.name === 'string' && d.name)
+    .sort((a, b) => (a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1));
+  const paintOwnFoods = () => {
+    const list = ownFoodsList();
+    $('#fd-own-count').textContent = list.length ? String(list.length) : '';
+    const box = $('#fd-own-list');
+    box.replaceChildren();
+    if (!list.length) box.append(h('p', 'note', 'Nothing saved yet.'));
+    list.forEach((d) => {
+      const it = ownItemOf(d);
+      const row = h('div', 'fd-own-row');
+      const info = h('div', 'fd-own-info');
+      info.append(h('b', '', d.name), h('span', 'note', per100(it)));
+      const acts = h('div', 'fd-own-acts');
+      const log = btn('skew small', 'Log it', 'Log ' + d.name);
+      log.addEventListener('click', () => { pickFood({ it, label: d.name, full: d.name }); $('#fd-form').scrollIntoView({ block: 'center', behavior: 'smooth' }); });
+      acts.append(log,
+        plainBtn('textbtn', 'Edit', 'Edit ' + d.name, () => openCustom({ ref: it.ref, name: d.name, u: d.own.u, kcal: d.own.kcal, p: d.own.p, c: d.own.c, f: d.own.f })),
+        plainBtn('textbtn', 'Forget', 'Forget ' + d.name, () => forgetOwn(it)));
+      row.append(info, acts);
+      box.append(row);
+    });
+    // asking Claude only makes sense once Claude is connected
+    connInfo().then((c) => { $('#fd-own-claude').hidden = !(c && c.apps && c.apps.length); }).catch(() => {});
+  };
+  $('#fd-own-claude').addEventListener('click', async () => {
+    const prompt = 'Add a food to my Yes Coach! with my Yes Coach connector. Ask me for the name, whether it is a food or a drink, and the calories, protein, carbs and fat per 100 g or per 100 ml from the package. Then save it as my own food.';
+    try {
+      const a = document.createElement('a');
+      a.href = 'https://claude.ai/new?q=' + encodeURIComponent(prompt);
+      a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.style.display = 'none';
+      document.body.append(a); a.click(); a.remove();
+    } catch (e) { /* the copied request still works */ }
+    const ok = await copyPlain(prompt);
+    showToast(ok ? 'Opening Claude. The request is also copied: paste it if the chat is empty.' : 'Opening Claude.', null);
+  });
   const fillFromPick = () => {
     const it = FD.pick.it;
     const g = fnum($('#fd-g').value);
@@ -5937,21 +5971,20 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       more.addEventListener('click', () => { const rest = db.slice(SHOWN).flatMap(addGroup); more.replaceWith(...rest); });
       box.append(more);
     }
-    const own = h('button', 'fd-hit fd-new');
+    const own = h('button', 'fd-hit fd-new fd-once');
     own.type = 'button';
-    own.append(h('b', '', '+ Add “' + q.trim() + '” with your own numbers'), h('span', 'fd-mini', 'Not in the list, or something home-made'));
+    own.append(h('b', '', '+ Log “' + q.trim() + '” once'), h('span', 'fd-mini', 'Just the calories of this portion, or a rough guess. Not saved for later.'));
     own.addEventListener('click', () => {
       openCard('new', 'Your own food');
       $('#fd-own-name').value = q.trim();
       $('#fd-name').value = '';
       $(showCal() ? '#fd-kcal' : '#fd-p').focus();
     });
-    box.append(own);
-    const keep = h('button', 'fd-hit fd-new');
+    const keep = h('button', 'fd-hit fd-new fd-save');
     keep.type = 'button';
-    keep.append(h('b', '', '+ Save “' + q.trim() + '” as a food to use again'), h('span', 'fd-mini', 'Type the numbers from the package, to use again'));
+    keep.append(h('b', '', '+ Save “' + q.trim() + '” as your own food'), h('span', 'fd-mini', 'Numbers from the package. Saved, so you can log it again.'));
     keep.addEventListener('click', () => openCustom({ name: q.trim() }));
-    box.append(keep);
+    box.append(keep, own);
     if (db.length) box.append(h('p', 'fd-credit', foodCredit()));
     box.hidden = false;
     $('#fd-name').setAttribute('aria-expanded', 'true');
@@ -5987,7 +6020,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     closeCard();
     closeHits();
     $('#fd-name').value = '';
-    await addFood(Object.assign({ name }, vals, from, rough ? { rough: true } : {}), S.fday, { fill: true });
+    await addFood(Object.assign({ name }, vals, from, rough ? { rough: true } : {}), S.fday);
     enter($('#fd-list').lastElementChild);
     showToast('Added ' + name + '.', null);
   });
@@ -6400,7 +6433,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       o.push(CAN_WRITE + ', write the plan in yourself. First list the exercises and templates collections and reuse ids that already exist. Otherwise give me the plan as a list and I will enter it.');
       o.push('- Exercises: for every exercise that does not exist yet, ' + EXERCISE_DOC + '.');
       o.push('- Training days: set, collection "' + DB + '/templates", doc_id "day-1", "day-2" and so on (skip ids that exist), data {"name", "order" (1, 2, 3 ...), "weekday" (Mon to Sun), "kind" (Push, Pull, Legs or Other), "focus" (a few words), "items": [...]}. ' + ITEM_FIELDS);
-      o.push('- Schedule: update the document "' + DB + '" with {"schedule": {"enabled": true, "mode": "rotation", "days": ["Mon", "Wed", "Fri"], "rotation": ["day-1", "day-2", "day-3"]}} for a rolling order on fixed weekdays, or {"schedule": {"enabled": true, "mode": "fixed", "week": {"Mon": "day-1", "Wed": "day-2"}}} for the same week every week.');
+      o.push('- Schedule: update the document "' + DB + '" with {"schedule": {"enabled": true, "mode": "rotation", "days": ["Mon", "Wed", "Fri"], "per_week": 3, "rotation": ["day-1", "day-2", "day-3"]}} for a rolling order on fixed weekdays, or {"schedule": {"enabled": true, "mode": "fixed", "week": {"Mon": "day-1", "Wed": "day-2"}}} for the same week every week.');
       if (data) o.push('- My history (ask me first; it can be many writes): one document per training date, set, collection "' + DB + '/sessions", doc_id the date as YYYY-MM-DD (add "~2" for a second workout that day), data {"date", "source": "import", "template": null, "split" (Back, Chest, Legs or Other), "label" (the workout name), "note": null, "sets": {"<exercise id>_<n>": {"ex", "n" (1, 2, 3 within the exercise), "order" (counts up through the day), "kind" ("work", "warmup" or "drop"), "reps", "load" (in the exercise\'s unit, null for bodyweight), "minutes" (timed work only, otherwise null), "rir": null, "note": null, "done": true, "at": 0, "unit" ("kg:total", "kg:per_side", "stack", "bw", "assist" or "min")}}}. Never overwrite a date that already exists.');
       o.push('When you are done, say in one line what you wrote.', '');
     } else o.push('## How to answer', '', 'Give me the plan as a clear list: each training day, its exercises in order with sets, reps, rest and a starting load in kg, and which weekdays to train.', '');
@@ -7150,23 +7183,48 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const trainedToday = Object.values(S.sessions).some((s) => s.date === today() && hasDone(s));
     return { from: trainedToday ? addDays(today(), 1) : today(), pos: rotationPos(sc.rotation) };
   };
+  // Rotation: the picked weekdays are the days you can train. Sessions a week (set in Plan, else the number said in the set-up)
+  // is how many of them are used. With fewer sessions than picked days they are spread evenly over the picked days, week after
+  // week, so the same weekdays are not needed every week. With as many sessions as picked days (or none given) every picked day is used.
+  const perWeekOf = (sc) => {
+    const n = Math.round(Number(sc && sc.per_week) || Number(profile().days_per_week) || 0);
+    return n >= 1 && n <= 7 ? n : 0;
+  };
+  const RHYTHM_ANCHOR = '2024-01-01'; // a Monday: the rhythm is counted from the same day for everyone, so it never shifts when you look at another week
+  let rhythm = { sig: '', upto: '', dates: [], credit: 0 };
+  const trainingDates = (sc, from, to) => {
+    const per = perWeekOf(sc);
+    if (!per || per >= sc.days.length) {
+      const out = [];
+      for (let d = from; d <= to; d = addDays(d, 1)) if (sc.days.includes(isoDow(d))) out.push(d);
+      return out;
+    }
+    const sig = per + '|' + sc.days.join();
+    if (rhythm.sig !== sig) rhythm = { sig, upto: addDays(RHYTHM_ANCHOR, -1), dates: [], credit: 7 };
+    // credit in 14ths of a session: each day earns per/7 of one; a session is placed on the next picked day once a whole one is earned
+    for (let d = addDays(rhythm.upto, 1); d <= to; d = addDays(d, 1)) {
+      rhythm.credit += 2 * per;
+      if (sc.days.includes(isoDow(d)) && rhythm.credit >= 14) { rhythm.credit -= 14; rhythm.dates.push(d); }
+      rhythm.upto = d;
+    }
+    return rhythm.dates.filter((d) => d >= from && d <= to);
+  };
   // the default plan for one week, before moves: [{key, tpl, date}]. roll = {from, pos}: the first date still to plan and its place in the list.
   const plannedFor = (ws, sc, roll) => {
     const out = [];
     if (sc && sc.mode === 'fixed') {
       WEEKDAYS.forEach((w, i) => { const id = (sc.week || {})[w]; if (id && S.templates[id]) out.push({ key: id + '@' + w, tpl: id, date: addDays(ws, i) }); });
     } else if (sc) {
-      const days = WEEKDAYS.filter((w) => sc.days.includes(w));
       const r = roll || rollFrom(sc);
-      let n = 0; // training weekdays between r.from and this week
-      for (let d = r.from; d < ws; d = addDays(d, 1)) if (sc.days.includes(isoDow(d))) n += 1;
-      days.forEach((w, i) => {
-        const date = addDays(ws, WEEKDAYS.indexOf(w));
-        if (date < r.from) return;
+      let n = 0; // training days between r.from and this week
+      let i = 0;
+      trainingDates(sc, r.from, addDays(ws, 6)).forEach((date) => {
+        if (date < ws) { n += 1; return; }
         const idx = (r.pos + n) % sc.rotation.length;
         const tpl = sc.rotation[idx];
         n += 1;
         out.push({ key: tpl + '@' + i, tpl, date, rolling: true, idx });
+        i += 1;
       });
     } else {
       templatesSorted().forEach((t) => {
@@ -7612,7 +7670,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // or it moves up (the days repeat in order on your training weekdays, mode 'rotation'). Everything saves as you change it.
   const schedModel = () => {
     const sc = S.root && S.root.schedule;
-    if (sc && sc.enabled && sc.mode === 'rotation') return { mode: 'rotation', days: WEEKDAYS.filter((w) => (sc.days || []).includes(w)), rotation: (sc.rotation || []).filter((id) => S.templates[id]) };
+    if (sc && sc.enabled && sc.mode === 'rotation') return { mode: 'rotation', days: WEEKDAYS.filter((w) => (sc.days || []).includes(w)), rotation: (sc.rotation || []).filter((id) => S.templates[id]), per: Number(sc.per_week) || 0 };
     const week = Object.fromEntries(WEEKDAYS.map((w) => [w, '']));
     if (sc && sc.enabled && sc.mode === 'fixed') WEEKDAYS.forEach((w) => { if (sc.week && S.templates[sc.week[w]]) week[w] = sc.week[w]; });
     else templatesSorted().forEach((t) => { const w = (t.weekday || '').slice(0, 3); if (WEEKDAYS.includes(w) && !week[w]) week[w] = t.id; }); // no schedule yet: each day on its own weekday
@@ -7621,7 +7679,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const trainWeekdays = (m) => (m.mode === 'fixed' ? WEEKDAYS.filter((w) => m.week[w]) : m.days);
   const inWeek = (m) => new Set(m.mode === 'fixed' ? Object.values(m.week).filter(Boolean) : m.rotation);
   const saveSched = (m, msg) => {
-    const sc = m.mode === 'fixed' ? { enabled: true, mode: 'fixed', week: m.week } : { enabled: true, mode: 'rotation', days: m.days, rotation: m.rotation };
+    const sc = m.mode === 'fixed' ? { enabled: true, mode: 'fixed', week: m.week } : Object.assign({ enabled: true, mode: 'rotation', days: m.days, rotation: m.rotation }, m.per ? { per_week: m.per } : {});
     saveRoot({ schedule: sc }).catch(() => showToast('Not saved. Check your connection.', null));
     if (msg) showToast(msg, null);
     renderEditor();
@@ -7734,9 +7792,27 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       b.addEventListener('click', () => toggleWeekday(schedModel(), w));
       chips.append(b);
     });
-    set.append(h('span', 'lab', 'You train on'), chips);
+    set.append(h('span', 'lab', m.mode === 'fixed' ? 'You train on' : 'Days you can train'), chips);
+    if (m.mode === 'rotation') {
+      // how many of those days are used: set here, else what was said in the set-up
+      const per = perWeekOf({ per_week: m.per });
+      const pc = h('div', 'pw-days');
+      pc.setAttribute('role', 'group');
+      pc.setAttribute('aria-label', 'Sessions a week');
+      [1, 2, 3, 4, 5, 6, 7].forEach((n) => {
+        const b = btn('pk-chip', String(n), plural(n, 'session') + ' a week');
+        b.setAttribute('aria-pressed', String(per === n));
+        b.addEventListener('click', () => { const mm = schedModel(); mm.per = n; saveSched(mm); });
+        pc.append(b);
+      });
+      set.append(h('span', 'lab', 'Sessions a week'), pc);
+      set.append(h('p', 'note pw-per-note', !per ? 'Every day you can train is a training day. Pick how many sessions a week you want, and they are spread over those days.'
+        : per < on.length ? 'Your ' + plural(per, 'session') + ' a week are spread over the ' + on.length + ' days you can train. They can land on different weekdays as the weeks go.'
+        : per > on.length ? 'That is ' + plural(per, 'session') + ' a week but only ' + plural(on.length, 'day') + ' you can train. Pick more days, or fewer sessions.'
+        : 'Every day you can train is a training day.'));
+    }
     set.append(h('span', 'lab', 'If you miss a day'), radioTabs('If you miss a day', [['fixed', 'Skip it'], ['rotation', 'Move it up']], m.mode, (k) => switchMode(schedModel(), k), 'metric pw-mode'));
-    set.append(h('p', 'note', m.mode === 'fixed' ? 'It is skipped: each weekday keeps its own training day.' : 'It moves up: your days repeat in this order on your training weekdays, so nothing is skipped.'));
+    set.append(h('p', 'note', m.mode === 'fixed' ? 'It is skipped: each weekday keeps its own training day.' : 'It moves up: your days repeat in this order on your training days, so nothing is skipped.'));
     box.append(set);
     const ch = weekChanges();
     if (ch.length) {

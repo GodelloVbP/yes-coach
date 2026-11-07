@@ -88,7 +88,7 @@ const readSchedule = (root: Json, days: Record<string, Json>): Json => {
   const sc = root && root.schedule;
   if (!sc || !sc.enabled) return { mode: 'none', note: 'No schedule set. Each day falls on its own weekday if it has one.' };
   const name = (id: string) => (days[id] ? days[id].name + ' (' + id + ')' : '(missing day ' + id + ')');
-  if (sc.mode === 'rotation') return { mode: 'rotation', note: 'The days repeat in order on these weekdays.', weekdays: sc.days || [], rotation: (sc.rotation || []).map(name) };
+  if (sc.mode === 'rotation') return { mode: 'rotation', note: sc.per_week && sc.per_week < (sc.days || []).length ? 'The weekdays are the days the person can train. They train ' + sc.per_week + ' times a week, spread over those days, and the days repeat in order.' : 'The days repeat in order on these weekdays.', weekdays: sc.days || [], ...(sc.per_week ? { sessions_per_week: sc.per_week } : {}), rotation: (sc.rotation || []).map(name) };
   return { mode: 'fixed', week: Object.fromEntries(WEEKDAYS.map((w) => [w, sc.week && sc.week[w] ? name(sc.week[w]) : 'rest'])) };
 };
 const inWeek = (root: Json): Set<string> => {
@@ -540,8 +540,9 @@ const TOOLS: Tool[] = [
     name: 'set_schedule', title: 'Set weekly schedule', annotations: WR,
     inputSchema: obj({
       mode: { type: 'string', enum: ['rotation', 'fixed'], description: 'rotation: the days repeat in order on the chosen weekdays. fixed: each weekday has its own day.' },
-      weekdays: { type: 'array', items: { type: 'string', enum: WEEKDAYS }, description: 'rotation: the weekdays they train.' },
+      weekdays: { type: 'array', items: { type: 'string', enum: WEEKDAYS }, description: 'rotation: the weekdays they can train.' },
       day_ids: { type: 'array', items: { type: 'string' }, description: 'rotation: day ids in the order they repeat.' },
+      sessions_per_week: { type: 'integer', description: 'rotation: how many sessions a week, 1 to 7. With fewer than the weekdays given, the sessions are spread over those weekdays. Leave out to train on every weekday given.' },
       week: { type: 'object', description: 'fixed: weekday to day id, e.g. {"Mon":"day-1","Wed":"day-2"}. Leave a weekday out for rest.', additionalProperties: { type: 'string' } },
     }, ['mode']),
     description: 'Set which training days are in the week and when. The old schedule is kept so the person can undo it in the app.',
@@ -553,7 +554,8 @@ const TOOLS: Tool[] = [
         const wd = [...new Set((Array.isArray(a.weekdays) ? a.weekdays : []).map((w: Json) => String(w).slice(0, 3)).filter((w: string) => WEEKDAYS.includes(w)))].sort((x, y) => WEEKDAYS.indexOf(x as string) - WEEKDAYS.indexOf(y as string));
         const ids = (Array.isArray(a.day_ids) ? a.day_ids : []).map((x: Json) => known(str(x, 40)));
         if (!wd.length || !ids.length) fail('rotation needs weekdays and day_ids.');
-        sc = { enabled: true, mode: 'rotation', days: wd, rotation: ids };
+        const per = int(a.sessions_per_week, 1, 7, 0);
+        sc = { enabled: true, mode: 'rotation', days: wd, rotation: ids, ...(per ? { per_week: per } : {}) };
       } else if (a.mode === 'fixed') {
         const week: Record<string, string> = {};
         WEEKDAYS.forEach((w) => { week[w] = a.week && a.week[w] ? known(str(a.week[w], 40)) : ''; });
