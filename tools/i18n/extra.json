@@ -3505,5 +3505,40 @@
   "de": "Kalorien, die nicht zu Eiweiß, Kohlenhydraten und Fett passen, werden markiert, so fällt ein Wert pro Portion statt pro 100 g auf.",
   "fr": "Les calories qui ne collent pas aux protéines, glucides et lipides sont signalées, ce qui repère une valeur par portion à la place de celle pour 100 g.",
   "it": "Le calorie che non tornano con proteine, carboidrati e grassi vengono segnalate, così si nota un valore per porzione al posto di quello per 100 g."
+ },
+ "Request": {
+  "nl": "Verzoek",
+  "es": "Sugerir",
+  "de": "Wunsch",
+  "fr": "Demande",
+  "it": "Richiesta"
+ },
+ "Feedback and requests": {
+  "nl": "Feedback en verzoeken",
+  "es": "Comentarios y peticiones",
+  "de": "Feedback und Wünsche",
+  "fr": "Retours et demandes",
+  "it": "Feedback e richieste"
+ },
+ "Request is in the bar": {
+  "nl": "Verzoek staat in de balk",
+  "es": "Sugerir está en la barra",
+  "de": "Wunsch ist in der Leiste",
+  "fr": "Demande est dans la barre",
+  "it": "Richiesta è nella barra"
+ },
+ "Feedback and requests has its own tab at the bottom, next to More, instead of being hidden in More. A dot shows there when we have asked you something.": {
+  "nl": "Feedback en verzoeken hebben een eigen tab onderaan, naast Meer, in plaats van verstopt in Meer. Er verschijnt een stip als we je iets hebben gevraagd.",
+  "es": "Comentarios y peticiones tiene su propia pestaña abajo, junto a Más, en lugar de estar escondido en Más. Aparece un punto cuando te hemos preguntado algo.",
+  "de": "Feedback und Wünsche haben einen eigenen Tab unten, neben Mehr, statt in Mehr versteckt zu sein. Ein Punkt erscheint dort, wenn wir dir etwas gefragt haben.",
+  "fr": "Retours et demandes a son propre onglet en bas, à côté de Plus, au lieu d’être caché dans Plus. Un point s’y affiche quand nous t’avons posé une question.",
+  "it": "Feedback e richieste ha una scheda propria in basso, accanto ad Altro, invece di essere nascosto in Altro. Compare un punto quando ti abbiamo chiesto qualcosa."
+ },
+ "The labels in the bottom bar get a little smaller on a phone so all six fit, in every language.": {
+  "nl": "De labels in de onderbalk worden op een telefoon iets kleiner, zodat alle zes passen, in elke taal.",
+  "es": "Las etiquetas de la barra inferior se hacen un poco más pequeñas en el móvil para que quepan las seis, en todos los idiomas.",
+  "de": "Die Beschriftungen in der unteren Leiste werden auf dem Handy etwas kleiner, damit alle sechs passen, in jeder Sprache.",
+  "fr": "Les libellés de la barre du bas rétrécissent un peu sur téléphone pour que les six tiennent, dans toutes les langues.",
+  "it": "Le etichette della barra in basso diventano un po’ più piccole sul telefono, così ci stanno tutte e sei, in ogni lingua."
  }
 }
