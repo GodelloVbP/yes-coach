@@ -23,7 +23,7 @@ const INSTRUCTIONS = [
   'Yes Coach! is a workout tracker. These tools read the signed-in person\'s own plan, log and notes, and change their plan.',
   'Logged sets can not be changed. Plan changes show up in their app at once, and the app keeps an undo for the schedule.',
   'Exercises are referenced by id. Loads are in kg.',
-  'Food: search_foods finds foods in the Dutch (NEVO) and international (USDA) tables the app uses; log_meals saves meals as food ids with grams or a portion; get_food_day and remove_food_entry read and remove entries.',
+  'Food: search_foods finds foods in the Dutch (NEVO) and international (USDA) tables the app uses; save_custom_food saves a product that is in neither, from the numbers on its label or product page; log_meals saves meals as food ids with grams or a portion; get_food_day and remove_food_entry read and remove entries.',
   'The app reads every nutrient from those tables, so the AI supplies foods and amounts, not nutrient numbers. A search lists the portions a food comes in (a slice, a piece) with grams for one; amounts that are guesses are marked estimated.',
   'A search lists the foods the person logged before at the top, marked yours, with the words they use for them and their own portion sizes; save_my_food and save_meal keep a food, a word, a portion size or a usual meal, and log_meals can log a saved meal.',
   'People who switched calories off in the app get results without calories, with a note saying so.',
@@ -308,6 +308,12 @@ const itemOut = (i: Item) => ({ name: i.name, amount: amountOf(i.g, i.u, i.est) 
 type Own = { kcal: number; p: number; c: number; f: number; u: 'g' | 'ml' };
 type Mine = { id: string; food: string; name: string; aka: Record<string, number>; ws: string[]; n: number; last: number; portions: Record<string, number>; own?: Own };
 const MINE_MAX = 500, AKA_MAX = 12, PORTIONS_MAX = 8;
+// where a custom food's numbers come from: a product page (kept only when it is a real http or https address) or a short note
+const sourceOf = (v: Json): string => {
+  const s = str(v, 300);
+  if (!/^https?:\/\//i.test(s)) return s.slice(0, 120);
+  try { const u = new URL(s); return u.protocol === 'http:' || u.protocol === 'https:' ? u.href.slice(0, 300) : ''; } catch { return ''; }
+};
 const MINE_READ = 2000; // forgotten foods stay as { gone: true } documents: read well past the live cap
 const myId = (key: string): string => key.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 const sayOf = (v: Json): string => fold(str(v, 40)).replace(/\s+/g, ' ').trim();
@@ -750,10 +756,11 @@ const TOOLS: Tool[] = [
       protein_per_100: { type: 'number', description: 'Protein in grams per 100 g or 100 ml, 0 to 100.' },
       carbs_per_100: { type: 'number', description: 'Carbohydrates in grams per 100 g or 100 ml, 0 to 100.' },
       fat_per_100: { type: 'number', description: 'Fat in grams per 100 g or 100 ml, 0 to 100.' },
+      source: { type: 'string', description: 'Where the numbers come from: the web address of the product page, or a short note such as "package label". Shown next to the food in the app.' },
       said: { type: 'array', maxItems: 6, items: { type: 'string' }, description: 'Other words the person uses for it. A search for these finds it first.' },
       portions: { type: 'array', maxItems: 6, description: 'The person\'s own portion sizes: a name and the grams (or ml) of one, e.g. [{"label":"scoop","grams":30}].', items: obj({ label: { type: 'string' }, grams: { type: 'number' } }, ['label', 'grams']) },
     }, ['name', 'kcal_per_100', 'protein_per_100', 'carbs_per_100', 'fat_per_100']),
-    description: 'Save a food that is not in the NEVO or USDA tables, such as something home-made or a branded product, with its numbers per 100 g or 100 ml (the nutrition label on the package). The numbers come from the person: calories, protein, carbs and fat per 100 g or 100 ml, and whether it is a food or a drink. They are not looked up or estimated. Saving the same name again replaces the numbers. The food then comes first in food searches, marked yours, with a "food" id like "own:lasagne", and is logged by grams or portion like any other food.',
+    description: 'Save a food that is not in the NEVO or USDA tables, such as something home-made or a branded product, with its numbers per 100 g or 100 ml: calories, protein, carbs and fat, and whether it is a food or a drink. The numbers are the ones printed on the package or shown on the maker\'s or a shop\'s product page, given by the person or read from that page when the person asks for a product to be looked up on the internet. This does not search the internet and does not estimate; the numbers are saved as given, with where they come from. Saving the same name again replaces the numbers. The food then comes first in food searches, marked yours, with a "food" id like "own:lasagne", and is logged by grams or portion like any other food.',
     run: async (db, a) => {
       const name = str(a.name, 60);
       const slug = myId(name);
@@ -761,7 +768,7 @@ const TOOLS: Tool[] = [
       const u = a.unit === 'ml' ? 'ml' : 'g';
       const num = (v: Json, label: string, max: number): number => {
         const x = Number(v);
-        if (v == null || v === '' || !Number.isFinite(x) || x < 0 || x > max) fail(label + ' per 100 ' + u + ' has to be a number from 0 to ' + max + '. Ask the person; do not guess.');
+        if (v == null || v === '' || !Number.isFinite(x) || x < 0 || x > max) fail(label + ' per 100 ' + u + ' has to be a number from 0 to ' + max + '. Use the number on the label or product page, per 100 ' + u + '; a guess is not saved.');
         return round1(x);
       };
       const own: Own = { kcal: Math.round(num(a.kcal_per_100, 'Calories', 900)), p: num(a.protein_per_100, 'Protein', 100), c: num(a.carbs_per_100, 'Carbs', 100), f: num(a.fat_per_100, 'Fat', 100), u };
@@ -780,8 +787,16 @@ const TOOLS: Tool[] = [
         if (!(old && label in old.portions) && !(label in portions) && have + Object.keys(portions).length >= PORTIONS_MAX) fail('A food can have at most ' + PORTIONS_MAX + ' portion sizes.');
         portions[label] = grams;
       }
-      await upsertMine(db, id, food, name, { aka, portions, own }, old);
-      return { saved: { food, name, unit: u, per_100: { kcal: own.kcal, protein_g: own.p, carbs_g: own.c, fat_g: own.f }, portions }, replaced: !!(old && old.own) };
+      const source = sourceOf(a.source);
+      await upsertMine(db, id, food, name, { aka, portions, own, source: source || null }, old); // new numbers carry their own source: an old one is dropped
+      // calories that do not fit the macros usually mean a per-serving number slipped in; saved all the same, with a note to check it
+      const expect = Math.round(4 * own.p + 4 * own.c + 9 * own.f);
+      const off = Math.abs(own.kcal - expect) > Math.max(60, 0.3 * Math.max(own.kcal, expect));
+      return {
+        saved: { food, name, unit: u, per_100: { kcal: own.kcal, protein_g: own.p, carbs_g: own.c, fat_g: own.f }, portions, ...(source ? { source } : {}) },
+        replaced: !!(old && old.own),
+        ...(off ? { check: 'Protein, carbs and fat add up to about ' + expect + ' kcal per 100 ' + u + ', but ' + own.kcal + ' was saved. Alcohol and fibre explain some difference; a per-serving number does not. Compare with the label before relying on it.' } : {}),
+      };
     },
   },
   {

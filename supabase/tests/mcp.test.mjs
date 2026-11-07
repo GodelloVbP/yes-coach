@@ -482,6 +482,23 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok((await call(T, 'save_custom_food', { name: 'Too much 2', kcal_per_100: 100, protein_per_100: 60, carbs_per_100: 40, fat_per_100: 30 })).err, 'macros adding up to more than 100 g are refused');
   ok((await call(T, 'save_custom_food', { name: 'Hot', kcal_per_100: 1200, protein_per_100: 1, carbs_per_100: 1, fat_per_100: 1 })).err, 'an absurd calorie number is refused');
   ok((await call(T, 'save_custom_food', { name: '!!!', kcal_per_100: 10, protein_per_100: 1, carbs_per_100: 1, fat_per_100: 1 })).err, 'a name without letters is refused');
+  // a product looked up on the internet by the person's AI: the page it used is kept with the food
+  r = await call(T, 'save_custom_food', { name: 'Skyr vanille', kcal_per_100: 63, protein_per_100: 11, carbs_per_100: 4, fat_per_100: 0.2, source: 'https://www.example.nl/producten/skyr-vanille?x=1' });
+  ok(!r.err && r.json.saved.source === 'https://www.example.nl/producten/skyr-vanille?x=1' && !r.json.check, 'a source page is kept and shown: ' + r.text);
+  ok(rowA('yc/myfoods/own-skyr-vanille').data.source === 'https://www.example.nl/producten/skyr-vanille?x=1', 'the source is stored with the food');
+  r = await call(T, 'save_custom_food', { name: 'Skyr vanille', kcal_per_100: 64, protein_per_100: 11, carbs_per_100: 4.5, fat_per_100: 0.2 });
+  ok(!r.err && rowA('yc/myfoods/own-skyr-vanille').data.source == null && r.json.saved.source === undefined, 'new numbers without a source drop the old source');
+  r = await call(T, 'save_custom_food', { name: 'Package label', kcal_per_100: 100, protein_per_100: 5, carbs_per_100: 15, fat_per_100: 2, source: 'package label' });
+  ok(!r.err && rowA('yc/myfoods/own-package-label').data.source === 'package label', 'a short note works as a source');
+  r = await call(T, 'save_custom_food', { name: 'Bad link', kcal_per_100: 100, protein_per_100: 5, carbs_per_100: 15, fat_per_100: 2, source: 'https://' });
+  ok(!r.err && (rowA('yc/myfoods/own-bad-link').data.source == null), 'an address that is not one is dropped, the food is still saved');
+  r = await call(T, 'save_custom_food', { name: 'Long source', kcal_per_100: 100, protein_per_100: 5, carbs_per_100: 15, fat_per_100: 2, source: 'x'.repeat(500) });
+  ok(!r.err && rowA('yc/myfoods/own-long-source').data.source.length <= 120, 'a note is cut to 120 characters');
+  // a per-serving calorie number slipped in for a per-100 g one: saved, with a note to check it
+  r = await call(T, 'save_custom_food', { name: 'Cereal bar', kcal_per_100: 110, protein_per_100: 6, carbs_per_100: 55, fat_per_100: 14 });
+  ok(!r.err && /add up to about 370 kcal/.test(r.json.check || '') && r.json.saved.per_100.kcal === 110, 'calories that do not fit the macros come back with a check note: ' + r.text);
+  r = await call(T, 'save_custom_food', { name: 'Lager', unit: 'ml', kcal_per_100: 43, protein_per_100: 0.5, carbs_per_100: 3.6, fat_per_100: 0 });
+  ok(!r.err && !r.json.check, 'alcohol does not trigger the note: ' + r.text);
   r = await call(T, 'save_my_food', { food: 'own:mama-s-lasagne', portions: [{ label: 'slice', grams: 120 }] });
   ok(!r.err && r.json.saved.portions.slice === 120 && r.json.saved.portions.plate === 350, 'portions can be added to a custom food');
   r = await call(T, 'log_meals', { meals: [{ name: 'Lasagne dinner', items: [{ food: 'own:mama-s-lasagne', grams: 250 }, { food: egg.food, grams: 50 }] }] });
