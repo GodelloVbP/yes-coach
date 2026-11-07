@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-z1A69zwlU2+U0OHxQkXsXIBccOX+hKxToCKxzw/1o1M=' 'sha256-xhBaWL7Sxq1WHkUWo+tD1Nd5OevCjO0p3+erkcWbxeg=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-z1A69zwlU2+U0OHxQkXsXIBccOX+hKxToCKxzw/1o1M=' 'sha256-9dYPb65m/34zq/38mUES4hP3XUF7ddAuTBBS0Vvw4fw=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-07 09:43Z">
+<meta name="yc-build" content="2026-11-07 10:11Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -948,6 +948,7 @@ body.fin-open { overflow: hidden; }
 .fin-eat { display: flex; justify-content: center; margin-top: 0.5rem; }
 .fd-sm-list { display: flex; flex-direction: column; }
 .fd-more { text-align: center; color: var(--ink-soft); }
+.fd-hit.fd-alike { padding-top: 0.125rem; padding-bottom: 0.375rem; color: var(--ink-soft); }
 .fd-chip.mine { border-color: var(--ink); }
 .fd-sm { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 0 0.75rem; min-height: 56px; padding: 0.375rem 0; border-bottom: 1px solid var(--line); }
 .fd-sm-name { font-weight: 700; overflow-wrap: anywhere; }
@@ -1825,6 +1826,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['7 Nov 2026', 'Fewer look-alike results', ["Foods that come out the same, like the different eggs or apples, now show as one result. Tap +2 almost the same to see the others."]],
     ['7 Nov 2026', 'Custom workouts, runs and your own foods', ["Change today's workout now has Custom workout. It starts blank, for whatever you do today.", "Runs track distance, altitude gain and where you ran: outside or on a treadmill. The pace per km is worked out for you.", "Create your own food with the numbers per 100 g or 100 ml. Claude can add one too: tell it the numbers from the package.", "Train shows the whole month under the week, and Add to calendar is now a big button.", "After you send a day to Claude, you land back on Train.", "On a wide screen the notices at the top no longer cover the page."]],
     ['6 Nov 2026', 'Exercise names stay in English', ["Most people know an exercise by its English name, so the names now stay in English in every language.", "Prefer them translated? Settings, Languages, Translate exercise names."]],
     ['6 Nov 2026', 'Gentler numbers', ["Reaching your protein target is enough: more is never shown as above.", "Calories get a band: within 10% of your target counts as on target.", "A day with entries that have no calories now says so, instead of looking low.", "Short on time? Add a food with your own numbers and pick a rough guess: small, medium or large."]],
@@ -5506,8 +5508,20 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     });
     // with three or more real name matches the synonym ones are only noise
     const real = out.filter((x) => !x[3]);
-    return (real.length >= 3 ? real : out).sort((a, b) => b[0] - a[0]).slice(0, 12).map(([, it, alt]) => ({ it, label: alt ? it.dispAlt : it.disp, full: alt ? it.alt : it.name }));
+    const ranked = (real.length >= 3 ? real : out).sort((a, b) => b[0] - a[0]).map(([, it, alt]) => ({ it, label: alt ? it.dispAlt : it.disp, full: alt ? it.alt : it.name }));
+    // foods that only differ in how the table describes them ("Ei kippen- rauw gem", "Ei kippen- scharrel rauw") are one choice: the best ranked leads, the rest wait behind it
+    const leaders = [];
+    ranked.forEach((hit) => {
+      const lead = leaders.find((l) => sameFood(l.it, hit.it));
+      if (lead) lead.similar.push(hit);
+      else if (leaders.length < 12) leaders.push(Object.assign(hit, { similar: [] }));
+    });
+    return leaders;
   };
+  // the same food for a person: same name stem and the same numbers per 100 g or ml (within 5%), so there is nothing to choose between them
+  const stemOf = (it) => (it.stem != null ? it.stem : (it.stem = wordsOf(it.name).slice(0, it.src === 'usda' ? 2 : 1).join(' ')));
+  const near = (a, b, abs) => Math.abs((a || 0) - (b || 0)) <= Math.max(abs, 0.05 * Math.max(a || 0, b || 0));
+  const sameFood = (a, b) => a.u === b.u && stemOf(a) === stemOf(b) && near(a.kcal, b.kcal, 5) && near(a.p, b.p, 0.5) && near(a.c, b.c, 0.5) && near(a.f, b.f, 0.5);
   // a few tags instead of long descriptions, on official thresholds per 100 g (drinks per 100 ml):
   // high protein: at least 20% of the energy from protein (EU claim) and enough to matter; high fibre: 6 g or more (EU claim);
   // high sugar: over 22.5 g, drinks over 11.25 g (UK front-of-pack red). Plus the kind of food.
@@ -5862,12 +5876,20 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       b.addEventListener('click', () => pickFood(hit));
       return b;
     };
-    db.slice(0, SHOWN).forEach((hit) => box.append(addHit(hit)));
+    const addGroup = (hit) => {
+      if (!hit.similar.length) return [addHit(hit)];
+      const alike = h('button', 'fd-hit fd-alike');
+      alike.type = 'button';
+      alike.append(h('span', 'fd-mini', '+' + hit.similar.length + ' almost the same'));
+      alike.addEventListener('click', () => alike.replaceWith(...hit.similar.map(addHit)));
+      return [addHit(hit), alike];
+    };
+    db.slice(0, SHOWN).forEach((hit) => box.append(...addGroup(hit)));
     if (db.length > SHOWN) {
       const more = h('button', 'fd-hit fd-more');
       more.type = 'button';
       more.append(h('b', '', 'Show more'));
-      more.addEventListener('click', () => { const rest = db.slice(SHOWN).map(addHit); more.replaceWith(...rest); });
+      more.addEventListener('click', () => { const rest = db.slice(SHOWN).flatMap(addGroup); more.replaceWith(...rest); });
       box.append(more);
     }
     const own = h('button', 'fd-hit fd-new');

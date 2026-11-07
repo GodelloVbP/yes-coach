@@ -10,7 +10,9 @@ class Flaky(Backend):
     """A backend whose session writes can be switched off, like a phone that lost signal."""
     down = False
     def handle(self, route):
-        if self.down and route.request.url.split('?')[0].endswith('/rest/v1/rpc/yc_update'): return route.abort('internetdisconnected')
+        path = route.request.url.split('?')[0]
+        # no signal blocks every write: updating a day that exists, and creating a new one
+        if self.down and (path.endswith('/rest/v1/rpc/yc_update') or (path.endswith('/rest/v1/docs') and route.request.method in ('POST', 'PATCH'))): return route.abort('internetdisconnected')
         return Backend.handle(self, route)
 
 def seed(be, sets=3):

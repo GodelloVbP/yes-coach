@@ -2406,5 +2406,26 @@
   "de": "Auf einem breiten Bildschirm verdecken die Hinweise oben die Seite nicht mehr.",
   "fr": "Sur un grand écran, les avis en haut ne cachent plus la page.",
   "it": "Su uno schermo largo gli avvisi in alto non coprono più la pagina."
+ },
+ "Fewer look-alike results": {
+  "nl": "Minder dubbele resultaten",
+  "es": "Menos resultados repetidos",
+  "de": "Weniger doppelte Treffer",
+  "fr": "Moins de résultats en double",
+  "it": "Meno risultati doppi"
+ },
+ "Foods that come out the same, like the different eggs or apples, now show as one result. Tap +2 almost the same to see the others.": {
+  "nl": "Voedingsmiddelen die uitkomen op hetzelfde, zoals de verschillende eieren of appels, staan nu als één resultaat. Tik op +2 bijna hetzelfde om de andere te zien.",
+  "es": "Los alimentos que dan lo mismo, como los distintos huevos o manzanas, ahora salen como un solo resultado. Toca +2 casi igual para ver los demás.",
+  "de": "Lebensmittel mit denselben Werten, etwa die verschiedenen Eier oder Äpfel, erscheinen jetzt als ein Treffer. Tippe auf +2 fast gleich, um die anderen zu sehen.",
+  "fr": "Les aliments qui reviennent au même, comme les différents œufs ou pommes, apparaissent maintenant en un seul résultat. Touche +2 presque pareil pour voir les autres.",
+  "it": "Gli alimenti che danno lo stesso risultato, come le diverse uova o mele, ora compaiono come un solo risultato. Tocca +2 quasi uguale per vedere gli altri."
+ },
+ "+{0} almost the same": {
+  "nl": "+{0} bijna hetzelfde",
+  "es": "+{0} casi igual",
+  "de": "+{0} fast gleich",
+  "fr": "+{0} presque pareil",
+  "it": "+{0} quasi uguale"
  }
 }
