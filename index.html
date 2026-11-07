@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-z1A69zwlU2+U0OHxQkXsXIBccOX+hKxToCKxzw/1o1M=' 'sha256-9dYPb65m/34zq/38mUES4hP3XUF7ddAuTBBS0Vvw4fw=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-z1A69zwlU2+U0OHxQkXsXIBccOX+hKxToCKxzw/1o1M=' 'sha256-y81X7YMno7nAMr8LIAMnognxgXWnBbTfPqsfFC2IlGY=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-07 10:11Z">
+<meta name="yc-build" content="2026-11-07 10:53Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -291,6 +291,8 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .ahead span { flex: 1 1 14rem; }
 .swaprow { display: grid; grid-template-columns: 3.25rem minmax(0, 1fr) auto; gap: 0.25rem 0.75rem; align-items: center; min-height: 64px; padding-block: 0.625rem; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; cursor: pointer; width: 100%; color: var(--ink); }
 .swaprow:hover { background: var(--faint); }
+#m-delete { color: var(--warn); }
+.wk-del { color: var(--warn); }
 .swap-custom { display: flex; flex-direction: column; border-bottom: 1px solid var(--line); }
 .swap-custom .swaprow { border-bottom: 0; width: 100%; }
 .swap-form { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: flex-end; padding: 0 0 0.75rem 4rem; }
@@ -347,6 +349,8 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .run-where { display: inline-flex; border: 2px solid var(--ctl); }
 .run-where button { min-height: 44px; padding: 0 0.875rem; background: none; border: 0; color: var(--ink); font: inherit; font-weight: 600; cursor: pointer; }
 .run-where button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.run-line { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.875rem; flex: 1 1 100%; }
+.run-unit button { min-height: 36px; padding: 0 0.625rem; font-size: var(--t2); }
 .run-pace { font-family: var(--f-head); font-weight: 700; font-size: var(--t3); color: var(--ink); font-variant-numeric: tabular-nums; }
 .set-n { width: 44px; height: 44px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; background: none; border: 2px solid transparent; color: var(--ink); font-size: var(--t3); font-weight: 700; line-height: 1; cursor: pointer; font-variant-numeric: tabular-nums; padding: 0; }
 .set-n:hover { border-color: var(--line); }
@@ -1106,6 +1110,7 @@ body.fin-open { overflow: hidden; }
       <button type="button" role="menuitem" id="m-date">Change date</button>
       <button type="button" role="menuitem" id="m-day">Change day</button>
       <button type="button" role="menuitem" id="m-finish">Finish day</button>
+      <button type="button" role="menuitem" id="m-delete">Delete day</button>
     </div>
     <div class="sb-datebox in" id="sb-datebox" hidden>
       <label class="lab" for="sess-date">Session date</label>
@@ -1223,7 +1228,7 @@ body.fin-open { overflow: hidden; }
           <div class="bar"><h2 id="h-month"></h2><div class="wk-nav"><button type="button" class="arrow" id="mo-prev" aria-label="Previous month">&#8249;</button><button type="button" class="arrow" id="mo-next" aria-label="Next month">&#8250;</button></div></div>
           <div class="mo-grid" id="mo-head" aria-hidden="true"></div>
           <div class="mo-grid" id="mo-grid"></div>
-          <p class="note" id="mo-legend">• planned · ✓ done. Tap a day to open its week.</p>
+          <p class="note" id="mo-legend">• planned · ✓ done · … in progress. Tap a day to open its week.</p>
         </section>
       </div>
     </section>
@@ -1763,10 +1768,18 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const isRun = (id) => { const e = S.exercises[id]; return !!e && e.unit === 'min' && (RUN_LIBS.includes(e.library_id) || /\b(run|running|jog|jogging)\b/i.test(e.name || '')); };
   const runWhereDefault = (id) => { const e = S.exercises[id] || {}; return e.library_id === 'l289' || /treadmill/i.test(e.name || '') ? 'treadmill' : 'outdoor'; };
   const RUN_WHERE = [['outdoor', 'Outside'], ['treadmill', 'Treadmill']];
-  const fmtPace = (min, km) => {
+  // pace (min per km) or speed (km per hour): one choice for every run, kept in the settings
+  const runUnit = () => (S.root && S.root.settings && S.root.settings.run_unit === 'speed' ? 'speed' : 'pace');
+  const fmtPace = (min, km, unit = runUnit()) => {
     if (!(min > 0) || !(km > 0)) return '';
+    if (unit === 'speed') return (Math.round((km / (min / 60)) * 10) / 10).toFixed(1) + ' km/h';
     const sec = Math.round((min / km) * 60);
     return Math.floor(sec / 60) + ':' + pad2(sec % 60) + ' /km';
+  };
+  const setRunUnit = (u) => {
+    saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { run_unit: u }) }).catch(() => showToast('Not saved. Check your connection.', null));
+    if (S.root) S.root.settings = Object.assign({}, S.root.settings || {}, { run_unit: u });
+    paintSession();
   };
   const fmtSet = (st, unit, uw) => {
     if (unit === 'min' || (st.minutes != null && st.reps == null)) return (st.km != null ? num(st.km) + ' km · ' : '') + num(st.minutes || 0) + ' min';
@@ -1826,6 +1839,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['7 Nov 2026', 'Custom days and run speed', ["Every custom workout is its own day, shows in the week and the month while it is in progress, and can be continued from there.", "Delete a day from the session menu or from the week. Undo brings it back.", "Runs show pace as min/km or km/h, your choice."]],
     ['7 Nov 2026', 'Fewer look-alike results', ["Foods that come out the same, like the different eggs or apples, now show as one result. Tap +2 almost the same to see the others."]],
     ['7 Nov 2026', 'Custom workouts, runs and your own foods', ["Change today's workout now has Custom workout. It starts blank, for whatever you do today.", "Runs track distance, altitude gain and where you ran: outside or on a treadmill. The pace per km is worked out for you.", "Create your own food with the numbers per 100 g or 100 ml. Claude can add one too: tell it the numbers from the package.", "Train shows the whole month under the week, and Add to calendar is now a big button.", "After you send a day to Claude, you land back on Train.", "On a wide screen the notices at the top no longer cover the page."]],
     ['6 Nov 2026', 'Exercise names stay in English', ["Most people know an exercise by its English name, so the names now stay in English in every language.", "Prefer them translated? Settings, Languages, Translate exercise names."]],
@@ -2322,6 +2336,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       box.append(h('p', 'note', setsDone(s) + ' sets logged. Tap it in the week below to look back or correct a set.'));
       return;
     }
+    if (td.open.length) {
+      const o = td.open[0];
+      const go = btn('skew pop big', 'Continue ' + S.templates[o.template].name);
+      go.id = 'btn-continue';
+      go.addEventListener('click', () => openSession(o.date, o.template));
+      box.append(h('p', 'note', 'In progress: ' + td.open.map((x) => S.templates[x.template].name).join(', ') + '. Nothing is ticked yet.'), go);
+    }
     if (td.planned.length) {
       const tplId = td.planned[0].tpl;
       const t = S.templates[tplId];
@@ -2383,13 +2404,16 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // like any other day, behind a hidden training day of its own (adhoc), so it never shows up in the plan.
   const startCustom = (name) => {
     const date = today();
-    const id = 'custom-' + date;
-    const have = S.templates[id];
-    const doc = Object.assign({ order: 9000, kind: 'Other', focus: '', items: [], adhoc: true }, have || {}, { name: String(name || '').trim().slice(0, 40) || (have && have.name) || 'Custom workout' });
+    // every custom workout is a new one, also on the same day: custom-<date>, custom-<date>-2, ...
+    let n = 1;
+    let id = 'custom-' + date;
+    while (S.templates[id]) { n += 1; id = 'custom-' + date + '-' + n; }
+    const doc = { order: 9000, kind: 'Other', focus: '', items: [], adhoc: true, name: String(name || '').trim().slice(0, 40) || 'Custom workout' };
     S.templates[id] = doc;
     S.rootRef.collection('templates').doc(id).set(doc).catch(() => showToast('The workout was not saved. Check your connection.', null));
     S.swapOpen = false;
     openSession(date, id);
+    queueWrite(SID(), { started_at: Date.now() }); // the day's record exists from the start, so it shows in the week
   };
   const customRow = () => {
     const wrap = h('div', 'swap-custom');
@@ -2562,6 +2586,67 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     local.set('yc-active', null);
     renderTrain();
     window.scrollTo({ top: 0 });
+  };
+  // ---- delete a day: from the session menu or from the week. Asks first, and Undo brings it all back.
+  const sidOf = (doc) => Object.keys(S.sessions).find((k) => S.sessions[k] === doc);
+  const deleteSession = async (sid, tpl) => {
+    const doc = S.sessions[sid] ? clone(S.sessions[sid]) : null;
+    const t = S.templates[tpl];
+    const dropTpl = !!(t && t.adhoc) && !Object.entries(S.sessions).some(([k, x]) => k !== sid && x.template === tpl); // a custom workout's hidden day goes with it
+    const tplDoc = dropTpl ? clone(t) : null;
+    const name = (t && t.name) || (doc && doc.label) || 'The day';
+    const q = Q[sid];
+    if (q) { q.patch = {}; q.keys = new Set(); q.error = null; } // nothing still on its way may bring the day back
+    const ds = S.drafts[sid] ? clone(S.drafts[sid]) : null;
+    delete S.drafts[sid];
+    saveDrafts();
+    persistQueue();
+    if (S.active && SID() === sid) { S.active = null; S.away = false; R = null; stopRest(); local.set('yc-active', null); }
+    delete S.sessions[sid];
+    S.onServer.delete(sid);
+    if (dropTpl) delete S.templates[tpl];
+    hideToast();
+    if (S.view !== 'train') setView('train'); else { renderTrain(); }
+    window.scrollTo({ top: 0 });
+    for (let i = 0; i < 30 && Q[sid] && Q[sid].running; i += 1) await new Promise((r) => setTimeout(r, 100)); // a write already in flight lands first
+    const restore = async () => {
+      if (tplDoc) { S.templates[tpl] = tplDoc; await S.rootRef.collection('templates').doc(tpl).set(tplDoc); }
+      if (doc) { S.sessions[sid] = doc; await sessRef(sid).set(doc); S.onServer.add(sid); }
+      if (ds) { S.drafts[sid] = ds; saveDrafts(); }
+      renderTrain();
+    };
+    try {
+      await sessRef(sid).delete();
+      if (dropTpl) await S.rootRef.collection('templates').doc(tpl).delete();
+    } catch (e) {
+      await restore().catch(() => {});
+      showToast('The day was not deleted. Check your connection.', null);
+      return;
+    }
+    showToast(name + ' deleted.', () => { restore().catch(() => showToast('Not restored. Check your connection.', null)); });
+  };
+  const askDeleteSession = (sid, tpl) => {
+    const doc = S.sessions[sid];
+    const t = S.templates[tpl];
+    const name = (t && t.name) || (doc && doc.label) || 'this day';
+    const date = dateOf(sid);
+    const n = doc ? setsDone(doc) : 0;
+    const wrap = h('div', 'ydlg');
+    const close = () => { wrap.remove(); document.removeEventListener('keydown', onKey); };
+    const onKey = (e) => { if (e.key === 'Escape') close(); };
+    const box = confirmBox({
+      label: 'Confirm deleting ' + name,
+      text: 'Delete ' + name + ' from ' + isoDow(date) + ' ' + dm(date) + '? ' + (n ? (n === 1 ? '1 logged set goes' : n + ' logged sets go') + ' with it. ' : 'Nothing is logged in it. ') + 'You can undo it right after.',
+      yes: 'Delete', keep: 'Keep', danger: true, yesId: 'delete-day-go',
+      onYes: () => { close(); deleteSession(sid, tpl); },
+      onKeep: close,
+    });
+    box.setAttribute('aria-modal', 'true');
+    wrap.append(box);
+    wrap.addEventListener('pointerdown', (e) => { if (e.target === wrap) close(); });
+    document.addEventListener('keydown', onKey);
+    document.body.append(wrap);
+    box.go.focus();
   };
   const finishSession = () => {
     const a = S.active;
@@ -3417,9 +3502,22 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       });
       const pace = h('span', 'run-pace', '');
       pace.setAttribute('aria-live', 'off');
-      x.append(refs.flds.elev.parentElement, grp, pace); // altitude sits on the second line, where there is room for it
+      const ug = h('div', 'run-where run-unit');
+      ug.setAttribute('role', 'group');
+      ug.setAttribute('aria-label', 'Show pace as');
+      const ubtns = [['pace', 'min/km'], ['speed', 'km/h']].map(([u, label]) => {
+        const b = h('button', '', label);
+        b.type = 'button';
+        b.dataset.u = u;
+        b.addEventListener('click', () => setRunUnit(u));
+        ug.append(b);
+        return b;
+      });
+      const line = h('div', 'run-line');
+      line.append(pace, ug);
+      x.append(refs.flds.elev.parentElement, grp, line); // altitude sits on the second line, where there is room for it
       row.append(x);
-      refs.runX = { btns, pace };
+      refs.runX = { btns, pace, ubtns };
     }
     R.sets[key] = refs;
     numBtn.addEventListener('click', (ev) => { ev.stopPropagation(); openKindMenu(refs); });
@@ -3809,7 +3907,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const wh = whereNow(refs);
       refs.runX.btns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.w === wh)));
       const pace = fmtPace(parseNum(refs.flds.minutes.value), parseNum(refs.flds.km.value));
-      refs.runX.pace.textContent = pace ? 'Pace ' + pace : 'Pace: add time and distance';
+      const sp = runUnit() === 'speed';
+      refs.runX.ubtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.u === (sp ? 'speed' : 'pace'))));
+      refs.runX.pace.textContent = pace ? (sp ? 'Speed ' : 'Pace ') + pace : (sp ? 'Speed: add time and distance' : 'Pace: add time and distance');
     }
     const kindNow = currentKind(refs);
     paintKind(refs, kindNow);
@@ -3909,6 +4009,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#m-date').addEventListener('click', openDateBox);
   $('#m-day').addEventListener('click', () => { closeMenus(); closeSession(); });
   $('#m-finish').addEventListener('click', () => { closeMenus(); finishSession(); });
+  $('#m-delete').addEventListener('click', () => { closeMenus(); if (S.active) askDeleteSession(SID(), S.active.tpl); });
   $('#resume-fin').addEventListener('click', finishSession);
   $('#sb-date-cancel').addEventListener('click', () => { $('#sb-datebox').hidden = true; $('#sb-date').focus(); });
   $('#sb-date-go').addEventListener('click', () => {
@@ -7136,9 +7237,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const dates = WEEKDAYS.map((_, i) => addDays(ws, i));
     const moves = (S.weeks[ws] && S.weeks[ws].moves) || {};
     const byDate = {};
-    dates.forEach((d) => { byDate[d] = { done: [], planned: [] }; });
+    dates.forEach((d) => { byDate[d] = { done: [], planned: [], open: [] }; });
     const doneCount = {};
     Object.values(S.sessions).forEach((s) => {
+      // a custom workout that is started but has nothing ticked yet: it is in progress, not done
+      if (byDate[s.date] && !hasDone(s) && S.templates[s.template] && S.templates[s.template].adhoc) byDate[s.date].open.push(s);
       if (!byDate[s.date] || !hasDone(s)) return;
       byDate[s.date].done.push(s);
       if (s.template) doneCount[s.template] = (doneCount[s.template] || 0) + 1;
@@ -7223,12 +7326,26 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       if (t) {
         const open = btn('skew small wk-open', 'Look back or correct');
         open.addEventListener('click', () => openSession(d, s.template));
-        const acts = h('div', 'wk-acts'); acts.append(open); box.append(acts);
+        const del = btn('skew small wk-del', 'Delete day');
+        del.addEventListener('click', () => askDeleteSession(sidOf(s), s.template));
+        const acts = h('div', 'wk-acts'); acts.append(open, del); box.append(acts);
       }
       sheet.append(box);
     });
+    byDate[d].open.forEach((s) => {
+      const t = S.templates[s.template];
+      const box = h('div', 'wk-sess');
+      box.dataset.k = kindKey(s.template);
+      box.append(h('div', 'wk-name', t.name), h('p', 'note', 'Started. Nothing is ticked yet.'));
+      const go = btn('skew pop small wk-open', 'Continue');
+      go.addEventListener('click', () => openSession(d, s.template));
+      const del = btn('skew small wk-del', 'Delete day');
+      del.addEventListener('click', () => askDeleteSession(sidOf(s), s.template));
+      const acts = h('div', 'wk-acts'); acts.append(go, del); box.append(acts);
+      sheet.append(box);
+    });
     byDate[d].planned.forEach((pl) => sheet.append(sheetSession(ws, d, pl, dates)));
-    if (!byDate[d].done.length && !byDate[d].planned.length) {
+    if (!byDate[d].done.length && !byDate[d].planned.length && !byDate[d].open.length) {
       sheet.append(h('p', 'note', 'Rest. Nothing is planned.'));
       const ts = templatesSorted();
       if (ts.length) {
@@ -7262,23 +7379,24 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const quiet = new Set((S.weeks[ws] || {}).quiet || []);
     const pairs = spacingWarnings(dates, kinds).filter((p) => !quiet.has(warnKey(p)));
     const warnDays = new Set(pairs.flatMap((p) => [p[0], p[1]]));
-    if (!S.wkSel || !dates.includes(S.wkSel)) S.wkSel = dates.includes(today()) ? today() : (dates.find((d) => byDate[d].planned.length || byDate[d].done.length) || dates[0]);
+    if (!S.wkSel || !dates.includes(S.wkSel)) S.wkSel = dates.includes(today()) ? today() : (dates.find((d) => byDate[d].planned.length || byDate[d].done.length || byDate[d].open.length) || dates[0]);
     const box = $('#wk-rows');
     box.replaceChildren();
     dates.forEach((d) => {
       const col = h('div', 'wk-day' + (d === today() ? ' is-today' : ''));
       col.dataset.date = d;
       const done = byDate[d].done, planned = byDate[d].planned;
-      const first = done[0] ? done[0].template : (planned[0] ? planned[0].tpl : null);
+      const open = byDate[d].open;
+      const first = done[0] ? done[0].template : (planned[0] ? planned[0].tpl : (open[0] ? open[0].template : null));
       const isDone = done.length > 0 && !planned.length;
       const b = h('button', 'wk-blk angled' + (isDone ? ' done' : '') + (d === today() ? ' is-today' : '') + (warnDays.has(d) ? ' warn' : '') + (planned.length ? ' drag' : ''));
       b.type = 'button';
       b.dataset.date = d;
       if (first && S.templates[first]) b.dataset.k = kindKey(first);
       b.setAttribute('aria-pressed', String(d === S.wkSel));
-      const what = [].concat(done.map((s) => (S.templates[s.template] ? S.templates[s.template].name : 'session') + ' done'), planned.map((p) => S.templates[p.tpl].name + ' planned'));
+      const what = [].concat(done.map((s) => (S.templates[s.template] ? S.templates[s.template].name : 'session') + ' done'), planned.map((p) => S.templates[p.tpl].name + ' planned'), open.map((s) => S.templates[s.template].name + ' in progress'));
       b.setAttribute('aria-label', isoDow(d) + ' ' + dm(d) + (d === today() ? ', today' : '') + ', ' + (what.length ? what.join(', ') : 'rest'));
-      b.append(h('span', 'n', String(Number(d.slice(8)))), h('span', 'm', isDone ? '✓' : (planned.length ? '•' : '')));
+      b.append(h('span', 'n', String(Number(d.slice(8)))), h('span', 'm', isDone ? '✓' : (planned.length ? '•' : '') + (open.length ? '…' : '')));
       b.addEventListener('click', () => { if (b.dataset.dragged) { delete b.dataset.dragged; return; } S.wkSel = d; renderWeek(); const bb = $('#wk-rows .wk-blk[data-date="' + d + '"]'); if (bb) bb.focus(); });
       if (planned.length) b.addEventListener('pointerdown', (ev) => startDrag(ev, b, ws, planned[0].key, d));
       col.append(h('span', 'wk-wd', isoDow(d)), b);
@@ -7319,14 +7437,15 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         if (d.slice(0, 7) !== mo) { grid.append(h('span', 'mo-blank')); continue; }
         const done = byDate[d].done, planned = byDate[d].planned;
         const isDone = done.length > 0 && !planned.length;
-        const k = done[0] ? done[0].template : (planned[0] ? planned[0].tpl : null);
+        const open = byDate[d].open;
+        const k = done[0] ? done[0].template : (planned[0] ? planned[0].tpl : (open[0] ? open[0].template : null));
         const b = h('button', 'mo-blk angled' + (isDone ? ' done' : '') + (d === today() ? ' is-today' : ''));
         b.type = 'button';
         b.dataset.date = d;
         if (k && S.templates[k]) b.dataset.k = kindKey(k);
-        const what = [].concat(done.map((x) => (S.templates[x.template] ? S.templates[x.template].name : 'session') + ' done'), planned.map((p) => S.templates[p.tpl].name + ' planned'));
+        const what = [].concat(done.map((x) => (S.templates[x.template] ? S.templates[x.template].name : 'session') + ' done'), planned.map((p) => S.templates[p.tpl].name + ' planned'), open.map((x) => S.templates[x.template].name + ' in progress'));
         b.setAttribute('aria-label', isoDow(d) + ' ' + dm(d) + (d === today() ? ', today' : '') + ', ' + (what.length ? what.join(', ') : 'rest'));
-        b.append(h('span', 'n', String(Number(d.slice(8)))), h('span', 'm', isDone ? '✓' : (planned.length ? '•' : '')));
+        b.append(h('span', 'n', String(Number(d.slice(8)))), h('span', 'm', isDone ? '✓' : (planned.length ? '•' : '') + (open.length ? '…' : '')));
         b.addEventListener('click', () => { S.weekStart = mondayOf(d); S.wkSel = d; renderWeek(); const top = $('#week'); if (top) top.scrollIntoView({ block: 'start', behavior: 'smooth' }); });
         grid.append(b);
       }

@@ -2427,5 +2427,145 @@
   "de": "+{0} fast gleich",
   "fr": "+{0} presque pareil",
   "it": "+{0} quasi uguale"
+ },
+ "Continue {0}": {
+  "nl": "{0} hervatten",
+  "es": "Continuar {0}",
+  "de": "{0} fortsetzen",
+  "fr": "Reprendre {0}",
+  "it": "Continua {0}"
+ },
+ "Continue": {
+  "nl": "Hervatten",
+  "es": "Continuar",
+  "de": "Fortsetzen",
+  "fr": "Reprendre",
+  "it": "Continua"
+ },
+ "In progress: {0}. Nothing is ticked yet.": {
+  "nl": "Bezig: {0}. Er is nog niets afgevinkt.",
+  "es": "En curso: {0}. Aún no hay nada marcado.",
+  "de": "Läuft: {0}. Noch nichts abgehakt.",
+  "fr": "En cours : {0}. Rien n'est encore coché.",
+  "it": "In corso: {0}. Non hai ancora spuntato nulla."
+ },
+ "Started. Nothing is ticked yet.": {
+  "nl": "Begonnen. Er is nog niets afgevinkt.",
+  "es": "Empezado. Aún no hay nada marcado.",
+  "de": "Begonnen. Noch nichts abgehakt.",
+  "fr": "Commencé. Rien n'est encore coché.",
+  "it": "Iniziato. Non hai ancora spuntato nulla."
+ },
+ "Delete day": {
+  "nl": "Dag verwijderen",
+  "es": "Eliminar día",
+  "de": "Tag löschen",
+  "fr": "Supprimer la journée",
+  "it": "Elimina giorno"
+ },
+ "Delete": {
+  "nl": "Verwijderen",
+  "es": "Eliminar",
+  "de": "Löschen",
+  "fr": "Supprimer",
+  "it": "Elimina"
+ },
+ "Delete {0} from {1}? Nothing is logged in it. You can undo it right after.": {
+  "nl": "{0} van {1} verwijderen? Er is niets in gelogd. Je kunt het direct daarna ongedaan maken.",
+  "es": "¿Eliminar {0} del {1}? No hay nada registrado. Puedes deshacerlo justo después.",
+  "de": "{0} vom {1} löschen? Es ist nichts eingetragen. Du kannst es direkt danach rückgängig machen.",
+  "fr": "Supprimer {0} du {1} ? Rien n'y est enregistré. Tu peux annuler juste après.",
+  "it": "Eliminare {0} del {1}? Non c'è nulla di registrato. Puoi annullare subito dopo."
+ },
+ "Delete {0} from {1}? 1 logged set goes with it. You can undo it right after.": {
+  "nl": "{0} van {1} verwijderen? 1 gelogde set verdwijnt mee. Je kunt het direct daarna ongedaan maken.",
+  "es": "¿Eliminar {0} del {1}? Se va 1 serie registrada. Puedes deshacerlo justo después.",
+  "de": "{0} vom {1} löschen? 1 eingetragener Satz geht mit. Du kannst es direkt danach rückgängig machen.",
+  "fr": "Supprimer {0} du {1} ? 1 série enregistrée disparaît avec. Tu peux annuler juste après.",
+  "it": "Eliminare {0} del {1}? 1 serie registrata se ne va con esso. Puoi annullare subito dopo."
+ },
+ "Delete {0} from {1}? {2} logged sets go with it. You can undo it right after.": {
+  "nl": "{0} van {1} verwijderen? {2} gelogde sets verdwijnen mee. Je kunt het direct daarna ongedaan maken.",
+  "es": "¿Eliminar {0} del {1}? Se van {2} series registradas. Puedes deshacerlo justo después.",
+  "de": "{0} vom {1} löschen? {2} eingetragene Sätze gehen mit. Du kannst es direkt danach rückgängig machen.",
+  "fr": "Supprimer {0} du {1} ? {2} séries enregistrées disparaissent avec. Tu peux annuler juste après.",
+  "it": "Eliminare {0} del {1}? {2} serie registrate se ne vanno con esso. Puoi annullare subito dopo."
+ },
+ "{0} deleted.": {
+  "nl": "{0} verwijderd.",
+  "es": "{0} eliminado.",
+  "de": "{0} gelöscht.",
+  "fr": "{0} supprimé.",
+  "it": "{0} eliminato."
+ },
+ "The day was not deleted. Check your connection.": {
+  "nl": "De dag is niet verwijderd. Controleer je verbinding.",
+  "es": "El día no se eliminó. Revisa tu conexión.",
+  "de": "Der Tag wurde nicht gelöscht. Prüfe deine Verbindung.",
+  "fr": "La journée n'a pas été supprimée. Vérifie ta connexion.",
+  "it": "Il giorno non è stato eliminato. Controlla la connessione."
+ },
+ "Not restored. Check your connection.": {
+  "nl": "Niet hersteld. Controleer je verbinding.",
+  "es": "No se restauró. Revisa tu conexión.",
+  "de": "Nicht wiederhergestellt. Prüfe deine Verbindung.",
+  "fr": "Non restauré. Vérifie ta connexion.",
+  "it": "Non ripristinato. Controlla la connessione."
+ },
+ "Show pace as": {
+  "nl": "Toon tempo als",
+  "es": "Mostrar el ritmo como",
+  "de": "Tempo anzeigen als",
+  "fr": "Afficher l'allure en",
+  "it": "Mostra il ritmo come"
+ },
+ "Speed {0}": {
+  "nl": "Snelheid {0}",
+  "es": "Velocidad {0}",
+  "de": "Geschwindigkeit {0}",
+  "fr": "Vitesse {0}",
+  "it": "Velocità {0}"
+ },
+ "Speed: add time and distance": {
+  "nl": "Snelheid: vul tijd en afstand in",
+  "es": "Velocidad: añade tiempo y distancia",
+  "de": "Geschwindigkeit: Zeit und Distanz eintragen",
+  "fr": "Vitesse : ajoute le temps et la distance",
+  "it": "Velocità: aggiungi tempo e distanza"
+ },
+ "• planned · ✓ done · … in progress. Tap a day to open its week.": {
+  "nl": "• gepland · ✓ gedaan · … bezig. Tik op een dag om de week te openen.",
+  "es": "• planificado · ✓ hecho · … en curso. Toca un día para abrir su semana.",
+  "de": "• geplant · ✓ erledigt · … läuft. Tippe auf einen Tag, um die Woche zu öffnen.",
+  "fr": "• prévu · ✓ fait · … en cours. Touche un jour pour ouvrir sa semaine.",
+  "it": "• pianificato · ✓ fatto · … in corso. Tocca un giorno per aprire la sua settimana."
+ },
+ "Custom days and run speed": {
+  "nl": "Eigen dagen en loopsnelheid",
+  "es": "Días libres y velocidad de carrera",
+  "de": "Freie Tage und Lauftempo",
+  "fr": "Journées libres et vitesse de course",
+  "it": "Giorni liberi e velocità di corsa"
+ },
+ "Every custom workout is its own day, shows in the week and the month while it is in progress, and can be continued from there.": {
+  "nl": "Elke eigen training is een eigen dag, staat in de week en de maand zolang hij bezig is en kan van daaruit hervat worden.",
+  "es": "Cada entrenamiento libre es su propio día, aparece en la semana y el mes mientras está en curso y se puede continuar desde ahí.",
+  "de": "Jedes freie Training ist ein eigener Tag, erscheint in Woche und Monat, solange es läuft, und lässt sich von dort fortsetzen.",
+  "fr": "Chaque séance libre est sa propre journée, apparaît dans la semaine et le mois tant qu'elle est en cours, et peut être reprise de là.",
+  "it": "Ogni allenamento libero è un giorno a sé, compare nella settimana e nel mese finché è in corso e si può riprendere da lì."
+ },
+ "Delete a day from the session menu or from the week. Undo brings it back.": {
+  "nl": "Verwijder een dag via het sessiemenu of vanuit de week. Ongedaan maken haalt hem terug.",
+  "es": "Elimina un día desde el menú de la sesión o desde la semana. Deshacer lo recupera.",
+  "de": "Lösche einen Tag über das Sitzungsmenü oder aus der Woche. Rückgängig holt ihn zurück.",
+  "fr": "Supprime une journée depuis le menu de la séance ou depuis la semaine. Annuler la ramène.",
+  "it": "Elimina un giorno dal menu della sessione o dalla settimana. Annulla lo riporta."
+ },
+ "Runs show pace as min/km or km/h, your choice.": {
+  "nl": "Bij hardlopen toon je het tempo als min/km of km/u, naar keuze.",
+  "es": "En las carreras el ritmo se muestra en min/km o km/h, a tu elección.",
+  "de": "Bei Läufen wird das Tempo in min/km oder km/h angezeigt, du entscheidest.",
+  "fr": "Pour les courses, l'allure s'affiche en min/km ou km/h, au choix.",
+  "it": "Nelle corse il ritmo si mostra in min/km o km/h, a tua scelta."
  }
 }
