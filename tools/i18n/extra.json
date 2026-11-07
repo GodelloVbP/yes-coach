@@ -2777,5 +2777,12 @@
   "de": "„Ich habe etwas gegessen“ ist weg.",
   "fr": "« J'ai mangé quelque chose » a disparu.",
   "it": "«Ho mangiato qualcosa» non c'è più."
+ },
+ "Switching tabs no longer slides or resizes the page.": {
+  "nl": "Van tabblad wisselen laat de pagina niet meer schuiven of van formaat veranderen.",
+  "es": "Cambiar de pestaña ya no desliza ni redimensiona la página.",
+  "de": "Beim Wechseln der Tabs rutscht die Seite nicht mehr und ändert ihre Größe nicht mehr.",
+  "fr": "Changer d'onglet ne fait plus glisser ni redimensionner la page.",
+  "it": "Cambiare scheda non fa più scorrere né ridimensionare la pagina."
  }
 }
