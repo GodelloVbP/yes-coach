@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-z1A69zwlU2+U0OHxQkXsXIBccOX+hKxToCKxzw/1o1M=' 'sha256-TGfa0Z2R0Zb0A68F6B8slfdmoJunSNtEyOP67+clhBQ=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-z1A69zwlU2+U0OHxQkXsXIBccOX+hKxToCKxzw/1o1M=' 'sha256-fJ2XKPBVXaEzgqk91hWpWyZOCdzZ5QuNyB3cy1KKmOU=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-07 12:09Z">
+<meta name="yc-build" content="2026-11-07 12:21Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -79,7 +79,8 @@ h1, h2, h3, p { margin: 0; }
 button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .in { max-width: 46rem; margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-.in.wide { max-width: 72rem; }
+.in.wide { max-width: 46rem; }
+@media (min-width: 64rem) { .in.wide { max-width: 72rem; } }
 .note { font-size: var(--t2); color: var(--ink-soft); line-height: 1.5; font-weight: 500; }
 .hd, h2, .tab, .skew, .lab, .num-big, .ex-name, .set-n, .pk-name, .pk-chip, .pk-gh, .pk-go, .day-wd, .day-name, .chip, th, .sb-day, .sb-date, .sb-count, .sb-back, .icon { font-family: var(--f-head); }
 h2 { font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.15; text-wrap: balance; }
@@ -99,7 +100,7 @@ h2 { font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-s
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
 .stick { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; }
 /* jumps to a section land below the sticky top bar, with a little air */
-html { scroll-padding-top: calc(var(--stick-h, 56px) + 0.75rem); }
+html { scroll-padding-top: calc(var(--stick-h, 56px) + 0.75rem); scrollbar-gutter: stable; }
 /* the save warning floats under the top bar and never pushes the page */
 .savebar { position: absolute; top: 100%; left: 0; right: 0; box-shadow: 0 6px 16px rgba(16, 20, 43, 0.25); }
 .savebar > div { display: flex; align-items: center; gap: 0.75rem; justify-content: space-between; padding-block: 0.5rem; font-weight: 600; }
@@ -1019,7 +1020,7 @@ body.fin-open { overflow: hidden; }
 .intro textarea, .ed-f textarea { min-height: 5.5rem; overflow-y: auto; line-height: 1.45; }
 /* motion: short, transform and opacity only. Press feedback on everything tappable, a slide-in for new screens,
    and panels that ease in when they open. All of it is off with reduced motion. */
-@keyframes enter { from { opacity: 0; transform: translate(var(--dx, 0px), 6px); } }
+@keyframes enter { from { opacity: 0; transform: translate(var(--dx, 0px), var(--dy, 6px)); } }
 @keyframes drop { from { opacity: 0; transform: translateY(-8px); } }
 @keyframes rise { from { transform: translateY(100%); } }
 @keyframes tick-pop { 0% { transform: skewX(8deg) scale(0.3); } 60% { transform: skewX(8deg) scale(1.3); } 100% { transform: skewX(8deg) scale(1); } }
@@ -1548,9 +1549,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return row;
   };
   // replay the short entrance animation on an element that just appeared or changed (dx: slide from the side)
-  const enter = (el, dx = 0) => {
+  const enter = (el, dx = 0, dy = 6) => {
     if (!el) return;
     el.style.setProperty('--dx', dx + 'px');
+    el.style.setProperty('--dy', dy + 'px');
     el.classList.remove('enter');
     void el.offsetWidth;
     el.classList.add('enter');
@@ -1826,7 +1828,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ------------------------------------------------------------------ views
   const VIEWS = ['home', 'train', 'plan', 'exercises', 'progress', 'food', 'feedback', 'settings', 'news'];
   const setView = (v) => {
-    if (S.view !== v) { hideToast(); enter($('#v-' + v), 16 * Math.sign(VIEWS.indexOf(v) - VIEWS.indexOf(S.view))); }
+    if (S.view !== v) { hideToast(); enter($('#v-' + v), 0, 0); } // switching tabs only fades in: the page must not slide or jump
     S.view = v;
     $$('[data-view]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.view === v)));
     [$('#mark'), $('#mark2')].forEach((m) => { if (v === 'home') m.setAttribute('aria-current', 'page'); else m.removeAttribute('aria-current'); });
@@ -1849,7 +1851,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
-    ['7 Nov 2026', 'Your schedule and your own foods', ["Plan: the days you tick are the days you can train. Set how many sessions a week you want, and they are spread over those days.", "Your own foods have their own place in Food: create one, edit it, or ask Claude to add it.", "The undo bar no longer covers the page on a tablet or computer.", "I ate something is gone."]],
+    ['7 Nov 2026', 'Your schedule and your own foods', ["Plan: the days you tick are the days you can train. Set how many sessions a week you want, and they are spread over those days.", "Your own foods have their own place in Food: create one, edit it, or ask Claude to add it.", "The undo bar no longer covers the page on a tablet or computer.", "I ate something is gone.", "Switching tabs no longer slides or resizes the page."]],
     ['7 Nov 2026', 'Custom days and run speed', ["Every custom workout is its own day, shows in the week and the month while it is in progress, and can be continued from there.", "Delete a day from the session menu or from the week. Undo brings it back.", "Runs show pace as min/km or km/h, your choice."]],
     ['7 Nov 2026', 'Fewer look-alike results', ["Foods that come out the same, like the different eggs or apples, now show as one result. Tap +2 almost the same to see the others."]],
     ['7 Nov 2026', 'Custom workouts, runs and your own foods', ["Change today's workout now has Custom workout. It starts blank, for whatever you do today.", "Runs track distance, altitude gain and where you ran: outside or on a treadmill. The pace per km is worked out for you.", "Create your own food with the numbers per 100 g or 100 ml. Claude can add one too: tell it the numbers from the package.", "Train shows the whole month under the week, and Add to calendar is now a big button.", "After you send a day to Claude, you land back on Train.", "On a wide screen the notices at the top no longer cover the page."]],

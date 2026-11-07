@@ -272,6 +272,25 @@ try:
             check('too few days for the sessions: it says so', 'Pick more days, or fewer sessions' in page.text_content('.pw-per-note'), page.text_content('.pw-per-note'))
         errs = session(pw, be, ALICE, s5, width=390); check('no page errors (schedule)', not errs, errs)
 
+        # ---- 6. switching tabs must not move or resize the page: one content column, and a fade instead of a slide
+        COL = "() => { const v = document.querySelector('.view:not([hidden])'); const e = [...v.querySelectorAll('.in')].find((n) => n.getBoundingClientRect().width > 0 && !n.closest('[hidden]')); const r = e.getBoundingClientRect(); return { left: Math.round(r.left), width: Math.round(r.width), dx: v.style.getPropertyValue('--dx'), dy: v.style.getPropertyValue('--dy') }; }"
+        for width in (390, 768, 1000, 1280):
+            be = Backend(); seed(be)
+            def s6(page, width=width):
+                page.goto(BASE); page.wait_for_selector('text=Start Push day', timeout=8000)
+                cols = {}
+                for v in ('plan', 'progress', 'food', 'settings', 'train'):  # Train last: its first load plays its own entrance once
+                    page.click(('.mainnav [data-view="%s"]' if width < 1024 else '#tab-%s') % v); page.wait_for_timeout(350)
+                    cols[v] = page.evaluate(COL)
+                if width < 1024:
+                    check('%d: every tab has the same content column' % width, len({(c['left'], c['width']) for c in cols.values()}) == 1, cols)
+                else:
+                    ref = {(cols[v]['left'], cols[v]['width']) for v in ('train', 'plan', 'food', 'settings')}
+                    check('%d: the tabs beside the sidebar share one column; Progress may be wider but starts further left, never right' % width, len(ref) == 1 and cols['progress']['left'] <= cols['train']['left'], cols)
+                check('%d: a tab switch is a fade, not a slide' % width, all(c['dx'] in ('0px', '') and c['dy'] in ('0px', '') for c in cols.values()), cols)
+                check('%d: no sideways overflow on any tab' % width, page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth"))
+            errs = session(pw, be, ALICE, s6, width=width); check('no page errors (tabs %d)' % width, not errs, errs)
+
         # ---- 4. the undo bar never covers the page: it takes its own room from tablet width up, floats on a phone
         SHOW = "document.getElementById('toast-text').textContent = 'Saved.'; document.getElementById('toast').hidden = false; 0"
         MEASURE = "(() => { const t = document.getElementById('toast').getBoundingClientRect(); const c = document.querySelector('#today-card').getBoundingClientRect(); return { tb: t.bottom, tl: t.left, ct: c.top, pos: getComputedStyle(document.getElementById('toast')).position }; })()"
