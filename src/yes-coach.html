@@ -669,7 +669,12 @@ body.typing .restbar { display: none; }
 .wz-q { display: flex; flex-direction: column; gap: 0.25rem; }
 .wz-q .sm-days { padding-inline: 0.375rem; }
 .wz-file { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.75rem; background: var(--faint); border-left: 4px solid var(--ink); }
-.wz-more summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+.wz-more summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; gap: 0.5rem; list-style: none; }
+.wz-more summary::-webkit-details-marker { display: none; }
+.wz-more summary::before { content: '›'; display: inline-block; font-size: 1.25em; line-height: 1; transition: transform 0.15s; }
+.wz-more[open] summary::before { transform: rotate(90deg); }
+.wz-aibox { margin-block: 0.75rem; }
+.wz-aibox .foot-row { margin-top: 0.5rem; }
 .wz-more[open] summary { margin-bottom: 0.5rem; }
 .wz-busy { display: flex; flex-direction: column; gap: 1rem; padding-block: 2rem 1rem; }
 .wz-bar { height: 6px; background: var(--faint); overflow: hidden; position: relative; }
@@ -1795,6 +1800,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['8 Nov 2026', "A first plan in seconds", ["Build my plan now makes your plan right away, in the app: full body for 2 or 3 days a week, upper and lower body for more, for the gym, home or bodyweight only.", "Your own AI is still there: open Change it with your AI under the plan.", "Coming from Strong, Hevy or FitNotes? Your history comes over without an AI, and the plan starts from your recent weights. Only import my history skips the plan."]],
     ['8 Nov 2026', "A new plan starts today", ["A plan you build starts today, or tomorrow if you pick that, instead of on the next Monday.", "Sessions a week are saved with your plan. Changing About you no longer moves your week.", "On the web, Build my plan goes straight to the copy-and-paste step, and the request is shorter: only exercises for where you train, and the answer comes in your language."]],
     ['7 Nov 2026', 'Your schedule and your own foods', ["Plan: the days you tick are the days you can train. Set how many sessions a week you want, and they are spread over those days.", "Your own foods have their own place in Food: create one, edit it, or ask Claude to add it.", "The undo bar no longer covers the page on a tablet or computer.", "I ate something is gone.", "Switching tabs no longer slides or resizes the page."]],
     ['7 Nov 2026', 'Custom days and run speed', ["Every custom workout is its own day, shows in the week and the month while it is in progress, and can be continued from there.", "Delete a day from the session menu or from the week. Undo brings it back.", "Runs show pace as min/km or km/h, your choice."]],
@@ -6638,7 +6644,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const own = Object.entries(S.exercises).filter(([id]) => !libOfEx(id));
       if (own.length) o.push('## Their own exercises (not in the list; use them as "ex:<id>")', own.map(([id, e]) => 'ex:' + id + ' | ' + e.name + ' | ' + (e.group || '')).join('\n'), '');
     }
-    if (W.chat.length) o.push(W.adjust && W.chat.length === 1 ? '## Their current plan' : '## Your previous plan', JSON.stringify(W.chat[W.chat.length - 1].plan), '', '## What they want changed', W.chat[W.chat.length - 1].ask, '');
+    if (W.chat.length) o.push(W.adjust && W.chat.length === 1 ? '## Their current plan' : W.local && W.chat.length === 1 ? '## The starting plan Yes Coach made for them' : '## Your previous plan', JSON.stringify(W.chat[W.chat.length - 1].plan), '', '## What they want changed', W.chat[W.chat.length - 1].ask, '');
     o.push('## Rules');
     o.push('- One training day per day they train, or a rotation of fewer days that repeats; fit the session length (about 45 min: 4-5 exercises, 60: 5-6, 90: 6-8).');
     o.push('- Only use exercise ids from the list, and only equipment they have. Leave out exercises marked hard on shoulders if their notes mention a shoulder.');
@@ -6729,6 +6735,94 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return { days, weekdays: wd, summary: String(p.summary || '').slice(0, 600), mapping };
   };
 
+  // ---- a first plan made in the app, without an AI: hand-picked days per place, cut to the session length.
+  // Full body for 2 or 3 days a week, upper and lower body on alternating days for 4 or more (no push next to pull).
+  const STARTER = {
+    gym: {
+      full: [['Full body A', 'Other', 'squat, press, row', ['l42', 'l04', 'l14', 'l50', 'l22', 'l36', 'l30']],
+        ['Full body B', 'Other', 'legs, shoulders, pull-down', ['l43', 'l20', 'l10', 'l53', 'l02', 'l34', 'l55']],
+        ['Full body C', 'Other', 'lunge, chest, row', ['l46', 'l01', 'l16', 'l51', 'l25', 'l31', 'l63']]],
+      split: [['Upper A', 'Other', 'chest, back, shoulders', ['l04', 'l10', 'l20', 'l14', 'l22', 'l36', 'l30']],
+        ['Lower A', 'Legs', 'squat, hinge', ['l42', 'l50', 'l45', 'l51', 'l55', 'l60']],
+        ['Upper B', 'Other', 'chest, back, arms', ['l02', 'l16', 'l21', 'l116', 'l25', 'l38', 'l34']],
+        ['Lower B', 'Legs', 'legs, glutes', ['l43', 'l53', 'l46', 'l52', 'l56', 'l58']]],
+    },
+    home: {
+      full: [['Full body A', 'Other', 'squat, press, row', ['l48', 'l087', 'l095', 'l50', 'l22', 'l30', 'l62']],
+        ['Full body B', 'Other', 'lunge, shoulders, push-up', ['l196', 'l20', 'l08', 'l212', 'l24', 'l39', 'l58']],
+        ['Full body C', 'Other', 'lunge, press, row', ['l198', 'l087', 'l095', 'l238', 'l127', 'l31', 'l63']]],
+      split: [['Upper A', 'Other', 'chest, back, shoulders', ['l087', 'l095', 'l20', 'l22', 'l30', 'l39']],
+        ['Lower A', 'Legs', 'squat, hinge', ['l48', 'l50', 'l198', 'l240', 'l62']],
+        ['Upper B', 'Other', 'push-up, back, arms', ['l08', 'l095', 'l127', 'l24', 'l31', 'l176']],
+        ['Lower B', 'Legs', 'legs, glutes', ['l196', 'l212', 'l194', 'l218', 'l58']]],
+    },
+    bodyweight: {
+      full: [['Full body A', 'Other', 'squat, push-up, row', ['l206', 'l08', 'l103', 'l218', 'l145', 'l58']],
+        ['Full body B', 'Other', 'legs, push-up, back', ['l208', 'l082', 'l123', 'l219', 'l165', 'l62']],
+        ['Full body C', 'Other', 'jump, push-up, row', ['l209', 'l08', 'l103', 'l241', 'l266', 'l285']]],
+    },
+  };
+  // new to the gym: machines and dumbbells in place of the heavy barbell lifts
+  const STARTER_NEW = { l42: 'l48', l04: 'l01', l50: 'l212' };
+  const STARTER_LEN = { short: 4, medium: 5, long: 7 };
+  const planReps = (r) => { const m = String(r || '').match(/\d+/); return m ? Number(m[0]) : 10; };
+  const noLoad = (l) => /^(bodyweight|none|wall|step|bench or box|bar or rings)$/i.test(String(l.equipment || '').trim());
+  // From an imported history: per library exercise, how many dates it was trained and the best estimated 1RM of the last 6 weeks.
+  const historyStats = (rows) => {
+    const out = new Map();
+    if (!rows || !rows.length) return out;
+    const last = rows.reduce((a, r) => (r.date > a ? r.date : a), '');
+    rows.filter((r) => r.kind !== 'warmup' && r.reps != null).forEach((r) => {
+      const id = libMatch(r.ex);
+      if (!id) return;
+      const o = out.get(id) || { dates: new Set(), best: 0 };
+      o.dates.add(r.date);
+      if (r.kg && r.date >= addDays(last, -42)) o.best = Math.max(o.best, epley(r.kg, Math.min(r.reps, 15)));
+      out.set(id, o);
+    });
+    return out;
+  };
+  const localPlan = (p, rows) => {
+    const where = STARTER[p.where] ? p.where : 'gym';
+    const n = Math.min(6, Math.max(2, Number(p.days_per_week) || 3));
+    const kit = STARTER[where];
+    const set = n >= 4 && kit.split ? kit.split : kit.full;
+    const days = set.slice(0, n >= 4 && kit.split ? 4 : Math.min(n, set.length));
+    const len = STARTER_LEN[p.session_length] || STARTER_LEN.medium;
+    const stats = historyStats(rows);
+    const hist = stats.size > 0;
+    return {
+      summary: [
+        n >= 4 && kit.split ? 'Upper and lower body on alternating days, ' + n + ' days a week.' : 'Full body, ' + n + ' days a week.',
+        hist ? 'Starting weights come from your history, a little below your recent best.' : 'The first week is for finding your weights.',
+        where === 'bodyweight' ? 'Inverted rows need a sturdy table or a bar at hip height.' : '',
+      ].filter(Boolean).join(' '),
+      weekdays: DAY_PATTERNS[n],
+      days: days.map(([name, kind, focus, ids]) => {
+        const used = new Set();
+        const items = ids.map((id) => (p.experience === 'new' && STARTER_NEW[id] && fitsPlace(LIB_BY_ID.get(STARTER_NEW[id]), where) ? STARTER_NEW[id] : id)).map((id) => {
+          // a lift from their history for the same muscles takes the place of the picked one, when they trained it often
+          const l = LIB_BY_ID.get(id);
+          if (hist && !stats.has(id)) {
+            const mine = [...stats.entries()].filter(([x, o]) => o.dates.size >= 3 && !used.has(x) && !ids.includes(x) && LIB_BY_ID.get(x).group === l.group && fitsPlace(LIB_BY_ID.get(x), where)).sort((a, b) => b[1].dates.size - a[1].dates.size)[0];
+            if (mine) return mine[0];
+          }
+          return id;
+        }).filter((id) => { if (used.has(id)) return false; used.add(id); return true; }).slice(0, len).map((id, k) => {
+          const l = LIB_BY_ID.get(id);
+          const reps = String(l.reps || '10');
+          const st = stats.get(id);
+          // planned reps with about 2 in reserve, from the best estimated 1RM, to the nearest 2.5 kg
+          const target = st && st.best && !noLoad(l) && /^\d/.test(reps) && !/\bs\b/.test(reps) ? String(Math.max(0, Math.round(st.best / (1 + (planReps(reps) + 2) / 30) / 2.5) * 2.5)) : '';
+          return { ex: id, sets: Math.min(l.sets || 3, p.experience === 'new' ? 3 : 4), reps, target, rest_s: where === 'bodyweight' ? 60 : k === 0 ? 150 : k === 1 ? 120 : 90,
+            note: !target && !noLoad(l) ? 'First time: pick a weight you could lift 2 or 3 more times than the reps.' : null };
+        });
+        return { name, kind, focus, items };
+      }),
+      mapping: {},
+    };
+  };
+
   // ---- saving: exercises, training days, the schedule and the history, written by the page
   const planExercise = (it) => LIB_BY_ID.get(it.ex);
   const resolveHistory = async (rows, mapping) => {
@@ -6795,6 +6889,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const prev = S.root && S.root.schedule && S.root.schedule.enabled && !W.before ? clone(S.root.schedule) : null;
     if (prev) W.before = prev;
     await saveRoot(Object.assign({ schedule: { enabled: true, mode: 'rotation', days: [...plan.weekdays].sort((a, b) => WEEKDAYS.indexOf(a) - WEEKDAYS.indexOf(b)), rotation: ids, per_week: plan.weekdays.length }, profile: W.profile, export_ctx: exportCtx, intro_seen: true }, prev ? { schedule_before: prev } : {}));
+    await saveHistory(rows, exIds, step);
+  };
+  // the imported sessions, one per date; dates that already have a session are left alone. Returns how many were written.
+  const saveHistory = async (rows, exIds, step) => {
     const byDate = d3.group(rows, (r) => r.date);
     const dates = [...byDate.keys()].filter((d) => !S.sessions[d]).sort();
     for (const [k, date] of dates.entries()) {
@@ -6810,9 +6908,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         if (r.kind !== 'warmup') groups[groupOf(e.group)] = (groups[groupOf(e.group)] || 0) + 1;
       });
       const top = Object.entries(groups).filter(([g]) => SPLIT_BY_GROUP[g]).sort((a, b) => b[1] - a[1])[0];
-      await S.rootRef.collection('sessions').doc(date).set({ date, source: 'import', template: null, split: (top && SPLIT_BY_GROUP[top[0]]) || 'Other', label: rs[0].workout || 'Imported', note: null, started_at: 0, updated_at: Date.now(), sets });
+      const doc = { date, source: 'import', template: null, split: (top && SPLIT_BY_GROUP[top[0]]) || 'Other', label: rs[0].workout || 'Imported', note: null, started_at: 0, updated_at: Date.now(), sets };
+      await S.rootRef.collection('sessions').doc(date).set(doc);
       step(k + 1, dates.length);
     }
+    return dates.length;
   };
 
   // ---- the screen
@@ -6824,7 +6924,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     prompt_too_large: 'Your history is too large to send in one go. Use the copy-and-paste way and attach the file instead.',
   };
   const coachError = (e) => COACH_ERRORS[e && e.code] || (['sampling_disabled', 'not_declared', 'session_expired'].includes(e && e.code) ? COACH_ERRORS.unavailable : 'The plan did not come back in a usable form. Try again.');
-  const newWizard = (preset = {}) => ({ adjust: !!preset.adjust, ask: '', start: 0, step: 'start', src: preset.src && WIZ_SOURCES.some(([k]) => k === preset.src) ? preset.src : 'none', file: preset.file || null, rows: null, plan: null, chat: [], msg: '', profile: Object.assign({}, profile()), notes: exportCtx });
+  const newWizard = (preset = {}) => ({ adjust: !!preset.adjust, local: false, ask: '', start: 0, step: 'start', src: preset.src && WIZ_SOURCES.some(([k]) => k === preset.src) ? preset.src : 'none', file: preset.file || null, rows: null, plan: null, chat: [], msg: '', profile: Object.assign({}, profile()), notes: exportCtx });
   const openWizard = (preset) => {
     W = newWizard(preset);
     S.wiz = true;
@@ -6843,6 +6943,39 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return box;
   };
   const wizStep = (step, msg) => { W.step = step; W.msg = msg || ''; renderWizard(true); };
+  // Build: read the export when there is one, then make the plan in the app. Instant, and the same on the web and on claude.ai.
+  const readRows = async () => {
+    if (W.src !== 'none' && W.src !== 'backup' && W.file && !W.rows && !(window.YC_WEB && W.src === 'other')) { wizStep('busy', 'Reading your ' + optName(WIZ_SOURCES, W.src) + ' export…'); W.rows = await parseExport(W.file, W.src); }
+  };
+  const buildLocal = async () => {
+    try {
+      await readRows();
+      W.plan = cleanPlan(localPlan(W.profile, W.rows));
+      W.chat = [];
+      W.local = true;
+      wizStep('preview');
+    } catch (e) {
+      if (!(e && e.code)) console.error(e);
+      if (e && e.code === 'bad_file') W.rows = null;
+      wizStep('error', coachError(e));
+    }
+  };
+  // only the history: for someone who keeps their plan, or wants to build one later
+  const importOnly = async () => {
+    try {
+      await readRows();
+      if (!W.rows) { wizStep('error', 'This file needs an AI to read it. Build a plan with your AI, or use the copy-and-paste way in Settings.'); return; }
+      wizStep('saving', 'Saving your history…');
+      const exIds = await resolveHistory(W.rows, {});
+      const n = await saveHistory(W.rows, exIds, (i, total) => { const m = $('#wiz .wz-msg'); if (m) m.textContent = 'Saving your history: ' + i + ' of ' + total + ' sessions…'; });
+      if (!(S.root && S.root.intro_seen)) await saveRoot({ profile: W.profile, export_ctx: exportCtx, intro_seen: true });
+      closeWizard();
+      showToast('Imported ' + plural(n, 'session') + '.', null);
+    } catch (e) {
+      if (e && e.code === 'bad_file') W.rows = null;
+      wizStep('error', (e && e.code) ? coachError(e) : 'Saving stopped part way (' + ((e && e.message) || 'unknown error') + '). Check your connection and try again; what was saved is not saved twice.');
+    }
+  };
   const buildPlan = async () => {
     W.ctl = new AbortController();
     try {
@@ -6923,7 +7056,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (W.step === 'start') {
       const skip = () => { readWizProfile(); if (!(S.root && S.root.intro_seen)) saveRoot({ profile: W.profile, export_ctx: exportCtx, intro_seen: true }); closeWizard(); };
       const top = h('div', 'wz-top');
-      top.append(h('p', '', 'Four quick answers and your coach builds your first plan. Coming from another app? Bring your history along.'), plainBtn('textbtn wz-skip', S.wiz ? 'Cancel' : 'Skip setup', null, skip));
+      top.append(h('p', '', 'A few quick answers and you get a first plan. Coming from another app? Bring your history along.'), plainBtn('textbtn wz-skip', S.wiz ? 'Cancel' : 'Skip setup', null, skip));
       box.append(top);
       const re = () => { readWizProfile(); renderWizard(true); };
       box.append(chipRow('Days a week', [2, 3, 4, 5, 6].map((n) => [n, String(n)]), p.days_per_week, (v) => { p.days_per_week = v; re(); }));
@@ -6962,15 +7095,21 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       more.append(fields);
       box.append(more);
       W.f = profileFields(fields, 'intro', true, ['days_per_week', 'session_length', 'where', 'goal'], p, W.notes);
-      box.append(h('p', 'privacy', window.YC_WEB ? 'Your answers and history stay in your own Yes Coach account. You build the plan with your own AI chat: Yes Coach writes the request, you paste the answer back.' : 'Your answers and history stay in your own claude.ai account. The plan is built by your own Claude, which Yes Coach asks for you; the first time, you are asked to allow that.'));
+      box.append(h('p', 'privacy', 'Your answers and history stay in your own account. Yes Coach makes the plan straight away; your own AI can change it after.'));
       const go = btn('skew pop big', W.src === 'backup' ? 'Restore my data' : W.src !== 'none' && W.file ? 'Import and build my plan' : 'Build my plan');
       go.id = 'wz-go';
       const missing = W.src !== 'none' && !W.file;
       go.disabled = missing;
-      go.addEventListener('click', () => { readWizProfile(); if (W.src === 'backup') restoreFromWizard(); else buildPlan(); });
+      go.addEventListener('click', () => { readWizProfile(); if (W.src === 'backup') restoreFromWizard(); else buildLocal(); });
       const hand = plainBtn('textbtn', S.wiz ? 'Cancel' : 'Skip setup', null, skip);
       const fr = h('div', 'foot-row');
-      fr.append(go, hand);
+      fr.append(go);
+      if (W.src !== 'none' && W.src !== 'backup' && W.file && !(window.YC_WEB && W.src === 'other')) {
+        const only = plainBtn('textbtn', 'Only import my history', null, () => { readWizProfile(); importOnly(); });
+        only.id = 'wz-history';
+        fr.append(only);
+      }
+      fr.append(hand);
       box.append(fr);
       if (missing) box.append(h('p', 'why', 'Choose your export file first, or pick Starting fresh.'));
       return;
@@ -7022,7 +7161,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       box.append(h('p', 'wz-msg', W.msg));
       const fr = h('div', 'foot-row');
       fr.append(btn('skew pop', 'Try again'), plainBtn('textbtn', 'Back', null, () => wizStep('start')), plainBtn('textbtn', 'Use the copy-and-paste way', null, () => { if (window.YC_WEB && W.failed !== 'save') { wizStep('manual'); return; } imp.src = W.src; imp.file = W.file; closeWizard(); openSettingFor($('#imp'), 'start'); }));
-      fr.firstChild.addEventListener('click', () => (W.failed === 'save' ? saveAndClose() : buildPlan()));
+      fr.firstChild.addEventListener('click', () => (W.failed === 'save' ? saveAndClose() : W.adjust || W.chat.length ? buildPlan() : buildLocal()));
       box.append(fr);
       return;
     }
@@ -7045,8 +7184,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         renderWizard(true);
       }));
       const when = plan.days[0].name + ' ' + (W.start ? 'tomorrow' : 'today');
-      box.append(h('p', 'note', plan.weekdays.length < 2 ? when + ', then every week on ' + plan.weekdays[0] + '.'
-        : when + ', then ' + plan.weekdays.slice(1).join(', ') + ' each week, in the order ' + plan.days.map((d) => d.name).join(' → ') + '. Miss a day and the next one simply waits.'));
+      box.append(h('p', 'note', plan.days.length < 2 ? when + '. Then every week on ' + plan.weekdays.join(', ') + '.'
+        : when + '. Then every week on ' + plan.weekdays.join(', ') + ', in the order ' + plan.days.map((d) => d.name).join(' → ') + '. Miss a day and the next one simply waits.'));
     }
     const list = h('div', 'ed-items');
     plan.days.forEach((d) => {
@@ -7071,14 +7210,23 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const ta = h('textarea', 'nt-text');
     ta.id = 'wz-ask';
     ta.rows = 2;
-    ta.placeholder = 'Want something different? For example: no barbell squats, more arms, 4 days.';
+    ta.placeholder = 'Want something different? For example: no barbell squats, more arms, my right shoulder hurts.';
     ta.setAttribute('aria-label', 'What to change in the plan');
-    const change = btn('skew small', 'Change the plan');
-    change.addEventListener('click', () => { const ask = ta.value.trim(); if (!ask) { ta.focus(); return; } W.chat.push({ plan: { summary: plan.summary, days: plan.days, weekdays: plan.weekdays }, ask }); buildPlan(); });
+    const change = btn('skew small', W.local && !W.chat.length ? 'Make it yours with your AI' : 'Change the plan');
+    change.id = 'wz-ai';
+    change.addEventListener('click', () => {
+      const ask = ta.value.trim();
+      if (!ask && !(W.local && !W.chat.length)) { ta.focus(); return; }
+      W.chat.push({ plan: { summary: plan.summary, days: plan.days, weekdays: plan.weekdays }, ask: ask || 'Make this plan fit them better, using their details, notes and history. Keep it as simple if nothing calls for a change.' });
+      buildPlan();
+    });
     const cr = h('div', 'foot-row');
     cr.append(change);
-    box.append(ta, cr);
-    const start = btn('skew pop big', W.adjust ? 'Apply changes' : 'Start with this plan');
+    const ai = h('details', 'wz-more wz-aibox');
+    ai.open = W.chat.length > 0;
+    ai.append(h('summary', 'lab', 'Change it with your AI (optional)'), ta, cr);
+    box.append(ai);
+    const start = btn('skew pop big', W.adjust ? 'Apply changes' : 'Start training');
     start.id = 'wz-start';
     start.addEventListener('click', saveAndClose);
     const fr = h('div', 'foot-row');

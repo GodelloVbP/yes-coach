@@ -2799,34 +2799,6 @@
   "fr": "Demain",
   "it": "Domani"
  },
- "{0} today, then {1} each week, in the order {2}. Miss a day and the next one simply waits.": {
-  "nl": "{0} vandaag, daarna elke week op {1}, in de volgorde {2}. Mis je een dag, dan wacht de volgende gewoon.",
-  "es": "{0} hoy, después {1} cada semana, en el orden {2}. Si te saltas un día, el siguiente simplemente espera.",
-  "de": "{0} heute, danach jede Woche am {1}, in der Reihenfolge {2}. Wenn du einen Tag verpasst, wartet der nächste einfach.",
-  "fr": "{0} aujourd’hui, puis chaque semaine le {1}, dans l’ordre {2}. Si tu manques un jour, le suivant attend simplement.",
-  "it": "{0} oggi, poi ogni settimana il {1}, nell’ordine {2}. Se salti un giorno, il successivo aspetta semplicemente."
- },
- "{0} tomorrow, then {1} each week, in the order {2}. Miss a day and the next one simply waits.": {
-  "nl": "{0} morgen, daarna elke week op {1}, in de volgorde {2}. Mis je een dag, dan wacht de volgende gewoon.",
-  "es": "{0} mañana, después {1} cada semana, en el orden {2}. Si te saltas un día, el siguiente simplemente espera.",
-  "de": "{0} morgen, danach jede Woche am {1}, in der Reihenfolge {2}. Wenn du einen Tag verpasst, wartet der nächste einfach.",
-  "fr": "{0} demain, puis chaque semaine le {1}, dans l’ordre {2}. Si tu manques un jour, le suivant attend simplement.",
-  "it": "{0} domani, poi ogni settimana il {1}, nell’ordine {2}. Se salti un giorno, il successivo aspetta semplicemente."
- },
- "{0} today, then every week on {1}.": {
-  "nl": "{0} vandaag, daarna elke week op {1}.",
-  "es": "{0} hoy, después cada semana el {1}.",
-  "de": "{0} heute, danach jede Woche am {1}.",
-  "fr": "{0} aujourd’hui, puis chaque semaine le {1}.",
-  "it": "{0} oggi, poi ogni settimana il {1}."
- },
- "{0} tomorrow, then every week on {1}.": {
-  "nl": "{0} morgen, daarna elke week op {1}.",
-  "es": "{0} mañana, después cada semana el {1}.",
-  "de": "{0} morgen, danach jede Woche am {1}.",
-  "fr": "{0} demain, puis chaque semaine le {1}.",
-  "it": "{0} domani, poi ogni settimana il {1}."
- },
  "{0} is up first today.": {
   "nl": "{0} is vandaag als eerste aan de beurt.",
   "es": "{0} va primero hoy.",
@@ -2889,5 +2861,320 @@
   "de": "Im Web führt Meinen Plan erstellen direkt zum Kopieren-und-Einfügen-Schritt, und die Anfrage ist kürzer: nur Übungen für deinen Trainingsort, und die Antwort kommt in deiner Sprache.",
   "fr": "Sur le web, Créer mon programme mène directement à l’étape copier-coller, et la demande est plus courte : seulement les exercices pour ton lieu d’entraînement, et la réponse arrive dans ta langue.",
   "it": "Sul web, Crea il mio piano porta subito al passaggio copia e incolla, e la richiesta è più corta: solo esercizi per dove ti alleni, e la risposta arriva nella tua lingua."
+ },
+ "{0} today. Then every week on {1}, in the order {2}. Miss a day and the next one simply waits.": {
+  "nl": "{0} vandaag. Daarna elke week op {1}, in de volgorde {2}. Mis je een dag, dan wacht de volgende gewoon.",
+  "es": "{0} hoy. Después, cada semana el {1}, en el orden {2}. Si te saltas un día, el siguiente simplemente espera.",
+  "de": "{0} heute. Danach jede Woche am {1}, in der Reihenfolge {2}. Wenn du einen Tag verpasst, wartet der nächste einfach.",
+  "fr": "{0} aujourd’hui. Ensuite chaque semaine le {1}, dans l’ordre {2}. Si tu manques un jour, le suivant attend simplement.",
+  "it": "{0} oggi. Poi ogni settimana il {1}, nell’ordine {2}. Se salti un giorno, il successivo aspetta semplicemente."
+ },
+ "{0} tomorrow. Then every week on {1}, in the order {2}. Miss a day and the next one simply waits.": {
+  "nl": "{0} morgen. Daarna elke week op {1}, in de volgorde {2}. Mis je een dag, dan wacht de volgende gewoon.",
+  "es": "{0} mañana. Después, cada semana el {1}, en el orden {2}. Si te saltas un día, el siguiente simplemente espera.",
+  "de": "{0} morgen. Danach jede Woche am {1}, in der Reihenfolge {2}. Wenn du einen Tag verpasst, wartet der nächste einfach.",
+  "fr": "{0} demain. Ensuite chaque semaine le {1}, dans l’ordre {2}. Si tu manques un jour, le suivant attend simplement.",
+  "it": "{0} domani. Poi ogni settimana il {1}, nell’ordine {2}. Se salti un giorno, il successivo aspetta semplicemente."
+ },
+ "{0} today. Then every week on {1}.": {
+  "nl": "{0} vandaag. Daarna elke week op {1}.",
+  "es": "{0} hoy. Después, cada semana el {1}.",
+  "de": "{0} heute. Danach jede Woche am {1}.",
+  "fr": "{0} aujourd’hui. Ensuite chaque semaine le {1}.",
+  "it": "{0} oggi. Poi ogni settimana il {1}."
+ },
+ "{0} tomorrow. Then every week on {1}.": {
+  "nl": "{0} morgen. Daarna elke week op {1}.",
+  "es": "{0} mañana. Después, cada semana el {1}.",
+  "de": "{0} morgen. Danach jede Woche am {1}.",
+  "fr": "{0} demain. Ensuite chaque semaine le {1}.",
+  "it": "{0} domani. Poi ogni settimana il {1}."
+ },
+ "Full body, {0} days a week.": {
+  "nl": "Full body, {0} dagen per week.",
+  "es": "Cuerpo completo, {0} días a la semana.",
+  "de": "Ganzkörper, {0} Tage pro Woche.",
+  "fr": "Corps entier, {0} jours par semaine.",
+  "it": "Total body, {0} giorni a settimana."
+ },
+ "Upper and lower body on alternating days, {0} days a week.": {
+  "nl": "Boven- en onderlichaam om en om, {0} dagen per week.",
+  "es": "Tren superior e inferior en días alternos, {0} días a la semana.",
+  "de": "Ober- und Unterkörper im Wechsel, {0} Tage pro Woche.",
+  "fr": "Haut et bas du corps en alternance, {0} jours par semaine.",
+  "it": "Parte alta e bassa a giorni alterni, {0} giorni a settimana."
+ },
+ "The first week is for finding your weights.": {
+  "nl": "De eerste week is om je gewichten te vinden.",
+  "es": "La primera semana es para encontrar tus pesos.",
+  "de": "Die erste Woche ist dafür da, deine Gewichte zu finden.",
+  "fr": "La première semaine sert à trouver tes charges.",
+  "it": "La prima settimana serve a trovare i tuoi carichi."
+ },
+ "Starting weights come from your history, a little below your recent best.": {
+  "nl": "De startgewichten komen uit je geschiedenis, iets onder je recente beste.",
+  "es": "Los pesos iniciales salen de tu historial, un poco por debajo de tu mejor marca reciente.",
+  "de": "Die Startgewichte kommen aus deinem Verlauf, etwas unter deiner letzten Bestleistung.",
+  "fr": "Les charges de départ viennent de ton historique, un peu sous ton meilleur récent.",
+  "it": "I carichi iniziali vengono dalla tua cronologia, un po’ sotto il tuo miglior risultato recente."
+ },
+ "Inverted rows need a sturdy table or a bar at hip height.": {
+  "nl": "Voor inverted rows heb je een stevige tafel of een stang op heuphoogte nodig.",
+  "es": "Para el remo invertido necesitas una mesa firme o una barra a la altura de la cadera.",
+  "de": "Für umgekehrtes Rudern brauchst du einen stabilen Tisch oder eine Stange auf Hüfthöhe.",
+  "fr": "Le rowing inversé demande une table solide ou une barre à hauteur de hanche.",
+  "it": "Per il rematore inverso serve un tavolo robusto o una sbarra all’altezza dei fianchi."
+ },
+ "Full body A": {
+  "nl": "Full body A",
+  "es": "Cuerpo completo A",
+  "de": "Ganzkörper A",
+  "fr": "Corps entier A",
+  "it": "Total body A"
+ },
+ "Full body B": {
+  "nl": "Full body B",
+  "es": "Cuerpo completo B",
+  "de": "Ganzkörper B",
+  "fr": "Corps entier B",
+  "it": "Total body B"
+ },
+ "Full body C": {
+  "nl": "Full body C",
+  "es": "Cuerpo completo C",
+  "de": "Ganzkörper C",
+  "fr": "Corps entier C",
+  "it": "Total body C"
+ },
+ "Upper A": {
+  "nl": "Bovenlichaam A",
+  "es": "Tren superior A",
+  "de": "Oberkörper A",
+  "fr": "Haut du corps A",
+  "it": "Parte alta A"
+ },
+ "Upper B": {
+  "nl": "Bovenlichaam B",
+  "es": "Tren superior B",
+  "de": "Oberkörper B",
+  "fr": "Haut du corps B",
+  "it": "Parte alta B"
+ },
+ "Lower A": {
+  "nl": "Onderlichaam A",
+  "es": "Tren inferior A",
+  "de": "Unterkörper A",
+  "fr": "Bas du corps A",
+  "it": "Parte bassa A"
+ },
+ "Lower B": {
+  "nl": "Onderlichaam B",
+  "es": "Tren inferior B",
+  "de": "Unterkörper B",
+  "fr": "Bas du corps B",
+  "it": "Parte bassa B"
+ },
+ "squat, press, row": {
+  "nl": "squat, drukken, roeien",
+  "es": "sentadilla, press, remo",
+  "de": "Kniebeuge, Drücken, Rudern",
+  "fr": "squat, développé, rowing",
+  "it": "squat, distensioni, rematore"
+ },
+ "legs, shoulders, pull-down": {
+  "nl": "benen, schouders, pull-down",
+  "es": "piernas, hombros, jalón",
+  "de": "Beine, Schultern, Latzug",
+  "fr": "jambes, épaules, tirage",
+  "it": "gambe, spalle, lat machine"
+ },
+ "lunge, chest, row": {
+  "nl": "lunge, borst, roeien",
+  "es": "zancada, pecho, remo",
+  "de": "Ausfallschritt, Brust, Rudern",
+  "fr": "fente, pectoraux, rowing",
+  "it": "affondo, petto, rematore"
+ },
+ "chest, back, shoulders": {
+  "nl": "borst, rug, schouders",
+  "es": "pecho, espalda, hombros",
+  "de": "Brust, Rücken, Schultern",
+  "fr": "pectoraux, dos, épaules",
+  "it": "petto, schiena, spalle"
+ },
+ "squat, hinge": {
+  "nl": "squat, heupscharnier",
+  "es": "sentadilla, bisagra de cadera",
+  "de": "Kniebeuge, Hüftbeuge",
+  "fr": "squat, charnière de hanche",
+  "it": "squat, hip hinge"
+ },
+ "chest, back, arms": {
+  "nl": "borst, rug, armen",
+  "es": "pecho, espalda, brazos",
+  "de": "Brust, Rücken, Arme",
+  "fr": "pectoraux, dos, bras",
+  "it": "petto, schiena, braccia"
+ },
+ "legs, glutes": {
+  "nl": "benen, bilspieren",
+  "es": "piernas, glúteos",
+  "de": "Beine, Gesäß",
+  "fr": "jambes, fessiers",
+  "it": "gambe, glutei"
+ },
+ "lunge, shoulders, push-up": {
+  "nl": "lunge, schouders, push-up",
+  "es": "zancada, hombros, flexiones",
+  "de": "Ausfallschritt, Schultern, Liegestütze",
+  "fr": "fente, épaules, pompes",
+  "it": "affondo, spalle, piegamenti"
+ },
+ "lunge, press, row": {
+  "nl": "lunge, drukken, roeien",
+  "es": "zancada, press, remo",
+  "de": "Ausfallschritt, Drücken, Rudern",
+  "fr": "fente, développé, rowing",
+  "it": "affondo, distensioni, rematore"
+ },
+ "push-up, back, arms": {
+  "nl": "push-up, rug, armen",
+  "es": "flexiones, espalda, brazos",
+  "de": "Liegestütze, Rücken, Arme",
+  "fr": "pompes, dos, bras",
+  "it": "piegamenti, schiena, braccia"
+ },
+ "squat, push-up, row": {
+  "nl": "squat, push-up, roeien",
+  "es": "sentadilla, flexiones, remo",
+  "de": "Kniebeuge, Liegestütze, Rudern",
+  "fr": "squat, pompes, rowing",
+  "it": "squat, piegamenti, rematore"
+ },
+ "legs, push-up, back": {
+  "nl": "benen, push-up, rug",
+  "es": "piernas, flexiones, espalda",
+  "de": "Beine, Liegestütze, Rücken",
+  "fr": "jambes, pompes, dos",
+  "it": "gambe, piegamenti, schiena"
+ },
+ "jump, push-up, row": {
+  "nl": "springen, push-up, roeien",
+  "es": "salto, flexiones, remo",
+  "de": "Springen, Liegestütze, Rudern",
+  "fr": "saut, pompes, rowing",
+  "it": "salto, piegamenti, rematore"
+ },
+ "First time: pick a weight you could lift 2 or 3 more times than the reps.": {
+  "nl": "Eerste keer: kies een gewicht dat je 2 of 3 keer vaker kunt tillen dan de herhalingen.",
+  "es": "Primera vez: elige un peso que podrías levantar 2 o 3 veces más que las repeticiones.",
+  "de": "Erstes Mal: Wähle ein Gewicht, das du 2 oder 3 Mal öfter heben könntest als die Wiederholungen.",
+  "fr": "Première fois : choisis une charge que tu pourrais soulever 2 ou 3 fois de plus que les répétitions.",
+  "it": "Prima volta: scegli un peso che potresti sollevare 2 o 3 volte in più delle ripetizioni."
+ },
+ "Only import my history": {
+  "nl": "Alleen mijn geschiedenis importeren",
+  "es": "Solo importar mi historial",
+  "de": "Nur meinen Verlauf importieren",
+  "fr": "Importer seulement mon historique",
+  "it": "Importa solo la mia cronologia"
+ },
+ "Imported {0} sessions.": {
+  "nl": "{0} trainingen geïmporteerd.",
+  "es": "{0} sesiones importadas.",
+  "de": "{0} Einheiten importiert.",
+  "fr": "{0} séances importées.",
+  "it": "{0} sessioni importate."
+ },
+ "Imported 1 session.": {
+  "nl": "1 training geïmporteerd.",
+  "es": "1 sesión importada.",
+  "de": "1 Einheit importiert.",
+  "fr": "1 séance importée.",
+  "it": "1 sessione importata."
+ },
+ "Saving your history…": {
+  "nl": "Je geschiedenis wordt opgeslagen…",
+  "es": "Guardando tu historial…",
+  "de": "Dein Verlauf wird gespeichert…",
+  "fr": "Enregistrement de ton historique…",
+  "it": "Salvataggio della tua cronologia…"
+ },
+ "This file needs an AI to read it. Build a plan with your AI, or use the copy-and-paste way in Settings.": {
+  "nl": "Dit bestand heeft een AI nodig om het te lezen. Maak een plan met je AI, of gebruik de kopieer-en-plakmanier in Instellingen.",
+  "es": "Este archivo necesita una IA para leerlo. Crea un plan con tu IA o usa la opción de copiar y pegar en Ajustes.",
+  "de": "Diese Datei braucht eine KI, um sie zu lesen. Erstelle einen Plan mit deiner KI oder nutze den Kopieren-und-Einfügen-Weg in den Einstellungen.",
+  "fr": "Ce fichier a besoin d’une IA pour être lu. Crée un plan avec ton IA, ou utilise la méthode copier-coller dans Réglages.",
+  "it": "Questo file ha bisogno di un’AI per essere letto. Crea un piano con la tua AI o usa il metodo copia e incolla nelle Impostazioni."
+ },
+ "Your answers and history stay in your own account. Yes Coach makes the plan straight away; your own AI can change it after.": {
+  "nl": "Je antwoorden en geschiedenis blijven in je eigen account. Yes Coach maakt het plan meteen; je eigen AI kan het daarna aanpassen.",
+  "es": "Tus respuestas e historial se quedan en tu cuenta. Yes Coach crea el plan al momento; tu propia IA puede cambiarlo después.",
+  "de": "Deine Antworten und dein Verlauf bleiben in deinem eigenen Konto. Yes Coach erstellt den Plan sofort; deine eigene KI kann ihn danach ändern.",
+  "fr": "Tes réponses et ton historique restent dans ton propre compte. Yes Coach crée le plan tout de suite ; ta propre IA peut le modifier ensuite.",
+  "it": "Le tue risposte e la tua cronologia restano nel tuo account. Yes Coach crea il piano subito; la tua AI può modificarlo dopo."
+ },
+ "A few quick answers and you get a first plan. Coming from another app? Bring your history along.": {
+  "nl": "Een paar snelle antwoorden en je krijgt een eerste plan. Kom je van een andere app? Neem je geschiedenis mee.",
+  "es": "Unas respuestas rápidas y tienes un primer plan. ¿Vienes de otra app? Trae tu historial.",
+  "de": "Ein paar schnelle Antworten und du bekommst einen ersten Plan. Kommst du von einer anderen App? Nimm deinen Verlauf mit.",
+  "fr": "Quelques réponses rapides et tu as un premier plan. Tu viens d’une autre app ? Apporte ton historique.",
+  "it": "Poche risposte veloci e hai un primo piano. Arrivi da un’altra app? Porta con te la tua cronologia."
+ },
+ "Make it yours with your AI": {
+  "nl": "Maak het van jou met je AI",
+  "es": "Hazlo tuyo con tu IA",
+  "de": "Mach ihn mit deiner KI zu deinem",
+  "fr": "Personnalise-le avec ton IA",
+  "it": "Rendilo tuo con la tua AI"
+ },
+ "Change it with your AI (optional)": {
+  "nl": "Aanpassen met je AI (optioneel)",
+  "es": "Cámbialo con tu IA (opcional)",
+  "de": "Mit deiner KI ändern (optional)",
+  "fr": "Le modifier avec ton IA (facultatif)",
+  "it": "Modificalo con la tua AI (facoltativo)"
+ },
+ "Start training": {
+  "nl": "Begin met trainen",
+  "es": "Empezar a entrenar",
+  "de": "Training starten",
+  "fr": "Commencer l’entraînement",
+  "it": "Inizia ad allenarti"
+ },
+ "Want something different? For example: no barbell squats, more arms, my right shoulder hurts.": {
+  "nl": "Iets anders? Bijvoorbeeld: geen squats met de stang, meer armen, mijn rechterschouder doet pijn.",
+  "es": "¿Quieres algo distinto? Por ejemplo: sin sentadillas con barra, más brazos, me duele el hombro derecho.",
+  "de": "Willst du etwas anderes? Zum Beispiel: keine Kniebeugen mit der Langhantel, mehr Arme, meine rechte Schulter tut weh.",
+  "fr": "Tu veux autre chose ? Par exemple : pas de squat à la barre, plus de bras, mon épaule droite me fait mal.",
+  "it": "Vuoi qualcosa di diverso? Per esempio: niente squat con bilanciere, più braccia, mi fa male la spalla destra."
+ },
+ "A first plan in seconds": {
+  "nl": "Een eerste plan in seconden",
+  "es": "Un primer plan en segundos",
+  "de": "Ein erster Plan in Sekunden",
+  "fr": "Un premier plan en quelques secondes",
+  "it": "Un primo piano in pochi secondi"
+ },
+ "Build my plan now makes your plan right away, in the app: full body for 2 or 3 days a week, upper and lower body for more, for the gym, home or bodyweight only.": {
+  "nl": "Mijn plan maken maakt je plan nu meteen, in de app: full body voor 2 of 3 dagen per week, boven- en onderlichaam voor meer, voor de sportschool, thuis of alleen lichaamsgewicht.",
+  "es": "Crear mi plan ahora crea tu plan al momento, en la app: cuerpo completo para 2 o 3 días a la semana, tren superior e inferior para más, para el gimnasio, casa o solo peso corporal.",
+  "de": "Meinen Plan erstellen macht deinen Plan jetzt sofort in der App: Ganzkörper für 2 oder 3 Tage pro Woche, Ober- und Unterkörper für mehr, fürs Studio, zu Hause oder nur mit Körpergewicht.",
+  "fr": "Créer mon programme crée maintenant ton plan tout de suite, dans l’app : corps entier pour 2 ou 3 jours par semaine, haut et bas du corps au-delà, pour la salle, la maison ou le poids du corps seul.",
+  "it": "Crea il mio piano ora crea il tuo piano subito, nell’app: total body per 2 o 3 giorni a settimana, parte alta e bassa per di più, per la palestra, casa o solo corpo libero."
+ },
+ "Your own AI is still there: open Change it with your AI under the plan.": {
+  "nl": "Je eigen AI is er nog steeds: open Aanpassen met je AI onder het plan.",
+  "es": "Tu propia IA sigue ahí: abre Cámbialo con tu IA debajo del plan.",
+  "de": "Deine eigene KI ist weiter da: Öffne Mit deiner KI ändern unter dem Plan.",
+  "fr": "Ta propre IA est toujours là : ouvre Le modifier avec ton IA sous le plan.",
+  "it": "La tua AI c’è ancora: apri Modificalo con la tua AI sotto il piano."
+ },
+ "Coming from Strong, Hevy or FitNotes? Your history comes over without an AI, and the plan starts from your recent weights. Only import my history skips the plan.": {
+  "nl": "Kom je van Strong, Hevy of FitNotes? Je geschiedenis komt mee zonder AI, en het plan begint bij je recente gewichten. Alleen mijn geschiedenis importeren slaat het plan over.",
+  "es": "¿Vienes de Strong, Hevy o FitNotes? Tu historial se importa sin IA y el plan empieza con tus pesos recientes. Solo importar mi historial se salta el plan.",
+  "de": "Kommst du von Strong, Hevy oder FitNotes? Dein Verlauf kommt ohne KI mit, und der Plan startet bei deinen letzten Gewichten. Nur meinen Verlauf importieren überspringt den Plan.",
+  "fr": "Tu viens de Strong, Hevy ou FitNotes ? Ton historique arrive sans IA, et le plan part de tes charges récentes. Importer seulement mon historique saute le plan.",
+  "it": "Arrivi da Strong, Hevy o FitNotes? La tua cronologia arriva senza AI e il piano parte dai tuoi carichi recenti. Importa solo la mia cronologia salta il piano."
  }
 }
