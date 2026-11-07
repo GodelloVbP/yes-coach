@@ -5,3 +5,7 @@ project_id = "qazvzhhoalkyyasakphs"
 # The function checks the sign-in itself, so an AI app that is not signed in yet gets the "sign in here" answer
 # (401 and where to sign in) instead of Supabase's own error. Do not switch this on.
 verify_jwt = false
+
+[functions.cal]
+# Calendar apps can not sign in; the secret token in the address is the key. Do not switch this on.
+verify_jwt = false

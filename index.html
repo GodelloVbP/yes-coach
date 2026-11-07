@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-z1A69zwlU2+U0OHxQkXsXIBccOX+hKxToCKxzw/1o1M=' 'sha256-TGfa0Z2R0Zb0A68F6B8slfdmoJunSNtEyOP67+clhBQ=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-z1A69zwlU2+U0OHxQkXsXIBccOX+hKxToCKxzw/1o1M=' 'sha256-zsqropTDjeMGhfttp2D8ZECo2aTlmmHBsffdPMc28Bw=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-07 12:09Z">
+<meta name="yc-build" content="2026-11-07 12:25Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -262,6 +262,7 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 /* buttons: filled coral = the one primary action; outline = secondary */
 .skew { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; border: 2px solid var(--ctl); background: var(--paper); color: var(--ink); padding: 0 1.125rem; transform: skewX(-14deg); cursor: pointer; touch-action: manipulation; }
 .skew > span { display: inline-block; transform: skewX(14deg); }
+a.skew { text-decoration: none; }
 .skew.pop { background: var(--pop); border-color: var(--pop); color: var(--on-pop); }
 .skew.solid { background: var(--ink); border-color: var(--ink); color: var(--bg); }
 .skew.small { font-size: var(--t2); padding: 0 0.875rem; }
@@ -576,6 +577,8 @@ td.nowrap { white-space: nowrap; }
 .wk-warn { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; color: var(--warn); font-weight: 600; }
 .wk-warns .wk-warn .icon { flex: none; color: inherit; margin-top: -0.25rem; }
 .cal-panel { display: flex; flex-direction: column; gap: 0.75rem; padding-block: 0.75rem; }
+.cal-choose, .cal-more { display: flex; flex-direction: column; gap: 0.5rem; }
+.cal-acts { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; }
 .cal-cta { display: flex; flex-direction: column; gap: 0.375rem; margin-top: 0.5rem; }
 .cal-cta .note { margin: 0; text-align: center; }
 .month { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
@@ -1849,6 +1852,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['7 Nov 2026', 'Calendar sync', ["Add to calendar now subscribes: pick Apple Calendar, Google Calendar or Outlook, confirm in the app that opens, and your planned days stay in your calendar by themselves.", "Move or remove a day and the calendar follows. Google Calendar can take up to a day to show it."]],
     ['7 Nov 2026', 'Your schedule and your own foods', ["Plan: the days you tick are the days you can train. Set how many sessions a week you want, and they are spread over those days.", "Your own foods have their own place in Food: create one, edit it, or ask Claude to add it.", "The undo bar no longer covers the page on a tablet or computer.", "I ate something is gone."]],
     ['7 Nov 2026', 'Custom days and run speed', ["Every custom workout is its own day, shows in the week and the month while it is in progress, and can be continued from there.", "Delete a day from the session menu or from the week. Undo brings it back.", "Runs show pace as min/km or km/h, your choice."]],
     ['7 Nov 2026', 'Fewer look-alike results', ["Foods that come out the same, like the different eggs or apples, now show as one result. Tap +2 almost the same to see the others."]],
@@ -7613,15 +7617,33 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const sameSchedule = (a, b) => JSON.stringify(a || null) === JSON.stringify(b || null);
 
   // ------------------------------------------------------------------ schedule maker
-  // ------------------------------------------------------------------ calendar file (.ics): works with Apple, Google and Outlook calendars
+  // ------------------------------------------------------------------ calendar: a subscription on the web, a file elsewhere
+  // Web: the planned days are kept as a calendar file in the database (calendar.sql) behind a secret address. Apple, Google and
+  // Outlook subscribe to that address and fetch it by themselves, so a moved or removed day reaches the calendar without a re-import.
+  // Elsewhere (no database): the same file, downloaded once.
   const icsStamp = (d) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-  const icsEsc = (t) => String(t).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
-  const buildIcs = (weeks, time, minutes) => {
+  const icsEsc = (t) => String(t).replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+  // lines over 75 bytes are folded onto the next line, which starts with a space
+  const icsFold = (line) => {
+    const enc = new TextEncoder();
+    let out = '', cur = '', bytes = 0;
+    Array.from(line).forEach((ch) => {
+      const n = enc.encode(ch).length;
+      if (bytes + n > (out ? 74 : 75)) { out += (out ? '\r\n ' : '') + cur; cur = ''; bytes = 0; }
+      cur += ch; bytes += n;
+    });
+    return out ? out + '\r\n ' + cur : cur;
+  };
+  const CAL_WEEKS = 8; // how far ahead the calendar shows
+  const buildIcs = (weeks, time, minutes, feed) => {
     const [hh, mm] = time.split(':').map(Number);
     const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Yes Coach//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
+    if (feed) lines.push('X-WR-CALNAME:Yes Coach', 'REFRESH-INTERVAL;VALUE=DURATION:PT1H', 'X-PUBLISHED-TTL:PT1H');
+    const stamp = icsStamp(new Date(today() + 'T00:00:00Z')); // same all day, so an unchanged plan builds the same file
+    const seen = new Set();
     let n = 0;
     for (let k = 0; k < weeks; k += 1) {
-      const ws = addDays(S.weekStart || mondayOf(today()), 7 * k);
+      const ws = addDays(mondayOf(today()), 7 * k);
       const { byDate } = weekModel(ws);
       Object.keys(byDate).sort().forEach((d) => {
         if (d < today()) return;
@@ -7630,14 +7652,38 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
           const start = new Date(d + 'T' + pad2(hh) + ':' + pad2(mm) + ':00');
           const end = new Date(start.getTime() + minutes * 60000);
           const exs = (t.items || []).map((it) => '- ' + exName(it.ex) + ': ' + it.sets + ' x ' + it.reps + (it.target ? ' @ ' + it.target : '')).join('\n');
-          lines.push('BEGIN:VEVENT', 'UID:yes-coach-' + d + '-' + p.tpl + '@yescoach', 'DTSTAMP:' + icsStamp(new Date()), 'DTSTART:' + icsStamp(start), 'DTEND:' + icsStamp(end),
+          let uid = 'yes-coach-' + d + '-' + p.tpl;
+          for (let i = 2; seen.has(uid); i += 1) uid = 'yes-coach-' + d + '-' + p.tpl + '-' + i; // the same day twice on one date
+          seen.add(uid);
+          lines.push('BEGIN:VEVENT', 'UID:' + uid + '@yescoach', 'DTSTAMP:' + stamp, 'DTSTART:' + icsStamp(start), 'DTEND:' + icsStamp(end),
             'SUMMARY:' + icsEsc('Yes Coach: ' + t.name), 'DESCRIPTION:' + icsEsc((t.focus ? t.focus + '\n' : '') + exs), 'END:VEVENT');
           n += 1;
         });
       });
     }
     lines.push('END:VCALENDAR');
-    return { text: lines.join('\r\n') + '\r\n', n };
+    return { text: lines.map(icsFold).join('\r\n') + '\r\n', n };
+  };
+  const calCfg = () => {
+    const c = (S.root && S.root.cal) || {};
+    return { on: !!c.on, time: /^([01]\d|2[0-3]):[0-5]\d$/.test(c.time) ? c.time : '18:00', minutes: [60, 75, 90].includes(Number(c.minutes)) ? Number(c.minutes) : 75 };
+  };
+  const strHash = (s) => { let x = 5381; for (let i = 0; i < s.length; i += 1) x = ((x * 33) ^ s.charCodeAt(i)) >>> 0; return x.toString(36) + ':' + s.length; };
+  // store the current plan in the feed; skipped when it is the file already stored from this device
+  let calTimer = 0;
+  const calSync = (force) => {
+    clearTimeout(calTimer);
+    const c = calCfg();
+    if (!window.YC_CAL || !c.on || !S.ready) return Promise.resolve(null);
+    const { text } = buildIcs(CAL_WEEKS, c.time, c.minutes, true);
+    const sig = S.uid + '|' + strHash(text);
+    if (!force && local.get('yc-cal-sig') === sig) return Promise.resolve(null);
+    return window.YC_CAL.publish(text).then((url) => { local.set('yc-cal-sig', sig); return url; });
+  };
+  // after any change to the plan or the log: wait a moment, then update the feed
+  const calSoon = () => {
+    clearTimeout(calTimer);
+    if (window.YC_CAL && calCfg().on && S.ready) calTimer = setTimeout(() => calSync().catch(() => {}), 4000);
   };
   const calPanel = () => {
     const box = $('#cal-panel');
@@ -7645,22 +7691,68 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     box.hidden = false;
     $('#btn-cal').setAttribute('aria-expanded', 'true');
     box.replaceChildren();
-    const wk = h('select'); wk.id = 'cal-weeks';
-    [['1', 'The week shown'], ['4', 'The week shown and the next 3']].forEach(([v, l]) => wk.append(new Option(l, v)));
-    const tm = h('input'); tm.type = 'time'; tm.id = 'cal-time'; tm.value = '18:00';
+    const web = !!window.YC_CAL;
+    const c = calCfg();
+    const tm = h('input'); tm.type = 'time'; tm.id = 'cal-time'; tm.value = c.time;
     const du = h('select'); du.id = 'cal-dur';
     [['60', '1 hour'], ['75', '1 h 15'], ['90', '1 h 30']].forEach(([v, l]) => du.append(new Option(l, v)));
-    du.value = '75';
+    du.value = String(c.minutes);
     const grid = h('div', 'ed-fields');
-    grid.append(edField('Weeks', wk), edField('Start time', tm), edField('Length', du));
-    const msg = h('p', 'note');
-    const go = btn('skew pop small', 'Download calendar file');
-    go.addEventListener('click', async () => {
-      const { text, n } = buildIcs(Number(wk.value), tm.value || '18:00', Number(du.value));
+    grid.append(edField('Start time', tm), edField('Length', du));
+    const msg = h('p', 'note'); msg.setAttribute('aria-live', 'polite');
+    const file = btn('skew small', 'Download calendar file');
+    file.addEventListener('click', async () => {
+      const { text, n } = buildIcs(CAL_WEEKS, tm.value || '18:00', Number(du.value));
       if (!n) { msg.textContent = 'No planned days left in that range.'; return; }
       msg.textContent = await download('yes-coach-schedule.ics', text, plural(n, 'training day') + ' in the file. Open it to add them to Apple Calendar, Google Calendar or Outlook.');
     });
-    box.append(grid, h('p', 'note', 'Days you already trained and past dates are left out. If you move days later, download again and delete the old events, because some calendars add a second copy.'), go, msg);
+    if (!web) {
+      box.append(grid, h('p', 'note', 'Days you already trained and past dates are left out. If you move days later, download again and delete the old events, because some calendars add a second copy.'), file, msg);
+      return;
+    }
+    // the time and length are kept with the plan; a change reaches a subscribed calendar by itself
+    const saveCfg = () => {
+      if (!tm.value) return;
+      saveRoot({ cal: { on: calCfg().on, time: tm.value, minutes: Number(du.value) } }).then(() => calSoon()).catch(() => { msg.textContent = 'Not saved. Try again.'; });
+    };
+    tm.addEventListener('change', saveCfg);
+    du.addEventListener('change', saveCfg);
+    const choose = h('div', 'cal-choose');
+    const more = h('div', 'cal-more');
+    box.append(h('p', 'note', 'Choose your calendar. It opens, asks if you want to add Yes Coach, and you confirm. After that your planned days stay in sync by themselves.'), choose, grid, more, msg);
+    const setOn = (on) => saveRoot({ cal: { on, time: tm.value || c.time, minutes: Number(du.value) } });
+    const paint = (url) => {
+      const https = url;
+      const webcal = url.replace(/^https:/, 'webcal:');
+      // real links, not scripted clicks: a phone hands webcal: to the calendar app, and nothing waits on the network
+      const goto = (label, href, ext) => { const a = h('a', 'skew pop big'); a.append(h('span', '', label)); a.href = href; if (ext) { a.target = '_blank'; a.rel = 'noopener'; } return a; };
+      choose.replaceChildren(
+        goto('Apple Calendar', webcal),
+        goto('Google Calendar', 'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent(webcal), true),
+        goto('Outlook', 'https://outlook.live.com/calendar/0/addfromweb?name=' + encodeURIComponent('Yes Coach') + '&url=' + encodeURIComponent(https), true),
+      );
+      const copy = btn('skew small', 'Other calendar: copy link');
+      copy.addEventListener('click', async () => { msg.textContent = (await copyPlain(https, null)) ? 'Link copied. In your calendar app, add a calendar from a link (URL) and paste it.' : 'Copying is blocked here.'; });
+      const fresh = btn('skew small', 'New link');
+      fresh.addEventListener('click', async () => {
+        fresh.disabled = true;
+        try { const u = await window.YC_CAL.reset(); if (u) { paint(u); msg.textContent = 'New link ready. Add it to your calendar again. The old link no longer works.'; } } catch (e) { msg.textContent = 'That did not go through. Try again.'; }
+        fresh.disabled = false;
+      });
+      const stop = btn('skew small danger', 'Stop syncing');
+      stop.addEventListener('click', async () => {
+        stop.disabled = true;
+        try {
+          clearTimeout(calTimer); await setOn(false); await window.YC_CAL.off(); local.set('yc-cal-sig', null); // sync is off first, so a pending update can not bring the feed back
+          box.hidden = true; $('#btn-cal').setAttribute('aria-expanded', 'false');
+          showToast('Calendar sync is off. Remove Yes Coach from your calendar app too.');
+        } catch (e) { msg.textContent = 'That did not go through. Try again.'; stop.disabled = false; }
+      });
+      const acts = h('div', 'cal-acts'); acts.append(copy, file, fresh, stop);
+      more.replaceChildren(h('p', 'note', 'Google Calendar can take up to a day to show changes. Anyone with the link can see your planned days, so do not share it.'), acts);
+    };
+    choose.append(h('p', 'note', 'Getting your link…'));
+    setOn(true).then(() => calSync(true)).then(paint).catch(() => { choose.replaceChildren(h('p', 'note', 'Could not set up the link. Check your connection and try again.')); });
   };
   $('#btn-cal').addEventListener('click', calPanel);
 
@@ -8549,6 +8641,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (S.view === 'plan') renderPlan();
     paintChrome();
     paintSettings();
+    calSoon();
   };
   const fail = (msg) => {
     S.failed = true;

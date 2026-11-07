@@ -11,6 +11,8 @@ A free, ad-free workout tracker. Static site on GitHub Pages, accounts and data 
 | `config.js` | Your Supabase project URL and public key, the app address and a contact email. |
 | `schema.sql` | The database: one table, row-level security, merge and delete-account functions. |
 | `tickets.sql` | Feedback & Requests tab: tickets, thread, owner functions and their row-level security. Run after `schema.sql`. |
+| `calendar.sql` | Calendar subscription: the table and functions behind Add to calendar. Run after `schema.sql` and `connector.sql`. |
+| `supabase/functions/cal/` | The calendar feed: one Edge Function that serves the stored calendar file to Apple, Google and Outlook. `supabase/tests/cal.test.mjs` tests it. |
 | `connector.sql` | Run last. Keeps a connected AI app inside its bounds in the database itself. |
 | `connect.html` | Public setup and usage page for the connector (the directory listing links to it). |
 | `consent.html` | The screen where a person allows or denies an AI app (the connector's sign-in step). |
@@ -41,6 +43,7 @@ What the code enforces:
 - **Data access:** row-level security on every table (`schema.sql`, `tickets.sql`); a connected AI app is limited further by `connector.sql`. Functions that run with owner rights pin their `search_path` and check who is calling.
 - **Pages:** `build.py` gives `index.html`, `consent.html`, `connect.html` and `privacy.html` a content security policy (inline scripts only by hash, connections only to this site and Supabase) and a frame guard so the consent screen cannot be framed. The only outside host is Cloudflare Turnstile, and only on the sign-in and consent screens (site key in `config.js`, secret in Supabase). Re-run `python3 build.py` after changing any inline script; it recomputes the hashes.
 - **Limits:** 256 KB per document and 20,000 documents per account (`schema.sql`); the connector refuses requests over 200 KB.
+- **Calendar feed:** the address is `…/functions/v1/cal/<64 hex characters>.ics`; the characters are the only key, so whoever has the address can read the planned days (names, dates, exercise list) and nothing else. The person can make a new address (the old one stops at once) or stop syncing (the file is deleted). A connected AI app can not touch the feed (`calendar.sql`).
 - **Tests:** `node tests/merge.test.mjs` (deep merge cannot pollute `Object.prototype`), `node --experimental-strip-types --no-warnings supabase/tests/mcp.test.mjs` (connector).
 
 Set in the Supabase dashboard (code cannot do these):
@@ -75,6 +78,18 @@ One-time setup, in this order:
 4. **Add it in Claude.** Settings → Connectors → Add custom connector → URL `https://<project>.supabase.co/functions/v1/mcp`. Claude sends you to `consent.html`; sign in, Allow. Ask: "What is in my Yes Coach plan?"
 
 People disconnect an app in the app under Settings, Connected AI apps. Tests: `node --experimental-strip-types --no-warnings supabase/tests/mcp.test.mjs`.
+
+## Calendar (Add to calendar keeps Apple, Google and Outlook up to date)
+
+Add to calendar offers Apple Calendar, Google Calendar and Outlook. The person taps one, their calendar app opens and asks whether to add "Yes Coach", and they confirm. This is a calendar subscription (a `webcal:` address the calendar app fetches by itself), not a sign-in: there is no OAuth step, and nothing is written into their calendar account by this app. Moved or removed days reach the calendar without importing again.
+
+How it works: the app builds the next 8 weeks of planned days as a calendar file in the browser (it already knows the schedule, rotation and moves) and stores it in `calendar_feeds` (`calendar.sql`) whenever the plan changes while the person is subscribed. The Edge Function `cal` serves that file for the secret address. The file only updates when the app is open, so a plan changed by a connected AI shows in the calendar after the person next opens the app. Past days and days already trained are not in the file. Apple refreshes the feed hourly; Google Calendar refreshes about once a day and does not let the feed change that. Outlook through the button is for outlook.live.com accounts; a work or school account uses Other calendar: copy link.
+
+1. **Database.** Run `calendar.sql` (after `schema.sql` and `connector.sql`; safe to repeat).
+2. **Function.** `supabase functions deploy cal --project-ref <project> --no-verify-jwt` (dashboard alternative: Edge Functions → Deploy a new function → name `cal`, paste `supabase/functions/cal/index.ts`, **Verify JWT** off; calendar apps can not sign in). If it answers 502, add a secret `YC_ANON_KEY` with the publishable key from `config.js`.
+3. **Check.** In the app: Train → Add to calendar. Opening `https://<project>.supabase.co/functions/v1/cal/<token>.ics` in a browser should show the calendar text (some browsers download it).
+
+Tests: `node --experimental-strip-types --no-warnings supabase/tests/cal.test.mjs` and `tests/e2e/e2e_calendar.py`.
 
 ## Later
 

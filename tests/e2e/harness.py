@@ -85,6 +85,12 @@ class Backend:
                 else: self.docs.append({k: v for k, v in row.items() if k in ('data', 'path')})
             return ok([], 201)
         if path == '/rest/v1/docs': return ok([], 201)
+        if path == '/rest/v1/rpc/calendar_publish':
+            self.feed = {'token': (getattr(self, 'feed', None) or {}).get('token') or 'f' * 64, 'ics': body['p_ics']}; self.calls.append(('calendar_publish', len(body['p_ics']))); return ok(self.feed['token'])
+        if path == '/rest/v1/rpc/calendar_reset':
+            self.feed = {**self.feed, 'token': 'e' * 64}; self.calls.append(('calendar_reset', None)); return ok(self.feed['token'])
+        if path == '/rest/v1/rpc/calendar_off':
+            self.feed = None; self.calls.append(('calendar_off', None)); return ok(None)
         if path == '/rest/v1/rpc/user_count': return ok(1)
         if path == '/rest/v1/rpc/is_admin': return ok(me in self.admins)
         if path == '/rest/v1/rpc/admin_reply':

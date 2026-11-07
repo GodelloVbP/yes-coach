@@ -115,6 +115,14 @@
   window.YC_API = { sb, call, uid: () => uid };
   // how many people have an account, for the Home page; null when it cannot be read
   window.YC_USERS = async () => { try { return await call(sb.rpc('user_count')); } catch (e) { return null; } };
+  // calendar subscription (calendar.sql): the app stores its planned days as a calendar file and gets the secret address back.
+  // A calendar app fetches that address by itself, so the Edge Function "cal" serves it without a sign-in.
+  const feedUrl = (token) => cfg.supabaseUrl + '/functions/v1/cal/' + token + '.ics';
+  window.YC_CAL = {
+    publish: async (ics) => feedUrl(await call(sb.rpc('calendar_publish', { p_ics: ics }))),
+    reset: async () => { const t = await call(sb.rpc('calendar_reset')); return t ? feedUrl(t) : null; },
+    off: async () => { await call(sb.rpc('calendar_off')); },
+  };
   window.claude = {
     use: async (what) => {
       await signedIn;

@@ -2777,5 +2777,110 @@
   "de": "„Ich habe etwas gegessen“ ist weg.",
   "fr": "« J'ai mangé quelque chose » a disparu.",
   "it": "«Ho mangiato qualcosa» non c'è più."
+ },
+ "Choose your calendar. It opens, asks if you want to add Yes Coach, and you confirm. After that your planned days stay in sync by themselves.": {
+  "nl": "Kies je agenda. Die opent en vraagt of je Yes Coach wilt toevoegen. Bevestig, en je geplande dagen blijven daarna vanzelf up-to-date.",
+  "es": "Elige tu calendario. Se abre y pregunta si quieres añadir Yes Coach; confirma y tus días planificados se mantendrán al día solos.",
+  "de": "Wähle deinen Kalender. Er öffnet sich und fragt, ob du Yes Coach hinzufügen willst. Bestätige, danach bleiben deine geplanten Tage von selbst aktuell.",
+  "fr": "Choisis ton agenda. Il s'ouvre et demande si tu veux ajouter Yes Coach. Confirme, et tes jours prévus restent ensuite à jour tout seuls.",
+  "it": "Scegli il tuo calendario. Si apre e chiede se vuoi aggiungere Yes Coach. Conferma e i tuoi giorni pianificati restano poi aggiornati da soli."
+ },
+ "Getting your link…": {
+  "nl": "Je link ophalen…",
+  "es": "Obteniendo tu enlace…",
+  "de": "Dein Link wird geholt…",
+  "fr": "Récupération de ton lien…",
+  "it": "Recupero del tuo link…"
+ },
+ "Could not set up the link. Check your connection and try again.": {
+  "nl": "De link kon niet worden aangemaakt. Controleer je verbinding en probeer het opnieuw.",
+  "es": "No se pudo crear el enlace. Comprueba tu conexión e inténtalo de nuevo.",
+  "de": "Der Link konnte nicht erstellt werden. Prüfe deine Verbindung und versuche es erneut.",
+  "fr": "Le lien n'a pas pu être créé. Vérifie ta connexion et réessaie.",
+  "it": "Impossibile creare il link. Controlla la connessione e riprova."
+ },
+ "Other calendar: copy link": {
+  "nl": "Andere agenda: link kopiëren",
+  "es": "Otro calendario: copiar enlace",
+  "de": "Anderer Kalender: Link kopieren",
+  "fr": "Autre agenda : copier le lien",
+  "it": "Altro calendario: copia link"
+ },
+ "Link copied. In your calendar app, add a calendar from a link (URL) and paste it.": {
+  "nl": "Link gekopieerd. Voeg in je agenda-app een agenda toe via een link (URL) en plak hem.",
+  "es": "Enlace copiado. En tu app de calendario, añade un calendario desde un enlace (URL) y pégalo.",
+  "de": "Link kopiert. Füge in deiner Kalender-App einen Kalender per Link (URL) hinzu und füge ihn ein.",
+  "fr": "Lien copié. Dans ton appli d'agenda, ajoute un agenda à partir d'un lien (URL) et colle-le.",
+  "it": "Link copiato. Nella tua app calendario aggiungi un calendario da un link (URL) e incollalo."
+ },
+ "Copying is blocked here.": {
+  "nl": "Kopiëren is hier geblokkeerd.",
+  "es": "Aquí no se puede copiar.",
+  "de": "Kopieren ist hier blockiert.",
+  "fr": "La copie est bloquée ici.",
+  "it": "Qui la copia è bloccata."
+ },
+ "New link": {
+  "nl": "Nieuwe link",
+  "es": "Nuevo enlace",
+  "de": "Neuer Link",
+  "fr": "Nouveau lien",
+  "it": "Nuovo link"
+ },
+ "New link ready. Add it to your calendar again. The old link no longer works.": {
+  "nl": "Nieuwe link klaar. Voeg hem opnieuw toe aan je agenda. De oude link werkt niet meer.",
+  "es": "Nuevo enlace listo. Añádelo de nuevo a tu calendario. El enlace anterior ya no funciona.",
+  "de": "Neuer Link bereit. Füge ihn erneut zu deinem Kalender hinzu. Der alte Link funktioniert nicht mehr.",
+  "fr": "Nouveau lien prêt. Ajoute-le à nouveau à ton agenda. L'ancien lien ne fonctionne plus.",
+  "it": "Nuovo link pronto. Aggiungilo di nuovo al calendario. Il vecchio link non funziona più."
+ },
+ "Stop syncing": {
+  "nl": "Synchronisatie stoppen",
+  "es": "Dejar de sincronizar",
+  "de": "Sync beenden",
+  "fr": "Arrêter la synchro",
+  "it": "Interrompi sincronizzazione"
+ },
+ "Calendar sync is off. Remove Yes Coach from your calendar app too.": {
+  "nl": "Agendasynchronisatie staat uit. Verwijder Yes Coach ook uit je agenda-app.",
+  "es": "La sincronización del calendario está desactivada. Quita también Yes Coach de tu app de calendario.",
+  "de": "Die Kalender-Synchronisierung ist aus. Entferne Yes Coach auch aus deiner Kalender-App.",
+  "fr": "La synchro de l'agenda est désactivée. Retire aussi Yes Coach de ton appli d'agenda.",
+  "it": "La sincronizzazione del calendario è disattivata. Rimuovi Yes Coach anche dalla tua app calendario."
+ },
+ "Google Calendar can take up to a day to show changes. Anyone with the link can see your planned days, so do not share it.": {
+  "nl": "Google Calendar kan tot een dag nodig hebben om wijzigingen te tonen. Iedereen met de link kan je geplande dagen zien, dus deel hem niet.",
+  "es": "Google Calendar puede tardar hasta un día en mostrar los cambios. Cualquiera con el enlace puede ver tus días planificados, así que no lo compartas.",
+  "de": "Google Calendar kann bis zu einen Tag brauchen, um Änderungen anzuzeigen. Jeder mit dem Link sieht deine geplanten Tage, also teile ihn nicht.",
+  "fr": "Google Calendar peut mettre jusqu'à un jour à afficher les changements. Toute personne avec le lien voit tes jours prévus, ne le partage donc pas.",
+  "it": "Google Calendar può impiegare fino a un giorno per mostrare le modifiche. Chiunque abbia il link vede i tuoi giorni pianificati, quindi non condividerlo."
+ },
+ "Not saved. Try again.": {
+  "nl": "Niet opgeslagen. Probeer het opnieuw.",
+  "es": "No guardado. Inténtalo de nuevo.",
+  "de": "Nicht gespeichert. Versuche es erneut.",
+  "fr": "Non enregistré. Réessaie.",
+  "it": "Non salvato. Riprova."
+ },
+ "Calendar sync": {
+  "nl": "Agendasynchronisatie",
+  "es": "Sincronización del calendario",
+  "de": "Kalender-Sync",
+  "fr": "Synchro de l'agenda",
+  "it": "Sincronizzazione calendario"
+ },
+ "Add to calendar now subscribes: pick Apple Calendar, Google Calendar or Outlook, confirm in the app that opens, and your planned days stay in your calendar by themselves.": {
+  "nl": "Aan agenda toevoegen werkt nu als abonnement: kies Apple Calendar, Google Calendar of Outlook, bevestig in de app die opent, en je geplande dagen blijven vanzelf in je agenda staan.",
+  "es": "Añadir al calendario ahora funciona como suscripción: elige Apple Calendar, Google Calendar u Outlook, confirma en la app que se abre y tus días planificados se quedan solos en tu calendario.",
+  "de": "Zum Kalender hinzufügen funktioniert jetzt als Abo: Wähle Apple Calendar, Google Calendar oder Outlook, bestätige in der App, die sich öffnet, und deine geplanten Tage bleiben von selbst in deinem Kalender.",
+  "fr": "Ajouter à l'agenda fonctionne maintenant comme un abonnement : choisis Apple Calendar, Google Calendar ou Outlook, confirme dans l'appli qui s'ouvre, et tes jours prévus restent dans ton agenda tout seuls.",
+  "it": "Aggiungi al calendario ora funziona come abbonamento: scegli Apple Calendar, Google Calendar o Outlook, conferma nell'app che si apre e i tuoi giorni pianificati restano nel calendario da soli."
+ },
+ "Move or remove a day and the calendar follows. Google Calendar can take up to a day to show it.": {
+  "nl": "Verplaats of verwijder een dag en de agenda volgt. Google Calendar kan tot een dag nodig hebben om het te tonen.",
+  "es": "Mueve o quita un día y el calendario lo sigue. Google Calendar puede tardar hasta un día en mostrarlo.",
+  "de": "Verschiebe oder entferne einen Tag und der Kalender folgt. Google Calendar kann bis zu einen Tag brauchen, um es anzuzeigen.",
+  "fr": "Déplace ou retire un jour et l'agenda suit. Google Calendar peut mettre jusqu'à un jour à l'afficher.",
+  "it": "Sposta o rimuovi un giorno e il calendario si adegua. Google Calendar può impiegare fino a un giorno per mostrarlo."
  }
 }
