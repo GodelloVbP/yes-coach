@@ -40,7 +40,7 @@ try:
             check('chips show set counts', '0/3' in chips.nth(0).inner_text() and '0/2' in chips.nth(1).inner_text(), chips.nth(0).inner_text())
             check('Last time column shows last session per set', '8 @ 60' in page.locator('.set:has(#f-bench_1-load) .set-last').inner_text(), page.locator('.set:has(#f-bench_1-load) .set-last').inner_text())
             check('a set with no history shows a dash', page.locator('.set:has(#f-bench_2-load) .set-last').count() == 1)
-            check('bar offers the next exercise', 'Row' in page.text_content('#focus-next'), page.text_content('#focus-next'))
+            check('bar offers the next exercise, named for screen readers', page.text_content('#focus-next').strip() == 'Next exercise' and 'Row' in page.get_attribute('#focus-next', 'aria-label') and page.get_attribute('#focus-next', 'aria-label').startswith('Next exercise: '), page.get_attribute('#focus-next', 'aria-label'))
             page.fill('#f-bench_1-load', '62'); page.fill('#f-bench_1-reps', '8'); tick(page, 'bench_1')
             check('ticking updates the chip count', until(lambda: '1/3' in chips.nth(0).inner_text()), chips.nth(0).inner_text())
             check('it stays on the same exercise', vis(page, '#f-bench_1-load') and not vis(page, '#f-row_1-load'))

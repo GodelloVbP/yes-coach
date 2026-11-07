@@ -3624,5 +3624,222 @@
   "de": "Training und die Planvorschau sagen weniger: Das erste Training bekommt sein Datum, und Zum Kalender hinzufügen ist nicht mehr der lauteste Button.",
   "fr": "Entraînement et l’aperçu du plan en disent moins : la première séance reçoit sa date, et Ajouter au calendrier n’est plus le bouton le plus voyant.",
   "it": "Allenamento e l’anteprima del piano dicono meno: il primo allenamento ha la sua data, e Aggiungi al calendario non è più il pulsante più vistoso."
+ },
+ "Log food to see your trends.": {
+  "nl": "Log eten om je trends te zien.",
+  "es": "Registra comida para ver tus tendencias.",
+  "de": "Erfasse Essen, um deine Trends zu sehen.",
+  "fr": "Enregistre des repas pour voir tes tendances.",
+  "it": "Registra del cibo per vedere i tuoi andamenti."
+ },
+ "No food logged in this period.": {
+  "nl": "Geen eten gelogd in deze periode.",
+  "es": "No hay comida registrada en este periodo.",
+  "de": "In diesem Zeitraum wurde kein Essen erfasst.",
+  "fr": "Aucun repas enregistré sur cette période.",
+  "it": "Nessun cibo registrato in questo periodo."
+ },
+ "No nutrient values available for this period.": {
+  "nl": "Geen voedingswaarden beschikbaar voor deze periode.",
+  "es": "No hay valores nutricionales para este periodo.",
+  "de": "Für diesen Zeitraum gibt es keine Nährwerte.",
+  "fr": "Aucune valeur nutritionnelle disponible pour cette période.",
+  "it": "Nessun valore nutrizionale disponibile per questo periodo."
+ },
+ "Best set per workout. Tap a lift for details.": {
+  "nl": "Beste set per training. Tik op een oefening voor details.",
+  "es": "Mejor serie por entrenamiento. Toca un ejercicio para ver detalles.",
+  "de": "Bester Satz pro Training. Tippe auf eine Übung für Details.",
+  "fr": "Meilleure série par séance. Touche un exercice pour les détails.",
+  "it": "Migliore serie per allenamento. Tocca un esercizio per i dettagli."
+ },
+ "Best set per workout. Tap a lift for details.{0}": {
+  "nl": "Beste set per training. Tik op een oefening voor details.{0}",
+  "es": "Mejor serie por entrenamiento. Toca un ejercicio para ver detalles.{0}",
+  "de": "Bester Satz pro Training. Tippe auf eine Übung für Details.{0}",
+  "fr": "Meilleure série par séance. Touche un exercice pour les détails.{0}",
+  "it": "Migliore serie per allenamento. Tocca un esercizio per i dettagli.{0}"
+ },
+ "{0} training days in {1}.": {
+  "nl": "{0} trainingsdagen in {1}.",
+  "es": "{0} días de entrenamiento en {1}.",
+  "de": "{0} Trainingstage in {1}.",
+  "fr": "{0} jours d’entraînement sur {1}.",
+  "it": "{0} giorni di allenamento in {1}."
+ },
+ "{0} training day in {1}.": {
+  "nl": "{0} trainingsdag in {1}.",
+  "es": "{0} día de entrenamiento en {1}.",
+  "de": "{0} Trainingstag in {1}.",
+  "fr": "{0} jour d’entraînement sur {1}.",
+  "it": "{0} giorno di allenamento in {1}."
+ },
+ "{0} with {1}training in {2}.": {
+  "nl": "{0} met {1}training in {2}.",
+  "es": "{0} con entrenamiento de {1}en {2}.",
+  "de": "{0} mit {1}Training in {2}.",
+  "fr": "{0} avec entraînement {1}sur {2}.",
+  "it": "{0} con allenamento di {1}in {2}."
+ },
+ "Working sets by body part, {0}.": {
+  "nl": "Werksets per lichaamsdeel, {0}.",
+  "es": "Series efectivas por parte del cuerpo, {0}.",
+  "de": "Arbeitssätze nach Körperpartie, {0}.",
+  "fr": "Séries de travail par partie du corps, {0}.",
+  "it": "Serie di lavoro per parte del corpo, {0}."
+ },
+ "Working sets by body part, {0}. Sessions per week are listed below the bars.": {
+  "nl": "Werksets per lichaamsdeel, {0}. Sessies per week staan onder de balken.",
+  "es": "Series efectivas por parte del cuerpo, {0}. Las sesiones por semana están debajo de las barras.",
+  "de": "Arbeitssätze nach Körperpartie, {0}. Die Einheiten pro Woche stehen unter den Balken.",
+  "fr": "Séries de travail par partie du corps, {0}. Les séances par semaine sont listées sous les barres.",
+  "it": "Serie di lavoro per parte del corpo, {0}. Le sessioni a settimana sono elencate sotto le barre."
+ },
+ "Working sets by body part, {0}. Sessions per month are listed below the bars.": {
+  "nl": "Werksets per lichaamsdeel, {0}. Sessies per maand staan onder de balken.",
+  "es": "Series efectivas por parte del cuerpo, {0}. Las sesiones por mes están debajo de las barras.",
+  "de": "Arbeitssätze nach Körperpartie, {0}. Die Einheiten pro Monat stehen unter den Balken.",
+  "fr": "Séries de travail par partie du corps, {0}. Les séances par mois sont listées sous les barres.",
+  "it": "Serie di lavoro per parte del corpo, {0}. Le sessioni al mese sono elencate sotto le barre."
+ },
+ "Working sets by body part, {0}. Tap a bar for sessions.": {
+  "nl": "Werksets per lichaamsdeel, {0}. Tik op een balk voor de sessies.",
+  "es": "Series efectivas por parte del cuerpo, {0}. Toca una barra para ver las sesiones.",
+  "de": "Arbeitssätze nach Körperpartie, {0}. Tippe auf einen Balken für die Einheiten.",
+  "fr": "Séries de travail par partie du corps, {0}. Touche une barre pour les séances.",
+  "it": "Serie di lavoro per parte del corpo, {0}. Tocca una barra per le sessioni."
+ },
+ "Alternative to {0}": {
+  "nl": "Alternatief voor {0}",
+  "es": "Alternativa a {0}",
+  "de": "Alternative zu {0}",
+  "fr": "Alternative à {0}",
+  "it": "Alternativa a {0}"
+ },
+ "Suggestions appear after you log workouts or create a plan.": {
+  "nl": "Suggesties verschijnen nadat je trainingen logt of een plan maakt.",
+  "es": "Las sugerencias aparecen cuando registras entrenamientos o creas un plan.",
+  "de": "Vorschläge erscheinen, sobald du Trainings erfasst oder einen Plan erstellst.",
+  "fr": "Les suggestions apparaissent après avoir enregistré des séances ou créé un plan.",
+  "it": "I suggerimenti compaiono dopo che registri degli allenamenti o crei un piano."
+ },
+ "Suggestions based on {0}.": {
+  "nl": "Suggesties op basis van {0}.",
+  "es": "Sugerencias basadas en {0}.",
+  "de": "Vorschläge basierend auf {0}.",
+  "fr": "Suggestions d’après {0}.",
+  "it": "Suggerimenti in base a {0}."
+ },
+ "No suggestions based on {0}.": {
+  "nl": "Geen suggesties op basis van {0}.",
+  "es": "No hay sugerencias basadas en {0}.",
+  "de": "Keine Vorschläge basierend auf {0}.",
+  "fr": "Aucune suggestion d’après {0}.",
+  "it": "Nessun suggerimento in base a {0}."
+ },
+ "Workout note": {
+  "nl": "Trainingsnotitie",
+  "es": "Nota del entrenamiento",
+  "de": "Notiz zum Training",
+  "fr": "Note de séance",
+  "it": "Nota dell’allenamento"
+ },
+ "Copy workout": {
+  "nl": "Training kopiëren",
+  "es": "Copiar entrenamiento",
+  "de": "Training kopieren",
+  "fr": "Copier la séance",
+  "it": "Copia allenamento"
+ },
+ "Next exercise: {0}": {
+  "nl": "Volgende oefening: {0}",
+  "es": "Siguiente ejercicio: {0}",
+  "de": "Nächste Übung: {0}",
+  "fr": "Exercice suivant : {0}",
+  "it": "Esercizio successivo: {0}"
+ },
+ "Suggested weights": {
+  "nl": "Voorgestelde gewichten",
+  "es": "Pesos sugeridos",
+  "de": "Gewichtsvorschläge",
+  "fr": "Charges suggérées",
+  "it": "Pesi suggeriti"
+ },
+ "See your last set and a suggested next weight while you log.": {
+  "nl": "Zie je laatste set en een voorgesteld volgend gewicht terwijl je logt.",
+  "es": "Mira tu última serie y un peso sugerido para la siguiente mientras registras.",
+  "de": "Sieh beim Erfassen deinen letzten Satz und ein vorgeschlagenes nächstes Gewicht.",
+  "fr": "Vois ta dernière série et une charge suggérée pour la suivante pendant que tu enregistres.",
+  "it": "Vedi la tua ultima serie e un peso suggerito per la prossima mentre registri."
+ },
+ "Use your own AI": {
+  "nl": "Gebruik je eigen AI",
+  "es": "Usa tu propia IA",
+  "de": "Nutze deine eigene KI",
+  "fr": "Utilise ta propre IA",
+  "it": "Usa la tua IA"
+ },
+ "Connect Claude or copy your workout into another AI chat to review your training.": {
+  "nl": "Koppel Claude of kopieer je training naar een andere AI-chat om je training te laten beoordelen.",
+  "es": "Conecta Claude o copia tu entrenamiento en otro chat de IA para revisar tu entrenamiento.",
+  "de": "Verbinde Claude oder kopiere dein Training in einen anderen KI-Chat, um dein Training prüfen zu lassen.",
+  "fr": "Connecte Claude ou copie ta séance dans un autre chat IA pour faire analyser ton entraînement.",
+  "it": "Collega Claude o copia il tuo allenamento in un’altra chat IA per farlo rivedere."
+ },
+ "Import your history": {
+  "nl": "Importeer je geschiedenis",
+  "es": "Importa tu historial",
+  "de": "Importiere deinen Verlauf",
+  "fr": "Importe ton historique",
+  "it": "Importa il tuo storico"
+ },
+ "Bring workouts from Strong, Hevy or FitNotes.": {
+  "nl": "Neem trainingen mee uit Strong, Hevy of FitNotes.",
+  "es": "Trae entrenamientos de Strong, Hevy o FitNotes.",
+  "de": "Übernimm Trainings aus Strong, Hevy oder FitNotes.",
+  "fr": "Apporte tes séances de Strong, Hevy ou FitNotes.",
+  "it": "Porta gli allenamenti da Strong, Hevy o FitNotes."
+ },
+ "Feedback": {
+  "nl": "Feedback",
+  "es": "Comentarios",
+  "de": "Feedback",
+  "fr": "Retours",
+  "it": "Feedback"
+ },
+ "Send bugs and feature requests from inside the app. They come straight to me.": {
+  "nl": "Stuur bugs en wensen vanuit de app. Ze komen rechtstreeks bij mij.",
+  "es": "Envía errores y peticiones desde la app. Me llegan directamente.",
+  "de": "Sende Fehler und Wünsche direkt aus der App. Sie kommen direkt zu mir.",
+  "fr": "Envoie des bugs et des demandes depuis l’appli. Ils arrivent directement chez moi.",
+  "it": "Invia bug e richieste dall’app. Arrivano direttamente a me."
+ },
+ "Shorter notes, one Finish button": {
+  "nl": "Kortere teksten, één Klaar-knop",
+  "es": "Notas más cortas, un solo botón Terminar",
+  "de": "Kürzere Hinweise, ein Fertig-Button",
+  "fr": "Textes plus courts, un seul bouton Terminer",
+  "it": "Note più corte, un solo pulsante Termina"
+ },
+ "Progress, the exercise suggestions and the home page say less. Suggestions no longer say what you like or tell you how to feel about them.": {
+  "nl": "Voortgang, de oefensuggesties en de startpagina zeggen minder. Suggesties zeggen niet meer wat je leuk vindt en vertellen niet hoe je erover moet denken.",
+  "es": "Progreso, las sugerencias de ejercicios y la página de inicio dicen menos. Las sugerencias ya no dicen lo que te gusta ni cómo debes sentirte al respecto.",
+  "de": "Fortschritt, die Übungsvorschläge und die Startseite sagen weniger. Die Vorschläge sagen nicht mehr, was du magst, und sagen dir nicht, was du davon halten sollst.",
+  "fr": "Progression, les suggestions d’exercices et la page d’accueil en disent moins. Les suggestions ne disent plus ce que tu aimes ni ce que tu dois en penser.",
+  "it": "Progressi, i suggerimenti di esercizi e la pagina iniziale dicono meno. I suggerimenti non dicono più cosa ti piace né cosa devi pensarne."
+ },
+ "While you log, the bar at the bottom says Next exercise, and the Finish button is no longer shown twice.": {
+  "nl": "Tijdens het loggen staat in de balk onderaan Volgende oefening, en de Klaar-knop staat er niet meer dubbel.",
+  "es": "Mientras registras, la barra de abajo dice Siguiente ejercicio, y el botón Terminar ya no aparece dos veces.",
+  "de": "Während du erfasst, steht in der Leiste unten Nächste Übung, und der Fertig-Button erscheint nicht mehr doppelt.",
+  "fr": "Pendant que tu enregistres, la barre du bas indique Exercice suivant, et le bouton Terminer n’apparaît plus deux fois.",
+  "it": "Mentre registri, la barra in basso dice Esercizio successivo, e il pulsante Termina non compare più due volte."
+ },
+ "Food trends take no room until there is something to show.": {
+  "nl": "Voedingstrends nemen geen ruimte in tot er iets te laten zien is.",
+  "es": "Las tendencias de comida no ocupan espacio hasta que hay algo que mostrar.",
+  "de": "Ernährungstrends brauchen keinen Platz, bis es etwas zu zeigen gibt.",
+  "fr": "Les tendances alimentaires ne prennent pas de place tant qu’il n’y a rien à montrer.",
+  "it": "Gli andamenti del cibo non occupano spazio finché non c’è qualcosa da mostrare."
  }
 }
