@@ -83,7 +83,7 @@ try:
             check('training days note, without the orange border line', 'training day' in page.inner_text('#days-note') and 'orange' not in page.inner_text('#days-note') and page.inner_text('#days-note').endswith('.'), page.inner_text('#days-note'))
             check('the legend is still there', page.locator('#days-legend').count() == 1 and page.inner_text('#days-legend').strip() != '', page.inner_text('#days-legend'))
             w = page.inner_text('#weekly-note')
-            check('volume note names the unit once, and says how to see sessions', w.startswith('Working sets by body part, ') and ('Sessions per ' in w or 'Tap a bar for sessions.' in w) and len(w.split('. ')) <= 2, w)
+            check('volume note names the unit once, and says how to see workouts', w.startswith('Working sets by body part, ') and ('Workouts per ' in w or 'Tap a bar for workouts.' in w) and len(w.split('. ')) <= 2, w)
         errs = session(pw, be, ALICE, p1, width=390); check('no page errors (progress)', not errs, errs)
         def p2(page):
             page.click('#tab-progress'); page.wait_for_selector('#plist .prow', timeout=8000); page.wait_for_timeout(500)
@@ -121,7 +121,7 @@ try:
             check('the next button says Next exercise, not a long name', page.text_content('#focus-next').strip() == 'Next exercise')
             check('the destination is in the tab strip', 'Row' in page.locator('.fchip').nth(1).text_content())
             page.click('#focus-toggle')
-            check('all exercises: no bar, and the footer has Finish and its note', page.is_hidden('#focusbar') and page.locator('.sess-foot .fin-row').is_visible() and 'Ticked sets are already saved' in page.inner_text('.sess-foot .fin-row') and page.locator('.sess-foot .fin-row button').inner_text().strip().lower() == 'finish day')
+            check('all exercises: no bar, and the footer has Finish and its note', page.is_hidden('#focusbar') and page.locator('.sess-foot .fin-row').is_visible() and 'Ticked sets are already saved' in page.inner_text('.sess-foot .fin-row') and page.locator('.sess-foot .fin-row button').inner_text().strip().lower() == 'finish workout')
             page.click('#focus-toggle')
             check('back to one at a time: the footer Finish hides again', page.locator('.sess-foot .fin-row').is_hidden())
             check('the workout note and Copy workout are named plainly', 'Workout note' in page.text_content('.sess-foot') and page.locator('.sess-foot button', has_text='Copy workout').count() == 1 and 'Copy day' not in page.text_content('.sess-foot') and 'Session note for Coach' not in page.text_content('.sess-foot'))

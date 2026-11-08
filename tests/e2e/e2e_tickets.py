@@ -197,7 +197,7 @@ try:
         be = Backend(); be.fail_insert = 'too_many_tickets'
         def s6(page):
             open_feedback(page); send_form(page, 'Another one', 'Something else entirely', name='Sanne')
-            page.wait_for_function("document.querySelector('#tk form').innerText.includes('daily limit')")
+            page.wait_for_function("document.querySelector('#tk form').innerText.includes('Daily limit of 5')")
             check('daily limit message', True); check('form stays open with the text', page.input_value('#tk form input[autocomplete=off]') == 'Another one')
         errs = session(pw, be, ALICE, s6); check('no page errors (limit)', not errs, errs)
 
@@ -261,7 +261,7 @@ try:
 
         # ---- 7b. owner copies the shown tickets as text, without emails
         be = Backend(admins=[OWNER])
-        a = be.ticket(ALICE, title='Finish button', type='feature', first_name='Sanne', body='Please add a finish day button.', context={'installed': True, 'screen': '390x844', 'ua': 'iPhone Safari'})
+        a = be.ticket(ALICE, title='Finish button', type='feature', first_name='Sanne', body='Please add a finish workout button.', context={'installed': True, 'screen': '390x844', 'ua': 'iPhone Safari'})
         be.message(a['id'], 'admin', 'Do you mean on the Train screen?'); be.message(a['id'], 'user', 'Yes, at the bottom.')
         be.ticket(ALICE, title='Closed one', status='resolved', outcome='built', resolution_note='Done.', resolved_at=now())
         got = {}
@@ -271,7 +271,7 @@ try:
             got['text'] = page.evaluate('navigator.clipboard.readText()')
         errs = session(pw, be, OWNER, s8b)
         t = got.get('text', '')
-        check('copy has the shown ticket, name, text, thread, device', all(x in t for x in ('Finish button', 'Sanne', 'Please add a finish day button.', 'We wrote: Do you mean on the Train screen?', 'Sanne wrote: Yes, at the bottom.', 'installed app')), t)
+        check('copy has the shown ticket, name, text, thread, device', all(x in t for x in ('Finish button', 'Sanne', 'Please add a finish workout button.', 'We wrote: Do you mean on the Train screen?', 'Sanne wrote: Yes, at the bottom.', 'installed app')), t)
         check('copy leaves out email and closed tickets', 'example.com' not in t and 'Closed one' not in t, t)
         check('no page errors (copy)', not errs, errs)
 
@@ -283,9 +283,9 @@ try:
         def s7c(page):
             page.wait_for_selector('#tab-train', state='attached')
             page.evaluate("localStorage.setItem('yc-active', JSON.stringify({date: new Date().toISOString().slice(0, 10), tpl: 'push'}))"); page.reload(); page.wait_for_selector('#resume-btn', state='visible'); page.click('#resume-btn'); page.wait_for_selector('#session', state='visible')
-            check('bottom button says Finish day', page.locator('#session >> text=Finish day').count() >= 1)
+            check('bottom button says Finish workout', page.locator('#session >> text=Finish workout').count() >= 1)
             page.click('#sb-back'); page.wait_for_selector('#resume', state='visible')
-            check('resume bar offers Finish day', page.is_visible('#resume-fin') and 'finish day' in page.inner_text('#resume-fin').lower())
+            check('resume bar offers Finish workout', page.is_visible('#resume-fin') and 'finish workout' in page.inner_text('#resume-fin').lower())
             page.click('#resume-fin'); page.wait_for_selector('#resume', state='hidden')
             check('finishing clears the open day', page.evaluate("localStorage.getItem('yc-active')") in (None, 'null'))
             page.reload(); page.wait_for_timeout(800)

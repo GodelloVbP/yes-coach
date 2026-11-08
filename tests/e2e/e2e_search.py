@@ -98,7 +98,7 @@ try:
             page.fill('#fd-name', 'kaas t'); until(lambda: page.locator('#fd-hits .fd-meal').count() > 0)
             page.click('#fd-hits .fd-meal')
             check('a tap on your meal logs it, closes the list and clears the box', until(lambda: any(e.get('name') == 'Kaas toast' and len(e.get('items', [])) == 2 for e in entries(be))) and page.input_value('#fd-name') == '' and not vis(page, '#fd-hits'))
-            check('with an Undo toast', 'Added Kaas toast' in page.inner_text('#toast-text'))
+            check('with an Undo toast', until(lambda: 'Added Kaas toast' in page.inner_text('#toast-text')))
 
             # ---- the amount card still works for plain foods, drinks and US foods (the portions code moved)
             search('mosterd'); page.locator('#fd-hits .fd-hit').first.click()

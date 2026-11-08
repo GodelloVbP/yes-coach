@@ -3973,7 +3973,7 @@
   "es": "Un registro de entrenamientos gratis y sin anuncios. Tu cuenta mantiene tu registro y tu plan en todos tus dispositivos.",
   "de": "Ein kostenloser Workout-Tracker ohne Werbung. Dein Konto hält deine Einträge und deinen Plan auf allen deinen Geräten bereit.",
   "fr": "Un tracker d’entraînement gratuit et sans pub. Ton compte garde ton journal et ton programme sur tous tes appareils.",
-  "it": "Un tracker di allenamento gratuito e senza pubblicità. Il tuo account tiene registro e piano su tutti i tuoi dispositivi."
+  "it": "Un tracker di allenamento gratuito e senza pubblicità. Il tuo account conserva registro e piano su tutti i tuoi dispositivi."
  },
  "A full backup holds everything, including your plan and schedule. Restoring adds what is missing and can bring your plan back as it was. It never deletes anything or edits a logged workout.": {
   "nl": "Een volledige back-up bevat alles, ook je plan en schema. Herstellen voegt toe wat ontbreekt en kan je plan terugzetten zoals het was. Er wordt nooit iets verwijderd en een gelogde training verandert niet.",
@@ -4081,7 +4081,7 @@
   "it": "Dopo l’allenamento, un pulsante ti porta a Cibo se oggi non hai registrato nulla."
  },
  "Also restore the training plan": {
-  "nl": "Zet ook het trainingsplan terug",
+  "nl": "Herstel ook het trainingsplan",
   "es": "Restaurar también el plan de entrenamiento",
   "de": "Auch den Trainingsplan wiederherstellen",
   "fr": "Restaurer aussi le programme d’entraînement",
@@ -4095,7 +4095,7 @@
   "it": "Apple, Google o Outlook."
  },
  "Ask Claude what you forgot today: it can see which entries still need filling in.": {
-  "nl": "Vraag Claude wat je vandaag vergeten bent: het ziet welke invoeren nog ingevuld moeten worden.",
+  "nl": "Vraag Claude wat je vandaag vergeten bent: die ziet wat er nog niet is ingevuld.",
   "es": "Pregunta a Claude qué olvidaste hoy: puede ver qué entradas faltan por completar.",
   "de": "Frag Claude, was du heute vergessen hast: Es sieht, welche Einträge noch fehlen.",
   "fr": "Demande à Claude ce que tu as oublié aujourd’hui : il voit quelles entrées restent à compléter.",
@@ -4105,7 +4105,7 @@
   "nl": "Vraag mijn AI",
   "es": "Preguntar a mi IA",
   "de": "Meine KI fragen",
-  "fr": "Demander à mon IA",
+  "fr": "Demander à l’IA",
   "it": "Chiedi alla mia AI"
  },
  "Ask your AI from Plan to adjust your plan. You see what changes before anything does.": {
@@ -4123,7 +4123,7 @@
   "it": "Auto segue il tuo dispositivo. Salvato solo su questo dispositivo."
  },
  "Backups restore your training plan and schedule too.": {
-  "nl": "Back-ups zetten ook je trainingsplan en schema terug.",
+  "nl": "Back-ups herstellen ook je trainingsplan en schema.",
   "es": "Las copias de seguridad también recuperan tu plan de entrenamiento y tu horario.",
   "de": "Backups stellen auch deinen Trainingsplan und deinen Wochenplan wieder her.",
   "fr": "Les sauvegardes restaurent aussi ton programme et ton planning.",
@@ -4141,13 +4141,13 @@
   "es": "Crear mi plan crea un plan en la app: cuerpo completo para 2 o 3 días a la semana, tren superior e inferior para más. Elige gimnasio, casa o solo peso corporal.",
   "de": "Meinen Plan erstellen legt einen Plan in der App an: Ganzkörper für 2 oder 3 Tage pro Woche, Ober- und Unterkörper für mehr. Wähle Studio, zu Hause oder nur Körpergewicht.",
   "fr": "Créer mon programme crée un programme dans l’app : corps entier pour 2 ou 3 jours par semaine, haut et bas du corps au-delà. Choisis salle, maison ou poids du corps seul.",
-  "it": "Crea il mio piano crea un piano nell’app: total body per 2 o 3 giorni a settimana, parte alta e bassa per di più. Scegli palestra, casa o solo corpo libero."
+  "it": "Crea il mio piano crea un piano nell’app: total body per 2 o 3 giorni a settimana, parte alta e parte bassa per più giorni. Scegli palestra, casa o solo corpo libero."
  },
  "Built by one person. You hear back when it is built or fixed.": {
-  "nl": "Gemaakt door één persoon. Je hoort terug wanneer het gebouwd of gerepareerd is.",
+  "nl": "Gemaakt door één persoon. Je hoort terug zodra het gemaakt of opgelost is.",
   "es": "Hecho por una sola persona. Te avisamos cuando esté hecho o arreglado.",
   "de": "Von einer Person gebaut. Du hörst von uns, wenn es gebaut oder behoben ist.",
-  "fr": "Fait par une seule personne. Tu es prévenu quand c’est fait ou corrigé.",
+  "fr": "Fait par une seule personne. Tu reçois une réponse quand c’est fait ou corrigé.",
   "it": "Fatto da una sola persona. Ricevi una risposta quando è fatto o risolto."
  },
  "CSV or plain text": {
@@ -4256,7 +4256,7 @@
   "it": "Claude vede il tuo piano, i tuoi progressi degli ultimi 3 mesi e le tue note sul corpo. Scrivi cosa cambiare, o lascia vuoto per un controllo generale."
  },
  "Closing note, also shown on duplicates": {
-  "nl": "Afsluitende notitie, ook getoond bij duplicaten",
+  "nl": "Afsluitende notitie, ook zichtbaar bij duplicaten",
   "es": "Nota de cierre, también se muestra en duplicados",
   "de": "Abschlussnotiz, auch bei Duplikaten angezeigt",
   "fr": "Note de clôture, aussi affichée sur les doublons",
@@ -4267,7 +4267,7 @@
   "es": "¿Vienes de otra app? Importa tu historial en la primera pantalla y el plan usa cuántas veces entrenas.",
   "de": "Kommst du von einer anderen App? Importiere deinen Verlauf auf dem ersten Bildschirm, und der Plan übernimmt, wie oft du trainierst.",
   "fr": "Tu viens d’une autre app ? Importe ton historique dès le premier écran et le programme tient compte de ta fréquence d’entraînement.",
-  "it": "Arrivi da un’altra app? Importa la tua cronologia dalla prima schermata e il piano usa quante volte ti alleni."
+  "it": "Arrivi da un’altra app? Importa il tuo storico dalla prima schermata e il piano usa quante volte ti alleni."
  },
  "Copied yesterday’s food.": {
   "nl": "Eten van gisteren gekopieerd.",
@@ -4335,7 +4335,7 @@
  "Deleted {0}. Entries you already logged stay as they are.": {
   "nl": "{0} verwijderd. Wat je al hebt gelogd blijft zoals het is.",
   "es": "{0} eliminado. Lo que ya registraste se queda como está.",
-  "de": "{0} gelöscht. Bereits eingetragene Einträge bleiben, wie sie sind.",
+  "de": "{0} gelöscht. Bereits Eingetragenes bleibt unverändert.",
   "fr": "{0} supprimé. Ce que tu as déjà enregistré reste tel quel.",
   "it": "{0} eliminato. Quello che hai già registrato resta com'è."
  },
@@ -4368,10 +4368,10 @@
   "it": "Ogni allenamento libero è un giorno a sé. Compare nella settimana e nel mese finché è in corso, e da lì puoi riprenderlo."
  },
  "Each exercise now shows the weight to try next, based on your last sessions. It goes up a step when every set reached the reps.": {
-  "nl": "Elke oefening toont nu het gewicht om als volgende te proberen, op basis van je laatste trainingen. Het gaat een stap omhoog als elke set de herhalingen haalde.",
+  "nl": "Elke oefening toont nu welk gewicht je hierna kunt proberen, op basis van je laatste trainingen. Het gaat een stap omhoog als je alle sets met de herhalingen haalde.",
   "es": "Cada ejercicio muestra ahora el peso que probar a continuación, según tus últimas sesiones. Sube un escalón cuando todas las series llegaron a las repeticiones.",
   "de": "Jede Übung zeigt jetzt das nächste Gewicht zum Ausprobieren, basierend auf deinen letzten Trainings. Es geht einen Schritt hoch, wenn alle Sätze die Wiederholungen erreicht haben.",
-  "fr": "Chaque exercice affiche maintenant la charge à essayer ensuite, d’après tes dernières séances. Elle monte d’un palier quand toutes les séries ont atteint les répétitions.",
+  "fr": "Chaque exercice affiche maintenant la charge à essayer ensuite, d’après tes dernières séances. Elle monte d’un palier quand toutes les séries ont atteint le nombre de répétitions visé.",
   "it": "Ogni esercizio mostra ora il peso da provare dopo, in base alle ultime sessioni. Sale di un gradino quando tutte le serie hanno raggiunto le ripetizioni."
  },
  "Each training day stays on its own weekday.": {
@@ -4417,8 +4417,8 @@
   "it": "Massimale stimato su una ripetizione (Epley) dalla tua miglior serie di ogni allenamento, quindi più ripetizioni con lo stesso peso valgono di più. Non è un peso che hai sollevato."
  },
  "Every part of a page now sits in its own block, in alternating cool and warm tints. On Train: today, your week and the month ahead.": {
-  "nl": "Elk deel van een pagina staat nu in een eigen blok, in afwisselend koele en warme tinten. Bij Training: vandaag, je week en de maand die komt.",
-  "es": "Cada parte de una página está ahora en su propio bloque, en tonos fríos y cálidos alternos. En Entrenar: hoy, tu semana y el mes que viene.",
+  "nl": "Elk deel van een pagina staat nu in een eigen blok, in afwisselend koele en warme tinten. Bij Training: vandaag, je week en de komende maand.",
+  "es": "Cada parte de una página está ahora en su propio bloque, en tonos fríos y cálidos alternos. En Entrenar: hoy, tu semana y el mes por delante.",
   "de": "Jeder Teil einer Seite steht jetzt in einem eigenen Block, abwechselnd in kühlem und warmem Farbton. Bei Training: heute, deine Woche und der kommende Monat.",
   "fr": "Chaque partie d’une page est maintenant dans son propre bloc, en teintes froides et chaudes alternées. Dans Entraînement : aujourd’hui, ta semaine et le mois à venir.",
   "it": "Ogni parte di una pagina ora sta nel suo blocco, con tinte fredde e calde alternate. In Allenamento: oggi, la tua settimana e il mese in arrivo."
@@ -4475,7 +4475,7 @@
  "First time: pick a weight that leaves 2 or 3 reps in reserve.": {
   "nl": "Eerste keer: kies een gewicht waarmee je nog 2 of 3 herhalingen in reserve hebt.",
   "es": "Primera vez: elige un peso con el que te queden 2 o 3 repeticiones en reserva.",
-  "de": "Erstes Mal: Wähle ein Gewicht, bei dem 2 oder 3 Wiederholungen in Reserve bleiben.",
+  "de": "Beim ersten Mal: Wähle ein Gewicht, bei dem 2 oder 3 Wiederholungen in Reserve bleiben.",
   "fr": "Première fois : choisis une charge qui te laisse 2 ou 3 répétitions en réserve.",
   "it": "Prima volta: scegli un peso che lasci 2 o 3 ripetizioni in riserva."
  },
@@ -4508,7 +4508,7 @@
   "it": "Cibo: quello che hai mangiato ora viene prima di I tuoi alimenti. Gli obiettivi suggeriti sono passati in Obiettivi giornalieri."
  },
  "Foods that only match an old name no longer crowd the list.": {
-  "nl": "Producten die alleen op een oude naam passen, vullen de lijst niet meer.",
+  "nl": "Producten die alleen bij een oude naam passen, maken de lijst niet meer onoverzichtelijk.",
   "es": "Los alimentos que solo coinciden con un nombre antiguo ya no llenan la lista.",
   "de": "Lebensmittel, die nur zu einem alten Namen passen, füllen die Liste nicht mehr.",
   "fr": "Les aliments qui ne correspondent qu’à un ancien nom n’encombrent plus la liste.",
@@ -4537,10 +4537,10 @@
  },
  "Get a plan from your own AI chat in two pastes. Yes Coach! writes the request and reads the answer.": {
   "nl": "Haal een plan uit je eigen AI-chat in twee keer plakken. Yes Coach! schrijft het verzoek en leest het antwoord.",
-  "es": "Consigue un plan desde tu propio chat de IA con dos pegados. Yes Coach! escribe la petición y lee la respuesta.",
+  "es": "Consigue un plan desde tu propio chat de IA pegando dos veces. Yes Coach! escribe la petición y lee la respuesta.",
   "de": "Hol dir mit zweimal Einfügen einen Plan aus deinem eigenen KI-Chat. Yes Coach! schreibt die Anfrage und liest die Antwort.",
   "fr": "Obtiens un programme depuis ton propre chat IA en deux collages. Yes Coach! écrit la demande et lit la réponse.",
-  "it": "Ottieni un piano dalla tua chat AI con due incolla. Yes Coach! scrive la richiesta e legge la risposta."
+  "it": "Ottieni un piano dalla tua chat AI in due passaggi di copia e incolla. Yes Coach! scrive la richiesta e legge la risposta."
  },
  "How the workout went, sleep, energy, anything else.": {
   "nl": "Hoe de training ging, slaap, energie, al het andere.",
@@ -4594,7 +4594,7 @@
  "Kept on this phone.": {
   "nl": "Bewaard op deze telefoon.",
   "es": "Se mantiene en este teléfono.",
-  "de": "Auf diesem Handy behalten.",
+  "de": "Bleibt auf diesem Handy.",
   "fr": "Gardé sur ce téléphone.",
   "it": "Conservato su questo telefono."
  },
@@ -4656,10 +4656,10 @@
  },
  "Looking ahead to {0} {1}. Nothing is saved until you tick a set.": {
   "nl": "Vooruitkijken naar {0} {1}. Er wordt niets opgeslagen totdat je een set afvinkt.",
-  "es": "Mirando adelante a {0} {1}. No se guarda nada hasta que marques una serie.",
+  "es": "Vista previa del {0} {1}. No se guarda nada hasta que marques una serie.",
   "de": "Blick voraus auf {0} {1}. Es wird nichts gespeichert, bis du einen Satz abhakst.",
-  "fr": "Aperçu de {0} {1}. Rien n’est enregistré tant que tu ne coches pas une série.",
-  "it": "Guardando avanti a {0} {1}. Non viene salvato nulla finché non spunti una serie."
+  "fr": "Aperçu du {0} {1}. Rien n’est enregistré tant que tu ne coches pas une série.",
+  "it": "Stai guardando {0} {1} in anticipo. Non viene salvato nulla finché non spunti una serie."
  },
  "Lower is better.": {
   "nl": "Lager is beter.",
@@ -4750,7 +4750,7 @@
   "es": "La mayoría de la gente conoce un ejercicio por su nombre en inglés.",
   "de": "Die meisten kennen eine Übung unter ihrem englischen Namen.",
   "fr": "La plupart des gens connaissent un exercice par son nom anglais.",
-  "it": "La maggior parte delle persone conosce un esercizio con il suo nome inglese."
+  "it": "La maggior parte delle persone conosce un esercizio dal suo nome inglese."
  },
  "Move earlier": {
   "nl": "Eerder zetten",
@@ -4769,14 +4769,14 @@
  "Move to next day": {
   "nl": "Naar volgende dag",
   "es": "Pasar al día siguiente",
-  "de": "Zum nächsten Tag",
+  "de": "Auf den nächsten Tag verschieben",
   "fr": "Au jour suivant",
   "it": "Sposta al giorno successivo"
  },
  "Moving between exercises now slides and scrolls to your first open set.": {
   "nl": "Wisselen tussen oefeningen schuift nu en scrolt naar je eerste open set.",
   "es": "Cambiar de ejercicio ahora se desliza y se desplaza a tu primera serie abierta.",
-  "de": "Der Wechsel zwischen Übungen gleitet jetzt und scrollt zu deinem ersten offenen Satz.",
+  "de": "Beim Wechsel zwischen Übungen wird jetzt sanft zu deinem ersten offenen Satz gescrollt.",
   "fr": "Passer d’un exercice à l’autre glisse maintenant et défile jusqu’à ta première série ouverte.",
   "it": "Passare da un esercizio all’altro ora scorre e porta alla tua prima serie aperta."
  },
@@ -4796,7 +4796,7 @@
  },
  "New here? Answer three questions, one per screen: how often, where, and how long you have trained. Your plan is ready.": {
   "nl": "Nieuw hier? Beantwoord drie vragen, één per scherm: hoe vaak, waar en hoe lang je al traint. Je plan staat klaar.",
-  "es": "¿Eres nuevo? Responde tres preguntas, una por pantalla: cuántas veces, dónde y cuánto tiempo llevas entrenando. Tu plan está listo.",
+  "es": "¿Primera vez por aquí? Responde tres preguntas, una por pantalla: cuántas veces, dónde y cuánto tiempo llevas entrenando. Tu plan está listo.",
   "de": "Neu hier? Beantworte drei Fragen, eine pro Bildschirm: wie oft, wo und wie lange du schon trainierst. Dein Plan steht.",
   "fr": "Nouveau ici ? Réponds à trois questions, une par écran : combien de fois, où, et depuis combien de temps tu t’entraînes. Ton programme est prêt.",
   "it": "Sei nuovo? Rispondi a tre domande, una per schermata: quante volte, dove e da quanto ti alleni. Il tuo piano è pronto."
@@ -4811,7 +4811,7 @@
  "No connection. Kept on this phone, retrying when signal is back.": {
   "nl": "Geen verbinding. Bewaard op deze telefoon, nieuwe poging zodra er weer bereik is.",
   "es": "Sin conexión. Se mantiene en este teléfono y se reintenta cuando vuelva la señal.",
-  "de": "Keine Verbindung. Auf diesem Handy gespeichert, wird erneut gesendet, sobald du wieder Empfang hast.",
+  "de": "Keine Verbindung. Bleibt auf diesem Handy, wird erneut gesendet, sobald du wieder Empfang hast.",
   "fr": "Pas de connexion. Gardé sur ce téléphone, nouvel essai au retour du signal.",
   "it": "Nessuna connessione. Conservato su questo telefono, nuovo tentativo al ritorno del segnale."
  },
@@ -4846,7 +4846,7 @@
  "No plan found in this answer. Ask your AI to give the plan in the shape the request asks for, then paste it here.": {
   "nl": "Geen plan gevonden in dit antwoord. Vraag je AI het plan te geven in de vorm die het verzoek vraagt en plak het dan hier.",
   "es": "No se encontró ningún plan en esta respuesta. Pide a tu IA que dé el plan con el formato que pide la petición y pégalo aquí.",
-  "de": "Kein Plan in dieser Antwort gefunden. Bitte deine KI, den Plan in der Form zu geben, die die Anfrage verlangt, und füge ihn hier ein.",
+  "de": "Kein Plan in dieser Antwort gefunden. Bitte deine KI, den Plan im Format der Anfrage zu liefern, und füge ihn hier ein.",
   "fr": "Aucun programme trouvé dans cette réponse. Demande à ton IA de donner le programme au format demandé, puis colle-le ici.",
   "it": "Nessun piano trovato in questa risposta. Chiedi alla tua AI di dare il piano nel formato che la richiesta indica, poi incollalo qui."
  },
@@ -4973,8 +4973,8 @@
   "nl": "Op {0}. Wijzig dit in Jouw week.",
   "es": "El {0}. Cámbialo en Tu semana.",
   "de": "Am {0}. Ändere das unter Deine Woche.",
-  "fr": "Le {0}. Change cela dans Ta semaine.",
-  "it": "Il {0}. Cambialo in La tua settimana."
+  "fr": "Jours : {0}. Modifie-les dans Ta semaine.",
+  "it": "Giorni: {0}. Cambiali in La tua settimana."
  },
  "One session in this period. A chart needs two.": {
   "nl": "Eén training in deze periode. Een grafiek heeft er twee nodig.",
@@ -5029,7 +5029,7 @@
   "nl": "Datums in het verleden en dagen waarop je al getraind hebt worden weggelaten. Verwijder na het wijzigen van je dagen eerst de oude afspraken: sommige agenda's voegen dubbele toe.",
   "es": "Las fechas pasadas y los días que ya entrenaste se omiten. Si cambias tus días, elimina antes los eventos antiguos: algunos calendarios añaden duplicados.",
   "de": "Vergangene Daten und Tage, an denen du schon trainiert hast, werden ausgelassen. Lösche nach einer Änderung deiner Tage zuerst die alten Termine: Manche Kalender legen Duplikate an.",
-  "fr": "Les dates passées et les jours déjà entraînés sont exclus. Après avoir changé tes jours, supprime d’abord les anciens événements : certains calendriers ajoutent des doublons.",
+  "fr": "Les dates passées et les jours où tu t’es déjà entraîné sont exclus. Après avoir changé tes jours, supprime d’abord les anciens événements : certains calendriers ajoutent des doublons.",
   "it": "Le date passate e i giorni in cui ti sei già allenato sono esclusi. Dopo aver cambiato i giorni, elimina prima i vecchi eventi: alcuni calendari aggiungono duplicati."
  },
  "Pick Dutch, English, Spanish, German, French or Italian on first open. Change it in Settings, Languages.": {
@@ -5120,7 +5120,7 @@
   "nl": "Voortgang, oefensuggesties en de startpagina hebben minder tekst.",
   "es": "Progreso, las sugerencias de ejercicios y la página de inicio tienen menos texto.",
   "de": "Fortschritt, Übungsvorschläge und die Startseite haben weniger Text.",
-  "fr": "Progrès, les suggestions d’exercices et la page d’accueil ont moins de texte.",
+  "fr": "Progrès, suggestions d’exercices et page d’accueil ont moins de texte.",
   "it": "Progressi, i suggerimenti di esercizi e la pagina iniziale hanno meno testo."
  },
  "Remove {0} from {1} {2}? Only this week changes, not your plan.": {
@@ -5141,8 +5141,8 @@
   "nl": "Herhaalt op {0}: {1}.",
   "es": "Se repite en {0}: {1}.",
   "de": "Wiederholt sich an {0}: {1}.",
-  "fr": "Se répète sur {0} : {1}.",
-  "it": "Si ripete il {0}: {1}."
+  "fr": "Se répète ({0}) : {1}.",
+  "it": "Si ripete nei giorni {0}: {1}."
  },
  "Request tab at the bottom": {
   "nl": "Verzoek-tab onderaan",
@@ -5188,10 +5188,10 @@
  },
  "Rough protein guess": {
   "nl": "Grove eiwitschatting",
-  "es": "Estimación aproximada de proteína",
+  "es": "Proteína estimada",
   "de": "Grobe Eiweißschätzung",
-  "fr": "Estimation des protéines",
-  "it": "Stima grossolana delle proteine"
+  "fr": "Estimation approximative des protéines",
+  "it": "Stima approssimativa delle proteine"
  },
  "Runs track distance, climb and where you ran: outside or on a treadmill. The pace is worked out for you.": {
   "nl": "Bij hardlopen houd je afstand, hoogtewinst en locatie bij: buiten of op de loopband. Het tempo wordt voor je uitgerekend.",
@@ -5236,7 +5236,7 @@
   "it": "Cerca, scegli un alimento, tocca la quantità. Il cibo è per 100 g e le bevande per 100 ml. Non sai il peso? Tocca una porzione, come 1 beschuit o 1 eetlepel per gli alimenti olandesi."
  },
  "Send bugs and feature requests. They come straight to me.": {
-  "nl": "Stuur bugs en wensen. Ze komen rechtstreeks bij mij.",
+  "nl": "Stuur bugs en functieverzoeken. Ze komen rechtstreeks bij mij.",
   "es": "Envía errores y peticiones. Me llegan directamente.",
   "de": "Sende Fehler und Wünsche. Sie kommen direkt zu mir.",
   "fr": "Envoie des bugs et des demandes. Ils arrivent directement chez moi.",
@@ -5250,7 +5250,7 @@
   "it": "Invia un feedback"
  },
  "Sent with it: your first name, sign-in email, app version and device. Never your training data.": {
-  "nl": "Wordt meegestuurd: je voornaam, inlogmailadres, appversie en apparaat. Nooit je trainingsgegevens.",
+  "nl": "Wordt meegestuurd: je voornaam, het e-mailadres waarmee je inlogt, appversie en apparaat. Nooit je trainingsgegevens.",
   "es": "Se envía con ello: tu nombre, correo de inicio de sesión, versión de la app y dispositivo. Nunca tus datos de entrenamiento.",
   "de": "Wird mitgesendet: dein Vorname, deine Anmelde-E-Mail, App-Version und Gerät. Nie deine Trainingsdaten.",
   "fr": "Envoyés avec : ton prénom, l’e-mail de connexion, la version de l’appli et ton appareil. Jamais tes données d’entraînement.",
@@ -5295,7 +5295,7 @@
   "nl": "Toon gewichten",
   "es": "Mostrar pesos",
   "de": "Gewichte zeigen",
-  "fr": "Afficher les charges",
+  "fr": "Voir les charges",
   "it": "Mostra i pesi"
  },
  "Sign-up can show your password as you type and resend the confirmation email.": {
@@ -5341,7 +5341,7 @@
   "it": "Distribuirle sui pasti funziona meglio. Carboidrati e grassi non hanno un obiettivo."
  },
  "Starting weights are a little below your recent best.": {
-  "nl": "Startgewichten liggen iets onder je recente beste.",
+  "nl": "Startgewichten liggen iets onder je recent beste gewicht.",
   "es": "Los pesos iniciales están un poco por debajo de tu mejor marca reciente.",
   "de": "Die Startgewichte liegen etwas unter deiner letzten Bestleistung.",
   "fr": "Les charges de départ sont un peu sous ton meilleur récent.",
@@ -5359,10 +5359,10 @@
   "es": "Los objetivos sugeridos son para adultos. Si aún estás creciendo, consulta a tu médico o a un dietista sobre un objetivo.",
   "de": "Vorgeschlagene Ziele gelten für Erwachsene. Wenn du noch wächst, frag wegen eines Ziels deinen Arzt oder eine Ernährungsberatung.",
   "fr": "Les objectifs suggérés sont pour les adultes. Si tu es encore en croissance, demande un objectif à ton médecin ou à un diététicien.",
-  "it": "Gli obiettivi suggeriti sono per adulti. Se stai ancora crescendo, chiedi al tuo medico o a un dietista di un obiettivo."
+  "it": "Gli obiettivi suggeriti sono per adulti. Se stai ancora crescendo, chiedi al tuo medico o a un dietista quale obiettivo seguire."
  },
  "Tap + Warm-up on an exercise to add ramp-up sets: the empty bar, then about half, 70% and 85% of your weight. Shown from 40 kg.": {
-  "nl": "Tik op + Opwarmen bij een oefening voor opbouwsets: de lege stang, dan ongeveer de helft, 70% en 85% van je gewicht. Verschijnt vanaf 40 kg.",
+  "nl": "Tik op + Opwarmen bij een oefening voor opwarmsets: de lege stang, dan ongeveer de helft, 70% en 85% van je gewicht. Verschijnt vanaf 40 kg.",
   "es": "Toca + Calentamiento en un ejercicio para añadir series de aproximación: la barra vacía, luego más o menos la mitad, el 70 % y el 85 % de tu peso. Se muestra desde 40 kg.",
   "de": "Tippe bei einer Übung auf + Aufwärmen, um Aufwärmsätze hinzuzufügen: die leere Stange, dann etwa die Hälfte, 70 % und 85 % deines Gewichts. Ab 40 kg sichtbar.",
   "fr": "Touche + Échauffement sur un exercice pour ajouter des séries de montée : la barre à vide, puis environ la moitié, 70 % et 85 % de ta charge. Affiché dès 40 kg.",
@@ -5394,7 +5394,7 @@
   "es": "Toca los días de la semana en que entrenas y elige qué pasa con un día perdido: omitirlo o pasarlo al día siguiente.",
   "de": "Tippe auf die Wochentage, an denen du trainierst, und wähle, was bei einem verpassten Tag passiert: überspringen oder auf den nächsten Tag verschieben.",
   "fr": "Touche les jours où tu t’entraînes et choisis ce qui arrive à un jour manqué : le sauter ou le reporter au jour suivant.",
-  "it": "Tocca i giorni della settimana in cui ti alleni e scegli cosa fare con un giorno saltato: saltarlo oppure spostarlo al giorno successivo."
+  "it": "Tocca i giorni della settimana in cui ti alleni e scegli cosa fare con un giorno perso: saltarlo oppure spostarlo al giorno successivo."
  },
  "Tapping a taken day replaces what is on it.": {
   "nl": "Een tik op een bezette dag vervangt wat erop staat.",
@@ -5407,7 +5407,7 @@
   "nl": "Noem Claude een product en het zoekt de waarden online op en slaat het op als je eigen eten, met de bronpagina eronder.",
   "es": "Dile a Claude un producto: busca los valores en internet y lo guarda como tu propio alimento, con la página de origen debajo.",
   "de": "Nenne Claude ein Produkt, und es schlägt die Werte online nach und speichert es als dein eigenes Lebensmittel, mit der Quellseite darunter.",
-  "fr": "Dis un produit à Claude : il cherche les valeurs en ligne et l’enregistre comme ton propre aliment, avec la page source affichée dessous.",
+  "fr": "Indique un produit à Claude : il cherche les valeurs en ligne et l’enregistre comme ton propre aliment, avec la page source affichée dessous.",
   "it": "Di’ a Claude un prodotto: cerca i valori online e lo salva come tuo alimento, con la pagina di origine mostrata sotto."
  },
  "The five main pages are in a bar at the bottom on a phone, on the left on a wide screen.": {
@@ -5478,7 +5478,7 @@
   "es": "Demasiados mensajes para un día. Inténtalo de nuevo mañana.",
   "de": "Zu viele Nachrichten für einen Tag. Versuche es morgen erneut.",
   "fr": "Trop de messages pour une journée. Réessaie demain.",
-  "it": "Troppi messaggi per un giorno. Riprova domani."
+  "it": "Troppi messaggi in un giorno. Riprova domani."
  },
  "Train and the plan preview have less text. The first workout shows its date, and Add to calendar is a quieter button.": {
   "nl": "Training en het planoverzicht hebben minder tekst. De eerste training toont zijn datum en Aan agenda toevoegen is een rustigere knop.",
@@ -5490,15 +5490,15 @@
  "Translations are AI-generated and some may be wrong. Found one? Report it in the form.": {
   "nl": "Vertalingen zijn door AI gemaakt en sommige kunnen fout zijn. Zie je er een? Meld het in het formulier.",
   "es": "Las traducciones las genera una IA y algunas pueden tener errores. ¿Encontraste una? Infórmala en el formulario.",
-  "de": "Übersetzungen sind KI-generiert und manche können falsch sein. Einen gefunden? Melde ihn im Formular.",
+  "de": "Übersetzungen sind KI-generiert, manche können falsch sein. Eine falsche gefunden? Melde sie im Formular.",
   "fr": "Les traductions sont générées par IA et certaines peuvent être fausses. Tu en as trouvé une ? Signale-la dans le formulaire.",
-  "it": "Le traduzioni sono generate dall’IA e alcune possono essere sbagliate. Ne hai trovata una? Segnalala nel modulo."
+  "it": "Le traduzioni sono generate dall’AI e alcune possono essere sbagliate. Ne hai trovata una? Segnalala nel modulo."
  },
  "Trend counts only sessions from {0}.": {
   "nl": "Trend telt alleen trainingen vanaf {0}.",
   "es": "La tendencia cuenta solo las sesiones desde el {0}.",
   "de": "Der Trend zählt nur Einheiten ab {0}.",
-  "fr": "La tendance ne compte que les séances à partir de {0}.",
+  "fr": "La tendance ne compte que les séances à partir du {0}.",
   "it": "L'andamento conta solo le sessioni da {0}."
  },
  "Two {0} days in a row on {1} {2} and {3} {4}. Leave a rest day between.": {
@@ -5559,16 +5559,16 @@
  },
  "Want to count? Switch on calories in Settings, Food. Log calories, protein, carbs and fat, get a daily target from your goal and see averages over 1 to 12 months.": {
   "nl": "Wil je tellen? Zet calorieën aan in Instellingen, Eten. Log calorieën, eiwit, koolhydraten en vet, krijg een dagdoel op basis van je doel en zie gemiddelden over 1 tot 12 maanden.",
-  "es": "¿Quieres contar? Activa las calorías en Ajustes, Comida. Registra calorías, proteína, hidratos de carbono y grasa, recibe un objetivo diario según tu meta y mira medias de 1 a 12 meses.",
+  "es": "¿Quieres contar? Activa las calorías en Ajustes, Comida. Registra calorías, proteína, hidratos de carbono y grasa, recibe un objetivo diario según tu objetivo y mira medias de 1 a 12 meses.",
   "de": "Willst du zählen? Schalte Kalorien unter Einstellungen, Ernährung ein. Trage Kalorien, Eiweiß, Kohlenhydrate und Fett ein, erhalte ein Tagesziel passend zu deinem Ziel und sieh Durchschnitte über 1 bis 12 Monate.",
-  "fr": "Tu veux compter ? Active les calories dans Réglages, Alimentation. Enregistre calories, protéines, glucides et lipides, reçois un objectif quotidien d’après ton but et vois les moyennes sur 1 à 12 mois.",
+  "fr": "Tu veux compter ? Active les calories dans Réglages, Alimentation. Enregistre calories, protéines, glucides et lipides, reçois un objectif quotidien d’après ton objectif et vois les moyennes sur 1 à 12 mois.",
   "it": "Vuoi contare? Attiva le calorie in Impostazioni, Cibo. Registra calorie, proteine, carboidrati e grassi, ottieni un obiettivo giornaliero in base al tuo obiettivo e vedi le medie su 1-12 mesi."
  },
  "We decided not to go ahead with your {0} \"{1}\".": {
   "nl": "We hebben besloten je {0} \"{1}\" niet op te pakken.",
   "es": "Hemos decidido no seguir adelante con tu {0} \"{1}\".",
-  "de": "Wir haben uns entschieden, dein {0} \"{1}\" nicht umzusetzen.",
-  "fr": "Nous avons décidé de ne pas donner suite à ton {0} \"{1}\".",
+  "de": "Deine Meldung ({0}) \"{1}\": Wir haben uns entschieden, sie nicht umzusetzen.",
+  "fr": "Nous avons décidé de ne pas donner suite à ton envoi ({0}) \"{1}\".",
   "it": "Abbiamo deciso di non procedere con il tuo {0} \"{1}\"."
  },
  "Weights, technique, how it felt.": {
@@ -5576,7 +5576,7 @@
   "es": "Pesos, técnica, cómo te sentiste.",
   "de": "Gewichte, Technik, wie es sich angefühlt hat.",
   "fr": "Charges, technique, ressenti.",
-  "it": "Pesi, tecnica, come ti sei sentito."
+  "it": "Pesi, tecnica, sensazioni."
  },
  "What happened, and what did you expect?": {
   "nl": "Wat gebeurde er, en wat verwachtte je?",
@@ -5597,7 +5597,7 @@
   "es": "Si dejas el sexo en blanco, se usa la media de las fórmulas femenina y masculina.",
   "de": "Ohne Angabe des Geschlechts nutzt es den Mittelwert aus der Formel für Frauen und der für Männer.",
   "fr": "Sans le sexe renseigné, elle utilise la moyenne des formules femme et homme.",
-  "it": "Se il sesso è vuoto, usa la media tra la formula femminile e quella maschile."
+  "it": "Se lasci vuoto il sesso, usa la media tra la formula femminile e quella maschile."
  },
  "Works with Claude, ChatGPT or any other AI chat.": {
   "nl": "Werkt met Claude, ChatGPT of een andere AI-chat.",
@@ -5632,7 +5632,7 @@
   "es": "Yes Coach! está originalmente en inglés. Las traducciones están generadas por IA y pueden contener errores.",
   "de": "Yes Coach! ist ursprünglich auf Englisch. Die Übersetzungen sind KI-generiert und können Fehler enthalten.",
   "fr": "Yes Coach! est à l’origine en anglais. Les traductions sont générées par IA et peuvent contenir des erreurs.",
-  "it": "Yes Coach! è originariamente in inglese. Le traduzioni sono generate dall'IA e possono contenere errori."
+  "it": "Yes Coach! è originariamente in inglese. Le traduzioni sono generate dall'AI e possono contenere errori."
  },
  "Yes Coach! opens on Train when you are signed in.": {
   "nl": "Yes Coach! opent op Training als je bent ingelogd.",
@@ -5692,9 +5692,9 @@
  },
  "Your goal is to lose weight, so this is about 15% under what you burn. Extra protein helps you keep muscle.": {
   "nl": "Je doel is afvallen, dus dit is ongeveer 15% onder wat je verbrandt. Extra eiwit helpt je spieren te behouden.",
-  "es": "Tu objetivo es perder peso, así que esto es un 15 % menos de lo que quemas. La proteína extra te ayuda a conservar el músculo.",
+  "es": "Tu objetivo es perder peso, así que esto es alrededor de un 15 % menos de lo que quemas. La proteína extra te ayuda a conservar el músculo.",
   "de": "Dein Ziel ist abzunehmen, daher liegt das etwa 15 % unter dem, was du verbrauchst. Zusätzliches Eiweiß hilft dir, Muskeln zu halten.",
-  "fr": "Ton objectif est de perdre du poids, donc c’est environ 15 % sous ce que tu brûles. Davantage de protéines t’aide à garder du muscle.",
+  "fr": "Ton objectif est de perdre du poids, donc c’est environ 15 % sous ce que tu brûles. Plus de protéines t’aident à garder du muscle.",
   "it": "Il tuo obiettivo è dimagrire, quindi è circa il 15% sotto ciò che bruci. Proteine extra ti aiutano a mantenere i muscoli."
  },
  "Your history is too large to send at once. Copy and paste instead, and attach the file.": {
@@ -5730,7 +5730,7 @@
   "es": "Tus propios tamaños de porción, guardados por ti o por Claude, salen primero al añadir un alimento.",
   "de": "Deine eigenen Portionsgrößen, von dir oder Claude gespeichert, stehen beim Hinzufügen eines Lebensmittels an erster Stelle.",
   "fr": "Tes propres tailles de portion, enregistrées par toi ou par Claude, passent en premier quand tu ajoutes un aliment.",
-  "it": "Le porzioni tue, salvate da te o da Claude, vengono per prime quando aggiungi un alimento."
+  "it": "Le tue porzioni, salvate da te o da Claude, vengono per prime quando aggiungi un alimento."
  },
  "Your training data is not available here. Sign in to claude.ai first. Already signed in? This account can only view Yes Coach. Ask the owner to invite you as Editor in Share.": {
   "nl": "Je trainingsgegevens zijn hier niet beschikbaar. Log eerst in bij claude.ai. Al ingelogd? Dit account kan Yes Coach alleen bekijken. Vraag de eigenaar je als Editor uit te nodigen in Share.",
@@ -5782,17 +5782,17 @@
   "it": "{0} I giorni aggiunti da allora restano. Le sessioni registrate non cambiano mai."
  },
  "{0} a week, but only {1} you can train. Pick more days or fewer sessions.": {
-  "nl": "{0} per week, maar je kunt maar op {1} trainen. Kies meer dagen of minder trainingen.",
+  "nl": "{0} per week, maar je kunt alleen op {1} trainen. Kies meer dagen of minder trainingen.",
   "es": "{0} por semana, pero solo puedes entrenar {1}. Elige más días o menos sesiones.",
-  "de": "{0} pro Woche, aber du kannst nur an {1} trainieren. Wähle mehr Tage oder weniger Einheiten.",
+  "de": "{0} pro Woche, aber du hast nur {1} zum Trainieren. Wähle mehr Tage oder weniger Einheiten.",
   "fr": "{0} par semaine, mais tu ne peux t’entraîner que {1}. Choisis plus de jours ou moins de séances.",
   "it": "{0} a settimana, ma solo {1} in cui puoi allenarti. Scegli più giorni o meno sessioni."
  },
  "{0} a week, spread over your {1} days, so they can land on different weekdays.": {
   "nl": "{0} per week, verspreid over je {1} dagen, dus ze kunnen op verschillende weekdagen vallen.",
-  "es": "{0} por semana, repartidas entre tus {1} días, así que pueden caer en días de la semana distintos.",
+  "es": "{0} por semana, repartidos entre tus {1} días, así que pueden caer en días de la semana distintos.",
   "de": "{0} pro Woche, verteilt auf deine {1} Tage, daher können sie auf verschiedene Wochentage fallen.",
-  "fr": "{0} par semaine, réparties sur tes {1} jours, donc elles peuvent tomber des jours différents.",
+  "fr": "{0} par semaine, réparties sur tes {1} jours, donc elles peuvent tomber sur des jours différents.",
   "it": "{0} a settimana, distribuite sui tuoi {1} giorni, quindi possono cadere in giorni della settimana diversi."
  },
  "{0} added. Open it to add it to a workout.": {
@@ -5820,7 +5820,7 @@
   "nl": "{0} uit je week",
   "es": "{0} de tu semana",
   "de": "{0} aus deiner Woche",
-  "fr": "{0} retiré de ta semaine",
+  "fr": "{0} de ta semaine",
   "it": "{0} dalla tua settimana"
  },
  "{0} is saved. Claude reads it through your connector and replies in a new chat.": {
@@ -5876,13 +5876,13 @@
   "nl": "Verborgen: {0} zonder trainingen in deze periode.",
   "es": "Ocultos: {0} sin sesiones en este periodo.",
   "de": "Ausgeblendet: {0} ohne Einheiten in diesem Zeitraum.",
-  "fr": "Masqués : {0} sans séance sur cette période.",
+  "fr": "Masqués : {0} sans séance sur cette période.",
   "it": "Nascosti: {0} senza sessioni in questo periodo."
  },
  "Plainer wording": {
-  "nl": "Duidelijkere teksten",
+  "nl": "Eenvoudigere teksten",
   "es": "Textos más claros",
-  "de": "Klarere Texte",
+  "de": "Einfachere Texte",
   "fr": "Des textes plus clairs",
   "it": "Testi più chiari"
  },
@@ -5898,6 +5898,398 @@
   "es": "Plan cuenta los cambios de esta semana en vez de listar cada movimiento.",
   "de": "Plan zählt die Änderungen dieser Woche, statt jede Verschiebung aufzulisten.",
   "fr": "Plan compte les changements de cette semaine au lieu de lister chaque déplacement.",
-  "it": "Plan conta le modifiche di questa settimana invece di elencare ogni spostamento."
+  "it": "Piano conta le modifiche di questa settimana invece di elencare ogni spostamento."
+ },
+ ", best {0}, trend {1} {2} over {3} workouts": {
+  "nl": ", beste {0}, trend {1} {2} over {3} trainingen",
+  "es": ", mejor {0}, tendencia {1} {2} en {3} entrenamientos",
+  "de": ", Bestwert {0}, Trend {1} {2} über {3} Trainings",
+  "fr": ", meilleur {0}, tendance {1} {2} sur {3} séances",
+  "it": ", migliore {0}, andamento {1} {2} su {3} allenamenti"
+ },
+ ", one workout in this period": {
+  "nl": ", één training in deze periode",
+  "es": ", un entrenamiento en este periodo",
+  "de": ", ein Training in diesem Zeitraum",
+  "fr": ", une séance sur cette période",
+  "it": ", un allenamento in questo periodo"
+ },
+ "Back to Train. The workout stays open.": {
+  "nl": "Terug naar Training. De training blijft open.",
+  "es": "Volver a Entrenar. El entrenamiento sigue abierto.",
+  "de": "Zurück zu Training. Das Training bleibt offen.",
+  "fr": "Retour à Entraînement. La séance reste ouverte.",
+  "it": "Torna ad Allenamento. L’allenamento resta aperto."
+ },
+ "Change workout": {
+  "nl": "Training wijzigen",
+  "es": "Cambiar entrenamiento",
+  "de": "Training ändern",
+  "fr": "Changer de séance",
+  "it": "Cambia allenamento"
+ },
+ "Claude": {
+  "nl": "Claude",
+  "es": "Claude",
+  "de": "Claude",
+  "fr": "Claude",
+  "it": "Claude"
+ },
+ "Claude answered": {
+  "nl": "Claude heeft geantwoord",
+  "es": "Claude respondió",
+  "de": "Claude hat geantwortet",
+  "fr": "Claude a répondu",
+  "it": "Claude ha risposto"
+ },
+ "Delete workout": {
+  "nl": "Training verwijderen",
+  "es": "Eliminar entrenamiento",
+  "de": "Training löschen",
+  "fr": "Supprimer la séance",
+  "it": "Elimina allenamento"
+ },
+ "Enter the total weight.": {
+  "nl": "Vul het totale gewicht in.",
+  "es": "Introduce el peso total.",
+  "de": "Gib das Gesamtgewicht ein.",
+  "fr": "Saisis le poids total.",
+  "it": "Inserisci il peso totale."
+ },
+ "Finish a workout": {
+  "nl": "Rond een training af",
+  "es": "Termina un entrenamiento",
+  "de": "Ein Training abschließen",
+  "fr": "Termine une séance",
+  "it": "Concludi un allenamento"
+ },
+ "Finish workout": {
+  "nl": "Training afronden",
+  "es": "Terminar entrenamiento",
+  "de": "Training abschließen",
+  "fr": "Terminer la séance",
+  "it": "Concludi l’allenamento"
+ },
+ "Going over your protein target is no longer marked as above target.": {
+  "nl": "Meer eiwit dan je doel wordt niet meer als te veel gemarkeerd.",
+  "es": "Superar tu objetivo de proteína ya no se marca como por encima del objetivo.",
+  "de": "Mehr als dein Eiweißziel wird nicht mehr als über dem Ziel markiert.",
+  "fr": "Dépasser ton objectif de protéines n’est plus indiqué comme au-dessus de l’objectif.",
+  "it": "Superare il tuo obiettivo di proteine non viene più segnato come sopra l’obiettivo."
+ },
+ "Hidden: {0} with no workouts in this period.": {
+  "nl": "Verborgen: {0} zonder trainingen in deze periode.",
+  "es": "Ocultos: {0} sin entrenamientos en este periodo.",
+  "de": "Ausgeblendet: {0} ohne Trainings in diesem Zeitraum.",
+  "fr": "Masqués : {0} sans séance sur cette période.",
+  "it": "Nascosti: {0} senza allenamenti in questo periodo."
+ },
+ "It leaves your week. Logged workouts stay in your history.": {
+  "nl": "Hij valt uit je week. Gelogde trainingen blijven in je geschiedenis.",
+  "es": "Sale de tu semana. Los entrenamientos registrados se quedan en tu historial.",
+  "de": "Er verlässt deine Woche. Eingetragene Trainings bleiben in deinem Verlauf.",
+  "fr": "Il quitte ta semaine. Les séances enregistrées restent dans ton historique.",
+  "it": "Esce dalla tua settimana. Gli allenamenti registrati restano nel tuo storico."
+ },
+ "No workouts in this period.": {
+  "nl": "Geen trainingen in deze periode.",
+  "es": "No hay entrenamientos en este periodo.",
+  "de": "Keine Trainings in diesem Zeitraum.",
+  "fr": "Aucune séance sur cette période.",
+  "it": "Nessun allenamento in questo periodo."
+ },
+ "No {0}workouts in {1}. Pick a longer period.": {
+  "nl": "Geen {0}trainingen in {1}. Kies een langere periode.",
+  "es": "Sin {0}entrenamientos en {1}. Elige un periodo más largo.",
+  "de": "Keine {0}Trainings in {1}. Wähle einen längeren Zeitraum.",
+  "fr": "Aucune séance {0}sur {1}. Choisis une période plus longue.",
+  "it": "Nessun allenamento {0}in {1}. Scegli un periodo più lungo."
+ },
+ "Older": {
+  "nl": "Eerder",
+  "es": "Anteriores",
+  "de": "Ältere",
+  "fr": "Plus anciens",
+  "it": "Precedenti"
+ },
+ "One workout in this period. A chart needs two.": {
+  "nl": "Eén training in deze periode. Een grafiek heeft er twee nodig.",
+  "es": "Un entrenamiento en este periodo. Un gráfico necesita dos.",
+  "de": "Ein Training in diesem Zeitraum. Ein Diagramm braucht zwei.",
+  "fr": "Une séance sur cette période. Un graphique en demande deux.",
+  "it": "Un allenamento in questo periodo. Un grafico ne richiede due."
+ },
+ "Open workout": {
+  "nl": "Training openen",
+  "es": "Abrir entrenamiento",
+  "de": "Training öffnen",
+  "fr": "Ouvrir la séance",
+  "it": "Apri allenamento"
+ },
+ "Read by Claude": {
+  "nl": "Gelezen door Claude",
+  "es": "Leído por Claude",
+  "de": "Von Claude gelesen",
+  "fr": "Lu par Claude",
+  "it": "Letto da Claude"
+ },
+ "Remove workout": {
+  "nl": "Training weghalen",
+  "es": "Quitar entrenamiento",
+  "de": "Training entfernen",
+  "fr": "Retirer la séance",
+  "it": "Rimuovi allenamento"
+ },
+ "Review and log the workout of {0}": {
+  "nl": "Bekijk en log de training van {0}",
+  "es": "Revisar y registrar el entrenamiento de {0}",
+  "de": "Training vom {0} prüfen und eintragen",
+  "fr": "Analyser et enregistrer la séance de {0}",
+  "it": "Rivedi e registra l’allenamento di {0}"
+ },
+ "Saving your history: {0} of {1} workouts…": {
+  "nl": "Je geschiedenis wordt opgeslagen: {0} van {1} trainingen…",
+  "es": "Guardando tu historial: {0} de {1} entrenamientos…",
+  "de": "Dein Verlauf wird gespeichert: {0} von {1} Trainings…",
+  "fr": "Enregistrement de ton historique : {0} séances sur {1}…",
+  "it": "Salvataggio del tuo storico: {0} su {1} allenamenti…"
+ },
+ "Send workout to Claude": {
+  "nl": "Training naar Claude sturen",
+  "es": "Enviar entrenamiento a Claude",
+  "de": "Training an Claude senden",
+  "fr": "Envoyer la séance à Claude",
+  "it": "Invia l’allenamento a Claude"
+ },
+ "Start workout": {
+  "nl": "Training starten",
+  "es": "Empezar entrenamiento",
+  "de": "Training starten",
+  "fr": "Démarrer la séance",
+  "it": "Inizia l’allenamento"
+ },
+ "Suggest the next weight from your last workouts": {
+  "nl": "Stel het volgende gewicht voor op basis van je laatste trainingen",
+  "es": "Sugerir el próximo peso según tus últimos entrenamientos",
+  "de": "Nächstes Gewicht aus deinen letzten Trainings vorschlagen",
+  "fr": "Suggérer la prochaine charge d’après tes dernières séances",
+  "it": "Suggerisci il prossimo peso in base agli ultimi allenamenti"
+ },
+ "Switch back": {
+  "nl": "Terugzetten",
+  "es": "Recuperarlo",
+  "de": "Zurückholen",
+  "fr": "Rétablir",
+  "it": "Ripristinalo"
+ },
+ "Tap a bar for workouts.": {
+  "nl": "Tik op een balk voor de trainingen.",
+  "es": "Toca una barra para ver sus entrenamientos.",
+  "de": "Tippe auf einen Balken für die Trainings.",
+  "fr": "Touche une barre pour voir les séances.",
+  "it": "Tocca una barra per vederne gli allenamenti."
+ },
+ "Trend counts only workouts from {0}.": {
+  "nl": "Trend telt alleen trainingen vanaf {0}.",
+  "es": "La tendencia cuenta solo los entrenamientos desde el {0}.",
+  "de": "Der Trend zählt nur Trainings ab {0}.",
+  "fr": "La tendance ne compte que les séances à partir du {0}.",
+  "it": "L’andamento conta solo gli allenamenti da {0}."
+ },
+ "Working sets by body part, {0}. Tap a bar for workouts.": {
+  "nl": "Werksets per lichaamsdeel, {0}. Tik op een balk voor de trainingen.",
+  "es": "Series efectivas por parte del cuerpo, {0}. Toca una barra para ver los entrenamientos.",
+  "de": "Arbeitssätze nach Körperpartie, {0}. Tippe auf einen Balken für die Trainings.",
+  "fr": "Séries de travail par partie du corps, {0}. Touche une barre pour les séances.",
+  "it": "Serie di lavoro per parte del corpo, {0}. Tocca una barra per gli allenamenti."
+ },
+ "Working sets by body part, {0}. Workouts per month are listed below the bars.": {
+  "nl": "Werksets per lichaamsdeel, {0}. Trainingen per maand staan onder de balken.",
+  "es": "Series efectivas por parte del cuerpo, {0}. Los entrenamientos por mes están debajo de las barras.",
+  "de": "Arbeitssätze nach Körperpartie, {0}. Die Trainings pro Monat stehen unter den Balken.",
+  "fr": "Séries de travail par partie du corps, {0}. Les séances par mois sont listées sous les barres.",
+  "it": "Serie di lavoro per parte del corpo, {0}. Gli allenamenti al mese sono elencati sotto le barre."
+ },
+ "Working sets by body part, {0}. Workouts per week are listed below the bars.": {
+  "nl": "Werksets per lichaamsdeel, {0}. Trainingen per week staan onder de balken.",
+  "es": "Series efectivas por parte del cuerpo, {0}. Los entrenamientos por semana están debajo de las barras.",
+  "de": "Arbeitssätze nach Körperpartie, {0}. Die Trainings pro Woche stehen unter den Balken.",
+  "fr": "Séries de travail par partie du corps, {0}. Les séances par semaine sont listées sous les barres.",
+  "it": "Serie di lavoro per parte del corpo, {0}. Gli allenamenti a settimana sono elencati sotto le barre."
+ },
+ "Workout date": {
+  "nl": "Datum van training",
+  "es": "Fecha del entrenamiento",
+  "de": "Datum des Trainings",
+  "fr": "Date de la séance",
+  "it": "Data dell’allenamento"
+ },
+ "Workout date {0}{1} {2}. Change date": {
+  "nl": "Datum van training {0}{1} {2}. Datum wijzigen",
+  "es": "Fecha del entrenamiento {0}{1} {2}. Cambiar fecha",
+  "de": "Datum des Trainings {0}{1} {2}. Datum ändern",
+  "fr": "Date de la séance {0}{1} {2}. Changer la date",
+  "it": "Data dell’allenamento {0}{1} {2}. Cambia data"
+ },
+ "Workout length": {
+  "nl": "Duur van training",
+  "es": "Duración del entrenamiento",
+  "de": "Dauer des Trainings",
+  "fr": "Durée de la séance",
+  "it": "Durata dell’allenamento"
+ },
+ "Workout log": {
+  "nl": "Traininglogboek",
+  "es": "Registro del entrenamiento",
+  "de": "Trainingsprotokoll",
+  "fr": "Journal de séance",
+  "it": "Registro dell’allenamento"
+ },
+ "Workout menu": {
+  "nl": "Trainingsmenu",
+  "es": "Menú del entrenamiento",
+  "de": "Trainingsmenü",
+  "fr": "Menu de la séance",
+  "it": "Menu dell’allenamento"
+ },
+ "Workouts": {
+  "nl": "Trainingen",
+  "es": "Entrenamientos",
+  "de": "Trainings",
+  "fr": "Séances",
+  "it": "Allenamenti"
+ },
+ "Workouts a week": {
+  "nl": "Trainingen per week",
+  "es": "Entrenamientos por semana",
+  "de": "Trainings pro Woche",
+  "fr": "Séances par semaine",
+  "it": "Allenamenti a settimana"
+ },
+ "Workouts per month are listed below the bars.": {
+  "nl": "Trainingen per maand staan onder de balken.",
+  "es": "Los entrenamientos por mes están debajo de las barras.",
+  "de": "Die Trainings pro Monat stehen unter den Balken.",
+  "fr": "Les séances par mois sont listées sous les barres.",
+  "it": "Gli allenamenti al mese sono elencati sotto le barre."
+ },
+ "Workouts per week are listed below the bars.": {
+  "nl": "Trainingen per week staan onder de balken.",
+  "es": "Los entrenamientos por semana están debajo de las barras.",
+  "de": "Die Trainings pro Woche stehen unter den Balken.",
+  "fr": "Les séances par semaine sont listées sous les barres.",
+  "it": "Gli allenamenti a settimana sono elencati sotto le barre."
+ },
+ "Your logged workouts stay as they are. You can bring back the old week from Your week.": {
+  "nl": "Je gelogde trainingen blijven zoals ze zijn. Met Jouw week haal je de oude week terug.",
+  "es": "Tus entrenamientos registrados se quedan como están. Puedes recuperar la semana anterior desde Tu semana.",
+  "de": "Deine eingetragenen Trainings bleiben, wie sie sind. Die alte Woche kannst du unter Deine Woche zurückholen.",
+  "fr": "Tes séances enregistrées ne changent pas. Tu peux ramener l’ancienne semaine depuis Ta semaine.",
+  "it": "Gli allenamenti registrati restano com’erano. Puoi ripristinare la vecchia settimana da La tua settimana."
+ },
+ "in existing workouts": {
+  "nl": "in bestaande trainingen",
+  "es": "en los entrenamientos existentes",
+  "de": "in vorhandenen Trainings",
+  "fr": "dans les séances existantes",
+  "it": "negli allenamenti esistenti"
+ },
+ "this workout": {
+  "nl": "deze training",
+  "es": "este entrenamiento",
+  "de": "dieses Training",
+  "fr": "cette séance",
+  "it": "questo allenamento"
+ },
+ "{0} Days you added since then stay. Logged workouts never change.": {
+  "nl": "{0} Dagen die je sindsdien hebt toegevoegd, blijven staan. Gelogde trainingen veranderen nooit.",
+  "es": "{0} Los días que añadiste desde entonces se quedan. Los entrenamientos registrados nunca cambian.",
+  "de": "{0} Tage, die du seitdem hinzugefügt hast, bleiben. Eingetragene Trainings ändern sich nie.",
+  "fr": "{0} Les jours ajoutés depuis restent. Les séances enregistrées ne changent jamais.",
+  "it": "{0} I giorni aggiunti da allora restano. Gli allenamenti registrati non cambiano mai."
+ },
+ "{0} a week, but only {1} you can train. Pick more days or fewer workouts.": {
+  "nl": "{0} per week, maar je kunt alleen op {1} trainen. Kies meer dagen of minder trainingen.",
+  "es": "{0} por semana, pero solo puedes entrenar {1}. Elige más días o menos entrenamientos.",
+  "de": "{0} pro Woche, aber du hast nur {1} zum Trainieren. Wähle mehr Tage oder weniger Trainings.",
+  "fr": "{0} par semaine, mais tu ne peux t’entraîner que {1}. Choisis plus de jours ou moins de séances.",
+  "it": "{0} a settimana, ma solo {1} in cui puoi allenarti. Scegli più giorni o meno allenamenti."
+ },
+ "{0} per workout for {1}": {
+  "nl": "{0} per training voor {1}",
+  "es": "{0} por entrenamiento durante {1}",
+  "de": "{0} pro Training für {1}",
+  "fr": "{0} par séance pour {1}",
+  "it": "{0} per allenamento per {1}"
+ },
+ "{0} workout": {
+  "nl": "{0} training",
+  "es": "{0} entrenamiento",
+  "de": "{0} Training",
+  "fr": "{0} séance",
+  "it": "{0} allenamento"
+ },
+ "{0} workouts": {
+  "nl": "{0} trainingen",
+  "es": "{0} entrenamientos",
+  "de": "{0} Trainings",
+  "fr": "{0} séances",
+  "it": "{0} allenamenti"
+ },
+ "{0}, open this workout": {
+  "nl": "{0}, open deze training",
+  "es": "{0}, abrir este entrenamiento",
+  "de": "{0}, dieses Training öffnen",
+  "fr": "{0}, ouvre cette séance",
+  "it": "{0}, apri questo allenamento"
+ },
+ "{0}{1}, {2} sets in {3} workouts": {
+  "nl": "{0}{1}, {2} sets in {3} trainingen",
+  "es": "{0}{1}, {2} series en {3} entrenamientos",
+  "de": "{0}{1}, {2} Sätze in {3} Trainings",
+  "fr": "{0}{1}, {2} séries en {3} séances",
+  "it": "{0}{1}, {2} serie in {3} allenamenti"
+ },
+ "· {0} workout": {
+  "nl": "· {0} training",
+  "es": "· {0} entrenamiento",
+  "de": "· {0} Training",
+  "fr": "· {0} séance",
+  "it": "· {0} allenamento"
+ },
+ "· {0} workouts": {
+  "nl": "· {0} trainingen",
+  "es": "· {0} entrenamientos",
+  "de": "· {0} Trainings",
+  "fr": "· {0} séances",
+  "it": "· {0} allenamenti"
+ },
+ "Imported {0} workouts.": {
+  "nl": "{0} trainingen geïmporteerd.",
+  "es": "{0} entrenamientos importados.",
+  "de": "{0} Trainings importiert.",
+  "fr": "{0} séances importées.",
+  "it": "{0} allenamenti importati."
+ },
+ "One word for a workout": {
+  "nl": "Eén woord voor een training",
+  "es": "Una sola palabra para un entrenamiento",
+  "de": "Ein Wort für ein Training",
+  "fr": "Un seul mot pour une séance",
+  "it": "Una sola parola per un allenamento"
+ },
+ "A workout is called a workout everywhere. Session and day are gone from buttons and notes.": {
+  "nl": "Een training heet overal training. Sessie en dag zijn uit knoppen en notities verdwenen.",
+  "es": "Un entrenamiento se llama entrenamiento en todas partes. Sesión y día han desaparecido de botones y notas.",
+  "de": "Ein Training heißt überall Training. Einheit und Tag sind aus Schaltflächen und Hinweisen verschwunden.",
+  "fr": "Une séance s’appelle séance partout. Session et jour ont disparu des boutons et des notes.",
+  "it": "Un allenamento si chiama allenamento ovunque. Sessione e giorno sono spariti da pulsanti e note."
+ },
+ "What's new shows the latest five entries. The rest is under Older.": {
+  "nl": "Wat is er nieuw toont de laatste vijf items. De rest staat onder Eerder.",
+  "es": "Novedades muestra las cinco últimas entradas. El resto está en Anteriores.",
+  "de": "Neuigkeiten zeigt die letzten fünf Einträge. Der Rest steht unter Ältere.",
+  "fr": "Nouveautés affiche les cinq dernières entrées. Le reste se trouve sous Plus anciens.",
+  "it": "Novità mostra le ultime cinque voci. Il resto è sotto Precedenti."
  }
 }

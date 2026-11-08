@@ -530,3 +530,29 @@ Sorted by severity, then impact. **Verdict** is mine: blank means accept the pro
 | 1 | L | Not saved. Check your connection; changes stay on this screen. | Not saved. Check your connection. Your edits are still here. | Semicolon; 'stay on this screen' is vague. |  |
 | 1 | L | Restore stopped after {0} of {1} items: {2}. Pick the file again to finish; items already restored are skipped. | Restore stopped after {0} of {1} items: {2}. Pick the file again to finish. Restored items are skipped. | Semicolon joins two ideas |  |
 | 1 | L | Your data is not connected on this screen, so nothing can be restored. | Your data is not connected. Nothing can be restored. | 'on this screen' is vague; one idea per sentence |  |
+
+## What was applied, and the calls I made on the open items
+
+All of the above was applied in PR #68, and the gaps were closed in the follow-up.
+
+**Decisions on the 11 rows marked Decide or Reject**
+
+| Row | Call | Why |
+|---|---|---|
+| Request tile hints (3) | Kept | They help you choose before the form exists. The form hint helps while typing. |
+| Trend explanation ("so one good or bad day does not decide the change") | Kept | It is the reason the trend line exists. |
+| Mifflin-St Jeor name on the calorie target | Kept | Lets people check the number. |
+| "{0} in {1}." for training days | Kept | Loses what is counted. |
+| "Look back or correct" | Kept | Says what the button is for. |
+| "Thank you!" status chip | Kept | It is the outcome the owner picked. |
+| Release note "more is never shown as above" | Rewritten | "Going over your protein target is no longer marked as above target." |
+| "Bring it back" (previous week) | "Switch back" | "Restore" is already the backup button. |
+| "Type the weight you want on the bar." | "Enter the total weight." | The field label says total load. |
+
+**Vocabulary.** "Workout" is what you do ("Workout log", "Finish workout", "Workouts a week"). "Training day" stays for a plan item ("Push day", "New training day"). "Session" is gone from interface text. The AI helper is "Claude" everywhere in the interface, never "Coach".
+
+**Also done**
+- What's new shows the latest five entries with an "Older" fold.
+- A second reviewer per language checked all 330 new translations: 75 flags (4.5%), all fixed. They included wrong gender agreement (es, de, fr, it), a dropped "about" on a calorie figure, "Le aucun jour", and a wrong verb (restore) in the Dutch backup flow.
+- A layout sweep of 14 screens in all five languages at 360 and 390 px found no sideways scroll and no clipped text. The one hit, the sideways-scrolling "For you" cards, is intended.
+- A flaky test ("with an Undo toast") was a race in the test itself and is fixed.

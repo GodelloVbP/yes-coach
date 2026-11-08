@@ -98,7 +98,7 @@ try:
             page.goto(BASE); page.wait_for_selector('text=Start Push day', timeout=8000); page.click('text=Start Push day')
             page.wait_for_selector('#f-bench_1-load', state='visible'); page.wait_for_timeout(300)
             page.fill('#f-bench_1-load', '60'); page.fill('#f-bench_1-reps', '8'); page.locator('.set:has(#f-bench_1-load) .set-tick').click(); page.wait_for_timeout(400)
-            page.locator('button.skew:visible', has_text='Finish day').first.click(); page.wait_for_selector('#fin-done', state='visible')
+            page.locator('button.skew:visible', has_text='Finish workout').first.click(); page.wait_for_selector('#fin-done', state='visible')
         be = Backend(); workout_seed(be, False)
         def nudge(page):
             finish_day(page)
@@ -114,7 +114,7 @@ try:
             page.click('#tab-train'); page.click('text=Start Push day')
             page.wait_for_selector('#f-bench_1-load', state='visible'); page.wait_for_timeout(300)
             page.fill('#f-bench_1-load', '60'); page.fill('#f-bench_1-reps', '8'); page.locator('.set:has(#f-bench_1-load) .set-tick').click(); page.wait_for_timeout(400)
-            page.locator('button.skew:visible', has_text='Finish day').first.click(); page.wait_for_selector('#fin-done', state='visible')
+            page.locator('button.skew:visible', has_text='Finish workout').first.click(); page.wait_for_selector('#fin-done', state='visible')
             page.click('.fin-eat button')
             check('the nudge opens today, not the day looked at before', until(lambda: vis(page, '#v-food') and page.inner_text('#fd-date').lower().startswith('today')), page.inner_text('#fd-date'))
         errs = session(pw, be, ALICE, nudge_today, width=390); check('no page errors (nudge today)', not errs, errs)
