@@ -4,7 +4,8 @@
 //
 // Sign-in: Supabase's OAuth 2.1 server. The AI client sends the user's access token; every database call carries
 // that token, so row-level security (schema.sql) keeps each user inside their own rows. No admin key is used.
-// Logged sets are never written. The AI can change training days, the weekly schedule, add exercises and answer notes.
+// The AI can change training days, the weekly schedule, add exercises and answer notes, and it can add sets to the log and remove them (never edit one,
+// never delete a session document). A removed set is flagged the way the app flags one, so it leaves the history and progress.
 // It can also log meals, remove food entries, remember the person's own foods and portion sizes, and keep saved meals. Nutrients are never typed by the AI: they are read from the same NEVO and
 // USDA tables the app searches (foods-nevo.json, foods-usda.json, portions-nevo.json, fetched from the app's own site).
 
@@ -17,11 +18,12 @@ const PROTOCOLS = ['2025-06-18', '2025-03-26', '2024-11-05'];
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const KINDS = ['Push', 'Pull', 'Legs', 'Other'];
 const UNITS = ['kg', 'bw', 'stack', 'assist', 'min'];
+const SET_KINDS = ['work', 'warmup', 'drop', 'test'];
 const GROUPS = ['Chest', 'Back', 'Shoulders', 'Arms', 'Legs', 'Core', 'Other'];
 
 const INSTRUCTIONS = [
   'Yes Coach! is a workout tracker. These tools read the signed-in person\'s own plan, log and notes, and change their plan.',
-  'Logged sets can not be changed. Plan changes show up in their app at once, and the app keeps an undo for the schedule.',
+  'Sets can be added to the log and removed from it, but not edited: to fix a set, remove it and add the right one. A removed set leaves the history and Progress. Plan changes show up in their app at once, and the app keeps an undo for the schedule.',
   'Exercises are referenced by id. Loads are in kg.',
   'Food: search_foods finds foods in the Dutch (NEVO) and international (USDA) tables the app uses; save_custom_food saves a product that is in neither, from the numbers on its label or product page; log_meals saves meals as food ids with grams or a portion; get_food_day and remove_food_entry read and remove entries.',
   'The app reads every nutrient from those tables, so the AI supplies foods and amounts, not nutrient numbers. A search lists the portions a food comes in (a slice, a piece) with grams for one; amounts that are guesses are marked estimated.',
@@ -102,7 +104,7 @@ const dayOut = (id: string, d: Json, ex: Record<string, Json>, week: Set<string>
 });
 
 // ---------------------------------------------------------------- sessions
-const isDone = (st: Json): boolean => !!st && st.done !== false;
+const isDone = (st: Json): boolean => !!st && st.done !== false && !st.removed;
 const isWork = (st: Json): boolean => !!st && st.kind !== 'warmup' && st.kind !== 'test';
 // a run set also carries distance (km), climb (m) and where it happened; the pace follows from time and distance
 const runOut = (st: Json): Json => {
@@ -112,14 +114,13 @@ const runOut = (st: Json): Json => {
 };
 const sessionOut = (path: string, s: Json, ex: Record<string, Json>, days: Record<string, Json>): Json => {
   const by: Record<string, Json[]> = {};
-  Object.values(s.sets || {}).filter(isDone).sort((a: Json, b: Json) => (a.order || 0) - (b.order || 0)).forEach((st: Json) => { (by[st.ex] = by[st.ex] || []).push(st); });
+  Object.entries(s.sets || {}).filter(([, st]) => isDone(st as Json) && !(st as Json).removed).sort((a: Json, b: Json) => (a[1].order || 0) - (b[1].order || 0)).forEach(([key, st]: [string, Json]) => { (by[st.ex] = by[st.ex] || []).push({ ...st, _key: key }); });
   return {
-    date: s.date, label: s.label || '', day: s.template && days[s.template] ? days[s.template].name : null, finished: !!s.finished_at, note: s.note || null,
+    session_id: idOf(path), date: s.date, label: s.label || '', day: s.template && days[s.template] ? days[s.template].name : null, finished: !!s.finished_at, note: s.note || null,
     exercises: Object.entries(by).map(([id, sets]) => ({
       exercise_id: id, exercise: exName(ex, id),
-      sets: sets.map((st: Json) => ({ n: st.n, type: st.kind || 'work', reps: st.reps ?? null, load: st.load ?? null, minutes: st.minutes ?? null, ...runOut(st), rir: st.rir ?? null, note: st.note || null })),
+      sets: sets.map((st: Json) => ({ set_id: st._key, n: st.n, type: st.kind || 'work', reps: st.reps ?? null, load: st.load ?? null, minutes: st.minutes ?? null, ...runOut(st), rir: st.rir ?? null, note: st.note || null })),
     })),
-    _id: idOf(path),
   };
 };
 // the best working set of one session for one exercise (Epley estimate for loaded lifts)
@@ -447,7 +448,7 @@ const TOOLS: Tool[] = [
       if (a.from != null && !isDate(a.from)) fail('from must be YYYY-MM-DD.');
       if (a.to != null && !isDate(a.to)) fail('to must be YYYY-MM-DD.');
       const [ex, days, rows] = await Promise.all([loadExercises(db), loadDays(db), db.list('yc/sessions/', { desc: true, limit: int(a.limit, 1, 60, 10), gte: a.from, lte: a.to ? a.to + '~z' : undefined })]);
-      return rows.map((r) => { const { _id, ...s } = sessionOut(r.path, r.data, ex, days); return s; });
+      return rows.map((r) => sessionOut(r.path, r.data, ex, days));
     },
   },
   {
@@ -586,6 +587,115 @@ const TOOLS: Tool[] = [
       if (!reply) fail('Write a reply.');
       await db.put(path, { ...note, reply, status: 'seen' });
       return { saved: true };
+    },
+  },
+  {
+    name: 'add_sets', title: 'Add sets to the log', annotations: LOG,
+    inputSchema: obj({
+      date: { type: 'string', description: 'YYYY-MM-DD, today or earlier.' },
+      exercise_id: { type: 'string' },
+      sets: { type: 'array', maxItems: 20, description: 'The sets, in the order they were done. Each is a done set, as if the person had ticked it.', items: obj({
+        reps: { type: 'integer', description: 'Needed unless the exercise is counted in minutes.' }, load: { type: 'number', description: 'kg, machine pin, or assistance kg, as the exercise is counted. Leave out for bodyweight.' },
+        minutes: { type: 'number', description: 'Needed when the exercise is counted in minutes.' }, type: { type: 'string', enum: SET_KINDS, description: 'work (default), warmup, drop or test (not counted in Progress).' },
+        rir: { type: 'integer', description: 'Reps in reserve, 0 to 10.' }, note: { type: 'string' },
+        distance_km: { type: 'number' }, altitude_gain_m: { type: 'number' }, where: { type: 'string', enum: ['outdoor', 'treadmill'] },
+      }) },
+      session_id: { type: 'string', description: 'Only when the person did two sessions on one date: the session_id of the one to add to, e.g. 2026-10-08~day-1. Leave out to use the date\'s own session.' },
+      day_id: { type: 'string', description: 'Only when no session exists on that date yet: the training day it belongs to. Leave out for a session without a plan day.' },
+    }, ['date', 'exercise_id', 'sets']),
+    description: 'Add done sets of one exercise to the log, to a session that is there or to a new one for that date. Each set gets a set_id. A set cannot be edited afterwards: to correct one, remove it and add the right one.',
+    run: async (db, a) => {
+      if (!realDate(a.date)) fail(DATE_ERR);
+      if (a.date > new Date(Date.now() + 864e5).toISOString().slice(0, 10)) fail('Sets can only be added for today or earlier.');
+      const [ex, days] = await Promise.all([loadExercises(db), loadDays(db)]);
+      const exId = str(a.exercise_id, 80);
+      const e = ex[exId];
+      if (!e) fail('Unknown exercise_id "' + exId + '". Call list_exercises or create_exercise.');
+      if (!Array.isArray(a.sets) || !a.sets.length) fail('Give at least one set.');
+      if (a.sets.length > 20) fail('At most 20 sets in one call.');
+      const unit = e.unit || 'kg';
+      const sid = a.session_id ? str(a.session_id, 80) : a.date;
+      if (sid.slice(0, 10) !== a.date || (sid.length > 10 && sid[10] !== '~')) fail('session_id has to start with the date, like ' + a.date + ' or ' + a.date + '~day-1.');
+      const dayId = a.day_id ? str(a.day_id, 40) : '';
+      if (dayId && !days[dayId]) fail('Unknown day id "' + dayId + '". Call get_plan.');
+      const path = 'yc/sessions/' + sid;
+      const num = (v: Json, what: string, lo: number, hi: number, whole = false): number | null => {
+        if (v == null || v === '') return null;
+        const n = Number(v);
+        if (!Number.isFinite(n) || n < lo || n > hi || (whole && !Number.isInteger(n))) fail(what + ' has to be ' + (whole ? 'a whole number' : 'a number') + ' from ' + lo + ' to ' + hi + '.');
+        return Math.round(n * 100) / 100;
+      };
+      const made = a.sets.map((raw: Json, i: number) => {
+        const st = raw || {};
+        const at = 'Set ' + (i + 1) + ': ';
+        const reps = num(st.reps, at + 'reps', 1, 1000, true);
+        const minutes = num(st.minutes, at + 'minutes', 0.1, 1000);
+        if (unit === 'min' ? minutes == null : reps == null) fail(at + (unit === 'min' ? 'minutes are needed, because this exercise is counted in minutes.' : 'reps are needed.'));
+        const out: Json = { kind: SET_KINDS.includes(st.type) ? st.type : 'work', reps, load: num(st.load, at + 'load', 0, 1000), minutes, rir: num(st.rir, at + 'rir', 0, 10, true), note: st.note ? str(st.note, 140) : null };
+        const km = num(st.distance_km, at + 'distance_km', 0, 1000);
+        const elev = num(st.altitude_gain_m, at + 'altitude_gain_m', 0, 20000);
+        if (km != null) out.km = km;
+        if (elev != null) out.elev = elev;
+        if (st.where === 'outdoor' || st.where === 'treadmill') out.where = st.where;
+        return out;
+      });
+      // a new session starts like one the app starts; a past date is complete, today may still be going
+      if (!(await db.get(path))) {
+        const t = dayId ? days[dayId] : null;
+        const now = Date.now();
+        await db.ensure(path, { date: a.date, source: 'connector', template: dayId || null, split: t ? ({ Pull: 'Back', Push: 'Chest', Legs: 'Legs' } as Json)[t.kind] || t.name : 'Other', label: t ? t.name : 'workout', note: null, started_at: now, updated_at: now, ...(a.date < today() ? { finished_at: now } : {}), sets: {} });
+      }
+      const doc = (await db.get(path)) || {};
+      const sets: Json = doc.sets || {};
+      // the next free row for this exercise counts removed rows too, so a new set never lands on an old key
+      let n = Object.entries(sets).reduce((m, [k, st]: [string, Json]) => (st && st.ex === exId ? Math.max(m, Number(k.slice(exId.length + 1)) || 0, st.n || 0) : m), 0);
+      let order = Object.values(sets).reduce((m: number, st: Json) => (st && st.ex === exId ? Math.max(m, st.order || 0) : m), 0) || Math.max(9999, ...Object.values(sets).map((st: Json) => (st && st.order) || 0)) + 100;
+      const now = Date.now();
+      const patch: Json = {};
+      const added = made.map((m: Json) => {
+        n += 1; order += 1;
+        const key = exId + '_' + n;
+        patch[key] = { ex: exId, n, order, ...m, done: true, at: now, ticked_at: now, unit: unit === 'kg' ? 'kg:' + (e.load_basis === 'per_side' ? 'per_side' : 'total') : unit, via: 'connector' };
+        return key;
+      });
+      const after = await db.patch(path, { updated_at: now, sets: patch });
+      const out = sessionOut(path, after, ex, days);
+      return { added: added.length, set_ids: added, session: { ...out, exercises: out.exercises.filter((x: Json) => x.exercise_id === exId) } };
+    },
+  },
+  {
+    name: 'remove_sets', title: 'Remove sets from the log', annotations: WR,
+    inputSchema: obj({
+      session_id: { type: 'string', description: 'The session, as listed with the logged sessions: a date like 2026-10-08, or 2026-10-08~day-1 when there were two on one date.' },
+      set_ids: { type: 'array', maxItems: 50, items: { type: 'string' }, description: 'The set_id of each set to remove.' },
+      exercise_id: { type: 'string', description: 'Instead of set_ids: remove every set of this exercise from the session.' },
+    }, ['session_id']),
+    description: 'Remove logged sets from one session, either the sets named by set_ids or all sets of one exercise. A removed set leaves the history and Progress at once. The result lists what was removed, with its numbers, so it can be added back.',
+    run: async (db, a) => {
+      const sid = str(a.session_id, 80);
+      if (!realDate(sid.slice(0, 10)) || (sid.length > 10 && sid[10] !== '~')) fail('session_id looks like 2026-10-08, or 2026-10-08~day-1 when there were two sessions on one date.');
+      const ids: string[] = Array.isArray(a.set_ids) ? a.set_ids.map((x: Json) => str(x, 90)).filter(Boolean) : [];
+      const exId = str(a.exercise_id, 80);
+      if (!ids.length && !exId) fail('Give set_ids, or an exercise_id to remove all its sets from the session.');
+      if (ids.length && exId) fail('Give set_ids or exercise_id, not both.');
+      const path = 'yc/sessions/' + sid;
+      const [doc, ex, days] = await Promise.all([db.get(path), loadExercises(db), loadDays(db)]);
+      if (!doc) fail('No session ' + sid + '. Call get_sessions for the session_id.');
+      const live = (k: string): Json | null => { const st = (doc.sets || {})[k]; return st && st.ex && !st.removed ? st : null; };
+      let keys: string[];
+      if (ids.length) {
+        const unknown = ids.filter((k) => !live(k));
+        if (unknown.length) fail('No such set in this session: ' + unknown.join(', ') + '. Nothing was removed.');
+        keys = [...new Set(ids)];
+      } else {
+        keys = Object.keys(doc.sets || {}).filter((k) => live(k) && live(k)!.ex === exId);
+        if (!keys.length) fail('No sets of ' + (ex[exId] ? ex[exId].name : exId) + ' in this session.');
+      }
+      const now = Date.now();
+      // the app's own way of taking a set away: unticked and flagged, in one merge step so a set added meanwhile stays
+      await db.patch(path, { updated_at: now, sets: Object.fromEntries(keys.map((k) => [k, { done: false, removed: true, at: now }])) });
+      const removed = keys.map((k) => { const st = (doc.sets || {})[k]; return { set_id: k, exercise_id: st.ex, exercise: exName(ex, st.ex), type: st.kind || 'work', reps: st.reps ?? null, load: st.load ?? null, minutes: st.minutes ?? null, ...runOut(st), rir: st.rir ?? null, note: st.note || null, was_done: isDone(st) }; });
+      return { removed: removed.length, sets: removed, date: doc.date, session_id: sid };
     },
   },
   {

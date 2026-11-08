@@ -6319,5 +6319,19 @@
   "de": "Trainiere Rücken statt Beine, dann sind die Beine als Nächstes dran, auch in der nächsten Woche. Ein vorgezogener Tag lässt den übersprungenen nicht mehr verfallen.",
   "fr": "Fais Dos au lieu de Jambes et Jambes vient ensuite, y compris la semaine suivante. Un jour fait avant son tour ne fait plus perdre celui qu'il a dépassé.",
   "it": "Fai Schiena al posto di Gambe e Gambe viene dopo, anche la settimana successiva. Un giorno fatto prima del suo turno non fa più perdere quello saltato."
+ },
+ "Claude can fix your log": {
+  "nl": "Claude kan je logboek herstellen",
+  "es": "Claude puede corregir tu registro",
+  "de": "Claude kann dein Log korrigieren",
+  "fr": "Claude peut corriger ton journal",
+  "it": "Claude può correggere il tuo diario"
+ },
+ "If Claude is connected, it can now add sets to your log and remove sets from it, for example when a set was logged under the wrong exercise. It cannot edit a set or delete a whole workout.": {
+  "nl": "Als Claude is gekoppeld, kan het nu sets aan je logboek toevoegen en eruit verwijderen, bijvoorbeeld als een set onder de verkeerde oefening staat. Het kan geen set aanpassen of een hele training verwijderen.",
+  "es": "Si Claude está conectado, ahora puede añadir series a tu registro y quitarlas, por ejemplo cuando una serie quedó bajo el ejercicio equivocado. No puede editar una serie ni borrar un entrenamiento entero.",
+  "de": "Ist Claude verbunden, kann es jetzt Sätze zu deinem Log hinzufügen und daraus entfernen, zum Beispiel wenn ein Satz unter der falschen Übung steht. Es kann keinen Satz ändern und kein ganzes Training löschen.",
+  "fr": "Si Claude est connecté, il peut maintenant ajouter des séries à ton journal et en retirer, par exemple quand une série a été notée sous le mauvais exercice. Il ne peut ni modifier une série ni supprimer un entraînement entier.",
+  "it": "Se Claude è collegato, ora può aggiungere serie al tuo diario e toglierne, per esempio quando una serie è finita sotto l'esercizio sbagliato. Non può modificare una serie né eliminare un intero allenamento."
  }
 }

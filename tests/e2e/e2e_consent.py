@@ -80,7 +80,7 @@ with sync_playwright() as p:
     pg.wait_for_selector('#ask:not([hidden])')
     ok(pg.inner_text('#client')=='<b>Claude</b>' and pg.locator('#client b').count()==0,'client name is text, not html')
     ok('a@b.nl' in pg.inner_text('#me') and 'claude.ai' in pg.inner_text('#client-uri'),'who')
-    ok('can not' in pg.inner_text('#ask').lower() and 'logged in a session' in pg.inner_text('#ask'),'limits stated')
+    ok('can not' in pg.inner_text('#ask').lower() and 'edit a logged set' in pg.inner_text('#ask'),'limits stated')
     pass
     with pg.expect_navigation(url='https://claude.ai/cb?code=1'): pg.click('#ok')
     ok(any(m=='POST' and u.endswith('/consent') for m,u in log),'consent posted')
