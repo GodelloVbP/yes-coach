@@ -34,7 +34,7 @@ body:not(.signed-out) .hm-login, body.signed-out #hm-trainrow, body.signed-out #
 auth = f'''<section class="auth in" id="auth" hidden aria-labelledby="au-h">
   {brand}
   <h2 id="au-h">Sign in</h2>
-  <p class="note">A free, ad-free workout tracker. Your account keeps your log and plan in sync between your devices.</p>
+  <p class="note">A free, ad-free workout tracker. Your account keeps your log and plan on all your devices.</p>
   <form id="au-form" class="au-form" novalidate>
     <label class="ed-f" id="au-email-f"><span class="lab">Email</span><input id="au-email" type="email" autocomplete="email" inputmode="email"></label>
     <label class="ed-f" id="au-pass-f"><span class="lab">Password</span><input id="au-pass" type="password" autocomplete="current-password" aria-describedby="au-pw-hint"><span class="note" id="au-pw-hint" hidden>At least 8 characters.</span><button class="textbtn au-show" type="button" id="au-show" aria-pressed="false" aria-controls="au-pass">Show password</button></label>

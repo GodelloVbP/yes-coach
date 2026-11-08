@@ -26,7 +26,7 @@ try:
         def s1(page):
             page.goto(BASE); page.wait_for_selector('text=Start Push day', timeout=8000)
             page.click('#btn-swap')
-            check('the change panel offers a custom workout', page.is_visible('#swap-custom') and 'Starts blank' in page.inner_text('#swap-custom'))
+            check('the change panel offers a custom workout', page.is_visible('#swap-custom') and 'off your plan' in page.inner_text('#swap-custom'))
             page.click('#swap-custom')
             check('it asks for a name', page.is_visible('#custom-name') and page.is_visible('#custom-go'))
             page.fill('#custom-name', '8k run'); page.click('#custom-go')
@@ -188,7 +188,7 @@ try:
             check('a broken saved food is skipped', 'Broken thing' not in page.inner_text('#fd-hits'))
             check('the line shows its per-portion numbers, no per-100 text', 'per 100' not in first.inner_text())
             check('searching offers to save a new food, and to log one once', 'as your own food' in page.inner_text('#fd-hits') and 'once' in page.inner_text('#fd-hits'))
-            check('the two say what they do', 'Not saved for later' in page.inner_text('#fd-hits') and 'Saved, so you can log it again' in page.inner_text('#fd-hits'))
+            check('the two say what they do', 'Not saved.' in page.inner_text('#fd-hits') and 'Saved for next time.' in page.inner_text('#fd-hits'))
             first.click()
             page.wait_for_selector('#fd-g', state='visible')
             check('a drink starts at a glass and offers drink sizes, no guessed food sizes', page.input_value('#fd-g') == '200' and 'GLASS' in page.inner_text('#fd-amount').upper() and 'SMALL' not in page.inner_text('#fd-amount').upper(), page.inner_text('#fd-amount'))
@@ -207,7 +207,7 @@ try:
             check('the numbers are replaced, the name stays', until(lambda: (doc(be, 'yc/myfoods/own-oat-drink') or {}).get('own', {}).get('kcal') == 50), doc(be, 'yc/myfoods/own-oat-drink'))
             check('the old entry keeps the numbers it was logged with', (entry() or {}).get('kcal') == 115)
             page.click('#fd-cancel'); page.wait_for_timeout(300)
-            page.click('#fd-own-list .fd-own-row >> text=Forget')
+            page.click('#fd-own-list .fd-own-row >> text=Delete')
             check('forgetting marks it gone', until(lambda: (doc(be, 'yc/myfoods/own-oat-drink') or {}).get('gone') is True), doc(be, 'yc/myfoods/own-oat-drink'))
             check('and takes it off the list', until(lambda: 'Oat drink' not in page.inner_text('#fd-own-list')), page.inner_text('#fd-own-list'))
             page.click('#toast-undo')
@@ -281,7 +281,7 @@ try:
             check('Plan says Days you can train and has Sessions a week', 'Days you can train' in page.text_content('.pw-set') and 'Sessions a week' in page.text_content('.pw-set'))
             chips = page.locator('.pw-days[aria-label="Sessions a week"] .pk-chip')
             check('the set-up value is selected', chips.count() == 7 and page.get_attribute('.pw-days[aria-label="Sessions a week"] .pk-chip >> nth=3', 'aria-pressed') == 'true')
-            check('and it explains the spread', 'spread over the 7 days' in page.text_content('.pw-per-note'), page.text_content('.pw-per-note'))
+            check('and it explains the spread', 'spread over your 7 days' in page.text_content('.pw-per-note'), page.text_content('.pw-per-note'))
             page.click('.pw-days[aria-label="Sessions a week"] .pk-chip >> nth=4')
             check('picking 5 saves it', until(lambda: ((doc(be, 'yc') or {}).get('schedule') or {}).get('per_week') == 5), (doc(be, 'yc') or {}).get('schedule'))
             check('the days you can train stay as they were', ((doc(be, 'yc') or {}).get('schedule') or {}).get('days') == ALL)
@@ -294,7 +294,7 @@ try:
             # fewer days than sessions is said, not guessed
             page.click('.mainnav [data-view="plan"]'); page.wait_for_selector('.pw-set')
             for w in ('Sat', 'Sun', 'Fri'): page.click('.pw-days[aria-label="Days you train"] .pk-chip:has-text("%s")' % w)
-            check('too few days for the sessions: it says so', 'Pick more days, or fewer sessions' in page.text_content('.pw-per-note'), page.text_content('.pw-per-note'))
+            check('too few days for the sessions: it says so', 'Pick more days or fewer sessions' in page.text_content('.pw-per-note'), page.text_content('.pw-per-note'))
         errs = session(pw, be, ALICE, s5, width=390); check('no page errors (schedule)', not errs, errs)
 
         # ---- 6. switching tabs must not move or resize the page: one content column, and a fade instead of a slide
