@@ -85,7 +85,7 @@ try:
             check('last time fills distance and minutes', page.input_value('#f-treadmill-run_1-km') == '5' and page.input_value('#f-treadmill-run_1-minutes') == '30' and page.input_value('#f-treadmill-run_1-elev') == '20', [page.input_value('#f-treadmill-run_1-' + f) for f in ('minutes', 'km', 'elev')])
             check('and the treadmill stays picked', page.get_attribute('.run-where button[data-w="treadmill"]', 'aria-pressed') == 'true')
             page.locator('.set .set-tick').first.click(); page.wait_for_timeout(300)
-            page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click()
+            page.wait_for_timeout(900); page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click()
             page.wait_for_selector('.fin', timeout=5000)
             page.click('#fin-done')
             check('finishing lands on the Train screen', until(lambda: page.is_visible('#pickday') and page.locator('.fin').count() == 0))

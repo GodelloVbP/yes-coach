@@ -12,7 +12,8 @@ node tests/starter.test.mjs
 bad=0
 for t in tests/e2e/e2e_*.py; do
   echo "== $t"
-  out=$(cd tests/e2e && python3 "$(basename "$t")" 2>&1); code=$?
+  code=0
+  out=$(cd tests/e2e && python3 "$(basename "$t")" 2>&1) || code=$?
   echo "$out" | grep -E "^(FAIL|passed|[0-9]+ .*passed)" || true
   if [ $code -ne 0 ] || ! echo "$out" | grep -qE "^(passed|[0-9]+ .*passed)"; then echo "CRASH $t (exit $code)"; echo "$out" | grep -E "Error|Traceback" | head -3; bad=1; fi
 done

@@ -28,7 +28,7 @@ def log(page, key, load, reps):
     page.locator('.set:has(#f-%s-load) .set-tick' % key).click()
 
 def finish(page):
-    page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click()
+    page.wait_for_timeout(900); page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click()
 
 server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)
