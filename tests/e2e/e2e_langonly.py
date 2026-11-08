@@ -157,9 +157,8 @@ def open_feedback(page):
     page.wait_for_selector('#v-feedback #tk', state='visible')
 
 def send_form(page, title, text, name=None, kind=None):
-    page.click('#tk >> text=Send something')
+    page.click('#tk .tk-type[data-type=%s]' % (kind or 'bug'))
     if name is not None: page.fill('#tk form input[autocomplete=given-name]', name)
-    if kind: page.select_option('#tk form select', kind)
     page.fill('#tk form input[autocomplete=off]', title)
     page.fill('#tk form textarea', text)
     page.click('#tk form button[type=submit]')

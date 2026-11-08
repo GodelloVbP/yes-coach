@@ -315,7 +315,7 @@ const sourceOf = (v: Json): string => {
   try { const u = new URL(s); return u.protocol === 'http:' || u.protocol === 'https:' ? u.href.slice(0, 300) : ''; } catch { return ''; }
 };
 const MINE_READ = 2000; // forgotten foods stay as { gone: true } documents: read well past the live cap
-const myId = (key: string): string => key.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
+const myId = (key: string): string => fold(key).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 const sayOf = (v: Json): string => fold(str(v, 40)).replace(/\s+/g, ' ').trim();
 const numMap = (v: Json, max: number, keyMax: number): Record<string, number> => {
   const out: Record<string, number> = {};

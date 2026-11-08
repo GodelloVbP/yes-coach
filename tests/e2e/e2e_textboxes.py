@@ -16,7 +16,7 @@ try:
             # the ticket form: 30 lines in a 5-line box
             page.wait_for_selector('#tab-feedback:not([hidden])', state='attached')
             page.click('#tab-settings'); page.click('#more-feedback'); page.wait_for_selector('#v-feedback #tk', state='visible')
-            page.click('#tk >> text=Send something')
+            page.click('#tk .tk-type[data-type=bug]')
             ta = page.locator('#tk form textarea')
             ta.fill(LONG)
             g = page.evaluate(GEOM, '#tk form textarea')

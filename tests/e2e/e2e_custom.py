@@ -135,7 +135,7 @@ try:
             days = calendar.monthrange(TODAY.year, TODAY.month)[1]
             check('the month shows below the calendar button', page.is_visible('#month') and page.locator('#mo-grid .mo-blk').count() == days, page.locator('#mo-grid .mo-blk').count())
             order = page.evaluate("(() => { const a = document.querySelector('#btn-cal').getBoundingClientRect().top, m = document.querySelector('#month').getBoundingClientRect().top; return a < m; })()")
-            check('Add to calendar sits above it as the main button', order and 'pop' in page.get_attribute('#btn-cal', 'class') and 'big' in page.get_attribute('#btn-cal', 'class'))
+            check('Add to calendar sits above it as a big outlined button', order and 'pop' not in page.get_attribute('#btn-cal', 'class') and 'big' in page.get_attribute('#btn-cal', 'class'))
             check('today is marked and planned', page.locator('#mo-grid .mo-blk.is-today').count() == 1 and '•' in page.inner_text('#mo-grid .mo-blk.is-today'))
             check('a planned weekday repeats through the month', page.locator('#mo-grid .mo-blk:has-text("•")').count() >= days // 7, page.locator('#mo-grid .mo-blk:has-text("•")').count())
             title = page.inner_text('#h-month')

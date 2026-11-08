@@ -28,14 +28,16 @@
     feedback: 'What is on your mind?',
   };
   const DEFAULT_OUTCOME = { bug: 'fixed', feature: 'built', feedback: 'thanks' };
-  // one block per kind of ticket: what it is for, how it works, and what the list is called when it is empty
+  // what to choose from, in a line each; and what the list of each kind is called
+  const TILES = [
+    { type: 'bug', note: 'What happened, and on which screen' },
+    { type: 'feature', note: 'Something you want it to do' },
+    { type: 'feedback', note: 'What you like, what feels off' },
+  ];
   const GROUPS = [
-    { type: 'feature', title: 'My requested features', empty: 'No requests yet.',
-      text: 'Things you would like Yes Coach! to do. We tell you if we plan to build it, and you get a message when it is in the app.' },
-    { type: 'bug', title: 'My reported bugs', empty: 'No bug reports yet.',
-      text: 'Something that did not work. Tell us what you were doing and on which screen. You get a message when it is fixed.' },
-    { type: 'feedback', title: 'My feedback', empty: 'No feedback yet.',
-      text: 'What you like, what feels off, anything else. We read all of it. It shapes what we build next, even when we cannot answer each one.' },
+    { type: 'feature', title: 'Feature requests' },
+    { type: 'bug', title: 'Bug reports' },
+    { type: 'feedback', title: 'Feedback' },
   ];
   const isFinal = (t) => t.status === 'resolved' || t.status === 'declined';
   const statusLabel = (t) => (t.status === 'resolved'
@@ -113,7 +115,7 @@
   // repaint a list of cards and keep the ones that were open
   const paintCards = (list, tickets, make, empty) => {
     const open = new Set($$('.tk-card[open]', list).map((d) => d.dataset.id));
-    list.replaceChildren(...(tickets.length ? tickets.map((t) => make(t, open.has(t.id))) : [h('p', 'note', empty)]));
+    list.replaceChildren(...(tickets.length ? tickets.map((t) => make(t, open.has(t.id))) : empty ? [h('p', 'note', empty)] : []));
   };
 
   // ------------------------------------------------------------------ the user: send something
@@ -124,7 +126,7 @@
     const form = h('form', 'tk-form');
     form.noValidate = true;
     form.hidden = true;
-    const type = select(Object.entries(TYPES));
+    let kind = 'bug';
     const name = h('input');
     name.type = 'text';
     name.maxLength = 40;
@@ -134,21 +136,19 @@
     title.maxLength = 120;
     title.autocomplete = 'off';
     const text = textarea(5, 4000);
-    text.placeholder = HINT.bug;
     const msg = liveNote();
     const go = h('button', 'skew pop');
     go.type = 'submit';
     go.append(h('span', '', 'Send'));
-    type.addEventListener('change', () => { text.placeholder = HINT[type.value]; });
     form.addEventListener('submit', async (ev) => {
       ev.preventDefault();
-      if (!name.value.trim()) { msg.textContent = 'Add your first name, so we can thank you.'; name.focus(); return; }
       if (title.value.trim().length < 3) { msg.textContent = 'Add a few words as a title.'; title.focus(); return; }
       if (text.value.trim().length < 10) { msg.textContent = 'Tell us a bit more (at least 10 characters).'; text.focus(); return; }
+      if (!name.value.trim()) { msg.textContent = 'Add your first name, so we can thank you.'; name.focus(); return; }
       go.disabled = true;
       msg.textContent = 'Sending…';
       try {
-        await sendTicket(type.value, name.value.trim(), title.value.trim(), text.value.trim());
+        await sendTicket(kind, name.value.trim(), title.value.trim(), text.value.trim());
         title.value = '';
         text.value = '';
         msg.textContent = '';
@@ -156,9 +156,14 @@
       } catch (e) { msg.textContent = problem(e); }
       go.disabled = false;
     });
-    form.append(field('What is it about?', type), field('Your first name', name), field('In a few words', title), field('Tell us more', text), go, msg, textBtn('Cancel', () => { form.hidden = true; }));
-    form.prefill = (kind, ttl) => { if (TYPES[kind]) { type.value = kind; text.placeholder = HINT[kind]; } if (ttl && !title.value) title.value = ttl; };
-    form.open = () => { form.hidden = false; if (!name.value) name.value = lastName(); $('select', form).focus(); };
+    const row = h('div', 'foot-row');
+    row.append(go, textBtn('Cancel', () => { form.hidden = true; if (form.onClose) form.onClose(); }));
+    form.append(field('In a few words', title), field('Tell us more', text), field('Your first name', name),
+      h('p', 'note tk-priv', 'Sent with it: your first name, the email you sign in with, the app version and your device. Never your training data.'), row, msg);
+    form.setKind = (k) => { if (!TYPES[k]) return; kind = k; form.setAttribute('aria-label', TYPES[k]); text.placeholder = HINT[k]; if (form.onKind) form.onKind(k); };
+    form.prefill = (k, ttl) => { form.setKind(k); if (ttl && !title.value) title.value = ttl; };
+    form.open = (k) => { form.hidden = false; form.setKind(k || kind); if (!name.value) name.value = lastName(); title.focus(); };
+    form.setKind(kind);
     return form;
   };
   const replyForm = (t) => {
@@ -184,10 +189,22 @@
     const parts = [done && done + ' built or fixed', planned && planned + ' planned'].filter(Boolean);
     return 'You have sent ' + plural(mine.length, 'request') + (parts.length ? ': ' + parts.join(', ') : '') + '.';
   };
+  let loadFailed = false;
   const paintMine = () => {
-    $('#tk-sum').textContent = mine.length ? summaryLine() : '';
-    GROUPS.forEach((g) => paintCards($('#tk-list-' + g.type), mine.filter((t) => t.type === g.type), (t, open) => card(t, open, 'user',
-      'Sent ' + when(t.created_at) + (t.resolved_at ? ' · closed ' + when(t.resolved_at) : ''), (x) => (isFinal(x) ? h('span') : replyForm(x))), g.empty));
+    const info = (t) => 'Sent ' + when(t.created_at) + (t.resolved_at ? ' · closed ' + when(t.resolved_at) : '');
+    const make = (open) => (t, was) => card(t, open || was, 'user', info(t), (x) => (isFinal(x) ? h('span') : replyForm(x)));
+    const asked = mine.filter((t) => t.status === 'needs_info');
+    paintCards($('#tk-ask-list'), asked, make(true));
+    $('#tk-ask').hidden = !asked.length;
+    const rest = mine.filter((t) => t.status !== 'needs_info');
+    GROUPS.forEach((g) => {
+      const these = rest.filter((t) => t.type === g.type);
+      paintCards($('#tk-list-' + g.type), these, make(false));
+      $('#tk-group-' + g.type).hidden = !these.length;
+    });
+    $('#tk-sum').textContent = mine.length ? summaryLine() : loadFailed ? 'Could not load your requests right now.' : '';
+    $('#tk-count').textContent = mine.length ? String(mine.length) : '';
+    $('#tk-mine').hidden = !mine.length && !loadFailed;
   };
   // a dot on the tab when we are waiting for an answer
   const paintDot = () => {
@@ -200,7 +217,8 @@
     if (!force && Date.now() - loadedAt < 30000) return;
     loadedAt = Date.now();
     // the owner can read every ticket, so "mine" must say whose
-    try { mine = await run(db().from('tickets').select(MY_COLS).eq('user_id', window.YC_API.uid()).order('created_at', { ascending: false }).limit(100)); } catch (e) { loadedAt = 0; if (!mine.length) $('#tk-sum').textContent = 'Could not load your requests right now.'; return; }
+    try { mine = await run(db().from('tickets').select(MY_COLS).eq('user_id', window.YC_API.uid()).order('created_at', { ascending: false }).limit(100)); } catch (e) { loadedAt = 0; loadFailed = !mine.length; paintMine(); return; }
+    loadFailed = false;
     paintMine();
     paintDot();
     showPopup(mine.filter((t) => isFinal(t) && !t.user_seen_at && !seen.has(t.id)));
@@ -409,32 +427,67 @@
   const section = (id, title) => {
     const sec = document.createElement('section');
     sec.id = id;
+    sec.className = 'p-sec blk';
     sec.setAttribute('aria-labelledby', 'h-' + id);
-    const head = h('h2', '', title);
-    head.id = 'h-' + id;
+    const head = h('div', 'p-head');
+    const h2 = h('h2', '', title);
+    h2.id = 'h-' + id;
+    head.append(h2);
     sec.append(head);
     return sec;
   };
+  // the top block: pick what you want to send, and the form opens under your choice
   const buildIntro = () => {
-    const sec = section('tk', 'Feedback & Requests');
+    const sec = section('tk', 'Send us something');
     const state = liveNote();
-    const form = newForm(() => { form.hidden = true; state.textContent = 'Sent. Thank you! You can follow it below.'; refresh(true); });
-    composeNow = (kind, ttl) => { state.textContent = ''; form.open(); form.prefill(kind, ttl); form.scrollIntoView({ block: 'center' }); const t = form.querySelector('textarea'); if (t) t.focus(); };
-    const row = h('div', 'foot-row');
-    row.append(skew('pop', 'Send something', () => { state.textContent = ''; form.open(); }));
-    const sum = h('p', 'note');
-    sum.id = 'tk-sum';
-    sec.append(
-      h('p', 'note', 'Yes Coach! is free, has no ads and is built by one person. It gets better when people tell us what is broken and what is missing. Send a bug, a feature idea or feedback here. We read every one and tell you what happens with it. If something is unclear, we may reply right here in the app.'),
-      h('p', 'note', 'Saved with your message: your first name, the email you sign in with, the app version, and your device and screen size. Never your training data.'),
-      row, state, form, sum);
+    const form = newForm(() => { form.hidden = true; paintTiles(); state.textContent = 'Sent. Thank you! You can follow it below.'; refresh(true); });
+    const tiles = h('div', 'tk-types');
+    tiles.setAttribute('role', 'group');
+    tiles.setAttribute('aria-label', 'What do you want to send?');
+    const btns = TILES.map(({ type, note }) => {
+      const b = h('button', 'tk-type angled');
+      b.type = 'button';
+      b.dataset.type = type;
+      b.append(h('b', '', TYPES[type]), h('span', 'tk-type-note', note));
+      b.addEventListener('click', () => { state.textContent = ''; form.open(type); });
+      tiles.append(b);
+      return [type, b];
+    });
+    const paintTiles = (k) => btns.forEach(([type, b]) => b.setAttribute('aria-pressed', String(!form.hidden && type === k)));
+    form.onKind = (k) => paintTiles(k);
+    form.onClose = () => paintTiles();
+    composeNow = (kind, ttl) => { state.textContent = ''; form.open(kind); form.prefill(kind, ttl); form.scrollIntoView({ block: 'center' }); const t = form.querySelector('textarea'); if (t) t.focus(); };
+    sec.append(h('p', 'tk-lead', 'Built by one person. Tell us what is broken or missing, and you hear back when it is built or fixed.'), tiles, state, form);
     return sec;
   };
-  const buildGroup = (g) => {
-    const sec = section('tk-' + g.type, g.title);
+  // a question from us waits at the top, open
+  const buildAsk = () => {
+    const sec = section('tk-ask', 'We have a question');
+    sec.hidden = true;
     const list = h('div', 'tk-list');
-    list.id = 'tk-list-' + g.type;
-    sec.append(h('p', 'note', g.text), list);
+    list.id = 'tk-ask-list';
+    sec.append(list);
+    return sec;
+  };
+  // everything you sent, by kind; a kind you have not used does not show
+  const buildMine = () => {
+    const sec = section('tk-mine', 'Your messages');
+    sec.hidden = true;
+    const count = h('span', 'p-count');
+    count.id = 'tk-count';
+    sec.firstChild.append(count);
+    const sum = h('p', 'note');
+    sum.id = 'tk-sum';
+    sec.append(sum);
+    GROUPS.forEach((g) => {
+      const grp = h('div', 'tk-group');
+      grp.id = 'tk-group-' + g.type;
+      grp.hidden = true;
+      const list = h('div', 'tk-list');
+      list.id = 'tk-list-' + g.type;
+      grp.append(h('h3', 'tk-group-h', g.title), list);
+      sec.append(grp);
+    });
     return sec;
   };
   // the extra bar for the owner: every ticket, to read, answer and close
@@ -465,7 +518,21 @@
     css.textContent = `
 #tab-feedback { position: relative; }
 #v-feedback section { scroll-margin-top: calc(var(--stick-h, 48px) + 8px); }
-.tk-form { display: flex; flex-direction: column; gap: 0.875rem; padding: 0.75rem; background: var(--faint); border-left: 4px solid var(--ink); align-items: flex-start; }
+.tk-wrap { display: flex; flex-direction: column; gap: 1rem; padding-block: 1.25rem 3rem; }
+.tk-lead { margin: 0; font-weight: 500; }
+.tk-types { display: flex; flex-direction: column; gap: 0.625rem; padding-inline: 0.375rem; }
+@media (min-width: 40rem) { .tk-types { flex-direction: row; } .tk-type { flex: 1 1 0; min-width: 0; } }
+.tk-type { --ang-bg: var(--paper); display: flex; flex-direction: column; align-items: flex-start; gap: 0.125rem; width: 100%; min-height: 56px; padding: 0.625rem 1.25rem; border: 0; background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.tk-type b { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.tk-type-note { font-size: var(--t2); font-weight: 500; color: var(--ink-soft); }
+.tk-type[aria-pressed="true"] { --ang-bg: var(--ink); --ang-bd: var(--ink); color: var(--bg); }
+.tk-type[aria-pressed="true"] .tk-type-note { color: inherit; opacity: 0.85; }
+.tk-type:focus-visible { outline: 3px solid var(--pop); outline-offset: 3px; }
+.tk-form { display: flex; flex-direction: column; gap: 0.875rem; padding: 0.875rem; background: var(--paper); border-left: 4px solid var(--ink); align-items: flex-start; }
+#tk-ask .tk-card .chip { display: none; } /* the block already says it */
+.tk-priv { margin: 0; }
+.tk-group { display: flex; flex-direction: column; gap: 0.25rem; margin-top: 0.75rem; }
+.tk-group-h { margin: 0; font-family: var(--f-head); font-size: var(--t2); text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
 .tk-form > .ed-f { width: 100%; }
 .tk-list { display: flex; flex-direction: column; }
 .tk-bar { border-bottom: 1px solid var(--line); margin-bottom: 1rem; }
@@ -515,8 +582,8 @@
     await window.claude.use('db'); // resolves once the user is signed in
     if (document.readyState === 'loading') await new Promise((r) => document.addEventListener('DOMContentLoaded', r));
     style();
-    const wrap = h('div', 'set-wrap in');
-    wrap.append(buildIntro(), ...GROUPS.map(buildGroup));
+    const wrap = h('div', 'tk-wrap in');
+    wrap.append(buildIntro(), buildAsk(), buildMine());
     $('#v-feedback').replaceChildren(wrap);
     $('#tab-feedback').hidden = false;
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') refresh(); });

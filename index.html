@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-z1A69zwlU2+U0OHxQkXsXIBccOX+hKxToCKxzw/1o1M=' 'sha256-wZ/2FsJ/ECrlIfYfKmL/7Tpy5TpCMEt+meDWnAfeIZE=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-z1A69zwlU2+U0OHxQkXsXIBccOX+hKxToCKxzw/1o1M=' 'sha256-WHyJk82U0N/5s9C/ZA6YR75wO09Ot+pAVF0NOtzs0Eo=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-07 16:34Z">
+<meta name="yc-build" content="2026-11-07 23:37Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -76,11 +76,6 @@ body:not(.signed-out) .hm-login, body.signed-out #hm-trainrow, body.signed-out #
 html, body { overscroll-behavior-y: contain; } /* pulling down at the top must not reload the page and lose what you typed */
 [hidden] { display: none !important; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: var(--t2); line-height: 1.45; overflow-x: clip; }
-/* doodles behind every page: one line drawing, tinted with the ink color so it works in light and dark */
-body::after { content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: var(--ink); opacity: var(--doodle, 0.08); -webkit-mask: url("doodles.png") 0 0 / 440px repeat; mask: url("doodles.png") 0 0 / 440px repeat; }
-:root[data-theme="dark"] { --doodle: 0.06; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --doodle: 0.06; } }
-@media (max-width: 600px) { body::after { -webkit-mask-size: 340px; mask-size: 340px; } }
 h1, h2, h3, p { margin: 0; }
 /* a block: one function or option on a page. Blocks take turns between two tints (data-tone, set by toneBlocks) */
 .blk { background: var(--blk-a); padding: 1rem 0.875rem 1.125rem; }
@@ -225,9 +220,11 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
   .focusbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9; background: var(--bg); border-top: 2px solid var(--ink); padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px)); gap: 12px; }
   body.in-session.focus-on .focusbar { display: flex; }
   body.typing .focusbar { display: none; }
-  .focusbar .skew { min-height: 56px; font-size: var(--t4); }
-  .focusbar .next { flex: 1; min-width: 0; }
-  .focusbar .next span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+  body.in-session.focus-on:not(.typing) .sess-foot .fin-row { display: none; } /* the bar below has Finish, so the footer does not repeat it */
+  .focusbar .skew { min-height: 56px; font-size: var(--t3); padding-inline: 0.75rem; }
+  .focusbar .skew > span { white-space: normal; line-height: 1.1; text-align: center; max-width: 100%; } /* a long label in any language wraps; it is never cut off */
+  .focusbar .skew:not(.next) { flex: none; }
+  .focusbar .next { flex: 1 1 0; min-width: 0; }
   body.in-session.focus-on .restbar { bottom: calc(var(--fb-h) + env(safe-area-inset-bottom, 0px)); padding-bottom: 0; }
   body.in-session.focus-on main { padding-bottom: calc(var(--fb-h) + env(safe-area-inset-bottom, 0px) + 1rem); }
   body.in-session.focus-on.resting main { padding-bottom: calc(var(--fb-h) + var(--rest-h) + env(safe-area-inset-bottom, 0px) + 1rem); }
@@ -414,7 +411,7 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .pk-search { flex: 1; min-width: 0; font: inherit; font-size: var(--t3); color: var(--ink); background: var(--faint); border: 0; border-bottom: 2px solid var(--ctl); border-radius: 0; padding: 0.75rem 0.875rem; appearance: none; -webkit-appearance: none; }
 .pk-search:focus { outline: none; border-bottom-color: var(--ink); box-shadow: 0 1px 0 var(--ink); }
 .pk-chips { display: flex; gap: 0.5rem; overflow-x: auto; padding: 0.75rem 0.5rem 0.5rem; }
-.pk-chip { flex: none; min-height: 40px; font-size: var(--t2); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); background: var(--paper); border: 2px solid var(--ctl); padding: 0 0.875rem; transform: skewX(-14deg); cursor: pointer; white-space: nowrap; }
+.pk-chip { flex: none; min-height: 44px; font-size: var(--t2); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); background: var(--paper); border: 2px solid var(--ctl); padding: 0 0.875rem; transform: skewX(-14deg); cursor: pointer; white-space: nowrap; }
 .pk-chip > span { display: inline-block; transform: skewX(14deg); }
 .pk-chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .pk-list { max-height: 30rem; overflow-y: auto; overscroll-behavior: contain; border-top: 2px solid var(--ink); }
@@ -434,7 +431,7 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 /* filters: the period as one segmented bar, body parts as tabs under it */
 .p-filters { display: flex; flex-direction: column; gap: 0.25rem; padding-bottom: 0.25rem; border-bottom: 1px solid var(--line); }
 .seg { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border: 2px solid var(--ink); max-width: 26rem; }
-.seg-b { min-height: 40px; border: 0; border-left: 2px solid var(--ink); background: var(--paper); color: var(--ink); font-family: var(--f-head); font-size: var(--t2); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; transition: background-color 0.15s, color 0.15s; }
+.seg-b { min-height: 44px; border: 0; border-left: 2px solid var(--ink); background: var(--paper); color: var(--ink); font-family: var(--f-head); font-size: var(--t2); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; transition: background-color 0.15s, color 0.15s; }
 .seg-b:first-child { border-left: 0; }
 .seg-b:hover { background: var(--faint); }
 .seg-b[aria-checked="true"] { background: var(--ink); color: var(--bg); }
@@ -522,8 +519,10 @@ td.nowrap { white-space: nowrap; }
 .set-wrap { gap: 0; }
 .set-wrap section.fold { padding-bottom: 0; margin-bottom: 0; gap: 0; }
 .set-wrap section.fold > h2 { margin: 0; }
-.set-tog { display: flex; align-items: center; gap: 0.625rem; width: 100%; min-height: 56px; padding: 0.5rem 0; background: none; border: 0; color: var(--ink); font: inherit; letter-spacing: inherit; text-transform: inherit; text-align: left; cursor: pointer; }
-.set-tog:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.set-wrap section.fold { padding-inline: 0; } /* the padding sits inside the bar, so hover and press cover all of it */
+.set-body { padding-inline: 0.875rem; }
+.set-tog { display: flex; align-items: center; gap: 0.625rem; width: 100%; min-height: 56px; padding: 0.5rem 0.875rem; background: none; border: 0; color: var(--ink); font: inherit; letter-spacing: inherit; text-transform: inherit; text-align: left; cursor: pointer; }
+.set-tog:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
 .set-tog[aria-expanded="true"] .p-caret { transform: rotate(-135deg); }
 .set-body { display: flex; flex-direction: column; gap: 0.5rem; padding-bottom: 1.5rem; }
 .ex-out { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--t1); line-height: 1.5; height: 20rem; white-space: pre-wrap; overflow: auto; }
@@ -764,19 +763,13 @@ body:not(.signed-out) .hm-bar { display: none; }
 .hm-shots figcaption { font-size: var(--t2); font-weight: 600; color: var(--ink-soft); text-wrap: balance; }
 .hm-cards { list-style: none; margin: 0; padding: 0 0.375rem; display: grid; grid-template-columns: 1fr; gap: 1rem; }
 .hm-cards li { --ang-bg: var(--faint); --ang-bd: var(--faint); padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 0.375rem; }
-.hm-cards li:first-child { --ang-bg: var(--pop); --ang-bd: var(--pop); color: var(--on-pop); }
 .hm-cards h3 { margin: 0; font-family: var(--f-head); font-weight: 800; text-transform: uppercase; font-size: 1.25rem; letter-spacing: 0.02em; }
 .hm-cards p { margin: 0; font-weight: 500; line-height: 1.45; }
 @media (min-width: 40rem) {
   .hm-shots { grid-auto-flow: row; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-columns: auto; overflow: visible; }
-  .hm-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .hm-cards li:first-child, .hm-cards li:last-child { grid-column: span 2; }
 }
-@media (min-width: 64rem) {
-  .hm-cards { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-  .hm-cards li { grid-column: span 2; }
-  .hm-cards li:first-child { grid-column: span 6; }
-  .hm-cards li:nth-child(n+5) { grid-column: span 3; }
+@media (min-width: 48rem) {
+  .hm-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 .news { padding-block: 1.25rem 3rem; display: flex; flex-direction: column; gap: 0.75rem; }
 .news .textbtn { align-self: flex-start; }
@@ -1039,7 +1032,7 @@ body.fin-open { overflow: hidden; }
 .xl-add .ysel { min-width: 10rem; }
 .xr-card .xl-add .ysel { min-width: 0; flex: 1 1 7rem; }
 .ysel-native { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
-.ysel-btn { width: 100%; min-height: 40px; font: inherit; font-weight: 600; color: var(--ink); text-align: left; background-color: transparent; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%236f79bf' stroke-width='2.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 4px center; border: 0; border-bottom: 2px solid var(--ctl); border-radius: 0; padding: 0.25rem 26px 0.25rem 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+.ysel-btn { width: 100%; min-height: 44px; font: inherit; font-weight: 600; color: var(--ink); text-align: left; background-color: transparent; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%236f79bf' stroke-width='2.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 4px center; border: 0; border-bottom: 2px solid var(--ctl); border-radius: 0; padding: 0.25rem 26px 0.25rem 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
 .ed-f .ysel-btn, .sm-frow .ysel-btn, .cal-panel .ysel-btn { font-size: var(--t2); }
 .ysel-btn[aria-expanded="true"], .ysel-btn:focus-visible { border-bottom-color: var(--ink); box-shadow: 0 1px 0 var(--ink); outline: none; }
 .ysel-btn[disabled] { opacity: 0.5; cursor: default; }
@@ -1200,12 +1193,9 @@ body.fin-open { overflow: hidden; }
       </ul>
       <h2>What makes it different</h2>
       <ul class="hm-cards">
-        <li class="angled"><h3>Your own AI as a coach</h3><p>Connect Claude with the connector, or paste a request into any AI chat. It builds your plan and reviews your sessions. Your data stays in your account.</p></li>
-        <li class="angled"><h3>Next weight, with the reason</h3><p>After each session the app suggests the next load and reps, and says why.</p></li>
-        <li class="angled"><h3>A week you can see</h3><p>Seven blocks, one tap to start. Supersets, warm-ups and a plate calculator are built in.</p></li>
-        <li class="angled"><h3>Progress you can share</h3><p>Records, estimated strength and trends. Finish a day and share it as a picture.</p></li>
-        <li class="angled"><h3>Food and nutrients</h3><p>A food tracker with Dutch (RIVM) and USDA food data.</p></li>
-        <li class="angled"><h3>Bring your history</h3><p>Import from Strong, Hevy and FitNotes. 300+ exercises, plus your own.</p></li>
+        <li class="angled"><h3>Suggested weights</h3><p>See your last set and a suggested next weight while you log.</p></li>
+        <li class="angled"><h3>Use your own AI</h3><p>Connect Claude or copy your workout into another AI chat to review your training.</p></li>
+        <li class="angled"><h3>Import your history</h3><p>Bring workouts from Strong, Hevy or FitNotes.</p></li>
       </ul>
       <h2>Free and private</h2>
       <ul class="hm-checks">
@@ -1222,8 +1212,8 @@ body.fin-open { overflow: hidden; }
       </div>
       <div class="hm-panel" id="hm-install-panel" hidden></div>
       <div class="hm-panel" id="hm-claude-panel" hidden></div>
-      <h2>Made with you</h2>
-      <p class="hm-p">Yes Coach! is built with the people who use it. Want to see something in the app? Found a bug? Just have feedback? Send a ticket from inside the app. It goes straight to me, and I aim to fix or build it within 24 hours.</p>
+      <h2>Feedback</h2>
+      <p class="hm-p">Send bugs and feature requests from inside the app. They come straight to me.</p>
       <div class="foot-row"><button class="skew small" type="button" id="hm-ticket" hidden><span>Send a ticket</span></button></div>
     </section>
   </div>
@@ -1259,13 +1249,13 @@ body.fin-open { overflow: hidden; }
       <div class="unfinished" id="unfinished"></div>
       <div class="week blk" id="week">
         <div class="bar"><h2 id="h-week"></h2><div class="wk-nav"><button type="button" class="arrow" id="wk-prev" aria-label="Previous week">&#8249;</button><button type="button" class="arrow" id="wk-next" aria-label="Next week">&#8250;</button></div></div>
-        <p class="note" id="wk-hint">Drag a planned day to another date to move it. Tap it to start it or remove it.</p>
+        <p class="note" id="wk-hint">Tap a day for details. Drag to reschedule.</p>
         <div class="wk-rows" id="wk-rows"></div>
         <div class="wk-sheet" id="wk-sheet" aria-live="polite"></div>
         <div class="wk-warns" id="wk-warns" aria-live="polite"></div>
       </div>
       <div class="month-blk blk" id="ahead">
-        <div class="cal-cta"><button class="skew pop big" type="button" id="btn-cal" aria-expanded="false" aria-controls="cal-panel"><span>Add to calendar</span></button><p class="note">Put your planned days in Apple, Google or Outlook calendar.</p></div>
+        <div class="cal-cta"><button class="skew big" type="button" id="btn-cal" aria-expanded="false" aria-controls="cal-panel"><span>Add to calendar</span></button><p class="note">Put your planned days in Apple, Google or Outlook calendar.</p></div>
         <div class="cal-panel" id="cal-panel" hidden></div>
         <section class="month" id="month" aria-labelledby="h-month">
           <div class="bar"><h2 id="h-month"></h2><div class="wk-nav"><button type="button" class="arrow" id="mo-prev" aria-label="Previous month">&#8249;</button><button type="button" class="arrow" id="mo-next" aria-label="Next month">&#8250;</button></div></div>
@@ -1368,7 +1358,6 @@ body.fin-open { overflow: hidden; }
         <div class="fd-askcal" id="fd-askcal" hidden></div>
         <div class="fd-top blk">
           <div class="fd-meter" id="fd-meter"></div>
-          <div class="fd-sug" id="fd-sug-top" hidden></div>
           <div class="fd-quick" id="fd-quick">
             <div class="fd-quick-row">
               <button class="textbtn" type="button" id="fd-yday" hidden>Same as yesterday</button>
@@ -1409,18 +1398,18 @@ body.fin-open { overflow: hidden; }
           </form>
           <p class="fd-credit fd-src" id="fd-src" hidden></p>
         </section>
+        <section class="p-sec blk" aria-labelledby="h-fd-list">
+          <div class="p-head"><h2 id="h-fd-list">Eaten</h2><span class="p-count" id="fd-count"></span></div>
+          <div class="fd-list" id="fd-list"></div>
+        </section>
         <section class="p-sec blk" aria-labelledby="h-fd-own" id="fd-ownfoods">
           <div class="p-head"><h2 id="h-fd-own">Your own foods</h2><span class="p-count" id="fd-own-count"></span></div>
-          <p class="note">Something that is not in the food list, like a product from your shop or a home-made dish? Save its numbers once and search finds it from then on. The numbers are on the package, per 100 g or per 100 ml.</p>
+          <p class="note">Save a food using the nutrition values on its label.</p>
           <div class="foot-row">
             <button class="skew small" type="button" id="fd-own-new"><span>Create a food</span></button>
             <button class="skew small" type="button" id="fd-own-claude" hidden><span>Add with Claude</span></button>
           </div>
           <div class="fd-own-list" id="fd-own-list"></div>
-        </section>
-        <section class="p-sec blk" aria-labelledby="h-fd-list">
-          <div class="p-head"><h2 id="h-fd-list">Eaten</h2><span class="p-count" id="fd-count"></span></div>
-          <div class="fd-list" id="fd-list"></div>
         </section>
         <section class="p-sec blk" aria-labelledby="h-fd-trend">
           <div class="p-head"><h2 id="h-fd-trend">Trends</h2></div>
@@ -1431,9 +1420,9 @@ body.fin-open { overflow: hidden; }
           <p class="note" id="fd-chart-note"></p>
           <div class="chart" id="fd-chart"></div>
         </section>
-        <p class="note fd-off" id="fd-off" hidden>Calories are hidden; protein, carbs and fat still count. <button class="textbtn" type="button" id="fd-off-go">Show calories in Settings</button></p>
         <details class="p-sec blk p-log" id="fd-targets">
           <summary class="p-head"><h2>Daily targets</h2><span class="p-count" id="fd-tgt-sum"></span><span class="p-caret" aria-hidden="true"></span></summary>
+          <p class="note fd-off" id="fd-off" hidden>Calories are hidden. <button class="textbtn" type="button" id="fd-off-go">Show calories</button></p>
           <div class="ed-fields">
             <label class="ed-f fd-kcalf"><span class="lab">Calories (kcal)</span><input id="fd-t-kcal" inputmode="numeric" placeholder="none"></label>
             <label class="ed-f"><span class="lab">Protein (g)</span><input id="fd-t-p" inputmode="numeric" placeholder="none"></label>
@@ -1891,6 +1880,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['8 Nov 2026', 'A clearer Request page', ["Request: pick what you want to send, and the form opens under it. A question from us waits at the top, and your messages are grouped below.", "In Settings, a tap or hover on a section now covers the whole bar."]],
+    ['8 Nov 2026', "Shorter notes, one Finish button", ["Progress, the exercise suggestions and the home page say less. Suggestions no longer say what you like or tell you how to feel about them.", "While you log, the bar at the bottom says Next exercise, and the Finish button is no longer shown twice.", "Food trends take no room until there is something to show."]],
+    ['8 Nov 2026', "Calmer screens", ["The background drawings are gone.", "Food: what you ate comes before Your own foods, and the suggested targets sit in Daily targets instead of above your day.", "Train and the plan preview say less: the first workout gets its date, and Add to calendar is no longer the loudest button."]],
     ['8 Nov 2026', "Request is in the bar", ["Feedback and requests has its own tab at the bottom, next to More, instead of being hidden in More. A dot shows there when we have asked you something.", "The labels in the bottom bar get a little smaller on a phone so all six fit, in every language."]],
     ['8 Nov 2026', 'Add a product by name', ["Tell Claude a product and it can look up the numbers on the internet and save it as your own food. The page it used is shown under the food.", "Calories that do not fit the protein, carbs and fat get flagged, which catches a per-serving number slipped in for a per-100 g one."]],
     ['8 Nov 2026', "Easier to see where things start", ["Every part of a page now sits in its own block, and blocks next to each other take turns between a cool and a warm tint. On Train: today, your week, and the month ahead.", "In More, each group of settings shares a tint."]],
@@ -2005,6 +1997,21 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     try { await navigator.clipboard.writeText(text); return true; } catch (e) { /* fall back below */ }
     try { if (field) field.select(); return document.execCommand('copy'); } catch (e) { return false; }
   };
+  // Opens Claude with a request. A real link click (target _blank) is what home-screen web apps handle best; window.open is dropped by some of them.
+  // The request is also copied, for when the chat opens empty.
+  const openInClaude = async (prompt) => {
+    let opened = false;
+    try {
+      const a = document.createElement('a');
+      a.href = 'https://claude.ai/new?q=' + encodeURIComponent(prompt);
+      a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.style.display = 'none';
+      document.body.append(a); a.click(); a.remove();
+      opened = true;
+    } catch (e) { /* the copied request below still works */ }
+    const ok = await copyPlain(prompt);
+    showToast(ok ? (opened ? 'Opening Claude. The request is also copied: paste it if the chat is empty.' : 'The request is copied. Paste it in Claude.') : 'Opening Claude.', null);
+  };
   const paintHomeConn = async () => {
     const c = await connInfo();
     const b = $('#hm-claude');
@@ -2074,18 +2081,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         // Land on Train first: opening Claude can take the page out of sight, and the person must come back to the week, not to a blank page
         close();
         backToTrain();
-        // a real link click (target _blank) is what home-screen web apps handle best; window.open is dropped by some of them
-        let opened = false;
-        try {
-          const a = document.createElement('a');
-          a.href = 'https://claude.ai/new?q=' + encodeURIComponent(prompt);
-          a.target = '_blank'; a.rel = 'noopener noreferrer';
-          a.style.display = 'none';
-          document.body.append(a); a.click(); a.remove();
-          opened = true;
-        } catch (e) { /* the copied request below still works */ }
-        const ok = await copyPlain(prompt);
-        showToast(ok ? (opened ? 'Opening Claude. The request is also copied: paste it if the chat is empty.' : 'The request is copied. Paste it in Claude.') : 'Opening Claude.', null);
+        await openInClaude(prompt);
       },
       onKeep: close,
     });
@@ -2393,7 +2389,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const t = S.templates[s.template];
       box.dataset.k = kindKey(s.template);
       box.append(h('div', 't-head', 'Done: ' + (t ? t.name : s.label || s.split || 'session')));
-      box.append(h('p', 'note', setsDone(s) + ' sets logged. Tap it in the week below to look back or correct a set.'));
+      box.append(h('p', 'note', setsDone(s) + ' sets logged.'));
       return;
     }
     if (td.open.length) {
@@ -2416,9 +2412,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       box.append(go);
       return;
     }
-    box.append(h('div', 't-head', 'Rest day. Train anyway?'));
+    box.append(h('div', 't-head', 'Rest day'));
     const nx = nextTemplate();
-    box.append(h('p', 'note', 'Nothing is planned today. Pick any day below' + (nx ? ', or start the next one in your rotation.' : '.')));
+    box.append(h('p', 'note', 'No workout planned today.'));
     if (nx) {
       const go = btn('skew big', 'Start ' + S.templates[nx].name);
       go.id = 'btn-start';
@@ -2980,12 +2976,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     addBtn.addEventListener('click', () => togglePicker(addBtn, pk, onPick));
     addRow.append(addBtn);
     const gen = h('div');
-    gen.append(h('div', 'lab', 'Session note for Coach'));
+    gen.append(h('div', 'lab', 'Workout note'));
     const genBox = buildNote('general', 'General', true);
     gen.append(genBox.el);
     const copyRow = h('div', 'foot-row');
-    const cp = btn('skew', 'Copy day');
-    const cpMsg = h('span', 'note', 'This workout as text, with your notes, to paste into a chat with an AI or your trainer.');
+    const cp = btn('skew', 'Copy workout');
+    const cpMsg = h('span', 'note');
     cpMsg.setAttribute('aria-live', 'polite');
     const cpBox = h('textarea', 'nt-text ex-out');
     cpBox.readOnly = true;
@@ -2997,7 +2993,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       cpMsg.textContent = ok ? COPIED : COPY_BLOCKED;
     });
     copyRow.append(cp, cpMsg);
-    const finRow = h('div', 'foot-row');
+    const finRow = h('div', 'foot-row fin-row');
     const fin = btn('skew', 'Finish day');
     fin.addEventListener('click', finishSession);
     finRow.append(fin, h('span', 'note', 'Ticked sets are already saved; finishing closes the day.'));
@@ -3105,8 +3101,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const at = items.findIndex((i) => i.ex === R.cur);
     const nx = items[at + 1];
     if (nx) {
-      const n = btn('skew pop next', 'Next: ' + exName(nx.ex));
+      const n = btn('skew pop next', 'Next exercise');
       n.id = 'focus-next';
+      n.setAttribute('aria-label', 'Next exercise: ' + exName(nx.ex));
       n.addEventListener('click', () => goExercise(nx.ex));
       const f = btn('skew', 'Finish');
       f.id = 'focus-finish';
@@ -4502,7 +4499,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     }
     svg.attr('aria-label', 'Calendar of ' + rangeWord() + ': ' + plural(n, 'day') + ' with ' + part + 'training');
     box.scrollLeft = box.scrollWidth;
-    $('#days-note').textContent = plural(n, 'day') + ' with ' + part + 'training in ' + rangeWord() + '. Today has an orange border.';
+    $('#days-note').textContent = part ? plural(n, 'day') + ' with ' + part + 'training in ' + rangeWord() + '.' : plural(n, 'training day') + ' in ' + rangeWord() + '.';
     const lg = $('#days-legend');
     lg.replaceChildren();
     const item = (cls, bg, label, op) => { const it = h('span'); const sw = h('i', cls); if (bg) sw.style.background = bg; if (op) sw.style.opacity = op; it.append(sw, label); lg.append(it); };
@@ -4640,7 +4637,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const rows = (all || progressRows(rangeFrom())).filter(inGroup);
     const hidden = progressRows('').filter(inGroup).length - rows.length;
     $('#plist-count').textContent = rows.length ? String(rows.length) : '';
-    $('#plist-note').textContent = 'Best set per session and its trend over ' + rangeWord() + '. Tap a lift for its chart.' + (hidden ? ' ' + plural(hidden, 'lift') + ' not trained in this period ' + (hidden === 1 ? 'is' : 'are') + ' left out.' : '');
+    $('#plist-note').textContent = 'Best set per workout. Tap a lift for details.' + (hidden ? ' ' + plural(hidden, 'lift') + ' not trained in this period ' + (hidden === 1 ? 'is' : 'are') + ' left out.' : '');
     if (!rows.length) { box.append(h('div', 'empty', hidden ? 'Nothing trained here in ' + rangeWord() + '.' : 'Nothing logged here yet.')); return; }
     if (S.picked && !rows.some((r) => r.exercise === S.picked)) S.picked = null;
     rows.forEach((r) => {
@@ -4809,7 +4806,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       });
       if (d.total && totalFits) svg.append('text').attr('class', 'val-lab').attr('x', mid(d.bin)).attr('y', y(acc) - 6).attr('text-anchor', 'middle').text(String(d.total));
     });
-    $('#weekly-note').textContent = 'Working sets per ' + per + ' by body part in ' + rangeWord() + '.' + (counts ? ' The row under each bar is the number of sessions.' : ' Tap a bar for its sessions.');
+    $('#weekly-note').textContent = 'Working sets by body part, ' + rangeWord() + '.' + (counts ? (monthly ? ' Sessions per month are listed below the bars.' : ' Sessions per week are listed below the bars.') : ' Tap a bar for sessions.');
   };
 
   const fillTable = (tbl, rows, cols, build) => {
@@ -4987,7 +4984,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     favs.forEach(({ id, l }) => {
       if (cards.length >= 6) return;
       const alt = pick(LIB.filter((x) => x.id !== l.id && !shown.has(x.id) && x.group === l.group && (x.equipment === l.equipment || x.primary === l.primary)), 1)[0];
-      if (alt) { shown.add(alt.id); cards.push({ why: 'You like ' + S.exercises[id].name, l: alt }); }
+      if (alt) { shown.add(alt.id); cards.push({ why: 'Alternative to ' + S.exercises[id].name, l: alt }); }
     });
     return { basis, cards };
   };
@@ -4995,8 +4992,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const { basis, cards } = recommend();
     const box = $('#xr-list');
     box.replaceChildren();
-    $('#xr-note').textContent = !basis ? 'Log a few workouts or build a plan, and Yes Coach points out body parts you skip and exercises you might like.'
-      : cards.length ? 'Based on ' + basis + '. Add one to a training day, or ignore it: you know your body best.' : 'Based on ' + basis + ': every body part gets work. Nice.';
+    $('#xr-note').textContent = !basis ? 'Suggestions appear after you log workouts or create a plan.'
+      : cards.length ? 'Suggestions based on ' + basis + '.' : 'No suggestions based on ' + basis + '.';
     cards.forEach(({ why, l }) => {
       const c = h('div', 'xr-card');
       c.dataset.g = LIB_GROUP[l.group] || l.group;
@@ -5218,10 +5215,6 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       row.append(use);
       box.append(row, how);
     };
-    // above the day only while you have no target at all; always inside Daily targets
-    const top = $('#fd-sug-top');
-    top.hidden = showCal() ? !!(tg.kcal || tg.protein) : !!tg.protein;
-    if (!top.hidden) fill(top, true);
     fill($('#fd-sug'), false);
   };
   const fdDayWord = (d) => (d === today() ? 'Today, ' : d === addDays(today(), -1) ? 'Yesterday, ' : '') + fmtLong(parse(d));
@@ -5633,7 +5626,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const u = o.u === 'ml' ? 'ml' : 'g';
     return { src: 'own', ref: String(d.food).slice(4), name: d.name, alt: '', type: 'Your own', kcal: n0(o.kcal), p: n0(o.p), c: n0(o.c), f: n0(o.f), unit: u, sug: null, fib: null, w: wordsOf(d.name), wsyn: [], w2: [], drink: u === 'ml', u, disp: d.name, dispAlt: '', flags: [] };
   };
-  const ownFoodDoc = (ref) => Object.values(S.myfoods || {}).find((d) => d && typeof d === 'object' && !d.gone && d.food === 'own:' + ref && d.own && typeof d.own === 'object' && typeof d.name === 'string') || null;
+  const ownOk = (d, ref) => !!d && typeof d === 'object' && !d.gone && d.food === 'own:' + ref && !!d.own && typeof d.own === 'object' && typeof d.name === 'string';
+  const ownFoodDoc = (ref) => { const d = (S.myfoods || {})['own-' + ref]; return ownOk(d, ref) ? d : Object.values(S.myfoods || {}).find((x) => ownOk(x, ref)) || null; };
   const foodByKey = (src, ref, db = FDB) => { // one lookup, not a scan of the whole table
     if (src === 'own') { const d = ownFoodDoc(ref); return d ? ownItemOf(d) : null; }
     return (db && db.byKey.get(src + ':' + ref)) || null;
@@ -5786,7 +5780,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     msg.textContent = '';
     const id = 'own-' + slug;
     const old = S.myfoods[id] && !S.myfoods[id].gone ? S.myfoods[id] : null;
-    if (!old && Object.keys(S.myfoods || {}).length >= 500) { fail('The list of your foods is full. Forget one first.'); return; }
+    if (!old && Object.values(S.myfoods || {}).filter((x) => x && !x.gone).length >= 500) { fail('The list of your foods is full. Forget one first.'); return; }
     const doc = Object.assign({ aka: {}, n: 0, last: 0, portions: {} }, old || {}, { food: 'own:' + slug, name, own: { kcal: v.kcal, p: v.p, c: v.c, f: v.f, u } });
     if (old && old.source && ['kcal', 'p', 'c', 'f', 'u'].some((k) => (old.own || {})[k] !== doc.own[k])) delete doc.source; // new numbers, so the old source no longer covers them
     S.myfoods[id] = doc;
@@ -5857,15 +5851,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   $('#fd-own-claude').addEventListener('click', async () => {
     const prompt = 'Add a food to my Yes Coach! with my Yes Coach connector. I will tell you the product. Look up its calories, protein, carbs and fat per 100 g or per 100 ml on the maker\'s or a shop\'s page, tell me where you found them, and save it as my own food with that page as the source. If you cannot find the numbers, ask me for the ones on the package.';
-    try {
-      const a = document.createElement('a');
-      a.href = 'https://claude.ai/new?q=' + encodeURIComponent(prompt);
-      a.target = '_blank'; a.rel = 'noopener noreferrer';
-      a.style.display = 'none';
-      document.body.append(a); a.click(); a.remove();
-    } catch (e) { /* the copied request still works */ }
-    const ok = await copyPlain(prompt);
-    showToast(ok ? 'Opening Claude. The request is also copied: paste it if the chat is empty.' : 'Opening Claude.', null);
+    await openInClaude(prompt);
   });
   const fillFromPick = () => {
     const it = FD.pick.it;
@@ -6218,8 +6204,14 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     sum.replaceChildren();
     $('#fd-metric').replaceChildren();
     $('#fd-chart-note').textContent = '';
-    if (!days.length) { $('#fd-take').textContent = !logged.length ? 'Log a few days and your averages and a chart show up here.' : inRange.length ? 'No ' + (cal ? 'calories' : 'protein, carbs or fat') + ' filled in for ' + word + ' yet.' : 'Nothing logged in ' + word + '. Pick a longer period.'; return; }
-    $('#fd-take').textContent = '';
+    // with nothing to chart, only a note stays: no blank chart-sized region, and the period control only while a longer period could help
+    const take = $('#fd-take');
+    const empty = !days.length;
+    [$('#fd-sum'), $('#fd-metric'), $('#fd-chart-note'), box].forEach((e) => { e.hidden = empty; });
+    $('#fd-range').hidden = empty && !logged.length;
+    take.hidden = !empty;
+    take.textContent = !empty ? '' : !logged.length ? 'Log food to see your trends.' : inRange.length ? 'No nutrient values available for this period.' : 'No food logged in this period.';
+    if (empty) return;
     const tg = targets();
     const span = Math.round(dayNum(today()) - dayNum(from)) + 1;
     const avg = (k) => d3.mean(days, (d) => d[k]);
@@ -6934,12 +6926,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       weekdays: DAY_PATTERNS[n],
       days: days.map(([name, kind, focus, ids]) => {
         const used = new Set();
+        const swapped = new Set(); // history lifts already taken by an earlier pick of this day
         const items = ids.map((id) => (p.experience === 'new' && STARTER_NEW[id] && fitsPlace(LIB_BY_ID.get(STARTER_NEW[id]), where) ? STARTER_NEW[id] : id)).map((id) => {
           // a lift from their history for the same muscles takes the place of the picked one, when they trained it often
           const l = LIB_BY_ID.get(id);
           if (hist && !stats.has(id)) {
-            const mine = [...stats.entries()].filter(([x, o]) => o.dates.size >= 3 && !used.has(x) && !ids.includes(x) && LIB_BY_ID.get(x).group === l.group && fitsPlace(LIB_BY_ID.get(x), where)).sort((a, b) => b[1].dates.size - a[1].dates.size)[0];
-            if (mine) return mine[0];
+            const mine = [...stats.entries()].filter(([x, o]) => o.dates.size >= 3 && !swapped.has(x) && !ids.includes(x) && LIB_BY_ID.get(x).group === l.group && fitsPlace(LIB_BY_ID.get(x), where)).sort((a, b) => b[1].dates.size - a[1].dates.size)[0];
+            if (mine) { swapped.add(mine[0]); return mine[0]; }
           }
           return id;
         }).filter((id) => { if (used.has(id)) return false; used.add(id); return true; }).slice(0, len).map((id, k) => {
@@ -7104,8 +7097,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (W.src !== 'none' && W.src !== 'backup' && W.file && !W.rows && !(window.YC_WEB && W.src === 'other')) { wizStep('busy', 'Reading your ' + optName(WIZ_SOURCES, W.src) + ' export…'); W.rows = await parseExport(W.file, W.src); }
   };
   const buildLocal = async () => {
+    W.failed = null;
     try {
       await readRows();
+      // a file that cannot be read here (a file from another app on the web needs an AI) is not silently dropped
+      if (W.imp && W.file && !W.rows && W.src !== 'none' && W.src !== 'backup') { wizStep('error', 'This file needs an AI to read it. Build a plan with your AI, or use the copy-and-paste way in Settings.'); return; }
       if (W.rows && W.imp) {
         const ds = [...new Set(W.rows.map((r) => r.date))].sort();
         const last = ds[ds.length - 1];
@@ -7125,6 +7121,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   // only the history: for someone who keeps their plan, or wants to build one later
   const importOnly = async () => {
+    W.failed = null;
     try {
       await readRows();
       if (!W.rows) { wizStep('error', 'This file needs an AI to read it. Build a plan with your AI, or use the copy-and-paste way in Settings.'); return; }
@@ -7136,10 +7133,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       showToast('Imported ' + plural(n, 'session') + '.', null);
     } catch (e) {
       if (e && e.code === 'bad_file') W.rows = null;
+      W.failed = 'import';
       wizStep('error', (e && e.code) ? coachError(e) : 'Saving stopped part way (' + ((e && e.message) || 'unknown error') + '). Check your connection and try again; what was saved is not saved twice.');
     }
   };
   const buildPlan = async () => {
+    W.failed = null;
     W.ctl = new AbortController();
     try {
       if (W.src !== 'none' && W.file && !W.rows && !(window.YC_WEB && W.src === 'other')) { wizStep('busy', 'Reading your ' + optName(WIZ_SOURCES, W.src) + ' export…'); W.rows = await parseExport(W.file, W.src); }
@@ -7358,7 +7357,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       box.append(h('p', 'wz-msg', W.msg));
       const fr = h('div', 'foot-row');
       fr.append(btn('skew pop', 'Try again'), plainBtn('textbtn', 'Back', null, () => wizStep('start')), plainBtn('textbtn', 'Use the copy-and-paste way', null, () => { if (window.YC_WEB && W.failed !== 'save') { wizStep('manual'); return; } imp.src = W.src; imp.file = W.file; closeWizard(); openSettingFor($('#imp'), 'start'); }));
-      fr.firstChild.addEventListener('click', () => (W.failed === 'save' ? saveAndClose() : W.adjust || W.chat.length ? buildPlan() : buildLocal()));
+      fr.firstChild.addEventListener('click', () => (W.failed === 'save' ? saveAndClose() : W.failed === 'import' ? importOnly() : W.adjust || W.chat.length ? buildPlan() : buildLocal()));
       box.append(fr);
       return;
     }
@@ -7387,9 +7386,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         plan.weekdays = startOn(plan.weekdays, addDays(today(), v));
         renderWizard(true);
       }));
-      const when = plan.days[0].name + ' ' + (W.start ? 'tomorrow' : 'today');
-      box.append(h('p', 'note', plan.days.length < 2 ? when + '. Then every week on ' + plan.weekdays.join(', ') + '.'
-        : when + '. Then every week on ' + plan.weekdays.join(', ') + ', in the order ' + plan.days.map((d) => d.name).join(' → ') + '. Miss a day and the next one simply waits.'));
+      // the plan is saved as a rotation, so a missed workout waits for the next training day
+      const when = h('div', 'wz-when');
+      when.append(h('p', 'note', 'First workout: ' + plan.days[0].name + ', ' + fmtLong(parse(addDays(today(), W.start || 0))) + '.'), h('p', 'note', 'Training days: ' + plan.weekdays.join(', ') + '.'));
+      if (plan.days.length > 1) when.append(h('p', 'note', 'Missed workouts move to your next training day.'));
+      box.append(when);
     }
     const list = h('div', 'ed-items');
     plan.days.forEach((d) => {
@@ -7704,7 +7705,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const show = () => {
       box.classList.remove('confirm');
       const acts = h('div', 'wk-acts');
-      const start = btn('skew pop wk-start', 'Start day');
+      const start = btn('skew wk-start', 'Start day');
       start.addEventListener('click', () => openSession(d, pl.tpl));
       const sel = h('select');
       sel.append(Object.assign(h('option', '', 'Choose a day'), { value: '' }));
@@ -7790,7 +7791,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const dates = WEEKDAYS.map((_, i) => addDays(ws, i));
     const sc = activeSchedule();
     $('#h-week').textContent = dm(dates[0]) + ' – ' + dm(dates[6]);
-    $('#wk-hint').textContent = (sc ? 'Planned from your schedule. ' : 'Planned days follow each day\'s weekday. ') + 'Tap a day to see or change it. Drag a planned day to another date to move it.';
+    $('#wk-hint').textContent = 'Tap a day for details. Drag to reschedule.';
     const model = weekModel(ws);
     const { byDate } = model;
     const kinds = {};
@@ -8604,7 +8605,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     });
   };
   const queueTone = () => { if (!toneQueued) { toneQueued = true; requestAnimationFrame(toneBlocks); } };
-  new MutationObserver(queueTone).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
+  // a timer ticking or a row being typed into changes the page all the time; only blocks coming, going, shown or hidden change the tones
+  const blkNode = (n) => n.nodeType === 1 && (n.matches('.blk, .view') || !!n.querySelector('.blk'));
+  new MutationObserver((muts) => { if (muts.some((m) => m.type === 'attributes' || [...m.addedNodes, ...m.removedNodes].some(blkNode))) queueTone(); }).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
 
   // Settings: every section folds; all start closed, so the list of sections is the first thing you see
   function foldSettings() {
