@@ -6291,5 +6291,33 @@
   "de": "Neuigkeiten zeigt die letzten fünf Einträge. Der Rest steht unter Ältere.",
   "fr": "Nouveautés affiche les cinq dernières entrées. Le reste se trouve sous Plus anciens.",
   "it": "Novità mostra le ultime cinque voci. Il resto è sotto Precedenti."
+ },
+ "{0} is next on {1} {2}.": {
+  "nl": "{0} is de volgende op {1} {2}.",
+  "es": "{0} toca el {1} {2}.",
+  "de": "{0} ist als Nächstes am {1} {2} dran.",
+  "fr": "{0} est le prochain le {1} {2}.",
+  "it": "{0} è il prossimo, {1} {2}."
+ },
+ "{0} is next in your order.": {
+  "nl": "{0} is de volgende in je volgorde.",
+  "es": "{0} es el siguiente en tu orden.",
+  "de": "{0} ist in deiner Reihenfolge als Nächstes dran.",
+  "fr": "{0} est le prochain dans ton ordre.",
+  "it": "{0} è il prossimo nel tuo ordine."
+ },
+ "The rolling order follows a swap": {
+  "nl": "De rollende volgorde volgt een ruil",
+  "es": "El orden rotativo sigue un cambio",
+  "de": "Die rollende Reihenfolge folgt einem Tausch",
+  "fr": "L'ordre tournant suit un échange",
+  "it": "L'ordine a rotazione segue uno scambio"
+ },
+ "Train Back instead of Legs and Legs comes next, also in next week. A day done ahead of its turn no longer drops the day it passed.": {
+  "nl": "Train Rug in plaats van Benen en Benen komt daarna, ook volgende week. Een dag die eerder wordt gedaan laat de overgeslagen dag niet meer vallen.",
+  "es": "Haz Espalda en lugar de Piernas y Piernas toca después, también la semana siguiente. Un día hecho antes de su turno ya no hace perder el día que se saltó.",
+  "de": "Trainiere Rücken statt Beine, dann sind die Beine als Nächstes dran, auch in der nächsten Woche. Ein vorgezogener Tag lässt den übersprungenen nicht mehr verfallen.",
+  "fr": "Fais Dos au lieu de Jambes et Jambes vient ensuite, y compris la semaine suivante. Un jour fait avant son tour ne fait plus perdre celui qu'il a dépassé.",
+  "it": "Fai Schiena al posto di Gambe e Gambe viene dopo, anche la settimana successiva. Un giorno fatto prima del suo turno non fa più perdere quello saltato."
  }
 }

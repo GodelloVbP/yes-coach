@@ -1,4 +1,5 @@
 """The finish screen: numbers, records, the share picture, its switches, sharing and saving."""
+import re
 import subprocess, time, datetime
 from playwright.sync_api import sync_playwright
 from harness import *
@@ -27,7 +28,7 @@ def log(page, key, load, reps):
     page.locator('.set:has(#f-%s-load) .set-tick' % key).click()
 
 def finish(page):
-    page.locator('button.skew:visible', has_text='Finish workout').first.click()
+    page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click()
 
 server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)

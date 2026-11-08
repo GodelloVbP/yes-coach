@@ -267,7 +267,7 @@ try:
         got = {}
         def s8b(page):
             open_feedback(page); page.wait_for_selector('.tk-bar'); page.click('.tk-bar > summary'); page.wait_for_selector('#tk-admin-list .tk-card')
-            page.click('.tk-bar >> text=Copy shown tickets'); page.wait_for_function("document.querySelector('.tk-bar-body').innerText.includes('Copied')")
+            page.click('.tk-bar >> text=Copy these tickets'); page.wait_for_function("document.querySelector('.tk-bar-body').innerText.includes('Copied')")
             got['text'] = page.evaluate('navigator.clipboard.readText()')
         errs = session(pw, be, OWNER, s8b)
         t = got.get('text', '')
@@ -401,7 +401,7 @@ try:
             check('only the day whose plan day still exists is a link', links == 1, links)
             tip = lambda: page.evaluate("document.querySelector('#p-days .tip').innerText")
             box = cells.nth(trained[1]).bounding_box(); page.mouse.move(box['x'] + 4, box['y'] + 4); page.wait_for_timeout(120)
-            check('tooltip offers to open it', 'open this session' in tip().lower(), tip())
+            check('tooltip offers to open it', 'open workout' in tip().lower(), tip())
             cells.nth(trained[1]).click()
             page.wait_for_selector('#session', state='visible')
             check('click opens that session on the Train tab', page.get_attribute('#tab-train', 'aria-selected') == 'true' and page.is_visible('#session'))
@@ -503,7 +503,7 @@ try:
         def home_a(page):
             page.wait_for_selector('#v-home', state='visible')
             txt = page.inner_text('#v-home')
-            for want in ('Feedback', 'Send bugs and feature requests from inside the app', 'Free and private', '100% free. Forever.', 'No ads.', 'No tracking.', 'export it with one click', 'What makes it different', 'Strong, Hevy or FitNotes', 'Use your own AI'):
+            for want in ('Feedback', 'Send bugs and feature requests', 'Free and private', '100% free. Forever.', 'No ads.', 'No tracking.', 'export it any time', 'What makes it different', 'Strong, Hevy or FitNotes', 'Use your own AI'):
                 check('home says: ' + want, want.lower() in txt.lower(), txt[:200])
             check('home no longer promises 24 hours', '24 hours' not in txt and 'Made with you' not in txt)
             check('bullets are ticks', page.locator('.hm-checks li').count() == 5)
@@ -560,7 +560,7 @@ try:
             page.evaluate("localStorage.setItem('yc-active', JSON.stringify({date: new Date().toISOString().slice(0, 10), tpl: 'push'}))"); page.reload(); page.wait_for_selector('#resume-fin', state='visible')
             page.evaluate("window.__opened = []; if (!window.__oc) { window.__oc = HTMLAnchorElement.prototype.click; HTMLAnchorElement.prototype.click = function () { if (/claude\\.ai/.test(this.href)) { window.__opened.push(this.href); return; } return window.__oc.call(this); }; } 0")
             page.click('#resume-fin'); page.wait_for_selector('#claude-review-go')
-            check('asks: Send day to Coach Claude for review?', 'Send day to Coach Claude for review?' in page.inner_text('.ydlg'))
+            check('asks: Send to Claude, with what happens next', 'claude reads it through your connector' in page.text_content('.ydlg').lower() and page.text_content('#claude-review-go').strip().lower() == 'send to claude', page.text_content('.ydlg'))
             check('focus is on the Send button', page.evaluate("document.activeElement.id") == 'claude-review-go')
             page.click('.ydlg >> text=Not now'); check('Not now closes it', page.locator('.ydlg').count() == 0)
             page.evaluate("localStorage.setItem('yc-active', JSON.stringify({date: new Date().toISOString().slice(0, 10), tpl: 'push'}))"); page.reload(); page.wait_for_selector('#resume-fin', state='visible')
@@ -591,7 +591,7 @@ try:
         def trends(page):
             go(page, 'progress'); page.wait_for_selector('.prow'); page.click('.prow')
             page.wait_for_selector('.p-detail svg')
-            check('heaviest set is the default chart', 'Heaviest set per session' in page.inner_text('.p-detail'), page.inner_text('.p-detail')[:200])
+            check('heaviest set is the default chart', 'heaviest set per workout' in (page.get_attribute('.p-detail svg', 'aria-label') or '').lower() or 'heaviest set' in page.inner_text('.p-detail').lower(), page.inner_text('.p-detail')[:200])
             nums = page.evaluate("[...document.querySelectorAll('.p-detail svg text')].map(t => parseFloat(t.textContent)).filter(n => !isNaN(n))")
             check('axis stays at lifted weights (no estimated 1RM above 80 kg)', nums and max(nums) <= 90, nums)
             page.click('.p-detail >> text=Est. strength')

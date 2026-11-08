@@ -1,4 +1,5 @@
 """Custom workout, run tracking, the month schedule, your own foods, and the desktop top padding."""
+import re
 import subprocess, time, datetime, calendar
 from playwright.sync_api import sync_playwright
 from harness import *
@@ -84,7 +85,7 @@ try:
             check('last time fills distance and minutes', page.input_value('#f-treadmill-run_1-km') == '5' and page.input_value('#f-treadmill-run_1-minutes') == '30' and page.input_value('#f-treadmill-run_1-elev') == '20', [page.input_value('#f-treadmill-run_1-' + f) for f in ('minutes', 'km', 'elev')])
             check('and the treadmill stays picked', page.get_attribute('.run-where button[data-w="treadmill"]', 'aria-pressed') == 'true')
             page.locator('.set .set-tick').first.click(); page.wait_for_timeout(300)
-            page.locator('button.skew:visible', has_text='Finish workout').first.click()
+            page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click()
             page.wait_for_selector('.fin', timeout=5000)
             page.click('#fin-done')
             check('finishing lands on the Train screen', until(lambda: page.is_visible('#pickday') and page.locator('.fin').count() == 0))
@@ -278,23 +279,23 @@ try:
             check('the days used are spread out, not a block of four in a row', all(not ('planned' in names[i] and 'planned' in names[i + 1] and 'planned' in names[i + 2]) for i in range(5)), names)
             check('the four days are used in order', len(set(n.split(', ')[-1] for n in used)) == 4, used)
             page.click('.mainnav [data-view="plan"]'); page.wait_for_selector('.pw-set', timeout=5000)
-            check('Plan says Days you can train and has Sessions a week', 'Days you can train' in page.text_content('.pw-set') and 'Sessions a week' in page.text_content('.pw-set'))
-            chips = page.locator('.pw-days[aria-label="Sessions a week"] .pk-chip')
-            check('the set-up value is selected', chips.count() == 7 and page.get_attribute('.pw-days[aria-label="Sessions a week"] .pk-chip >> nth=3', 'aria-pressed') == 'true')
+            check('Plan says Days you can train and has Workouts a week', 'Days you can train' in page.text_content('.pw-set') and 'Workouts a week' in page.text_content('.pw-set'))
+            chips = page.locator('.pw-days[aria-label="Workouts a week"] .pk-chip')
+            check('the set-up value is selected', chips.count() == 7 and page.get_attribute('.pw-days[aria-label="Workouts a week"] .pk-chip >> nth=3', 'aria-pressed') == 'true')
             check('and it explains the spread', 'spread over your 7 days' in page.text_content('.pw-per-note'), page.text_content('.pw-per-note'))
-            page.click('.pw-days[aria-label="Sessions a week"] .pk-chip >> nth=4')
+            page.click('.pw-days[aria-label="Workouts a week"] .pk-chip >> nth=4')
             check('picking 5 saves it', until(lambda: ((doc(be, 'yc') or {}).get('schedule') or {}).get('per_week') == 5), (doc(be, 'yc') or {}).get('schedule'))
             check('the days you can train stay as they were', ((doc(be, 'yc') or {}).get('schedule') or {}).get('days') == ALL)
             page.click('.mainnav [data-view="train"]'); page.wait_for_selector('#wk-rows .wk-blk')
             check('next week now has 5', planned_next(1) == 5, planned_next(1))
             page.click('.mainnav [data-view="plan"]'); page.wait_for_selector('.pw-set')
-            page.click('.pw-days[aria-label="Sessions a week"] .pk-chip >> nth=6')
+            page.click('.pw-days[aria-label="Workouts a week"] .pk-chip >> nth=6')
             page.click('.mainnav [data-view="train"]'); page.wait_for_selector('#wk-rows .wk-blk')
             check('7 sessions a week uses every day', planned_next(1) == 7, planned_next(1))
             # fewer days than sessions is said, not guessed
             page.click('.mainnav [data-view="plan"]'); page.wait_for_selector('.pw-set')
             for w in ('Sat', 'Sun', 'Fri'): page.click('.pw-days[aria-label="Days you train"] .pk-chip:has-text("%s")' % w)
-            check('too few days for the sessions: it says so', 'Pick more days or fewer sessions' in page.text_content('.pw-per-note'), page.text_content('.pw-per-note'))
+            check('too few days for the sessions: it says so', 'Pick more days or fewer workouts' in page.text_content('.pw-per-note'), page.text_content('.pw-per-note'))
         errs = session(pw, be, ALICE, s5, width=390); check('no page errors (schedule)', not errs, errs)
 
         # ---- 6. switching tabs must not move or resize the page: one content column, and a fade instead of a slide

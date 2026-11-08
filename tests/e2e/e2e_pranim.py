@@ -1,4 +1,5 @@
 """New personal records hit hard: the PR tag slams in when you tick the set, the finish screen slides the records in. Nothing moves with reduced motion."""
+import re
 import subprocess, time, datetime
 from playwright.sync_api import sync_playwright
 from harness import *
@@ -56,7 +57,7 @@ try:
             page.wait_for_selector('#f-bench_1-load', state='attached')
             check('after a reload the tag is there', until(lambda: page.locator(ROW + ' .pr').count() == 1))
             check('and it does not slam again', 'slam' not in (page.get_attribute(ROW + ' .pr', 'class') or ''))
-            page.locator('button.skew:visible', has_text='Finish workout').first.click()
+            page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click()
             page.wait_for_selector('.fin-prs li', state='attached')
             n = page.locator('.fin-prs li').count()
             check('the finish screen lists the records', n >= 2, n)
@@ -72,7 +73,7 @@ try:
             log(page, 'bench_1', 70, 8)
             check('reduced motion: the PR tag shows', until(lambda: page.locator(ROW + ' .pr').count() == 1))
             check('reduced motion: nothing animates on the row', anim(page, ROW + ' .pr') == 'none' and anim(page, ROW) == 'none', (anim(page, ROW + ' .pr'), anim(page, ROW)))
-            page.locator('button.skew:visible', has_text='Finish workout').first.click()
+            page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click()
             page.wait_for_selector('.fin-prs li', state='attached')
             check('reduced motion: the finish records are plain', anim(page, '.fin-prs li') == 'none' and anim(page, '.fin-prs .pr') == 'none')
         errs = session(pw, be, ALICE, calm, width=390); check('no page errors (reduced motion)', not errs, errs)
