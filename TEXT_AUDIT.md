@@ -320,3 +320,213 @@ You asked whether the 1,420 KEEP strings could really be clean. They are not. Th
 **What a string list cannot show.** R2 (show the result, do not describe it) and R3 (hierarchy) depend on what is next to a string: whether a note restates a control, or whether a sentence should be a preview. The screen audit found most of those, but it covered only the 14 screens I opened. Screens I did not open (sign-in, the share picture, the plan wizard's copy step, the connector section, desktop, other languages) have had no context-aware check. The 1,264 kept strings under 13 words were only read as short labels.
 
 **Net effect on the numbers:** at least 14 more strings flagged (about 156 + 14 = 170), plus the changelog class. I would treat "about 11 to 12% flagged, closer to 20% of what people read" as the honest figure, and still as a floor.
+
+## Sweep 2: a stricter second reading (added later)
+
+Six reviewers re-read the 1,234 on-screen strings the first pass had kept, with the neighbouring strings and the screen listings in front of them, and rated each flag: **severity** (3 hard to understand or wrong, 2 clear waste, 1 small polish) and **impact** (H main screen, M sometimes, L rare or release note).
+
+| | Count |
+|---|---|
+| Newly flagged | 164 |
+| Severity 3 | 0 |
+| Severity 2 | 30 |
+| Severity 1 | 134 |
+| Impact H / M / L | 7 / 87 / 70 |
+| First pass + sweep 2 | 320 flagged = **20.3% of all 1,576**, about 23% of the on-screen text |
+
+**Read this number carefully.** The flag count reaches 20 to 35%, but 82% of what the second sweep added is severity 1 polish. Count only severity 2 and 3: the first pass's 156 (not rated for severity, a mix of both) plus this sweep's 30 is about 12% of all strings. Six independent reviewers each ended at 10 to 18% on their own, and none found a single severity 3 string in what the first pass had kept. The real problems were mostly caught the first time; the second sweep mostly found polish. I did not flag to reach a quota.
+
+### The 5 worst cases in the whole app
+
+| # | Where | What it says now | Why it is the worst | What I would do |
+|---|---|---|---|---|
+| 1 | Plan, under the schedule | "This week only: Back A moved to Tue 3 Nov, Legs A moved to Wed 4 Nov, Legs B moved to Sun 8 Nov, Legs B skipped, Back A moved to Tue 3 Nov…" (12 items, about 95 words, half repeated, most in the past) | Severity 3, impact H. A generated list printed as a sentence (R5), the biggest block on the screen, under permanent settings (R6). Both passes kept the template string "This week only: {0}." because the problem is in the data, not the words. | "3 changes this week. Open this week", with repeats and past days dropped. |
+| 2 | Plan, under "Sessions a week" and "If you miss a day" | "Every day you can train is a training day." / "Your 4 sessions a week are spread over the 7 days you can train. They can land on different weekdays as the weeks go." / "It moves up: your days repeat in this order on your training days, so nothing is skipped." | Severity 3, impact H. Three notes that say nothing for some settings (R10), use internal words (R9: "moves up", "this order"), and restate the control above (R4). | Remove all three. Label the choice by result ("Move to next day") and show the weekdays as a preview. |
+| 3 | More, Backup and restore | "A full backup holds everything, your training plan and schedule included. Restoring adds what is missing here, and can put your training plan back the way it was in the backup. It never deletes anything or changes a logged session." (42 words) | Severity 3, impact M. A wall of text in a place where people want one thing: that restoring is safe. Three sentences, two ideas, "here" with no referent. | "A full backup holds everything, including your plan and schedule. Restoring adds what is missing and never changes a logged workout. It can also bring your plan back as it was." The safety promise stays. |
+| 4 | What's new | "Yes Coach! now always opens on Home." (5 Nov) and "Add to calendar is now a big button." | Severity 3, impact L, but **wrong**. A newer entry says the app opens on Train, and Add to calendar was made quieter today. A visible factual error, not just wordiness. | Drop those sentences and show only the latest five entries. |
+| 5 | Workout, the note field on every workout | "How the session went, sleep, energy, anything for Coach. Saves as you type." | Severity 2, impact H, the screen people see most. "Coach" names the app, the AI and the person's own note in different places (V2). "Session" is the third word for a workout (V1). "Saves as you type" repeats the Saving and Saved status that shows right beside it. | "How it went, sleep, energy." |
+
+### The 5 best slight adjustments
+
+Small edits (mostly one to five words) where the new text is clearly better and nothing is lost. I checked each against the code.
+
+| # | Where | Now | Change | Why it is a good one |
+|---|---|---|---|---|
+| 1 | Food, adding a food with your own numbers | Label "Rough guess" with three chips: "Small · ~10 g protein", "Medium · ~25 g protein", "Large · ~40 g protein" | Label "Rough protein guess", chips "Small · ~10 g", "Medium · ~25 g", "Large · ~40 g" | The word "protein" appears three times in a row. Saying it once in the label fixes four strings at once. |
+| 2 | Toast after "Same as yesterday" | "Copied yesterday." | "Copied yesterday's food." | One word added, and the toast now says what was copied. This is the rare case where the fix is a longer string. |
+| 3 | Progress, lift chart with no data | "Not enough data for this view." | "No sessions in this period." | "This view" refers to nothing, and "not enough data" hides the cause. The code shows this message when there are no points at all, so the new text is exactly right. |
+| 4 | Finish screen, share toggles | "Show weights on the picture" / "Show my note on the picture" | "Show weights" / "Show my note" | The picture is directly above. "On the picture" repeats what the eye already sees. |
+| 5 | Exercises, "For you", before you have data | "Suggestions appear after you log workouts or create a plan." | "Log a workout or create a plan to see suggestions." | An empty state should say what to do, not when something will happen. Same words, better order. |
+
+Honourable mention: Plan editor, "In your order, on no weekdays yet." reads as a grammar error. "no weekdays yet" becomes "no days". It only shows for a day not yet scheduled, so it is rare, but it is a plain bug.
+
+### Everything sweep 2 flagged
+
+Sorted by severity, then impact. **Verdict** is mine: blank means accept the proposal.
+
+| Sev | Impact | Now | Proposed | Why | Verdict |
+|---|---|---|---|---|---|
+| 2 | H | Log a set. Last time and the next weight are right there. | Log a set | Caption repeats the card text; the screenshot shows the result |  |
+| 2 | H | Finish a day: time, volume and new records. | Finish a day | Screenshot already shows time, volume and records |  |
+| 2 | H | Put your planned days in Apple, Google or Outlook calendar. | Apple, Google or Outlook. | Restates the Add to calendar button |  |
+| 2 | H | Three quick answers give you a plan. Or build a day by hand. | Remove | Restates the Build my plan and Create a training day buttons beside it |  |
+| 2 | M | Built by one person. Tell us what is broken or missing, and you hear back when it is built or fixed. | Built by one person. You hear back when it is built or fixed. | 'Tell us what is broken or missing' restates the tiles below |  |
+| 2 | M | Connect your own Claude: in Claude open Customize, Connectors, Add custom connector, paste this address, then Connect and Allow. | Add this address in Claude as a custom connector, then Allow. | Menu path is in the Step by step link |  |
+| 2 | M | {0} moved to {1} {2}. Drag it in the week to change that. | {0} moved to {1} {2}. | Drag hint already sits under the week heading |  |
+| 2 | M | Heaviest set per session, with its reps. | Remove | Restates the 'Heaviest set' tab; best set shown above. |  |
+| 2 | M | Most reps in one set, per session. | Remove | Restates the 'Most reps' tab. |  |
+| 2 | M | Least assistance per session, with reps. Lower is better. | Lower is better. | Only the last sentence adds information. |  |
+| 2 | M | Trend starts {0}; earlier sessions are left out. | Trend counts only sessions from {0}. | Semicolon joins two ideas that say the same thing. |  |
+| 2 | M | Not enough data for this view. | No sessions in this period. | 'this view' is vague; say what is missing. |  |
+| 2 | M | Nothing matches. Try a muscle like biceps, or equipment like cable. Or add it as your own exercise. | Nothing matches. Add it as your own exercise. | Search placeholder already lists name, muscle, equipment. |  |
+| 2 | M | in Settings and Yes Coach suggests one. Or set your own below. |  in Settings to get a suggested target. | 'Or set your own' restates the fields right below. |  |
+| 2 | M | Spread over your meals works best. Carbs and fat have no target: eat what keeps your training going. | Spreading it over your meals works best. Carbs and fat have no target. | Drops unasked advice about what to eat. |  |
+| 2 | M | For example: my bench has stalled, I want more legs, I can only train 3 days now, swap the dips because of my shoulder. | For example: my bench has stalled, more leg work, I can only train 3 days, no dips (shoulder). | Placeholder is a 22-word sentence; examples can be fragments. |  |
+| 2 | M | Make it yours with your AI | Change the plan | Same button as 'Change the plan' beside it; unclear 'Make it yours'. |  |
+| 2 | M | Missed days are now skipped: the same days every week. | Missed days are skipped. | Note under the control already says each weekday keeps its day; 'now'  |  |
+| 2 | M | missing from days you have | in existing days | 'missing from days you have' is wordy and vague |  |
+| 2 | M | missing from sessions you have | in existing sessions | 'missing from sessions you have' is wordy and vague |  |
+| 2 | M | This backup adds what is missing here: {0}. | This backup adds: {0}. | 'missing here' repeated by every tail in the list |  |
+| 2 | L | Note shown to the user, and to anyone whose request is a duplicate of this one | Closing note, also shown on duplicates | 17-word label; matches 'closing note' term |  |
+| 2 | L | No connection. They are kept on this phone and retry when signal is back. | No connection. Kept on this phone, retrying when signal is back. | Three short clauses; 'They' unclear |  |
+| 2 | L | Saving failed; kept on this phone. | Kept on this phone. | 'Not saved' already said; 'Saving failed' repeats it |  |
+| 2 | L | Coming from another app? Import your history from the first screen; the plan takes your days a week from it. | Coming from another app? Import your history on the first screen and the plan uses how often you train. | Semicolon and awkward 'takes your days a week from it' |  |
+| 2 | L | Build my plan now makes your plan right away, in the app: full body for 2 or 3 days a week, upper and lower body for more, for the gym, home or bodyweight only. | Build my plan creates a plan in the app: full body for 2 or 3 days a week, upper and lower body for more. Choose gym, home or bodyweight only. | 'Build my plan now' reads like a button; two ideas run together |  |
+| 2 | L | Most people know an exercise by its English name, so the names now stay in English in every language. | Most people know an exercise by its English name. | Title already says names stay English in every language. |  |
+| 2 | L | On a phone you now see one exercise at a time. Tap an exercise at the top to jump to it, or tap Next at the bottom. | On a phone, tap an exercise at the top to jump to it, or tap Next at the bottom. | First sentence restates the title. |  |
+| 2 | L | New look for dropdown lists, and more room between the parts of Plan. | New look for dropdown lists. | Spacing change is not something people act on |  |
+| 2 | L | New Put on home screen button, with the steps for iPhone and Android. Yes Coach! now always opens on Home. | New Put on home screen button, with the steps for iPhone and Android. | Last sentence contradicts the newer note: opens on Train |  |
+| 1 | H | Send bugs and feature requests from inside the app. They come straight to me. | Send bugs and feature requests. They come straight to me. | 'From inside the app' is obvious |  |
+| 1 | H | Save a food using the nutrition values on its label. | Enter the numbers from its label. | Shorter, same meaning |  |
+| 1 | H | Saved. Coach reads notes when you ask. | Saved. Coach Claude reads it when you ask. | Bare 'Coach' is internal naming; 'notes' repeats the field. | Amend: "Saved." (the reviewer's "Coach Claude" clashes with V2). |
+| 1 | M | Coach | Reply | Coach is the app name and the AI; label says who replied |  |
+| 1 | M | What happened, and what did you expect? Which screen were you on? | What happened, and what did you expect? | Tile note above already asks for the screen; three questions in one |  |
+| 1 | M | Thank you! | Read | Status chip should be a status; matches 'read' verb used in popup | Decide: a status chip, but "Read" says less than "Thank you!". |
+| 1 | M | You have sent {0}{1}. | Sent {0}{1}. | Count already shown beside 'Your messages' |  |
+| 1 | M | Add a few words as a title. | Add a short title. | Plainer than 'a few words as a title' |  |
+| 1 | M | Tell us a bit more (at least 10 characters). | Write at least 10 characters. | Removes filler 'a bit', states the rule |  |
+| 1 | M | Sent with it: your first name, the email you sign in with, the app version and your device. Never your training data. | Sent with it: your first name, sign-in email, app version and device. Never your training data. | Same privacy meaning, fewer words |  |
+| 1 | M | Change day | Pick another day | Change day and Change date differ by one letter |  |
+| 1 | M | • planned · ✓ done · … in progress. Tap a day to open its week. | • planned · ✓ done · … in progress | Tap hint is obvious and repeats the week hint above |  |
+| 1 | M | Newest first. Working sets exclude warm-ups. | Sets exclude warm-ups. | Newest first is visible from dates; explain only the Sets column |  |
+| 1 | M | Rough guess | Rough protein guess | Label can carry 'protein' so chips need not repeat it |  |
+| 1 | M | Small · ~10 g protein | Small · ~10 g | 'protein' now in label |  |
+| 1 | M | Medium · ~25 g protein | Medium · ~25 g | 'protein' now in label |  |
+| 1 | M | Large · ~40 g protein | Large · ~40 g | 'protein' now in label |  |
+| 1 | M | Protein g | Protein (g) | Matches Protein (g) in Daily targets |  |
+| 1 | M | Carbs g | Carbs (g) | Same unit format as Calories (kcal) |  |
+| 1 | M | Fat g | Fat (g) | Same unit format as Calories (kcal) |  |
+| 1 | M | Paste the CSV text, or your workouts as plain text. | CSV or plain text | Placeholder restates the label above |  |
+| 1 | M | Download .md | Download text file | '.md' is jargon |  |
+| 1 | M | Notes about your body: injuries, pains, anything unusual | Notes about your body | Placeholder gives the examples; also matches About you label |  |
+| 1 | M | For example: right shoulder hurts on heavy pressing; old knee injury. | Right shoulder hurts on heavy pressing; old knee injury | Drop 'For example:' filler |  |
+| 1 | M | Show a reps-in-reserve (RIR) field on each set | Show reps in reserve (RIR) on each set | Drops 'a ... field' |  |
+| 1 | M | {0} training day in {1}. | {0} in {1}. | Restates the Training days heading | Reject: "{0} in {1}." loses what is counted. |
+| 1 | M | Show weights on the picture | Show weights | Picture is right above; 'on the picture' restates it |  |
+| 1 | M | Show my note on the picture | Show my note | Picture is right above; 'on the picture' restates it |  |
+| 1 | M | Tap Add. The icon above appears on your home screen. | Tap Add. | Icon above already shows the result |  |
+| 1 | M | Tap Install. The icon above appears on your home screen. | Tap Install. | Icon above already shows the result |  |
+| 1 | M | {0} {1}: you wrote notes but logged no sets. | {0} {1}: notes, no sets logged. | Shorter; drops 'you wrote ... but' |  |
+| 1 | M | Type the weight you want on the bar. | Enter the total weight. | Field label says total load; 'on the bar' confuses | Decide: check the field label first. |
+| 1 | M | That is lighter than the {0} kg bar. | Lighter than the {0} kg bar. | Drops 'That is' |  |
+| 1 | M | Bar for the plate calculator | Bar weight | Shorter; the plates section already shows what it is for. |  |
+| 1 | M | Shoulder flags are general guidance for sore shoulders, not a diagnosis. | Shoulder flags are general guidance, not a diagnosis. | 'for sore shoulders' repeats 'Shoulder'; safety meaning kept. |  |
+| 1 | M | Tap to open this session | Open session | 'Tap to' is filler. |  |
+| 1 | M | {0} not trained in this period {1} left out. | {0} with no sessions in this period {1} hidden. | 'not trained ... left out' is vague passive. |  |
+| 1 | M | Pin numbers compare only with this machine. | Pin numbers only compare on the same machine. | 'this machine' has no clear referent. |  |
+| 1 | M | One session in this period. The chart starts with the second. | One session in this period. A chart needs two. | Shorter and plainer. |  |
+| 1 | M | Suggestions appear after you log workouts or create a plan. | Log a workout or create a plan to see suggestions. | Empty state should say what to do next. |  |
+| 1 | M | Suggestions based on {0}. | Based on {0}. | Heading 'For you' already says these are suggestions. |  |
+| 1 | M | Main: {0}{1} · Start with {2} × {3} | Main {0}{1} · Start with {2} × {3} | Colons clash with the same line in the add-exercise picker. |  |
+| 1 | M | · Also: {0} | · Also {0} | Matches picker wording 'Also {0}' without a colon. |  |
+| 1 | M | It starts from your age, height and weight (the Mifflin-St Jeor formula), plus {0} a week{1}{2}. | It starts from your age, height and weight, plus {0} a week{1}{2}. | Formula name adds nothing the person can use. | Reject: keep the formula name, it lets people check the number. |
+| 1 | M | and an everyday life without much walking (tell us yours in About you) |  and little daily walking (a guess: add yours in About you) | Awkward phrase; 'tell us' clashes with sibling 'add yours'. |  |
+| 1 | M | : a bit more while losing weight helps you keep your muscle. | : higher while losing weight, to keep your muscle. | 'a bit' is filler. |  |
+| 1 | M | : enough to build muscle with. | : enough to build muscle. | Stiff trailing 'with'. |  |
+| 1 | M | Copied yesterday. | Copied yesterday’s food. | 'Copied yesterday.' does not say what was copied. |  |
+| 1 | M | Saved {0}. Search finds it first from now on. | Saved {0}. It shows first in search. | Card note already says Saved; plainer wording for the result. |  |
+| 1 | M | Updated {0}. Search finds it first from now on. | Updated {0}. It shows first in search. | Card note already says Updated; plainer wording for the result. |  |
+| 1 | M | Just the calories of this portion, or a rough guess. Not saved for later. | Calories only, or a rough guess. Not saved. | Shorter; drops 'this portion' and 'for later'. |  |
+| 1 | M | Numbers from the package. Saved, so you can log it again. | Numbers from the package. Saved for next time. | One idea per sentence; no 'so you can' clause. |  |
+| 1 | M | Starting weights come from your history, a little below your recent best. | Starting weights are a little below your recent best. | 'come from your history' is implied. |  |
+| 1 | M | Saving your plan | Your plan | Heading restates the 'Saving your plan…' line below it. |  |
+| 1 | M | Restored {0}. Welcome back. | Restored {0}. | 'Welcome back.' is filler. |  |
+| 1 | M | Building your plan | Your plan | Heading restates the building message below it. |  |
+| 1 | M | Your history from this file is not imported; only the plan is saved. | Only the plan is saved. The history in this file is not imported. | Semicolon joins two ideas; lead with what is saved. |  |
+| 1 | M | ({0} dates you already have are left alone) | ({0} dates you already have are skipped) | 'left alone' is vague; 'skipped' is plain. |  |
+| 1 | M | Your current training days stay in Plan; your week switches to this plan. | Your current training days stay in Plan. Your week switches to this plan. | Semicolon joins two ideas; split. |  |
+| 1 | M | Using Claude? Connect it once, and it changes your plan and logs your food without copying. | Using Claude? Connect it once to change your plan and log food without copying. | Removes the chained 'and it ... and ...' clause. |  |
+| 1 | M | Two {0} days in a row on {1} {2} and {3} {4}. Give those muscles a day to recover. | Two {0} days in a row on {1} {2} and {3} {4}. Leave a rest day between. | Matches the sibling warning's wording; shorter. |  |
+| 1 | M | Look back or correct | View or edit | 'Look back or correct' is stiff for a 2-action button. | Decide: "Look back or correct" says what the button is for. |
+| 1 | M | Before your last new plan: {0} | Previous week: {0} | 'Last new plan' is vague; matches the 'previous week' toast |  |
+| 1 | M | Bring it back | Restore | 'it' has no clear referent; matches Restore wording elsewhere | Decide: "Restore" is also the backup button. |
+| 1 | M | Not in your week yet. Tap the days you want it on. | Not in your week yet. Tap a day. | Chips sit directly above; shorter instruction |  |
+| 1 | M | no weekdays yet | no days | Glued text read 'on no weekdays yet'; wrong grammar |  |
+| 1 | M | More: rest, how it is measured, warm-up, note | More: rest, measure, warm-up, note | Lists inner labels; 'how it is measured' restates 'Measured as' |  |
+| 1 | M | Change how {0} is measured from {1} to {2}? Sets you already logged keep their numbers. Progress starts a new trend from today. | Measure {0} as {2} instead of {1}? Logged sets keep their numbers. Progress starts a new trend from today. | Same meaning, fewer words |  |
+| 1 | M | No exercises yet. Add the first one. | No exercises yet. | Add exercise button sits right below |  |
+| 1 | M | Deleting a day takes it out of your week. Sessions you logged with it stay in your history. | It leaves your week. Logged sessions stay in your history. | Shorter; second sentence is the reassurance to keep |  |
+| 1 | M | Nothing to restore: everything in this backup is already here. | Nothing to restore. This backup is already here. | Colon joins two ideas; shorter |  |
+| 1 | M | Also put back the training plan from this backup | Also restore the training plan | 'put back' vs Restore button; one term |  |
+| 1 | M | {0} Days added since stay in Plan. Logged sessions never change. | {0} Days you added since then stay. Logged sessions never change. | 'stay in Plan' is stilted and vague |  |
+| 1 | L | Thank you | Read | Match the status chip wording |  |
+| 1 | L | You have sent 5 today, which is the daily limit. Try again tomorrow. | Daily limit of 5 reached. Try again tomorrow. | Says the limit once, shorter |  |
+| 1 | L | Could not load the conversation. Close this and open it again to retry. | Could not load the conversation. Close and reopen to retry. | Shorter next step |  |
+| 1 | L | This deletes your account, your log, your plan and your notes for good. Make a Full backup first if you may want them back. | This deletes your account, log, plan and notes for good. Make a Full backup first to keep a copy. | Same data-loss warning, tighter |  |
+| 1 | L | Not deleted: {0} | Account not deleted: {0} | 'Not deleted' has no subject |  |
+| 1 | L | Write to the user | Message | Section 'Your reply' already says who it is for |  |
+| 1 | L | Your browser blocked copying. Select all of the text below and copy it. | Your browser blocked copying. Select the text below and copy it. | 'all of' adds nothing |  |
+| 1 | L | Copy shown tickets | Copy these tickets | 'shown' is vague |  |
+| 1 | L | Food trends take no room until there is something to show. | Food trends only appear once there is data. | 'Take no room' is stiff |  |
+| 1 | L | Request is in the bar | Request tab at the bottom | 'The bar' is vague |  |
+| 1 | L | Tell Claude a product and it can look up the numbers on the internet and save it as your own food. The page it used is shown under the food. | Tell Claude a product and it looks up the numbers online and saves it as your own food, with the source page shown under it. | Two sentences into one; plainer |  |
+| 1 | L | Calories are asked in Food, the first time you open it, instead of during setup. | Food asks about calories the first time you open it, not during setup. | Shorter, active |  |
+| 1 | L | Signing up: show your password while typing, and send the confirmation email again if it did not arrive. | Sign-up can show your password as you type and resend the confirmation email. | Shorter, one sentence |  |
+| 1 | L | Your own AI is still there: open Change it with your AI under the plan. | Prefer your own AI? Use Change it with your AI under the plan. | Starts with reassurance; button name unclear |  |
+| 1 | L | A plan you build starts today, or tomorrow if you pick that, instead of on the next Monday. | A new plan starts today, or tomorrow if you pick that, not on the next Monday. | Title already says it starts today; drop restated clause. |  |
+| 1 | L | Sessions a week are saved with your plan. Changing About you no longer moves your week. | Changing About you no longer moves your week. Sessions a week now stay with your plan. | Point first, reason second. |  |
+| 1 | L | Your own foods have their own place in Food: create one, edit it, or ask Claude to add it. | Your own foods live in Food: create one, edit it, or ask Claude to add it. | Shorter, plainer. |  |
+| 1 | L | Create your own food with the numbers per 100 g or 100 ml. Claude can add one too: tell it the numbers from the package. | Create your own food with the numbers per 100 g or 100 ml. Claude can add one from the package numbers too. | One sentence less to parse. |  |
+| 1 | L | Gentler numbers | Fairer targets | 'Gentler numbers' is vague; says what is fairer. |  |
+| 1 | L | On an empty day, Same as yesterday copies what you logged the day before. | On an empty day, Same as yesterday copies yesterday's log. | 'The day before' repeats 'yesterday'. |  |
+| 1 | L | After you finish training, a button takes you to Food if you have not logged anything today. | After training, a button takes you to Food if you have not logged today. | Drop 'finish' and 'anything'. |  |
+| 1 | L | Claude can see which entries you still have to fill in, so you can ask it what you forgot today. | Ask Claude what you forgot today: it can see which entries still need filling in. | Action first, reason after. |  |
+| 1 | L | Your own portion sizes, saved by you or by Claude, are the first choices when you add a food. | Your own portion sizes, saved by you or Claude, come first when you add a food. | Tighter wording. |  |
+| 1 | L | Moving between exercises now slides smoothly and scrolls to your first open set. | Moving between exercises now slides and scrolls to your first open set. | 'Smoothly' is filler. |  |
+| 1 | L | This list of changes moved to More, under What's new. | This list moved to More, under What's new. | 'List of changes' restates What's new. |  |
+| 1 | L | When you finish a day you now see how it went: time, working sets, volume and any new personal records. | Finishing a day now shows time, working sets, volume and any new personal records. | Drop 'you see how it went' filler. |  |
+| 1 | L | Each exercise now shows the weight to try next, worked out from your last sessions. When every set reached the reps, it goes up a step. | Each exercise now shows the weight to try next, based on your last sessions. It goes up a step when every set reached the reps. | Plainer than 'worked out from'; clear referent. |  |
+| 1 | L | On barbell exercises, the Plates button shows which plates go on each side of the bar. If your plates cannot make the weight, it offers the nearest two. | On barbell exercises, the Plates button shows which plates go on each side of the bar. If your plates cannot make the weight, it offers the two nearest weights. | 'Nearest two' what? Name it. |  |
+| 1 | L | On a computer, logging has three columns: the menu, your exercises, and the sets of the one you are on. | On a computer, logging shows three columns: menu, exercises and the sets of the current exercise. | Shorter, no repeated 'your'. |  |
+| 1 | L | Tap a rest day to put a training day on it. | Tap a rest day to add a training day. | Plain verb instead of 'put on it' |  |
+| 1 | L | Yes Coach! now opens straight on Train when you are signed in. | Yes Coach! opens on Train when you are signed in. | Drop 'now' filler; says it once |  |
+| 1 | L | Phone: the five main pages sit in a bar at the bottom. On a wide screen they sit in a bar on the left. | The five main pages are in a bar at the bottom on a phone, on the left on a wide screen. | Two repeated sentences become one |  |
+| 1 | L | More holds your settings in groups, plus Exercises, Feedback and Requests, and What's new. | More holds Settings, Exercises, Feedback, Requests and What's new. | Drops 'in groups, plus' and the double list |  |
+| 1 | L | Yes Coach! now speaks your language | Six languages | Title says it plainly; 'now speaks' is filler |  |
+| 1 | L | Choose Dutch, English, Spanish, German, French or Italian the first time you open it. Change it any time in Settings, under Languages. | Pick Dutch, English, Spanish, German, French or Italian on first open. Change it in Settings, Languages. | Shorter; drops 'any time' and 'under' |  |
+| 1 | L | The app is originally in English and the translations are AI-generated, so some may be wrong. Found one? Report it in the form. | Translations are AI-generated and some may be wrong. Found one? Report it in the form. | 'Originally in English' adds nothing |  |
+| 1 | L | Search over 9,000 foods in Food: Dutch foods from NEVO (RIVM) and international foods from USDA. | Search over 9,000 foods: Dutch ones from NEVO (RIVM), international ones from USDA. | 'in Food:' is unclear; one sentence |  |
+| 1 | L | Plan is now your week on one screen: every training day with its exercises. | Plan shows your week on one screen: every training day with its exercises. | Drop 'now' filler |  |
+| 1 | L | Add any of them to a training day, or add your own exercise. | Add any exercise to a training day, or create your own. | 'Them' only works with the previous bullet |  |
+| 1 | L | About you now asks your goal: lose weight, gain muscle or both. | About you asks your goal: lose weight, gain muscle or both. | Drop 'now' filler |  |
+| 1 | L | Backups now bring back your training plan and schedule too. | Backups restore your training plan and schedule too. | Drop 'now', plainer verb |  |
+| 1 | L | Get a plan from your own AI chat in two pastes: Yes Coach writes the request and reads the answer. | Get a plan from your own AI chat in two pastes. Yes Coach! writes the request and reads the answer. | Colon joins two ideas; product name needs '!' |  |
+| 1 | L | Progress shows trends over 1, 3, 6 or 12 months, with charts that stay readable however much you log. | Progress shows trends over 1, 3, 6 or 12 months. | Cut claim about readability that people cannot act on |  |
+| 1 | L | Opening Claude. The request is also copied: paste it if the chat is empty. | Opening Claude. Request copied: paste it if the chat is empty. | Shorter, one idea per sentence |  |
+| 1 | L | Untick today's sets of {0} first, then switch how it is measured. | Untick today's sets of {0} first. | Second half restates the button they just tapped. |  |
+| 1 | L | Reverse grip. Log reverse-grip sets of {0} in a card below | Add a reverse-grip card for {0} | Aria text restates the button; say what it does. |  |
+| 1 | L | A done set needs reps. Untick it if you did not do it. | Add reps, or untick the set. | Says what to do, in half the words. |  |
+| 1 | L | Set {0} is done. Untick it first to remove it. | Untick set {0} first to remove it. | One idea; 'is done' restates the tick. |  |
+| 1 | L | Fill in the {0} per 100 {1} as a number up to 100. Use 0 for none. | Enter {0} per 100 {1}, from 0 to 100. | One idea; '0 to 100' already allows 0. |  |
+| 1 | L | The food was not saved. Check your connection. | Food not saved. Check your connection. | Passive; shorter and says which thing was not saved. |  |
+| 1 | L | Fill in the calories (kcal) as a number. | Calories (kcal) must be a number. | States the problem instead of an instruction. |  |
+| 1 | L | Fill in the calories (kcal) or the protein. | Fill in calories (kcal) or protein. | Drops two 'the'. |  |
+| 1 | L | No nutrient values available for this period. | No nutrient values for this period. | 'available' is filler. |  |
+| 1 | L | Format not recognised; pick the app above if you know it. | Format not recognised. Pick the app above. | Semicolon joins two ideas; 'if you know it' is filler. |  |
+| 1 | L | Claude is busy for your account right now. Try again in a few minutes. | Claude is busy. Try again in a few minutes. | 'for your account right now' adds nothing. |  |
+| 1 | L | That file could not be read as a workout log. Check that you picked the export file and the right app. | Could not read that file as a workout log. Check the file and the app you picked. | Shorter, same advice. |  |
+| 1 | L | The plan did not come back in a usable form. Try again. | Could not read the plan. Try again. | 'did not come back in a usable form' is stiff. |  |
+| 1 | L | 1 hour | 1 h | Siblings are '1 h 15' and '1 h 30'. |  |
+| 1 | L | Not saved. Check your connection; changes stay on this screen. | Not saved. Check your connection. Your edits are still here. | Semicolon; 'stay on this screen' is vague. |  |
+| 1 | L | Restore stopped after {0} of {1} items: {2}. Pick the file again to finish; items already restored are skipped. | Restore stopped after {0} of {1} items: {2}. Pick the file again to finish. Restored items are skipped. | Semicolon joins two ideas |  |
+| 1 | L | Your data is not connected on this screen, so nothing can be restored. | Your data is not connected. Nothing can be restored. | 'on this screen' is vague; one idea per sentence |  |
