@@ -11,7 +11,9 @@ Rules: `DESIGN_RULES.md`. Labels: **REMOVE**, **ADJUST**, **KEEP**. Nothing in t
 | ADJUST | 142 |
 | REMOVE | 14 |
 
-About 10% of all strings are flagged. Roughly 400 to 500 of the 1,576 are not text people read on screen (prompts written for an AI, code, file names, key names, fragments that are glued into sentences), so the share of what people actually read is closer to 15 to 20%. Most of the text is already short; the problems are concentrated in a few places, listed next.
+**Correction after a second pass (see the last section):** the KEEP count below is too high. At least 14 more strings should be flagged, and about 80 release notes are a class of problem the first pass treated one by one. The figures in this table are the first pass only.
+
+About 10% of all strings were flagged in the first pass. Roughly 400 to 500 of the 1,576 are not text people read on screen (prompts written for an AI, code, file names, key names, fragments that are glued into sentences), so the share of what people actually read is closer to 15 to 20%. Most of the text is already short; the problems are concentrated in a few places, listed next.
 
 **How it was checked:** every string was extracted from the source, 5 reviewers each took a fifth in source order and judged it against the rules reading the code around it, and I then read all 156 flags myself. The "My verdict" column shows where I accepted, amended or rejected the reviewer's proposal. Proposals keep every placeholder and none is more than 3 words longer than the original.
 
@@ -296,3 +298,25 @@ Verdicts: **Accept** (take the proposal), **Needs V1 to V4** (a pure vocabulary 
 - Every rewrite needs nl, es, de, fr and it versions in `tools/i18n/extra.json`, as CONTRIBUTING.md says. About 140 strings is a day of translation work done properly.
 - Several tests check exact wording. They will fail until updated, as they did after the last copy changes.
 - I would apply it in this order: the V1 to V4 vocabulary first (most rows, least argument), then the REMOVE list, then the rest.
+
+## Second pass: what the first pass missed
+
+You asked whether the 1,420 KEEP strings could really be clean. They are not. The first pass flagged 8 to 14% against a 20 to 35% guide, and I accepted "the strings are already short" without testing it. I then read the long kept strings (13+ words, 156) and the short kept sentences (5 to 12 words, 162). Findings:
+
+| Now | Proposed | Rule | Why |
+|---|---|---|---|
+| Put your planned days in Apple, Google or Outlook calendar. (under "Add to calendar") | REMOVE | R4 | Restates the button. |
+| Newest first. Working sets exclude warm-ups. | Working sets exclude warm-ups. | R4 | "Newest first" is visible. |
+| Saved. Coach reads notes when you ask. | Saved. | R4, R9 | Explains who reads it, and uses "Coach" for the AI (V2). |
+| • planned · ✓ done · … in progress. Tap a day to open its week. | • planned · ✓ done · … in progress | R4 | The week hint above already says to tap a day. |
+| Spread over your meals works best. Carbs and fat have no target: eat what keeps your training going. | Spread it over your meals. Carbs and fat have no target. | R4 | Coaching filler after the fact. |
+| Restore stopped after {0} of {1} items: {2}. Pick the file again to finish; items already restored are skipped. | Restore stopped after {0} of {1} items: {2}. Pick the file again to finish. Nothing is restored twice. | R10 | Same semicolon and "skipped" problem the reviewers flagged in the sibling restore error (id 1002) but kept here. |
+| Numbers from the package. Saved, so you can log it again. / Just the calories of this portion, or a rough guess. Not saved for later. | From the label. Saved. / This portion only. Not saved. | R4 | The difference between the two (saved or not) is the useful part. The rest is sentence filler. |
+| "Then choose the file here." at the end of the Hevy, FitNotes, Fitbod and JEFIT export instructions (4 strings) | Drop the sentence | R4 | The file button is right below. |
+| Save a food using the nutrition values on its label. (under Your own foods) | Decide | R4 | Restates "Create a food", but it is the only place that says what an own food is. Keep or cut, your call. |
+
+**Release notes as a class.** About 80 of the 156 long kept strings are changelog entries (20 to 35 words each). The first pass flagged some one by one. The fix is not 80 rewrites: show the latest five with an "Older" fold and shorten only those five.
+
+**What a string list cannot show.** R2 (show the result, do not describe it) and R3 (hierarchy) depend on what is next to a string: whether a note restates a control, or whether a sentence should be a preview. The screen audit found most of those, but it covered only the 14 screens I opened. Screens I did not open (sign-in, the share picture, the plan wizard's copy step, the connector section, desktop, other languages) have had no context-aware check. The 1,264 kept strings under 13 words were only read as short labels.
+
+**Net effect on the numbers:** at least 14 more strings flagged (about 156 + 14 = 170), plus the changelog class. I would treat "about 11 to 12% flagged, closer to 20% of what people read" as the honest figure, and still as a floor.
