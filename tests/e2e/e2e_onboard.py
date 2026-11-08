@@ -187,7 +187,7 @@ def hevy_plan(page):
     page.click('#wz-go')
     check('import + plan: a plan straight away', until(lambda: page.is_visible('#wz-start'), 6))
     txt = page.text_content('#wiz')
-    check('import + plan: weights from the history', 'from your history' in txt, txt[:300])
+    check('import + plan: weights from the history', 'recent best' in txt, txt[:300])
     check('import + plan: bench at about 90% of the recent best', '@ 72.5 kg' in txt, txt)
     check('import + plan: says the history comes along', 'Also imports 6 sessions' in txt)
     page.click('#wz-start')

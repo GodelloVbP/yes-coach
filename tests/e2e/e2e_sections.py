@@ -65,14 +65,14 @@ try:
         def f3(page):
             page.click('#tab-food'); page.wait_for_selector('#fd-body:not([hidden])', timeout=8000); page.wait_for_timeout(400)
             r = page.evaluate(TRENDS)
-            check('calories on but food without them: says so and keeps the period control', r['take'] == 'No nutrient values available for this period.' and r['range'] and not (r['sum'] or r['chart']), r)
+            check('calories on but food without them: says so and keeps the period control', r['take'] == 'No nutrient values for this period.' and r['range'] and not (r['sum'] or r['chart']), r)
             page.click('#tab-settings'); page.wait_for_selector('#set-cal', state='attached'); page.evaluate("(() => { const c = document.querySelector('#set-cal'); c.checked = false; c.dispatchEvent(new Event('change', { bubbles: true })); })()"); page.wait_for_timeout(300)
             page.click('#tab-food'); page.wait_for_timeout(400)
             r = page.evaluate(TRENDS)
             check('calories off: the protein shows and the message is gone', r['chart'] and r['sum'] and r['take'] == '', r)
             page.click('#tab-settings'); page.evaluate("(() => { const c = document.querySelector('#set-cal'); c.checked = true; c.dispatchEvent(new Event('change', { bubbles: true })); })()"); page.wait_for_timeout(300)
             page.click('#tab-food'); page.wait_for_timeout(400)
-            check('calories on again: the message returns, nothing stale', page.evaluate(TRENDS)['take'] == 'No nutrient values available for this period.' and not page.evaluate(TRENDS)['chart'], page.evaluate(TRENDS))
+            check('calories on again: the message returns, nothing stale', page.evaluate(TRENDS)['take'] == 'No nutrient values for this period.' and not page.evaluate(TRENDS)['chart'], page.evaluate(TRENDS))
         errs = session(pw, be, ALICE, f3, width=390); check('no page errors (food, calorie mode)', not errs, errs)
 
         # ---- 7. Progress notes
@@ -96,13 +96,13 @@ try:
         be = Backend(); be.docs.append({'path': 'yc', 'data': {'app': 'yes-coach', 'schema': 1, 'intro_seen': True}})
         def r1(page):
             page.evaluate("document.querySelector('#tab-exercises').click()"); page.wait_for_selector('#xr-note', state='attached'); page.wait_for_timeout(400)
-            check('no basis: says when suggestions appear', page.text_content('#xr-note') == 'Suggestions appear after you log workouts or create a plan.', page.text_content('#xr-note'))
+            check('no basis: says when suggestions appear', page.text_content('#xr-note') == 'Log a workout or create a plan to see suggestions.', page.text_content('#xr-note'))
         errs = session(pw, be, ALICE, r1, width=390); check('no page errors (suggestions, no basis)', not errs, errs)
         be = Backend(); seed(be)
         def r2(page):
             page.evaluate("document.querySelector('#tab-exercises').click()"); page.wait_for_selector('#xr-note', state='attached'); page.wait_for_timeout(500)
             note = page.text_content('#xr-note')
-            check('with a basis: one plain line', note in ('Suggestions based on your last 4 weeks.', 'Suggestions based on your plan.', 'No suggestions based on your last 4 weeks.', 'No suggestions based on your plan.'), note)
+            check('with a basis: one plain line', note in ('Based on your last 4 weeks.', 'Based on your plan.', 'No suggestions based on your last 4 weeks.', 'No suggestions based on your plan.'), note)
             body = page.text_content('#v-exercises')
             for bad in ('you know your body best', 'Nice.', 'You like', 'might like'):
                 check('gone: ' + bad, bad not in body, body[:200])

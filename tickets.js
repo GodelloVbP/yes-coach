@@ -23,7 +23,7 @@
   // ------------------------------------------------------------------ words
   const TYPES = { bug: 'Something is broken', feature: 'A feature I would like', feedback: 'Feedback' };
   const HINT = {
-    bug: 'What happened, and what did you expect? Which screen were you on?',
+    bug: 'What happened, and what did you expect?',
     feature: 'What would you like to be able to do?',
     feedback: 'What is on your mind?',
   };
@@ -49,11 +49,11 @@
   const VERB = { built: 'built', fixed: 'fixed', thanks: 'read' };
   const verdict = (t) => (t.status === 'resolved'
     ? 'Yes Coach! ' + (VERB[t.outcome] || 'handled') + ' your ' + KIND[t.type] + ' "' + t.title + '".'
-    : 'Yes Coach! could not take up your ' + KIND[t.type] + ' "' + t.title + '".');
-  const thanksLine = (t) => (t.status === 'declined' ? 'Our apologies! You are welcome to send a new one. ' : '') + 'Thank you very much for contributing!';
+    : 'We decided not to go ahead with your ' + KIND[t.type] + ' "' + t.title + '".');
+  const thanksLine = (t) => (t.status === 'declined' ? 'Sorry about that. You are welcome to send a new one. ' : '') + 'Thank you for contributing.';
   const problem = (e) => (e.code === 'unavailable' ? 'No connection. Try again when you are online.'
-    : /too_many_tickets/.test(e.message) ? 'You have sent 5 today, which is the daily limit. Try again tomorrow.'
-    : /too_many_messages/.test(e.message) ? 'That is a lot of messages for one day. Try again tomorrow.'
+    : /too_many_tickets/.test(e.message) ? 'Daily limit of 5 reached. Try again tomorrow.'
+    : /too_many_messages/.test(e.message) ? 'Too many messages for one day. Try again tomorrow.'
     : 'That did not go through. Try again in a moment.');
 
   // ------------------------------------------------------------------ data
@@ -87,7 +87,7 @@
       box.replaceChildren(...(rows.length ? rows.map((m) => message(label(m), m.body, m.author, m.created_at)) : [h('p', 'note', 'No replies yet.')]));
     } catch (e) {
       delete box.dataset.state; // opening the card again retries
-      box.replaceChildren(h('p', 'note', 'Could not load the conversation. Close this and open it again to retry.'));
+      box.replaceChildren(h('p', 'note', 'Could not load the conversation. Close and reopen to retry.'));
     }
   };
   const card = (t, open, viewer, info, extra) => {
@@ -142,8 +142,8 @@
     go.append(h('span', '', 'Send'));
     form.addEventListener('submit', async (ev) => {
       ev.preventDefault();
-      if (title.value.trim().length < 3) { msg.textContent = 'Add a few words as a title.'; title.focus(); return; }
-      if (text.value.trim().length < 10) { msg.textContent = 'Tell us a bit more (at least 10 characters).'; text.focus(); return; }
+      if (title.value.trim().length < 3) { msg.textContent = 'Add a short title.'; title.focus(); return; }
+      if (text.value.trim().length < 10) { msg.textContent = 'Write at least 10 characters.'; text.focus(); return; }
       if (!name.value.trim()) { msg.textContent = 'Add your first name, so we can thank you.'; name.focus(); return; }
       go.disabled = true;
       msg.textContent = 'Sending…';
@@ -159,7 +159,7 @@
     const row = h('div', 'foot-row');
     row.append(go, textBtn('Cancel', () => { form.hidden = true; if (form.onClose) form.onClose(); }));
     form.append(field('In a few words', title), field('Tell us more', text), field('Your first name', name),
-      h('p', 'note tk-priv', 'Sent with it: your first name, the email you sign in with, the app version and your device. Never your training data.'), row, msg);
+      h('p', 'note tk-priv', 'Sent with it: your first name, sign-in email, app version and device. Never your training data.'), row, msg);
     form.setKind = (k) => { if (!TYPES[k]) return; kind = k; form.setAttribute('aria-label', TYPES[k]); text.placeholder = HINT[k]; if (form.onKind) form.onKind(k); };
     form.prefill = (k, ttl) => { form.setKind(k); if (ttl && !title.value) title.value = ttl; };
     form.open = (k) => { form.hidden = false; form.setKind(k || kind); if (!name.value) name.value = lastName(); title.focus(); };
@@ -187,7 +187,7 @@
     const done = mine.filter((t) => t.status === 'resolved' && t.outcome !== 'thanks').length;
     const planned = mine.filter((t) => t.status === 'planned').length;
     const parts = [done && done + ' built or fixed', planned && planned + ' planned'].filter(Boolean);
-    return 'You have sent ' + plural(mine.length, 'request') + (parts.length ? ': ' + parts.join(', ') : '') + '.';
+    return 'Sent ' + plural(mine.length, 'request') + (parts.length ? ': ' + parts.join(', ') : '') + '.';
   };
   let loadFailed = false;
   const paintMine = () => {
@@ -325,7 +325,7 @@
     };
     const row = h('div', 'foot-row');
     row.append(skew('small', 'Ask a question', send(true)), skew('small', 'Send message', send(false)));
-    box.append(field('Write to the user', text), row, msg);
+    box.append(field('Message', text), row, msg);
     return box;
   };
   const adminDecide = (t) => {
@@ -361,7 +361,7 @@
     });
     const row = h('div', 'foot-row');
     row.append(save, del);
-    box.append(field('Status', status), outcomeF, field('Note shown to the user, and to anyone whose request is a duplicate of this one', note), field('Duplicate of', dup), row, msg);
+    box.append(field('Status', status), outcomeF, field('Closing note, also shown on duplicates', note), field('Duplicate of', dup), row, msg);
     return box;
   };
   const adminExtra = (t) => { const w = h('div', 'tk-owner'); w.append(sec('Your reply', adminReply(t)), sec('Decision', adminDecide(t))); return w; };
@@ -409,7 +409,7 @@
     const text = ticketsText(rows, msgs);
     try { await navigator.clipboard.writeText(text); msg.textContent = 'Copied ' + plural(rows.length, 'ticket') + '. Paste them in the chat.'; } catch (e) {
       fallback.value = text; fallback.hidden = false; fallback.focus(); fallback.select();
-      msg.textContent = 'Your browser blocked copying. Select all of the text below and copy it.';
+      msg.textContent = 'Your browser blocked copying. Select the text below and copy it.';
     }
   };
   const paintAdmin = () => {
@@ -457,7 +457,7 @@
     form.onKind = (k) => paintTiles(k);
     form.onClose = () => paintTiles();
     composeNow = (kind, ttl) => { state.textContent = ''; form.open(kind); form.prefill(kind, ttl); form.scrollIntoView({ block: 'center' }); const t = form.querySelector('textarea'); if (t) t.focus(); };
-    sec.append(h('p', 'tk-lead', 'Built by one person. Tell us what is broken or missing, and you hear back when it is built or fixed.'), tiles, state, form);
+    sec.append(h('p', 'tk-lead', 'Built by one person. You hear back when it is built or fixed.'), tiles, state, form);
     return sec;
   };
   // a question from us waits at the top, open
@@ -508,7 +508,7 @@
     copyBox.readOnly = true;
     copyBox.hidden = true;
     const copyRow = h('div', 'foot-row');
-    copyRow.append(skew('small', 'Copy shown tickets', () => copyTickets(copyNote, copyBox)), copyNote);
+    copyRow.append(skew('small', 'Copy these tickets', () => copyTickets(copyNote, copyBox)), copyNote);
     body.append(field('Show', filter), sum, copyRow, copyBox, list);
     bar.append(head, body);
     return bar;

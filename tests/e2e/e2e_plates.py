@@ -39,7 +39,7 @@ try:
             page.click('#plates-row .pl-bars button >> text=15 kg')
             check('a lighter bar changes the plates', until(lambda: sides() == ['20', '2.5']) and '15 kg bar' in page.text_content('#plates-row'), sides())
             page.fill('#pl-total-row', '10')
-            check('lighter than the bar is said', until(lambda: 'lighter than' in page.text_content('#plates-row')), page.text_content('#plates-row'))
+            check('lighter than the bar is said', until(lambda: 'lighter than' in page.text_content('#plates-row').lower()), page.text_content('#plates-row'))
             # the other exercise is not a barbell
             page.click('.fchip >> nth=1')
             check('an exercise that is not a barbell has no button', page.locator('#plates-crl').count() == 0)

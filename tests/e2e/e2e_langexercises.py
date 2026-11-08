@@ -58,7 +58,6 @@ try:
             check('your exercises show their English names', 'pull-up' in txt.lower() and 'barbell bench press' in txt.lower() and 'my own move' in txt.lower() and 'traction' not in txt.lower() and 'développé couché à la barre' not in txt.lower(), txt[:300])
             open_settings(page); page.locator('#lang-ex').scroll_into_view_if_needed()
             check('Settings shows the switch, in French, off', vis(page, '#lang-ex') and not page.is_checked('#lang-ex') and 'Traduire les noms des exercices' in page.inner_text('#lang-ex-row'), page.inner_text('#lang-ex-row'))
-            check('with its explanation', vis(page, '#lang-ex-note') and 'nom anglais' in page.inner_text('#lang-ex-note'))
             # switch it on: the page reloads and the names are French
             with page.expect_navigation(): page.click('#lang-ex')
             back_in(page)
@@ -88,7 +87,7 @@ try:
         def en(page):
             page.wait_for_selector('#v-train', state='visible'); page.wait_for_timeout(300)
             open_settings(page); page.wait_for_selector('#lang', state='visible')
-            check('in English the switch is not shown', not vis(page, '#lang-ex-row') and not vis(page, '#lang-ex-note'))
+            check('in English the switch is not shown', not vis(page, '#lang-ex-row'))
         errs = session(pw, be, ALICE, en, width=390, lang='en'); check('no page errors (English)', not errs, errs)
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:

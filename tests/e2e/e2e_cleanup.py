@@ -37,7 +37,7 @@ try:
         def s1b(page):
             page.goto(BASE); page.wait_for_selector('#today-card .t-head', timeout=8000)
             card = page.text_content('#today-card')
-            check('a rest day says so in two short lines', 'Rest day' in card and 'No workout planned today.' in card and 'Train anyway' not in card and 'Pick any day below' not in card, card)
+            check('a rest day says so in the heading alone', 'Rest day' in card and 'No workout planned today.' not in card and 'Train anyway' not in card and 'Pick any day below' not in card, card)
             check('the next workout can still be started', page.locator('#btn-start').count() == 1)
         errs = session(pw, be, ALICE, s1b, width=390); check('no page errors (rest day)', not errs, errs)
 
@@ -69,7 +69,7 @@ try:
             check('the suggestion above the day is gone', not r['sugTop'])
             order = page.evaluate("[...document.querySelectorAll('#fd-list, #fd-ownfoods')].map((e) => e.id)")
             check('keyboard order follows: Eaten, then Your own foods', order == ['fd-list', 'fd-ownfoods'], order)
-            check('own foods: one short line under the heading', page.inner_text('#fd-ownfoods > .note') == 'Save a food using the nutrition values on its label.', page.inner_text('#fd-ownfoods > .note'))
+            check('own foods: one short line under the heading', page.inner_text('#fd-ownfoods > .note') == 'Enter the numbers from its label.', page.inner_text('#fd-ownfoods > .note'))
             check('Create a food is outlined', 'pop' not in page.get_attribute('#fd-own-new', 'class'))
             check('the suggestion lives inside Daily targets', page.locator('#fd-targets #fd-sug').count() == 1)
             check('Daily targets is not opened for you', page.get_attribute('#fd-targets', 'open') is None)

@@ -243,19 +243,19 @@
       + '<button class="skew danger" type="button" id="acct-del"><span>Delete my account</span></button></div>'
       + '<p class="note" id="acct-msg" aria-live="polite"></p><p class="note"><a class="link" href="privacy.html">Privacy</a></p>';
     wrap.prepend(sec);
-    $('#acct-who').textContent = 'Signed in as ' + email + '. Your data syncs between your devices.';
+    $('#acct-who').textContent = 'Signed in as ' + email + '. Your data is the same on all your devices.';
     $('#acct-out').addEventListener('click', async () => { await sb.auth.signOut(); location.reload(); });
     let armed = 0;
     $('#acct-del').addEventListener('click', async () => {
       if (!armed) {
         armed = setTimeout(() => { armed = 0; $('#acct-del span').textContent = 'Delete my account'; $('#acct-msg').textContent = ''; }, 6000);
         $('#acct-del span').textContent = 'Tap again to delete everything';
-        $('#acct-msg').textContent = 'This deletes your account, your log, your plan and your notes for good. Make a Full backup first if you may want them back.';
+        $('#acct-msg').textContent = 'This deletes your account, log, plan and notes for good. Make a Full backup first to keep a copy.';
         return;
       }
       clearTimeout(armed);
       $('#acct-msg').textContent = 'Deleting…';
-      try { await call(sb.rpc('delete_me')); await sb.auth.signOut(); location.reload(); } catch (e) { $('#acct-msg').textContent = 'Not deleted: ' + e.message; }
+      try { await call(sb.rpc('delete_me')); await sb.auth.signOut(); location.reload(); } catch (e) { $('#acct-msg').textContent = 'Account not deleted: ' + e.message; }
     });
   };
 
