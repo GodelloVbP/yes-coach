@@ -121,7 +121,7 @@ try:
             check('the next button says Next exercise, not a long name', page.text_content('#focus-next').strip() == 'Next exercise')
             check('the destination is in the tab strip', 'Row' in page.locator('.fchip').nth(1).text_content())
             page.click('#focus-toggle')
-            check('all exercises: no bar, and the footer has Finish and its note', page.is_hidden('#focusbar') and page.locator('.sess-foot .fin-row').is_visible() and 'Ticked sets are already saved' in page.inner_text('.sess-foot .fin-row') and page.locator('.sess-foot .fin-row button').inner_text().strip().lower() == 'finish day')
+            check('all exercises: no bar, and the footer has Finish and its note', page.is_hidden('#focusbar') and page.locator('.sess-foot .fin-row').is_visible() and 'Ticked sets are already saved' in page.inner_text('.sess-foot .fin-row') and page.locator('.sess-foot .fin-row button').inner_text().strip().lower() == 'finish workout')
             page.click('#focus-toggle')
             check('back to one at a time: the footer Finish hides again', page.locator('.sess-foot .fin-row').is_hidden())
             check('the workout note and Copy workout are named plainly', 'Workout note' in page.text_content('.sess-foot') and page.locator('.sess-foot button', has_text='Copy workout').count() == 1 and 'Copy day' not in page.text_content('.sess-foot') and 'Session note for Coach' not in page.text_content('.sess-foot'))

@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-SJ8ILZPwAIewDS18nz/I8W8XTjoq5MtQrKS0YTdks+4=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-HqImpr5pfVy1hPyH8/+BIWroSE8Cx29ZJmPLxpM0Z8w=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-08 11:37Z">
+<meta name="yc-build" content="2026-11-08 11:59Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -816,6 +816,7 @@ body.fin-open { overflow: hidden; }
 .hm > h2 { margin-top: 1rem; border-bottom: 2px solid var(--ink); padding-bottom: 0.375rem; }
 .changelog { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
 .cl-item { padding-block: 0.875rem; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.25rem; }
+.cl-older summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 .cl-title { font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 .cl-item ul { margin: 0; padding-left: 1.1rem; color: var(--ink-soft); font-weight: 500; display: flex; flex-direction: column; gap: 0.125rem; }
 /* plan: your week */
@@ -1133,20 +1134,20 @@ body.fin-open { overflow: hidden; }
   </header>
   <div class="sbar" id="sbar" hidden>
     <div class="in sb-in">
-      <button type="button" class="sb-back" id="sb-back" aria-label="Back to Train. The session stays open.">&#8249;<span class="sb-back-t"> Train</span></button>
+      <button type="button" class="sb-back" id="sb-back" aria-label="Back to Train. The workout stays open.">&#8249;<span class="sb-back-t"> Train</span></button>
       <div class="sb-mid"><span class="sb-day" id="sb-day"></span><button type="button" class="sb-date" id="sb-date"></button></div>
       <span class="sb-count" id="sb-count" aria-live="off"></span>
-      <button type="button" class="sb-more" id="sb-more" aria-haspopup="menu" aria-expanded="false" aria-controls="sb-menu" aria-label="Session menu">&#8943;</button>
+      <button type="button" class="sb-more" id="sb-more" aria-haspopup="menu" aria-expanded="false" aria-controls="sb-menu" aria-label="Workout menu">&#8943;</button>
     </div>
     <div class="sb-line" aria-hidden="true"><i id="sb-fill"></i></div>
-    <div class="sb-menu" id="sb-menu" role="menu" aria-label="Session" hidden>
+    <div class="sb-menu" id="sb-menu" role="menu" aria-label="Workout" hidden>
       <button type="button" role="menuitem" id="m-date">Change date</button>
-      <button type="button" role="menuitem" id="m-day">Pick another day</button>
-      <button type="button" role="menuitem" id="m-finish">Finish day</button>
-      <button type="button" role="menuitem" id="m-delete">Delete day</button>
+      <button type="button" role="menuitem" id="m-day">Change workout</button>
+      <button type="button" role="menuitem" id="m-finish">Finish workout</button>
+      <button type="button" role="menuitem" id="m-delete">Delete workout</button>
     </div>
     <div class="sb-datebox in" id="sb-datebox" hidden>
-      <label class="lab" for="sess-date">Session date</label>
+      <label class="lab" for="sess-date">Workout date</label>
       <input type="date" id="sess-date">
       <button class="skew small" type="button" id="sb-date-go"><span>Open this date</span></button>
       <button class="textbtn" type="button" id="sb-date-cancel">Cancel</button>
@@ -1154,7 +1155,7 @@ body.fin-open { overflow: hidden; }
   </div>
   <div class="toast" id="toast" hidden role="status" aria-live="polite"><div class="in toast-in"><button class="skew small" type="button" id="toast-undo"><span>Undo</span></button><span id="toast-text"></span></div></div>
 </div>
-<div class="resume in" id="resume" hidden><button type="button" class="resume-btn" id="resume-btn"><span id="resume-text"></span><b>Resume</b></button><button type="button" class="resume-fin" id="resume-fin">Finish day</button></div>
+<div class="resume in" id="resume" hidden><button type="button" class="resume-btn" id="resume-btn"><span id="resume-text"></span><b>Resume</b></button><button type="button" class="resume-fin" id="resume-fin">Finish workout</button></div>
 
 <nav class="mainnav" role="tablist" aria-label="View" id="tabs-nav">
     <button type="button" class="mark-btn nav-mark" id="mark2" aria-label="Yes Coach! home"><svg class="mark" viewBox="0 0 52 40" aria-hidden="true"><g transform="translate(8 0) skewX(-14)"><rect x="0" y="12" width="7" height="16" fill="var(--logo-bar)"/><rect x="9" y="2" width="9" height="36" fill="var(--logo-bar)"/><rect x="20" y="12" width="7" height="16" fill="#ff8a65"/><rect x="29" y="2" width="9" height="36" fill="var(--logo-bar)"/></g></svg></button>
@@ -1189,7 +1190,7 @@ body.fin-open { overflow: hidden; }
       <ul class="hm-shots" aria-label="Screenshots">
         <li><figure><img src="shots/log.webp" width="585" height="1266" loading="lazy" decoding="async" alt="Logging a set, with last time's weight and the suggested next weight"><figcaption>Log a set</figcaption></figure></li>
         <li><figure><img src="shots/train.webp" width="585" height="1266" loading="lazy" decoding="async" alt="The week as seven blocks, with today's training day ready to start"><figcaption>Your week at a glance.</figcaption></figure></li>
-        <li><figure><img src="shots/finish.webp" width="585" height="1266" loading="lazy" decoding="async" alt="The finish screen: time, working sets, volume and new personal records"><figcaption>Finish a day</figcaption></figure></li>
+        <li><figure><img src="shots/finish.webp" width="585" height="1266" loading="lazy" decoding="async" alt="The finish screen: time, working sets, volume and new personal records"><figcaption>Finish a workout</figcaption></figure></li>
       </ul>
       <h2>What makes it different</h2>
       <ul class="hm-cards">
@@ -1299,7 +1300,7 @@ body.fin-open { overflow: hidden; }
             <div class="chart" id="weekly"></div>
           </section>
           <details class="p-sec blk p-log" id="p-log">
-            <summary class="p-head"><h2 id="h-log">Session log</h2><span class="p-count" id="log-count"></span><span class="p-caret" aria-hidden="true"></span></summary>
+            <summary class="p-head"><h2 id="h-log">Workout log</h2><span class="p-count" id="log-count"></span><span class="p-caret" aria-hidden="true"></span></summary>
             <p class="note">Sets exclude warm-ups.</p>
             <div class="scroll">
               <table id="sess-table">
@@ -1512,7 +1513,7 @@ body.fin-open { overflow: hidden; }
       <section aria-labelledby="h-pref">
         <h2 id="h-pref">Logging</h2>
         <div class="settings"><label><input type="checkbox" id="set-rir"> Show reps in reserve (RIR) on each set</label></div>
-        <div class="settings"><label><input type="checkbox" id="set-prog"> Suggest the next weight from your last sessions</label></div>
+        <div class="settings"><label><input type="checkbox" id="set-prog"> Suggest the next weight from your last workouts</label></div>
         <div class="set-plates" id="set-plates"></div>
       </section>
       <section aria-labelledby="h-food-set">
@@ -1704,7 +1705,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         const t = S.templates[tplId] || null;
         const base = {
           date: dateOf(date), source: 'live', template: tplId || null,
-          split: t ? (SPLIT_OF[t.kind] || t.name) : 'Other', label: t ? t.name : 'session', note: null,
+          split: t ? (SPLIT_OF[t.kind] || t.name) : 'Other', label: t ? t.name : 'workout', note: null,
           started_at: Date.now(), updated_at: Date.now(), sets: {},
         };
         await ref.set(deepMerge(base, patch));
@@ -1893,7 +1894,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     ['7 Nov 2026', 'Fewer look-alike results', ["Near-identical foods, like different eggs or apples, now show as one result. Tap +2 almost the same to see the rest."]],
     ['7 Nov 2026', 'Custom workouts, runs and your own foods', ["Change today's workout now has Custom workout. It starts blank, for whatever you do today.", "Runs track distance, climb and where you ran: outside or on a treadmill. The pace is worked out for you.", "Create your own food with the numbers per 100 g or 100 ml. Claude can add one from the package numbers too.", "Train shows the whole month under the week, and Add to calendar is now a big button.", "After you send a day to Claude, you land back on Train.", "On a wide screen the notices at the top no longer cover the page."]],
     ['6 Nov 2026', 'Exercise names stay in English', ["Most people know an exercise by its English name.", "Prefer them translated? Settings, Languages, Translate exercise names."]],
-    ['6 Nov 2026', 'Fairer targets', ["Reaching your protein target is enough: more is never shown as above.", "Calories within 10% of your target now count as on target.", "A day with entries that have no calories now says so, instead of looking low.", "Short on time? Add a food with your own numbers and pick a rough guess: small, medium or large."]],
+    ['6 Nov 2026', 'Fairer targets', ["Going over your protein target is no longer marked as above target.", "Calories within 10% of your target now count as on target.", "A day with entries that have no calories now says so, instead of looking low.", "Short on time? Add a food with your own numbers and pick a rough guess: small, medium or large."]],
     ['6 Nov 2026', 'Quicker food logging', ["Put Log food on your home screen: press and hold the app icon, where your phone allows it.", "On an empty day, Same as yesterday copies yesterday's log.", "After training, a button takes you to Food if you have not logged today.", "Ask Claude what you forgot today: it can see which entries still need filling in."]],
     ['6 Nov 2026', 'Calmer food search', ["Your own meals and foods come first, then the food tables. Five results, with Show more for the rest.", "Each result is one line: a portion and the protein in it, instead of numbers per 100 g.", "Your own portion sizes, saved by you or Claude, come first when you add a food.", "Foods that only match an old name no longer crowd the list."]],
     ['6 Nov 2026', 'Your meals', ["Save a meal you eat often and log it again in one tap. Open a meal with several foods and tap Save as a meal.", "Tap the amount of a food to change it. The numbers follow.", "Claude can save your meals and portion sizes too, and remembers which food you mean: your cheese, your bread."]],
@@ -2072,7 +2073,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const close = () => { wrap.remove(); document.removeEventListener('keydown', onKey); };
     const onKey = (e) => { if (e.key === 'Escape') close(); };
     const box = confirmBox({
-      label: 'Send day to Coach Claude',
+      label: 'Send workout to Claude',
       text: '' + day.name + ' is saved. Claude reads it through your connector and replies in a new chat.',
       yes: 'Send to Claude', keep: 'Not now', yesId: 'claude-review-go',
       onYes: async () => {
@@ -2122,7 +2123,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const start = doc.started_at && ticks.length ? Math.min(doc.started_at, ...ticks) : ticks.length ? Math.min(...ticks) : null;
     const minutes = start ? (Math.max(...ticks) - start) / 60000 : null;
     return {
-      name: (S.templates[a.tpl] || {}).name || 'Session', date: a.date, sets: work.length, volume: hasVol ? volume : null,
+      name: (S.templates[a.tpl] || {}).name || 'Workout', date: a.date, sets: work.length, volume: hasVol ? volume : null,
       minutes: minutes != null && minutes >= 5 && minutes < 300 ? minutes : null, lines, note: doc.note || '',
     };
   };
@@ -2300,13 +2301,24 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const renderNews = () => {
     const list = $('#changelog');
     if (list.childElementCount) return;
-    CHANGELOG.forEach(([date, title, items]) => {
+    const entry = ([date, title, items]) => {
       const li = h('li', 'cl-item');
       const ul = h('ul');
       items.forEach((t) => ul.append(h('li', '', t)));
       li.append(h('div', 'lab', date), h('h3', 'cl-title', title), ul);
+      return li;
+    };
+    // the latest five are open; the rest wait behind one tap
+    CHANGELOG.slice(0, 5).forEach((e) => list.append(entry(e)));
+    if (CHANGELOG.length > 5) {
+      const li = h('li', 'cl-older');
+      const det = h('details');
+      const inner = h('ol', 'changelog');
+      CHANGELOG.slice(5).forEach((e) => inner.append(entry(e)));
+      det.append(h('summary', '', 'Older'), inner);
+      li.append(det);
       list.append(li);
-    });
+    }
   };
   $('#news-back').addEventListener('click', () => { setView('settings'); window.scrollTo({ top: 0 }); });
   $('#hm-train').addEventListener('click', () => { setView('train'); window.scrollTo({ top: 0 }); });
@@ -2386,7 +2398,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const s = td.done[0];
       const t = S.templates[s.template];
       box.dataset.k = kindKey(s.template);
-      box.append(h('div', 't-head', 'Done: ' + (t ? t.name : s.label || s.split || 'session')));
+      box.append(h('div', 't-head', 'Done: ' + (t ? t.name : s.label || s.split || 'workout')));
       box.append(h('p', 'note', setsDone(s) + ' sets logged.'));
       return;
     }
@@ -2546,7 +2558,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const tpl = best ? best.id : nextTemplate();
       const row = h('div', 'unfin');
       row.append(h('span', '', isoDow(d) + ' ' + dm(d) + ': notes, no sets logged.'));
-      const go = btn('skew small', 'Review and log', 'Review and log the session of ' + dm(d));
+      const go = btn('skew small', 'Review and log', 'Review and log the workout of ' + dm(d));
       go.addEventListener('click', () => openSession(d, tpl));
       row.append(go);
       box.append(row);
@@ -2596,12 +2608,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (!R || !S.active) return;
     const t = S.templates[S.active.tpl];
     $('#sbar').dataset.k = kindKey(S.active.tpl);
-    $('#sb-day').textContent = t ? t.name : 'Session';
+    $('#sb-day').textContent = t ? t.name : 'Workout';
     const d = S.active.date;
     const chip = $('#sb-date');
     chip.textContent = d === today() ? 'Today' : isoDow(d) + ' ' + dm(d);
     chip.classList.toggle('past', d !== today());
-    chip.setAttribute('aria-label', 'Session date ' + (d === today() ? 'today, ' : '') + isoDow(d) + ' ' + dm(d) + '. Change date');
+    chip.setAttribute('aria-label', 'Workout date ' + (d === today() ? 'today, ' : '') + isoDow(d) + ' ' + dm(d) + '. Change date');
     const c = $('#sb-count');
     if (document.body.classList.contains('typing') && REST.ends) {
       const rem = REST.ends - Date.now();
@@ -2681,7 +2693,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const askDeleteSession = (sid, tpl) => {
     const doc = S.sessions[sid];
     const t = S.templates[tpl];
-    const name = (t && t.name) || (doc && doc.label) || 'this day';
+    const name = (t && t.name) || (doc && doc.label) || 'this workout';
     const date = dateOf(sid);
     const n = doc ? setsDone(doc) : 0;
     const wrap = h('div', 'ydlg');
@@ -2706,7 +2718,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (!a) return;
     const sum = daySummary();
     if (S.sessions[SID()]) queueWrite(SID(), { finished_at: Date.now() });
-    const day = { name: (S.templates[a.tpl] || {}).name || 'Session', date: a.date };
+    const day = { name: (S.templates[a.tpl] || {}).name || 'Workout', date: a.date };
     closeSession();
     const after = () => connInfo().then((c) => { if (c.apps.length) askClaudeReview(day); }).catch(() => {});
     if (sum) showFinish(sum, after); else after();
@@ -2991,14 +3003,14 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     });
     copyRow.append(cp, cpMsg);
     const finRow = h('div', 'foot-row fin-row');
-    const fin = btn('skew', 'Finish day');
+    const fin = btn('skew', 'Finish workout');
     fin.addEventListener('click', finishSession);
     finRow.append(fin, h('span', 'note', 'Ticked sets are already saved.'));
     foot.append(addRow, pk, gen, copyRow, cpBox, finRow);
     // a day opened on another date: a day ahead is a look at your set, a day behind is a look back.
     // Either way one button trains that same day today (a day done earlier this week is not planned again, so this is the way in).
     if (a.date !== today()) {
-      const tname = (S.templates[a.tpl] || {}).name || 'this day';
+      const tname = (S.templates[a.tpl] || {}).name || 'this workout';
       const ahd = a.date > today();
       const logged = hasDone(S.sessions[SID()]);
       const bn = h('div', 'in ahead');
@@ -3107,7 +3119,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       f.addEventListener('click', finishSession);
       bar.append(n, f);
     } else {
-      const f = btn('skew pop next', 'Finish day');
+      const f = btn('skew pop next', 'Finish workout');
       f.id = 'focus-finish';
       f.addEventListener('click', finishSession);
       bar.append(f);
@@ -3216,7 +3228,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         out.replaceChildren();
         const t = Number(String(inp.value).replace(',', '.'));
         const r = lib.plan(t, bar, cfg.plates);
-        if (!r) { out.append(h('p', 'pl-txt', 'Type the weight you want on the bar.')); return; }
+        if (!r) { out.append(h('p', 'pl-txt', 'Enter the total weight.')); return; }
         if (r.below) { out.append(h('p', 'pl-txt', 'Lighter than the ' + bar + ' kg bar.')); return; }
         if (r.exact) {
           const side = h('div', 'pl-side');
@@ -4110,7 +4122,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const reply = h('div', 'nt-reply');
     reply.hidden = true;
     const replyBody = h('div', 'nt-body');
-    reply.append(h('div', 'lab', 'Coach'), replyBody);
+    reply.append(h('div', 'lab', 'Claude'), replyBody);
     el.append(ta, meta, reply);
     const box = { el, ta, meta, reply, replyBody, open: !!open, key, label };
     const old = noteBoxes[key];
@@ -4163,7 +4175,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       if (!noteTimers[box.key] && !noteBusy[box.key] && document.activeElement !== box.ta) box.ta.value = n ? n.text || '' : box.ta.value;
       box.reply.hidden = !(n && n.reply);
       box.replyBody.textContent = n && n.reply ? n.reply : '';
-      if (n && !noteTimers[box.key] && !noteBusy[box.key]) box.meta.textContent = n.reply ? 'Coach answered' : n.status === 'seen' ? 'Read by Coach' : 'Saved.';
+      if (n && !noteTimers[box.key] && !noteBusy[box.key]) box.meta.textContent = n.reply ? 'Claude answered' : n.status === 'seen' ? 'Read by Claude' : 'Saved.';
       syncNoteOpen(box.key);
     });
   };
@@ -4454,10 +4466,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       if (iso === end) r.attr('stroke', 'var(--pop)').attr('stroke-width', 3).attr('stroke-opacity', 1);
       if (month) svg.append('text').attr('class', 'dn' + (mine.length ? ' on' : '')).attr('x', x + 6).attr('y', y + 17).attr('pointer-events', 'none').text(String(Number(iso.slice(8))));
       const target = day.length ? sessionOn(iso) : null;
-      if (day.length) tipEvents(r, box, (ev) => showTip(box, ev, fmtLong(parse(iso)), [{ text: day[0].label || day[0].split }, { text: plural(mine.length, part + 'working set') }].concat(target ? [{ text: 'Open session' }] : [])));
+      if (day.length) tipEvents(r, box, (ev) => showTip(box, ev, fmtLong(parse(iso)), [{ text: day[0].label || day[0].split }, { text: plural(mine.length, part + 'working set') }].concat(target ? [{ text: 'Open workout' }] : [])));
       // a day you trained opens that session, so you can look back at it
       if (target) {
-        r.classed('day-go', true).attr('tabindex', 0).attr('role', 'link').attr('aria-label', fmtLong(parse(iso)) + ', open this session')
+        r.classed('day-go', true).attr('tabindex', 0).attr('role', 'link').attr('aria-label', fmtLong(parse(iso)) + ', open this workout')
           .on('click', () => openSession(iso, target))
           .on('keydown', (ev) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openSession(iso, target); } });
       }
@@ -4510,8 +4522,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const tiles = $('#p-tiles');
     tiles.replaceChildren();
     tiles.hidden = !t.sessions;
-    [[t.sessions, 'Sessions'], [t.sets, 'Working sets'], [lifts.length, 'Lifts tracked']].forEach(([n, label]) => { const el = h('div', 'p-tile angled'); el.append(h('b', '', String(n)), h('span', '', label)); tiles.append(el); });
-    $('#take').textContent = t.sessions ? '' : rows.length ? 'No ' + (S.ptab === 'All' ? '' : S.ptab.toLowerCase() + ' ') + 'sessions in ' + rangeWord() + '. Pick a longer period.' : 'Nothing logged yet. Progress shows up after your first ticked set.';
+    [[t.sessions, 'Workouts'], [t.sets, 'Working sets'], [lifts.length, 'Lifts tracked']].forEach(([n, label]) => { const el = h('div', 'p-tile angled'); el.append(h('b', '', String(n)), h('span', '', label)); tiles.append(el); });
+    $('#take').textContent = t.sessions ? '' : rows.length ? 'No ' + (S.ptab === 'All' ? '' : S.ptab.toLowerCase() + ' ') + 'workouts in ' + rangeWord() + '. Pick a longer period.' : 'Nothing logged yet. Progress shows up after your first ticked set.';
     if (!t.sessions) return;
     drawDays(rows);
   };
@@ -4634,7 +4646,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const rows = (all || progressRows(rangeFrom())).filter(inGroup);
     const hidden = progressRows('').filter(inGroup).length - rows.length;
     $('#plist-count').textContent = rows.length ? String(rows.length) : '';
-    $('#plist-note').textContent = 'Best set per workout. Tap a lift for details.' + (hidden ? ' Hidden: ' + plural(hidden, 'lift') + ' with no sessions in this period.' : '');
+    $('#plist-note').textContent = 'Best set per workout. Tap a lift for details.' + (hidden ? ' Hidden: ' + plural(hidden, 'lift') + ' with no workouts in this period.' : '');
     if (!rows.length) { box.append(h('div', 'empty', hidden ? 'Nothing trained here in ' + rangeWord() + '.' : 'Nothing logged here yet.')); return; }
     if (S.picked && !rows.some((r) => r.exercise === S.picked)) S.picked = null;
     rows.forEach((r) => {
@@ -4644,12 +4656,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       b.dataset.g = r.group;
       b.setAttribute('aria-expanded', String(open));
       const line = h('span', 'p-line');
-      line.append('Latest ', h('b', '', r.latestLabel), ' · ' + plural(r.sessions, 'session'));
+      line.append('Latest ', h('b', '', r.latestLabel), ' · ' + plural(r.sessions, 'workout'));
       const nm = h('span', 'p-name', r.exercise);
       if (r.pr) { const pb = h('span', 'p-pr', 'PR'); pb.title = 'Personal record'; nm.append(' ', pb); }
       if (r.e1rm != null) line.append(h('span', 'p-e1', 'e1RM ' + num(r.e1rm) + ' kg'));
       b.append(nm, line, spark(r), h('span', 'p-ch' + (r.trend ? ' ' + r.trend : ''), r.trend ? TREND_MARK[r.trend] + r.changeLabel : ''));
-      b.setAttribute('aria-label', r.exercise + (r.pr ? ', new personal record' : '') + '. Latest best set ' + r.latestLabel + (r.e1rm != null ? ', estimated one-rep max ' + num(r.e1rm) + ' kg' : '') + (r.sessions > 1 ? ', best ' + r.bestLabel + ', trend ' + TREND_WORD[r.trend] + ' ' + r.changeLabel + ' over ' + r.sessions + ' sessions' : ', one session in this period') + '. ' + (open ? 'Hide' : 'Show') + ' chart');
+      b.setAttribute('aria-label', r.exercise + (r.pr ? ', new personal record' : '') + '. Latest best set ' + r.latestLabel + (r.e1rm != null ? ', estimated one-rep max ' + num(r.e1rm) + ' kg' : '') + (r.sessions > 1 ? ', best ' + r.bestLabel + ', trend ' + TREND_WORD[r.trend] + ' ' + r.changeLabel + ' over ' + r.sessions + ' workouts' : ', one workout in this period') + '. ' + (open ? 'Hide' : 'Show') + ' chart');
       b.addEventListener('click', () => { S.picked = open ? null : r.exercise; drawList(all); });
       box.append(b);
       if (open) {
@@ -4735,15 +4747,15 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (e.trend_since) {
       const b = btn('skew small', 'Show all history');
       b.addEventListener('click', () => setTrend(null));
-      fresh.append(h('span', 'note', 'Trend counts only sessions from ' + dm(e.trend_since) + '.'), b);
+      fresh.append(h('span', 'note', 'Trend counts only workouts from ' + dm(e.trend_since) + '.'), b);
     } else {
       const b = btn('skew small', 'Start a new trend from ' + dm(row.latestDate));
       b.addEventListener('click', () => setTrend(row.latestDate));
       fresh.append(b, h('span', 'note', 'Use this when earlier numbers do not compare, such as after fixing your form.'));
     }
     const pts = row.series.map((p) => ({ date: p.date, top: m.top(p), label: m.label ? m.label(p) : key === 'est' && p.est != null ? '≈' + num(Math.round(p.est)) + (row.unit === 'stack' ? '' : ' kg') : p.label, sets: p.sets })).filter((p) => p.top != null);
-    if (pts.length < 2) box.append(h('div', 'empty', pts.length ? 'One session in this period. A chart needs two.' : 'No sessions in this period.'));
-    else lineChart(box, pts, { name: m.name + ' per session for ' + row.exercise, lower: !!m.lower, tip: (p) => [{ text: 'Best set ' + p.label }].concat(key === 'est' ? [{ text: 'Est. 1RM ' + num(p.top) }] : []).concat([{ text: plural(p.sets, 'set') }]) });
+    if (pts.length < 2) box.append(h('div', 'empty', pts.length ? 'One workout in this period. A chart needs two.' : 'No workouts in this period.'));
+    else lineChart(box, pts, { name: m.name + ' per workout for ' + row.exercise, lower: !!m.lower, tip: (p) => [{ text: 'Best set ' + p.label }].concat(key === 'est' ? [{ text: 'Est. 1RM ' + num(p.top) }] : []).concat([{ text: plural(p.sets, 'set') }]) });
     det.append(fresh);
   };
 
@@ -4773,7 +4785,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     groups.forEach((g) => { const it = h('span'); const sw = h('i'); sw.style.background = SER[g] || SER.Other; it.append(sw, (GROUP_ABBR[g] || g[0]) + ' ' + g); legend.append(it); });
     box.append(legend);
     const H = 250, mt = 22, mr = 8;
-    const svg = chartSvg(box, H, 'Working sets per ' + per + ': ' + data.map((d) => binName(d.bin) + (d.bin === now ? ' (so far)' : '') + ', ' + d.total + ' sets in ' + d.days.size + ' sessions').join('; '));
+    const svg = chartSvg(box, H, 'Working sets per ' + per + ': ' + data.map((d) => binName(d.bin) + (d.bin === now ? ' (so far)' : '') + ', ' + d.total + ' sets in ' + d.days.size + ' workouts').join('; '));
     const W = Math.max(box.clientWidth, 260);
     const y0 = d3.scaleLinear([0, Math.max(6, d3.max(data, (d) => d.total) * 1.15)], [0, 1]).nice(4);
     const probe = d3.scaleBand(bins, [40, W - mr]).padding(0.25);
@@ -4797,13 +4809,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         const y1 = y(acc + n);
         const hgt = Math.max(0, y(acc) - y1 - 2);
         tipEvents(svg.append('rect').attr('x', x(d.bin)).attr('y', y1).attr('width', bw).attr('height', hgt).attr('fill', SER[g] || SER.Other), box,
-          (ev) => showTip(box, ev, (monthly ? '' : 'Week of ') + binName(d.bin) + (d.bin === now ? ' (so far)' : ''), groups.filter((k) => d[k]).map((k) => ({ color: SER[k], text: k + ' ' + d[k] + ' sets' })).concat([{ text: plural(d.days.size, 'session') }])));
+          (ev) => showTip(box, ev, (monthly ? '' : 'Week of ') + binName(d.bin) + (d.bin === now ? ' (so far)' : ''), groups.filter((k) => d[k]).map((k) => ({ color: SER[k], text: k + ' ' + d[k] + ' sets' })).concat([{ text: plural(d.days.size, 'workout') }])));
         if (hgt >= 16 && bw >= 22) svg.append('text').attr('class', 'seg-lab').attr('x', mid(d.bin)).attr('y', y1 + hgt / 2 + 4).attr('text-anchor', 'middle').attr('style', 'fill: var(--bg)').attr('pointer-events', 'none').text((GROUP_ABBR[g] || g[0]) + (bw >= 34 ? ' ' + n : ''));
         acc += n;
       });
       if (d.total && totalFits) svg.append('text').attr('class', 'val-lab').attr('x', mid(d.bin)).attr('y', y(acc) - 6).attr('text-anchor', 'middle').text(String(d.total));
     });
-    $('#weekly-note').textContent = 'Working sets by body part, ' + rangeWord() + '.' + (counts ? (monthly ? ' Sessions per month are listed below the bars.' : ' Sessions per week are listed below the bars.') : ' Tap a bar for sessions.');
+    $('#weekly-note').textContent = 'Working sets by body part, ' + rangeWord() + '.' + (counts ? (monthly ? ' Workouts per month are listed below the bars.' : ' Workouts per week are listed below the bars.') : ' Tap a bar for workouts.');
   };
 
   const fillTable = (tbl, rows, cols, build) => {
@@ -5022,7 +5034,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       b.type = 'button';
       b.dataset.g = LIB_GROUP[r.group] || r.group;
       b.setAttribute('aria-expanded', 'false');
-      b.append(h('span', 'xl-name', r.name), h('span', 'xl-meta', [r.group, r.equipment, SHOULDER[r.shoulder] || ''].filter(Boolean).join(' · ')), h('span', 'xl-tag' + (r.n ? ' mine' : ''), r.n ? plural(r.n, 'session') : r.custom ? 'Yours' : ''));
+      b.append(h('span', 'xl-name', r.name), h('span', 'xl-meta', [r.group, r.equipment, SHOULDER[r.shoulder] || ''].filter(Boolean).join(' · ')), h('span', 'xl-tag' + (r.n ? ' mine' : ''), r.n ? plural(r.n, 'workout') : r.custom ? 'Yours' : ''));
       const det = h('div', 'xl-detail');
       det.hidden = true;
       b.addEventListener('click', () => {
@@ -5030,7 +5042,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         if (open && !det.childElementCount) {
           det.append(h('p', '', r.desc));
           if (r.lib) det.append(h('p', 'note', 'Main ' + r.primary + (r.secondary && r.secondary !== 'none' ? ' · Also ' + r.secondary : '') + ' · Start with ' + r.lib.sets + ' × ' + r.lib.reps));
-          if (r.id && r.n) { const pts = bestSeries(r.id); if (pts.length) det.append(h('p', 'note', 'Your latest best set: ' + pts[pts.length - 1].label + ' (' + dm(pts[pts.length - 1].date) + '), ' + plural(r.n, 'session') + '.')); }
+          if (r.id && r.n) { const pts = bestSeries(r.id); if (pts.length) det.append(h('p', 'note', 'Your latest best set: ' + pts[pts.length - 1].label + ' (' + dm(pts[pts.length - 1].date) + '), ' + plural(r.n, 'workout') + '.')); }
           det.append(addToDayRow(r));
         }
         det.hidden = !open;
@@ -7124,10 +7136,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       if (!W.rows) { wizStep('error', 'This file needs an AI to read it. Build a plan with your AI, or copy and paste from Settings.'); return; }
       wizStep('saving', 'Saving your history…');
       const exIds = await resolveHistory(W.rows, {});
-      const n = await saveHistory(W.rows, exIds, (i, total) => { const m = $('#wiz .wz-msg'); if (m) m.textContent = 'Saving your history: ' + i + ' of ' + total + ' sessions…'; });
+      const n = await saveHistory(W.rows, exIds, (i, total) => { const m = $('#wiz .wz-msg'); if (m) m.textContent = 'Saving your history: ' + i + ' of ' + total + ' workouts…'; });
       if (!(S.root && S.root.intro_seen)) await saveRoot({ profile: W.profile, intro_seen: true, ask_cal: true });
       closeWizard();
-      showToast('Imported ' + plural(n, 'session') + '.', null);
+      showToast('Imported ' + plural(n, 'workout') + '.', null);
     } catch (e) {
       if (e && e.code === 'bad_file') W.rows = null;
       W.failed = 'import';
@@ -7155,7 +7167,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     W.failed = null;
     wizStep('saving', '');
     try {
-      await savePlan((i, total) => { W.msg = 'Saving your history: ' + i + ' of ' + total + ' sessions…'; const m = $('#wiz .wz-msg'); if (m) m.textContent = W.msg; });
+      await savePlan((i, total) => { W.msg = 'Saving your history: ' + i + ' of ' + total + ' workouts…'; const m = $('#wiz .wz-msg'); if (m) m.textContent = W.msg; });
       const first = W.adjust ? '' : W.plan.days[0].name + ' is up first ' + (W.start ? 'tomorrow' : 'today') + '.';
       const before = W.before;
       const adj = W.adjust;
@@ -7370,7 +7382,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       box.append(ch);
     }
     if (W.local && !W.chat.length && !W.adjust) {
-      box.append(chipRow('Session length', [['short', '45 min'], ['medium', '60 min'], ['long', '90 min']], W.profile.session_length || 'medium', (v) => {
+      box.append(chipRow('Workout length', [['short', '45 min'], ['medium', '60 min'], ['long', '90 min']], W.profile.session_length || 'medium', (v) => {
         W.profile.session_length = v;
         W.plan = cleanPlan(localPlan(W.profile, W.rows));
         renderWizard(true);
@@ -7405,9 +7417,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (W.rows) {
       const n = new Set(W.rows.map((r) => r.date)).size;
       const skipped = [...new Set(W.rows.map((r) => r.date))].filter((d) => S.sessions[d]).length;
-      box.append(h('p', 'note', 'Also imports ' + plural(n - skipped, 'session') + ' of history' + (skipped ? ' (' + skipped + ' dates you already have are skipped)' : '') + '. Weights are saved in kg.'));
+      box.append(h('p', 'note', 'Also imports ' + plural(n - skipped, 'workout') + ' of history' + (skipped ? ' (' + skipped + ' dates you already have are skipped)' : '') + '. Weights are saved in kg.'));
     }
-    if (W.adjust) box.append(h('p', 'note', 'Your logged sessions stay as they are. You can bring back the old week from Your week.'));
+    if (W.adjust) box.append(h('p', 'note', 'Your logged workouts stay as they are. You can bring back the old week from Your week.'));
     else if (templatesSorted().length) box.append(h('p', 'note', 'Your current training days stay in Plan. Your week switches to this plan.'));
     const ta = h('textarea', 'nt-text');
     ta.id = 'wz-ask';
@@ -7702,14 +7714,14 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const show = () => {
       box.classList.remove('confirm');
       const acts = h('div', 'wk-acts');
-      const start = btn('skew wk-start', 'Start day');
+      const start = btn('skew wk-start', 'Start workout');
       start.addEventListener('click', () => openSession(d, pl.tpl));
       const sel = h('select');
       sel.append(Object.assign(h('option', '', 'Choose a day'), { value: '' }));
       dates.filter((x) => x !== d).forEach((x) => sel.append(Object.assign(h('option', '', isoDow(x) + ' ' + dm(x)), { value: x })));
       sel.addEventListener('change', () => { if (sel.value) saveMove(ws, pl.key, sel.value); });
       const mv = h('label', 'wk-mv'); mv.append(h('span', '', 'Move to'), sel);
-      const rm = btn('skew wk-remove', 'Remove session');
+      const rm = btn('skew wk-remove', 'Remove workout');
       rm.addEventListener('click', () => {
         box.classList.add('confirm');
         confirmBox({
@@ -7739,11 +7751,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const t = S.templates[s.template];
       const box = h('div', 'wk-sess');
       box.dataset.k = kindKey(s.template);
-      box.append(h('div', 'wk-name', '✓ ' + (t ? t.name : s.split || 'Session')), h('p', 'note', setsDone(s) + ' sets logged.'));
+      box.append(h('div', 'wk-name', '✓ ' + (t ? t.name : s.split || 'Workout')), h('p', 'note', setsDone(s) + ' sets logged.'));
       if (t) {
         const open = btn('skew small wk-open', 'Look back or correct');
         open.addEventListener('click', () => openSession(d, s.template));
-        const del = btn('skew small wk-del', 'Delete day');
+        const del = btn('skew small wk-del', 'Delete workout');
         del.addEventListener('click', () => askDeleteSession(sidOf(s), s.template));
         const acts = h('div', 'wk-acts'); acts.append(open, del); box.append(acts);
       }
@@ -7756,7 +7768,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       box.append(h('div', 'wk-name', t.name), h('p', 'note', 'Started. Nothing is ticked yet.'));
       const go = btn('skew pop small wk-open', 'Continue');
       go.addEventListener('click', () => openSession(d, s.template));
-      const del = btn('skew small wk-del', 'Delete day');
+      const del = btn('skew small wk-del', 'Delete workout');
       del.addEventListener('click', () => askDeleteSession(sidOf(s), s.template));
       const acts = h('div', 'wk-acts'); acts.append(go, del); box.append(acts);
       sheet.append(box);
@@ -7811,7 +7823,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       b.dataset.date = d;
       if (first && S.templates[first]) b.dataset.k = kindKey(first);
       b.setAttribute('aria-pressed', String(d === S.wkSel));
-      const what = [].concat(done.map((s) => (S.templates[s.template] ? S.templates[s.template].name : 'session') + ' done'), planned.map((p) => S.templates[p.tpl].name + ' planned'), open.map((s) => S.templates[s.template].name + ' in progress'));
+      const what = [].concat(done.map((s) => (S.templates[s.template] ? S.templates[s.template].name : 'workout') + ' done'), planned.map((p) => S.templates[p.tpl].name + ' planned'), open.map((s) => S.templates[s.template].name + ' in progress'));
       b.setAttribute('aria-label', isoDow(d) + ' ' + dm(d) + (d === today() ? ', today' : '') + ', ' + (what.length ? what.join(', ') : 'rest'));
       b.append(h('span', 'n', String(Number(d.slice(8)))), h('span', 'm', isDone ? '✓' : (planned.length ? '•' : '') + (open.length ? '…' : '')));
       b.addEventListener('click', () => { if (b.dataset.dragged) { delete b.dataset.dragged; return; } S.wkSel = d; renderWeek(); const bb = $('#wk-rows .wk-blk[data-date="' + d + '"]'); if (bb) bb.focus(); });
@@ -7863,7 +7875,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         b.type = 'button';
         b.dataset.date = d;
         if (k && S.templates[k]) b.dataset.k = kindKey(k);
-        const what = [].concat(done.map((x) => (S.templates[x.template] ? S.templates[x.template].name : 'session') + ' done'), planned.map((p) => S.templates[p.tpl].name + ' planned'), open.map((x) => S.templates[x.template].name + ' in progress'));
+        const what = [].concat(done.map((x) => (S.templates[x.template] ? S.templates[x.template].name : 'workout') + ' done'), planned.map((p) => S.templates[p.tpl].name + ' planned'), open.map((x) => S.templates[x.template].name + ' in progress'));
         b.setAttribute('aria-label', isoDow(d) + ' ' + dm(d) + (d === today() ? ', today' : '') + ', ' + (what.length ? what.join(', ') : 'rest'));
         b.append(h('span', 'n', String(Number(d.slice(8)))), h('span', 'm', isDone ? '✓' : (planned.length ? '•' : '') + (open.length ? '…' : '')));
         b.addEventListener('click', () => { S.weekStart = mondayOf(d); S.wkSel = d; renderWeek(); const top = $('#week'); if (top) top.scrollIntoView({ block: 'start', behavior: 'smooth' }); });
@@ -8216,17 +8228,17 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const per = perWeekOf({ per_week: m.per });
       const pc = h('div', 'pw-days');
       pc.setAttribute('role', 'group');
-      pc.setAttribute('aria-label', 'Sessions a week');
+      pc.setAttribute('aria-label', 'Workouts a week');
       [1, 2, 3, 4, 5, 6, 7].forEach((n) => {
-        const b = btn('pk-chip', String(n), plural(n, 'session') + ' a week');
+        const b = btn('pk-chip', String(n), plural(n, 'workout') + ' a week');
         b.setAttribute('aria-pressed', String(per === n));
         b.addEventListener('click', () => { const mm = schedModel(); mm.per = n; saveSched(mm); });
         pc.append(b);
       });
-      set.append(h('span', 'lab', 'Sessions a week'), pc);
+      set.append(h('span', 'lab', 'Workouts a week'), pc);
       // a note only when it says something: not when every day you can train is a training day
-      const perNote = per && per < on.length ? plural(per, 'session') + ' a week, spread over your ' + on.length + ' days, so they can land on different weekdays.'
-        : per && per > on.length ? plural(per, 'session') + ' a week, but only ' + plural(on.length, 'day') + ' you can train. Pick more days or fewer sessions.' : '';
+      const perNote = per && per < on.length ? plural(per, 'workout') + ' a week, spread over your ' + on.length + ' days, so they can land on different weekdays.'
+        : per && per > on.length ? plural(per, 'workout') + ' a week, but only ' + plural(on.length, 'day') + ' you can train. Pick more days or fewer workouts.' : '';
       if (perNote) set.append(h('p', 'note pw-per-note', perNote));
     }
     set.append(h('span', 'lab', 'If you miss a day'), radioTabs('If you miss a day', [['fixed', 'Skip it'], ['rotation', 'Move to next day']], m.mode, (k) => switchMode(schedModel(), k), 'metric pw-mode'));
@@ -8320,7 +8332,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const cur = S.root && S.root.schedule;
     if (prev && !sameSchedule(prev, cur)) {
       const back = h('div', 'pw-note');
-      back.append(h('span', '', 'Previous week: ' + scheduleSummary(prev) + ' '), plainBtn('textbtn', 'Bring it back', null, () => {
+      back.append(h('span', '', 'Previous week: ' + scheduleSummary(prev) + ' '), plainBtn('textbtn', 'Switch back', null, () => {
         saveRoot({ schedule: prev }).then(() => { showToast('Your previous week is back.', () => { saveRoot({ schedule: cur }); renderEditor(); }); renderEditor(); }).catch(() => showToast('Not saved. Check your connection.', null));
       }));
       box.append(back);
@@ -8572,7 +8584,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       saveSched(mm);
     });
     const dz = h('div', 'danger-zone');
-    dz.append(h('span', 'lab', 'Delete'), del, h('span', 'note', 'It leaves your week. Logged sessions stay in your history.'));
+    dz.append(h('span', 'lab', 'Delete'), del, h('span', 'note', 'It leaves your week. Logged workouts stay in your history.'));
     box.append(dz);
   };
   const renderEditor = () => {
@@ -8785,7 +8797,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const adds = c.sessions + c.sets + c.exercises + c.templates + c.notes + c.weeks + c.root + (c.food || 0) + (c.foodEntries || 0) + (c.meals || 0) + (c.myfoods || 0);
     const planChange = plan.days.length + (plan.schedule ? 1 : 0);
     if (!adds && !planChange) { box.append(h('p', 'note', 'Nothing to restore. This backup is already here.')); return; }
-    const parts = [[c.sessions, 'session'], [c.sets, 'set', ' in existing sessions'], [c.exercises, 'exercise'], [c.templates, 'training day'], [c.notes, 'note'], [c.weeks, 'week plan'], [c.food || 0, 'day', ' of food'], [c.meals || 0, 'saved meal'], [c.myfoods || 0, 'remembered food'], [c.foodEntries || 0, 'food entry', ' in existing days'], [c.root, 'setting']]
+    const parts = [[c.sessions, 'workout'], [c.sets, 'set', ' in existing workouts'], [c.exercises, 'exercise'], [c.templates, 'training day'], [c.notes, 'note'], [c.weeks, 'week plan'], [c.food || 0, 'day', ' of food'], [c.meals || 0, 'saved meal'], [c.myfoods || 0, 'remembered food'], [c.foodEntries || 0, 'food entry', ' in existing days'], [c.root, 'setting']]
       .filter(([n]) => n).map(([n, w, tail]) => (w === 'food entry' ? n + (n === 1 ? ' food entry' : ' food entries') : plural(n, w)) + (tail || ''));
     if (adds) box.append(h('p', '', 'This backup adds: ' + parts.join(', ') + '.'));
     let withPlan = null;
@@ -8798,7 +8810,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       lab.append(withPlan, document.createTextNode(' Also restore the training plan'));
       const row = h('div', 'settings');
       row.append(lab);
-      box.append(row, h('p', 'note', [plan.days.length ? plural(plan.days.length, 'training day') + (plan.days.length === 1 ? ' goes back to how it was.' : ' go back to how they were.') : '', plan.schedule ? 'Schedule: ' + scheduleSummary(plan.schedule, plan.tpls) : ''].filter(Boolean).join(' ') + ' Days you added since then stay. Logged sessions never change.'));
+      box.append(row, h('p', 'note', [plan.days.length ? plural(plan.days.length, 'training day') + (plan.days.length === 1 ? ' goes back to how it was.' : ' go back to how they were.') : '', plan.schedule ? 'Schedule: ' + scheduleSummary(plan.schedule, plan.tpls) : ''].filter(Boolean).join(' ') + ' Days you added since then stay. Logged workouts never change.'));
     }
     const go = btn('skew pop small', 'Restore');
     go.addEventListener('click', async () => {
@@ -8853,7 +8865,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     { key: 'height_cm', label: 'Height (cm)', hint: 'cm', line: (v) => num(v) + ' cm' },
     { key: 'days_per_week', label: 'Training days per week', opts: WEEK_DAYS, numeric: true, line: (v) => 'wants to train ' + plural(v, 'day') + ' a week' },
     { key: 'where', label: 'Where you train', opts: WHERE, line: (v) => WHERE_LINE[v] || '' },
-    { key: 'session_length', label: 'Session length', opts: LENGTHS, line: (v) => 'wants ' + v + ' sessions (' + optName(LENGTHS, v).split(', ')[1] + ')' },
+    { key: 'session_length', label: 'Workout length', opts: LENGTHS, line: (v) => 'wants ' + v + ' sessions (' + optName(LENGTHS, v).split(', ')[1] + ')' },
     { key: 'goal', label: 'Your goal', opts: GOALS, line: (v) => GOAL_LINE[v] || '' },
     { key: 'experience', label: 'Training experience', opts: EXPERIENCE, line: (v) => EXPERIENCE_LINE[v] || '' },
     { key: 'activity', label: 'Daily life outside training', opts: ACTIVITY, line: (v) => ACTIVITY_LINE[v] || '' },

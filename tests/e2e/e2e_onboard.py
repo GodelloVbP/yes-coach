@@ -174,7 +174,7 @@ def hevy_only(page):
     pick_hevy(page)
     check('import: Only import my history is offered', page.is_visible('#wz-history'))
     page.click('#wz-history')
-    check('import: done without any AI', until(lambda: 'Imported 6 sessions' in page.text_content('body'), 6))
+    check('import: done without any AI', until(lambda: 'Imported 6 workouts' in page.text_content('body'), 6))
     ses = [d for d in be.docs if d['path'].startswith('yc/sessions/')]
     check('import: six sessions written', len(ses) == 6 and all(d['data']['source'] == 'import' for d in ses), len(ses))
     check('import: no schedule made', not (root(be).get('schedule') or {}).get('enabled'))

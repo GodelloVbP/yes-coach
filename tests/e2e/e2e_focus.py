@@ -54,7 +54,7 @@ try:
             check('a chip jumps back', vis(page, '#f-bench_2-load'))
             check('the draft is kept', page.input_value('#f-bench_2-load') == '62.5' and page.input_value('#f-bench_2-reps') == '7')
             page.click('.fchip >> nth=2')
-            check('last exercise: the bar is Finish day', page.locator('#focus-next').count() == 0 and 'Finish' in page.text_content('#focusbar'), page.text_content('#focusbar'))
+            check('last exercise: the bar is Finish workout', page.locator('#focus-next').count() == 0 and 'Finish' in page.text_content('#focusbar'), page.text_content('#focusbar'))
             # all exercises
             page.click('#focus-toggle')
             check('All exercises shows every card', vis(page, '#f-bench_1-load') and vis(page, '#f-row_1-load') and vis(page, '#f-curl_1-load'))
