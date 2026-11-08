@@ -24,7 +24,7 @@ CASES = [
     ('de', '40 kg assist × 8', 'Unterstützung × 8'), ('nl', '40 kg assist × 8', 'assistentie × 8'), ('es', '40 kg assist × 8', 'asistencia × 8'), ('it', '40 kg assist × 8', 'assistenza × 8'),
     ('fr', '40 kg/side × 8', 'côté × 8'), ('de', '40 kg/side × 8', 'Seite × 8'),
     ('nl', 'Target · Last time', 'Doel · Vorige keer'), ('nl', 'Target · Last time · Your note', 'Doel · Vorige keer · Jouw notitie'), ('fr', 'Target · Last time', 'Objectif · Dernière fois'),
-    ('nl', '· 1 session', '· 1 training'), ('nl', '· 3 sessions', '· 3 trainingen'), ('fr', '· 2 sessions', '· 2 séances'),
+    ('nl', '· 1 workout', '· 1 training'), ('nl', '· 3 workouts', '· 3 trainingen'), ('fr', '· 2 workouts', '· 2 séances'),
     ('fr', 'Each day you logged, in the past month.', 'Chaque jour enregistré, sur le dernier mois.'), ('nl', 'Each day you logged, in the past 3 months.', 'in de afgelopen 3 maanden'), ('de', 'Each day you logged, in all your history.', 'in deinem gesamten Verlauf'), ('it', 'Average per logged day, by week, in the past 6 months.', 'Media per giorno registrato, per settimana: '),
     ('fr', 'Add your age, height and weight', 'âge, taille et poids'), ('de', 'Add your height and weight', 'Größe und Gewicht'),
     ('nl', '8 reps', '8 herhalingen'),

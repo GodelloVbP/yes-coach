@@ -197,7 +197,7 @@ try:
         be = Backend(); be.fail_insert = 'too_many_tickets'
         def s6(page):
             open_feedback(page); send_form(page, 'Another one', 'Something else entirely', name='Sanne')
-            page.wait_for_function("document.querySelector('#tk form').innerText.includes('daily limit')")
+            page.wait_for_function("document.querySelector('#tk form').innerText.includes('Daily limit of 5')")
             check('daily limit message', True); check('form stays open with the text', page.input_value('#tk form input[autocomplete=off]') == 'Another one')
         errs = session(pw, be, ALICE, s6); check('no page errors (limit)', not errs, errs)
 

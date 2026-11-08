@@ -83,7 +83,7 @@ try:
             check('training days note, without the orange border line', 'training day' in page.inner_text('#days-note') and 'orange' not in page.inner_text('#days-note') and page.inner_text('#days-note').endswith('.'), page.inner_text('#days-note'))
             check('the legend is still there', page.locator('#days-legend').count() == 1 and page.inner_text('#days-legend').strip() != '', page.inner_text('#days-legend'))
             w = page.inner_text('#weekly-note')
-            check('volume note names the unit once, and says how to see sessions', w.startswith('Working sets by body part, ') and ('Sessions per ' in w or 'Tap a bar for sessions.' in w) and len(w.split('. ')) <= 2, w)
+            check('volume note names the unit once, and says how to see workouts', w.startswith('Working sets by body part, ') and ('Workouts per ' in w or 'Tap a bar for workouts.' in w) and len(w.split('. ')) <= 2, w)
         errs = session(pw, be, ALICE, p1, width=390); check('no page errors (progress)', not errs, errs)
         def p2(page):
             page.click('#tab-progress'); page.wait_for_selector('#plist .prow', timeout=8000); page.wait_for_timeout(500)

@@ -144,7 +144,7 @@ session(pw, be, ALICE, local_run, width=390, clock=SAT)
 be = Backend()
 def home4_run(page):
     to_preview(page, ai=False, picks=(2, 1))   # 4 days, at home
-    page.get_by_role('radiogroup', name='Session length').get_by_role('radio', name='45 min').click(); page.wait_for_timeout(200)
+    page.get_by_role('radiogroup', name='Workout length').get_by_role('radio', name='45 min').click(); page.wait_for_timeout(200)
     txt = page.text_content('#wiz')
     check('local: 4 days is upper and lower body', all(x in txt for x in ('Upper A', 'Lower A', 'Upper B', 'Lower B')), txt[:300])
     check('local: home has no machines or barbells', not any(w in txt for w in ('Machine', 'Leg press', 'Barbell', 'Cable', 'pulldown')), txt)
@@ -189,7 +189,7 @@ def hevy_plan(page):
     txt = page.text_content('#wiz')
     check('import + plan: weights from the history', 'recent best' in txt, txt[:300])
     check('import + plan: bench at about 90% of the recent best', '@ 72.5 kg' in txt, txt)
-    check('import + plan: says the history comes along', 'Also imports 6 sessions' in txt)
+    check('import + plan: says the history comes along', 'Also imports 6 workouts' in txt)
     page.click('#wz-start')
     until(lambda: page.is_visible('#btn-start'))
     check('import + plan: sessions written', until(lambda: sum(1 for d in be.docs if d['path'].startswith('yc/sessions/')) == 6))
