@@ -13,6 +13,7 @@ A free, ad-free workout tracker. Static site on GitHub Pages, accounts and data 
 | `tickets.sql` | Feedback & Requests tab: tickets, thread, owner functions and their row-level security. Run after `schema.sql`. |
 | `connector.sql` | Run last. Keeps a connected AI app inside its bounds in the database itself. |
 | `push.sql`, `push.js`, `sw.js` | Rest alerts (optional): the tables, the web app's side, and the service worker that shows the notification. `supabase/functions/rest-push/` sends it; `tools/vapid.mjs` makes the keys. |
+| `strava.sql`, `strava.js`, `supabase/functions/strava/` | Strava (optional): connect once, finished workouts are posted as a Weight Training activity with the sets in the description. The tokens live in a table only the function can read. |
 | `connect.html` | Public setup and usage page for the connector (the directory listing links to it). |
 | `consent.html` | The screen where a person allows or denies an AI app (the connector's sign-in step). |
 | `supabase/functions/mcp/` | The connector: an MCP server, one file, deployed as a Supabase Edge Function. `supabase/tests/mcp.test.mjs` tests it. |
@@ -77,6 +78,14 @@ One-time setup, in this order:
 4. **Add it in Claude.** Settings → Connectors → Add custom connector → URL `https://<project>.supabase.co/functions/v1/mcp`. Claude sends you to `consent.html`; sign in, Allow. Ask: "What is in my Yes Coach plan?"
 
 People disconnect an app in the app under Settings, Connected AI apps.
+
+### Strava (optional)
+Hidden until `strava: true` in `config.js`. Finished workouts are posted to the person's Strava with the exercises and sets in the description (Strava does not read sets from the app any other way we could reach).
+1. **Strava app.** At strava.com/settings/api create an application. Set *Authorization Callback Domain* to `<project>.supabase.co`. Note the Client ID and Client Secret. (A new Strava app serves only its owner until Strava approves it for more athletes; check Strava's current rules before opening it to everyone.)
+2. **Database.** Run `strava.sql` in the SQL editor (safe to repeat). It has no policy on purpose: only the function reads the tokens.
+3. **Secrets.** In Supabase, Edge Functions, Secrets: `STRAVA_CLIENT_ID` and `STRAVA_CLIENT_SECRET`. The service key is there already.
+4. **Function.** Deploy `strava` with Verify JWT off: `supabase functions deploy strava --project-ref <project> --no-verify-jwt`.
+5. Set `strava: true` in `config.js` and merge. Tests: `node --experimental-strip-types --no-warnings supabase/tests/strava.test.mjs`.
 
 ### Rest alerts (optional)
 A notification when the rest timer ends while the app is in the background. Until the key below is set, the setting does not show.

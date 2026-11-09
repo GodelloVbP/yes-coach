@@ -31,6 +31,7 @@ class Backend:
         self.grants = None  # None: the OAuth server is off (404)
         self.push_subs = []  # rest alerts: devices that allowed them
         self.rest_calls = []  # and what the app asked the rest-push function
+        self.strava_connected, self.strava_post, self.strava_calls, self.strava_posts = False, 'ok', [], []  # the Strava function
     def ticket(self, user, **kw):
         t = dict(id=str(uuid.uuid4()), user_id=user, first_name='Alice', user_email=EMAILS.get(user, 'u@example.com'), type='feature', title='Dark mode', body='please add dark mode', status='open', outcome=None,
                  resolution_note=None, duplicate_of=None, app_version='t', context={}, created_at=now(), updated_at=now(), resolved_at=None, user_seen_at=None)
@@ -70,6 +71,19 @@ class Backend:
             for r in (rows if isinstance(rows, list) else [rows]):
                 self.push_subs = [x for x in self.push_subs if x['endpoint'] != r['endpoint']] + [dict(r, user_id=me)]
             return empty(201)
+        if path == '/functions/v1/strava':  # the Strava function: it answers from what the test sets up
+            call = body or {}
+            self.strava_calls.append(call)
+            act = call.get('action')
+            if act == 'status': return ok({'connected': self.strava_connected})
+            if act == 'start': return ok({'url': 'https://www.strava.com/oauth/authorize?client_id=4242&scope=activity%3Awrite'})
+            if act == 'disconnect': self.strava_connected = False; return ok({'connected': False})
+            if act == 'post':
+                if self.strava_post == 'reconnect': return ok({'error': 'reconnect'}, 409)
+                if self.strava_post == 'busy': return ok({'error': 'busy'}, 429)
+                self.strava_posts.append(call)
+                return ok({'posted': True, 'id': 5000 + len(self.strava_posts), 'url': 'https://www.strava.com/activities/%d' % (5000 + len(self.strava_posts))})
+            return ok({'error': 'Unknown action.'}, 400)
         if path == '/functions/v1/rest-push':  # the rest alert function: it only records what was asked
             call = body or {}
             self.rest_calls.append(call)

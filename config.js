@@ -7,5 +7,6 @@ window.YC_CONFIG = {
   turnstileKey: '0x4AAAAAAF0wHRoRqdBkO_As', // Cloudflare Turnstile site key (public); the secret lives in Supabase
   userCounterMin: 100, // the sign-in page shows how many people train here only from this number up
   vapidPublicKey: 'BENmNEVipXAXFW4j4FK_MGZZUoidxwnY9nn4NMnz9JRJMIj9-3kUdZ-qZGTUeqpaxbvrTWBa99Nc-6BG7Y7IWps', // rest alerts: the public key from `node tools/vapid.mjs` (the private one lives in Supabase). Empty keeps the feature hidden.
+  strava: false, // Strava connection: set to true once strava.sql, the strava function and its secrets are in place
   contactEmail: 'stijesiebelink@gmail.com', // shown on the privacy page
 };
