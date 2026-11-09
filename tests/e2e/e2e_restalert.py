@@ -26,7 +26,7 @@ def seed(be):
     be.docs.append({'path': 'yc/templates/push', 'data': {'name': 'Push day', 'order': 1, 'kind': 'Push', 'focus': 'Chest', 'weekday': TODAY.strftime('%a'), 'items': [{'ex': 'bench', 'order': 1, 'sets': 3, 'reps': '8', 'target': '', 'target_at': T, 'rest_s': 90, 'note': None}]}})
 
 def with_key(page, key=KEY, mock=True, perm=None):
-    page.route('**/config.js', lambda r: r.fulfill(status=200, content_type='application/javascript', body=r.fetch().text().replace("vapidPublicKey: ''", "vapidPublicKey: '%s'" % key)))
+    page.route('**/config.js', lambda r: r.fulfill(status=200, content_type='application/javascript', body=__import__('re').sub(r"vapidPublicKey: '[^']*'", "vapidPublicKey: '%s'" % key, r.fetch().text())))
     if perm: page.add_init_script("window.__perm = '%s';" % perm)
     if mock: page.add_init_script(MOCK)
 
@@ -37,6 +37,7 @@ try:
         # ---- 1. without the key (not set up) nothing shows
         be = Backend(); seed(be)
         def s1(page):
+            with_key(page, key='', mock=False); page.goto(BASE); page.wait_for_selector('#btn-start', timeout=8000)
             page.click('#tab-settings'); page.wait_for_selector('#v-settings .set-tog', state='visible'); page.wait_for_timeout(300)
             check('not set up: no rest alert setting, no hint', page.locator('#push-row').is_hidden() and page.locator('#push-note').is_hidden())
         errs = session(pw, be, ALICE, s1, width=390); check('no page errors (not set up)', not errs, errs)
