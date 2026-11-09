@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-Z78wCHLy1/g3huC/ePX8U7dRAmwhN7H7xBdAOSDxEGY=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-OjpMAfpwOXCLpy7bSVNom05jRgBXpQkS2ezRjHFmG84=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-08 15:58Z">
+<meta name="yc-build" content="2026-11-09 10:14Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -1338,6 +1338,7 @@ body.fin-open { overflow: hidden; }
               <label class="ed-f wide"><span class="lab">Name</span><input id="xl-f-name" type="text" placeholder="Cable Y-raise"></label>
               <label class="ed-f"><span class="lab">Body part</span><select id="xl-f-group"></select></label>
               <label class="ed-f"><span class="lab">How you measure it</span><select id="xl-f-unit"><option value="kg">Weight in kg</option><option value="stack">Machine pin</option><option value="bw">Bodyweight reps</option><option value="assist">Assistance in kg</option><option value="min">Minutes</option></select></label>
+              <p class="note wide" id="xl-unit-note" hidden></p>
             </div>
             <div class="foot-row"><button class="skew pop small" type="submit"><span>Add exercise</span></button><button class="textbtn" type="button" id="xl-f-cancel">Cancel</button><span class="note wz-err" id="xl-f-msg" role="alert"></span></div>
           </form>
@@ -1625,6 +1626,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const UNIT_LABEL = { kg: 'kg', stack: 'pin', assist: 'assist', bw: '', min: 'min' };
   const loadLabel = (ex) => (!ex || !ex.unit ? 'kg total' : ex.unit === 'kg' ? (ex.load_basis === 'per_side' ? 'kg per side' : 'kg total') : ex.unit === 'stack' ? 'pin' : ex.unit === 'assist' ? 'kg of assistance' : '');
   const MEASURES = [['kg:total', 'kg total (both dumbbells, bar counted)'], ['kg:per_side', 'kg per side or per arm'], ['stack:', 'Pin (numbered machine stack)'], ['bw:', 'Bodyweight reps'], ['assist:', 'Assistance in kg (lower is better)'], ['min:', 'Minutes']];
+  const PIN_NOTE = 'Pin is the pin position in a machine\'s weight stack, not kg. Pin sets are left out of the kg volume.';
   const measureName = (v) => (MEASURES.find((m) => m[0] === v) || [v, v])[1];
   const measureOf = (e) => (e.unit || 'kg') + ':' + (!e.unit || e.unit === 'kg' ? (e.load_basis === 'per_side' ? 'per_side' : 'total') : '');
   // change how an exercise is measured, for every day that uses it; logged sets keep their numbers and Progress starts a new trend
@@ -1634,6 +1636,65 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const upd = { unit, load_basis: unit === 'kg' ? basis : null, unit_since: today(), prev_unit: unitKey(e) };
     S.exercises[id] = Object.assign({}, e, upd);
     return S.rootRef.collection('exercises').doc(id).update(upd);
+  };
+  // ---- two exercises that are the same one (an import under another name, a library copy): everything moves to one
+  // Logged sets keep the measure they were logged in. Sets that differ from the measure chosen stay in the log but are not compared.
+  const mergeScope = (from, to) => {
+    const sessions = Object.entries(S.sessions).filter(([, d]) => Object.values(d.sets || {}).some((st) => st && st.ex === from && !st.removed));
+    const sets = sessions.reduce((n, [, d]) => n + Object.values(d.sets || {}).filter((st) => st && st.ex === from && !st.removed).length, 0);
+    const days = Object.entries(S.templates).filter(([, t]) => (t.items || []).some((it) => it.ex === from));
+    const notes = Object.entries(S.notes).filter(([, n]) => n && n.about === from);
+    return { sessions, sets, days, notes };
+  };
+  const mergeExercise = async (from, to, measure) => {
+    const a = S.exercises[from], b = S.exercises[to];
+    if (!a || !b || from === to) throw new Error('bad merge');
+    const sc = mergeScope(from, to);
+    for (const [id, d0] of sc.sessions) {
+      const doc = clone(d0);
+      delete doc._local;
+      const sets = doc.sets || (doc.sets = {});
+      let n = Object.entries(sets).reduce((m, [k, st]) => (st && st.ex === to ? Math.max(m, st.n || 0, Number(k.slice(to.length + 1)) || 0) : m), 0);
+      Object.entries(sets).filter(([, st]) => st && st.ex === from).sort((x, y) => (x[1].n || 0) - (y[1].n || 0)).forEach(([k, st]) => {
+        n += 1;
+        delete sets[k];
+        sets[to + '_' + n] = Object.assign({}, st, { ex: to, n });
+      });
+      doc.updated_at = Date.now();
+      await S.rootRef.collection('sessions').doc(id).set(doc);
+      S.sessions[id] = doc;
+    }
+    for (const [id, t] of sc.days) {
+      const seen = new Set();
+      const items = [];
+      (t.items || []).forEach((it) => { const ex = it.ex === from ? to : it.ex; if (seen.has(ex)) return; seen.add(ex); items.push(Object.assign({}, it, { ex, order: items.length + 1 })); });
+      const doc = Object.assign({}, t, { items });
+      S.templates[id] = doc;
+      await S.rootRef.collection('templates').doc(id).set(doc);
+    }
+    for (const [id, nt] of sc.notes) {
+      const nid = id.endsWith('_' + from) ? id.slice(0, id.length - from.length) + to : id;
+      const there = S.notes[nid] && nid !== id ? S.notes[nid] : null;
+      const doc = Object.assign({}, nt, { about: to, about_label: b.name }, there ? { text: (there.text + '\n' + nt.text).trim().slice(0, 1500) } : {});
+      await S.rootRef.collection('notes').doc(nid).set(doc);
+      S.notes[nid] = doc;
+      if (nid !== id) { await S.rootRef.collection('notes').doc(id).delete(); delete S.notes[id]; }
+    }
+    const [unit, basis] = measure.split(':');
+    const keep = Object.assign({}, b, { unit, load_basis: unit === 'kg' ? basis : null }, !b.library_id && a.library_id ? { library_id: a.library_id } : {});
+    delete keep.trend_since; // the sets say what they were measured in, so no new trend starts here
+    await putExercise(to, keep);
+    await S.rootRef.collection('exercises').doc(from).delete();
+    delete S.exercises[from];
+    return sc;
+  };
+  // another exercise of yours that is probably the same one: the same library entry, or the same name without the brackets
+  const twinOf = (id) => {
+    const e = S.exercises[id];
+    if (!e) return null;
+    const canon = (x) => nameKey(String(x.name).replace(/\s*\([^)]*\)\s*$/, ''));
+    const mine = libOfEx(id);
+    return Object.keys(S.exercises).find((o) => o !== id && ((mine && libOfEx(o) && libOfEx(o).id === mine.id) || canon(S.exercises[o]) === canon(e))) || null;
   };
   const SHOULDER = { careful: 'Shoulder: go light', skip: 'Shoulder: skip for now' };
   const LIB_GROUP = { Biceps: 'Arms', Triceps: 'Arms', Forearms: 'Arms', Quads: 'Legs', 'Hamstrings and glutes': 'Legs', Calves: 'Legs', 'Full body': 'Other', Cardio: 'Other' };
@@ -1879,6 +1940,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['9 Nov 2026', "Imports keep your kg, and duplicates can be merged", ["Importing from Strong, Hevy or FitNotes now keeps your weights in kg, also for machines, so your last weights show up when you start a workout.", "Two copies of one exercise can be merged: open the exercise in Exercises, then Merge another exercise into this one. Its sets, training days and notes move over."]],
     ['8 Nov 2026', "Claude can fix your log", ["If Claude is connected, it can now add sets to your log and remove sets from it, for example when a set was logged under the wrong exercise. It cannot edit a set or delete a whole workout."]],
     ['8 Nov 2026', "The rolling order follows a swap", ["Train Back instead of Legs and Legs comes next, also in next week. A day done ahead of its turn no longer drops the day it passed."]],
     ['8 Nov 2026', "One word for a workout", ["A workout is called a workout everywhere. Session and day are gone from buttons and notes.", "What's new shows the latest five entries. The rest is under Older."]],
@@ -4198,12 +4260,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const nameKey = (name) => String(name).toLowerCase().split(/[^a-z0-9]+/).filter(Boolean).map((w) => (w.length > 3 ? w.replace(/s$/, '') : w)).join(' ');
   // a picker row is either one of your own exercises ('ex:<id>') or a library one, which is created on first use
   const resolveExercise = (r) => (r.id.indexOf('ex:') === 0 ? Promise.resolve(r.id.slice(3)) : ensureExercise(r));
+  // how a library exercise is counted when it is first created: machines and cables by pin, the rest by weight
+  const libUnit = (lib) => { const eq = lib.equipment.toLowerCase(); return lib.unit ? lib.unit : /assisted dip/.test(eq) ? 'assist' : /machine|cable|pec deck|leg press/.test(eq) ? 'stack' : /bodyweight|^bar$/.test(eq) ? 'bw' : 'kg'; };
   const ensureExercise = (lib) => {
     const found = Object.entries(S.exercises).find(([, e]) => e.library_id === lib.id || nameKey(e.name) === nameKey(lib.name));
     if (found) return Promise.resolve(found[0]);
     const id = lib.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    const eq = lib.equipment.toLowerCase();
-    const unit = lib.unit ? lib.unit : /assisted dip/.test(eq) ? 'assist' : /machine|cable|pec deck|leg press/.test(eq) ? 'stack' : /bodyweight|^bar$/.test(eq) ? 'bw' : 'kg';
+    const unit = libUnit(lib);
     const doc = {
       name: lib.name, group: LIB_GROUP[lib.group] || lib.group, category: lib.category || 'strength', unit, better: 'higher',
       per_side: false, rest_s: unit === 'stack' ? 75 : 90, shoulder: lib.shoulder || null, library_id: lib.id,
@@ -4908,9 +4971,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // one row per exercise: library entries (with your sessions when you did them) and your own exercises that are not in the library
   const xlRows = () => {
     const counts = sessionCounts();
-    const mine = new Map(); // library id -> your exercise id
-    Object.keys(S.exercises).forEach((id) => { const l = libOfEx(id); if (l && !mine.has(l.id)) mine.set(l.id, id); });
-    const rows = LIB.map((l) => { const own = mine.get(l.id); return { lib: l, id: own || null, name: l.name, group: l.group, tab: xlTabOf(l.group), equipment: l.equipment, primary: l.primary, secondary: l.secondary, desc: l.desc, shoulder: l.shoulder, n: own ? counts[own] || 0 : 0 }; });
+    // library id -> your exercises for it. Two of them (an import under another name, a library copy) show as one row: the one linked to the library comes first
+    const all = new Map();
+    Object.keys(S.exercises).forEach((id) => { const l = libOfEx(id); if (l) all.set(l.id, (all.get(l.id) || []).concat(id)); });
+    all.forEach((ids) => ids.sort((a, b) => (S.exercises[b].library_id ? 1 : 0) - (S.exercises[a].library_id ? 1 : 0) || (counts[b] || 0) - (counts[a] || 0)));
+    const rows = LIB.map((l) => { const own = (all.get(l.id) || [])[0]; return { lib: l, id: own || null, name: l.name, group: l.group, tab: xlTabOf(l.group), equipment: l.equipment, primary: l.primary, secondary: l.secondary, desc: l.desc, shoulder: l.shoulder, n: own ? (all.get(l.id) || []).reduce((n, x) => n + (counts[x] || 0), 0) : 0 }; });
     Object.entries(S.exercises).forEach(([id, e]) => {
       if (libOfEx(id)) return;
       rows.push({ lib: null, id, name: e.name, group: e.group || 'Other', tab: xlTabOf(e.group || 'Other'), equipment: UNIT_NAME[e.unit] || '', primary: e.group || '', secondary: '', desc: 'Your own exercise.', shoulder: e.shoulder, n: counts[id] || 0, custom: true });
@@ -5024,6 +5089,63 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     });
   };
 
+  // "Merge another exercise into this one": for a duplicate (an import under another name, a library copy). Moves sets, training days and notes.
+  const mergeRow = (id) => {
+    const wrap = h('div', 'xl-merge');
+    const others = Object.keys(S.exercises).filter((o) => o !== id).sort((x, y) => (S.exercises[x].name < S.exercises[y].name ? -1 : 1));
+    if (!others.length) return wrap;
+    const counts = sessionCounts();
+    const twin = twinOf(id);
+    if (twin) wrap.append(h('p', 'note', 'You also have ' + S.exercises[twin].name + ', which looks like the same exercise.'));
+    const panel = h('div', 'xl-merge-panel');
+    panel.hidden = true;
+    const open = plainBtn('textbtn', 'Merge another exercise into this one', null, () => { panel.hidden = !panel.hidden; open.setAttribute('aria-expanded', String(!panel.hidden)); if (!panel.hidden) sel.focus(); });
+    open.id = 'xl-merge-open';
+    open.setAttribute('aria-expanded', 'false');
+    const sel = h('select');
+    sel.id = 'xl-merge-from';
+    sel.setAttribute('aria-label', 'Merge');
+    others.forEach((o) => sel.append(new Option(S.exercises[o].name + (counts[o] ? ' · ' + plural(counts[o], 'workout') : ''), o)));
+    const ms = h('select');
+    ms.id = 'xl-merge-measure';
+    ms.setAttribute('aria-label', 'Count it as');
+    MEASURES.forEach(([v, l]) => ms.append(new Option(l, v)));
+    // the measure most of the logged sets use, so most of the history keeps counting
+    const pick = () => { const o = sel.value; ms.value = (counts[o] || 0) > (counts[id] || 0) ? measureOf(S.exercises[o]) : measureOf(S.exercises[id]); };
+    if (twin) sel.value = twin;
+    pick();
+    sel.addEventListener('change', pick);
+    const status = h('p', 'note');
+    status.setAttribute('role', 'status');
+    const confirm = h('div', 'confirm');
+    confirm.hidden = true;
+    const go = btn('skew small', 'Merge');
+    go.id = 'xl-merge-go';
+    go.addEventListener('click', () => {
+      if (S.active) { status.textContent = 'Finish or close your open workout first.'; return; }
+      const from = sel.value;
+      confirm.hidden = false;
+      confirmBox({
+        label: 'Confirm merge',
+        text: 'Merge ' + S.exercises[from].name + ' into ' + S.exercises[id].name + '? Its logged sets, training days and notes move over and are counted as ' + measureName(ms.value) + '. Sets logged in another measure stay in your log but are not compared. This cannot be undone. Make a Full backup first if you are unsure.',
+        yes: 'Merge', keep: 'Cancel', danger: true, yesId: 'xl-merge-yes',
+        onYes: () => {
+          const gone = S.exercises[from].name;
+          confirm.hidden = true;
+          status.textContent = 'Merging…';
+          go.disabled = true;
+          mergeExercise(from, id, ms.value).then(() => { showToast('Merged ' + gone + ' into ' + S.exercises[id].name + '.', null); XL.sig = ''; renderExercises(); }).catch(() => { go.disabled = false; status.textContent = 'Not merged. Check your connection and try again.'; });
+        },
+        onKeep: () => { confirm.hidden = true; },
+      }, confirm);
+    });
+    const f = h('div', 'ed-fields');
+    f.append(edField('Merge', sel), edField('Count it as', ms));
+    panel.append(f, go, confirm, status);
+    wrap.append(open, panel);
+    return wrap;
+  };
+
   // ---- the list: built once per data change, then search and tabs only hide and show rows
   let xlItems = [];
   const buildXlList = () => {
@@ -5057,6 +5179,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
           if (r.lib) det.append(h('p', 'note', 'Main ' + r.primary + (r.secondary && r.secondary !== 'none' ? ' · Also ' + r.secondary : '') + ' · Start with ' + r.lib.sets + ' × ' + r.lib.reps));
           if (r.id && r.n) { const pts = bestSeries(r.id); if (pts.length) det.append(h('p', 'note', 'Your latest best set: ' + pts[pts.length - 1].label + ' (' + dm(pts[pts.length - 1].date) + '), ' + plural(r.n, 'workout') + '.')); }
           det.append(addToDayRow(r));
+          if (r.id) det.append(mergeRow(r.id));
         }
         det.hidden = !open;
         b.setAttribute('aria-expanded', String(open));
@@ -5127,6 +5250,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#xl-f-name').focus();
   });
   $('#xl-f-cancel').addEventListener('click', closeXlForm);
+  $('#xl-f-unit').addEventListener('change', () => { const n = $('#xl-unit-note'); n.textContent = $('#xl-f-unit').value === 'stack' ? PIN_NOTE : ''; n.hidden = $('#xl-f-unit').value !== 'stack'; });
   $('#xl-form').addEventListener('submit', async (ev) => {
     ev.preventDefault();
     const name = $('#xl-f-name').value.trim().replace(/\s+/g, ' ');
@@ -6974,6 +7098,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
 
   // ---- saving: exercises, training days, the schedule and the history, written by the page
   const planExercise = (it) => LIB_BY_ID.get(it.ex);
+  const hasLogged = (ex) => Object.values(S.sessions).some((s) => Object.values(s.sets || {}).some((st) => st && st.ex === ex && isDone(st)));
   const resolveHistory = async (rows, mapping) => {
     const ids = {};
     const own = new Map(Object.entries(S.exercises).map(([id, e]) => [nameKey(e.name), id]));
@@ -6982,7 +7107,14 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const loaded = mine.some((r) => r.kg);
       const found = libMatch(name) || mapping[name];
       if (own.has(nameKey(name))) ids[name] = own.get(nameKey(name));
-      else if (found) ids[name] = await ensureExercise(Object.assign({}, LIB_BY_ID.get(found), loaded && LIB_BY_ID.get(found).unit === 'stack' ? { unit: 'kg' } : {})); // the old app logged kg, so keep kg
+      else if (found) {
+        // the file holds kg, also for a machine, so a new exercise is counted in kg and the history keeps its numbers
+        const lib = LIB_BY_ID.get(found);
+        ids[name] = await ensureExercise(Object.assign({}, lib, loaded && libUnit(lib) === 'stack' ? { unit: 'kg' } : {}));
+        // an exercise of yours that has no logged sets yet (a plan made before the import) is switched too: nothing is lost, and the history shows as Previous
+        const have = S.exercises[ids[name]];
+        if (loaded && have && have.unit === 'stack' && !hasLogged(ids[name])) await putExercise(ids[name], Object.assign({}, have, { unit: 'kg', load_basis: 'total' }));
+      }
       else {
         const id = 'imp-' + name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
         ids[name] = S.exercises[id] ? id : await putExercise(id, { name, group: 'Other', category: mine.every((r) => r.reps == null) ? 'cardio' : 'strength', unit: mine.every((r) => r.reps == null) ? 'min' : loaded ? 'kg' : 'bw', better: 'higher', per_side: false, rest_s: 90, shoulder: null, library_id: null });
@@ -8524,6 +8656,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
           S.rootRef.collection('exercises').doc(it.ex).update(upd).catch(() => showToast('Not saved. Check your connection.', null));
         });
         f.append(edField('Rest (seconds)', rest), edField('Measured as (every day with ' + e.name + ')', ms), edField('Weight step when you go up', inc));
+        if (measureOf(e) === 'stack:' || ED.confirm) f.append(h('p', 'note wide', PIN_NOTE));
         const nf = edField('Note', note);
         nf.classList.add('wide');
         f.append(nf);
