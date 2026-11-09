@@ -12,6 +12,7 @@ A free, ad-free workout tracker. Static site on GitHub Pages, accounts and data 
 | `schema.sql` | The database: one table, row-level security, merge and delete-account functions. |
 | `tickets.sql` | Feedback & Requests tab: tickets, thread, owner functions and their row-level security. Run after `schema.sql`. |
 | `connector.sql` | Run last. Keeps a connected AI app inside its bounds in the database itself. |
+| `push.sql`, `push.js`, `sw.js` | Rest alerts (optional): the tables, the web app's side, and the service worker that shows the notification. `supabase/functions/rest-push/` sends it; `tools/vapid.mjs` makes the keys. |
 | `connect.html` | Public setup and usage page for the connector (the directory listing links to it). |
 | `consent.html` | The screen where a person allows or denies an AI app (the connector's sign-in step). |
 | `supabase/functions/mcp/` | The connector: an MCP server, one file, deployed as a Supabase Edge Function. `supabase/tests/mcp.test.mjs` tests it. |
@@ -75,7 +76,14 @@ One-time setup, in this order:
 3. **Function.** With the Supabase CLI (`npm i -g supabase`, `supabase login`): `supabase functions deploy mcp --project-ref <project> --no-verify-jwt`. (Dashboard alternative: Edge Functions → Deploy a new function → name `mcp`, paste `supabase/functions/mcp/index.ts`, and switch **Verify JWT** off.) If tools answer "The database said no (401)", add a secret `YC_ANON_KEY` with the publishable key from `config.js`.
 4. **Add it in Claude.** Settings → Connectors → Add custom connector → URL `https://<project>.supabase.co/functions/v1/mcp`. Claude sends you to `consent.html`; sign in, Allow. Ask: "What is in my Yes Coach plan?"
 
-People disconnect an app in the app under Settings, Connected AI apps. Tests: `node --experimental-strip-types --no-warnings supabase/tests/mcp.test.mjs`.
+People disconnect an app in the app under Settings, Connected AI apps.
+
+### Rest alerts (optional)
+A notification when the rest timer ends while the app is in the background. Until the key below is set, the setting does not show.
+1. **Database.** Run `push.sql` in the SQL editor (safe to repeat).
+2. **Keys.** On your computer: `node tools/vapid.mjs you@example.com`. Put the public key it prints into `config.js` (`vapidPublicKey`), and run the `supabase secrets set` line it prints (that stores the private key in Supabase; do not commit or share it).
+3. **Function.** `supabase functions deploy rest-push --project-ref <project> --no-verify-jwt`.
+4. Merge the `config.js` change. In the app: Settings, "Alert me when rest is over". On an iPhone the app has to be on the home screen first. Tests: `node --experimental-strip-types --no-warnings supabase/tests/rest-push.test.mjs`. Tests: `node --experimental-strip-types --no-warnings supabase/tests/mcp.test.mjs`.
 
 ## Later
 

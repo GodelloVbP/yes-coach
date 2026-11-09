@@ -6,5 +6,6 @@ window.YC_CONFIG = {
   appUrl: 'https://godellovbp.github.io/yes-coach/',
   turnstileKey: '0x4AAAAAAF0wHRoRqdBkO_As', // Cloudflare Turnstile site key (public); the secret lives in Supabase
   userCounterMin: 100, // the sign-in page shows how many people train here only from this number up
+  vapidPublicKey: '', // rest alerts: the public key from `node tools/vapid.mjs` (the private one lives in Supabase). Empty keeps the feature hidden.
   contactEmail: 'stijesiebelink@gmail.com', // shown on the privacy page
 };

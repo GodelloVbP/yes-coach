@@ -17,9 +17,11 @@ p, li { color: var(--soft); } a { color: var(--ink); }
 <ul><li>Your email address and a password (stored hashed), to sign you in.</li>
 <li>What you enter: your training log, plan, schedule, notes and the details you give in About you (such as age, weight and notes about your body).</li>
 <li>Your device's time zone (such as Europe/Amsterdam), so a connected AI logs food on your own day.</li>
+<li>If you switch on the rest alert: the notification address your browser's push service gave this device, its keys, and for as long as a rest runs, the time the alert is due.</li>
 <li>What you send through the Feedback &amp; Requests tab: your message, your first name, our replies, and with each ticket the email you sign in with, the app version, your browser and device type, your screen size and your language. Never your training data.</li></ul>
 <h2>Where and who can see it</h2>
 <p>Your data is stored with Supabase, the database service that runs Yes Coach!. Each account can only read its own data; this is enforced by the database itself. The person who runs Yes Coach! can read the tickets you send, including the first name and sign-in email saved with them so we know who we are talking to, and nothing else you enter. Your data is not sold, shared or used for advertising, and there are no analytics or third-party trackers.</p>
+<p>If you switch on the rest alert, the push service of your phone's maker or browser (such as Apple, Google or Mozilla) delivers the notification. It receives an empty message and the address of your device, nothing about your workout.</p>
 <p>Fonts and charts are served from the same site, and there are no analytics, trackers or ads. The one other website involved is Cloudflare Turnstile, a bot check that loads only on the sign-in screen (and the screen where you approve a connection), before you are signed in. Cloudflare sees your IP address and browser details when it runs; once you are signed in, it is not loaded. Pages carry a content security policy that only allows the app's own code, its connection to the Supabase database and, on those two screens, Turnstile.</p>
 <h2>AI</h2>
 <p>Yes Coach! never sends your data to an AI service by itself. When you ask an AI for a plan or a review, the app prepares the text and you paste it into an AI chat of your choice yourself.</p>

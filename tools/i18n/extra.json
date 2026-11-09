@@ -6585,5 +6585,75 @@
   "de": "Jede Übung in einem Training hat So geht es: was sie ist und welche Muskeln sie trainiert.",
   "fr": "Chaque exercice d'un entraînement a Comment le faire : ce que c'est et quels muscles il travaille.",
   "it": "Ogni esercizio di un allenamento ha Come si fa: cos'è e quali muscoli lavora."
+ },
+ "Alert me when rest is over, also when I am in another app": {
+  "nl": "Waarschuw me als de rust voorbij is, ook als ik in een andere app zit",
+  "es": "Avísame cuando termine el descanso, también si estoy en otra app",
+  "de": "Benachrichtige mich, wenn die Pause vorbei ist, auch wenn ich in einer anderen App bin",
+  "fr": "Préviens-moi quand le repos est fini, même si je suis dans une autre appli",
+  "it": "Avvisami quando il recupero è finito, anche se sono in un'altra app"
+ },
+ "To get an alert when rest is over, add Yes Coach! to your home screen first and open it from there.": {
+  "nl": "Voor een melding als de rust voorbij is, zet je Yes Coach! eerst op je beginscherm en open je het vandaar.",
+  "es": "Para recibir un aviso cuando termine el descanso, añade Yes Coach! primero a tu pantalla de inicio y ábrela desde allí.",
+  "de": "Für eine Benachrichtigung am Ende der Pause füge Yes Coach! zuerst zum Home-Bildschirm hinzu und öffne es von dort.",
+  "fr": "Pour être prévenu à la fin du repos, ajoute d'abord Yes Coach! à ton écran d'accueil et ouvre-la depuis là.",
+  "it": "Per ricevere un avviso a fine recupero, aggiungi prima Yes Coach! alla schermata Home e aprila da lì."
+ },
+ "Notifications are blocked for Yes Coach!. Allow them in your phone settings, then switch this on.": {
+  "nl": "Meldingen zijn geblokkeerd voor Yes Coach!. Sta ze toe in de instellingen van je telefoon en zet dit dan aan.",
+  "es": "Las notificaciones están bloqueadas para Yes Coach!. Permítelas en los ajustes del teléfono y luego activa esto.",
+  "de": "Benachrichtigungen sind für Yes Coach! blockiert. Erlaube sie in den Einstellungen deines Telefons und schalte das dann ein.",
+  "fr": "Les notifications sont bloquées pour Yes Coach!. Autorise-les dans les réglages du téléphone, puis active ceci.",
+  "it": "Le notifiche sono bloccate per Yes Coach!. Consentile nelle impostazioni del telefono, poi attiva questa opzione."
+ },
+ "Not switched on, because notifications were not allowed.": {
+  "nl": "Niet aangezet, omdat meldingen niet zijn toegestaan.",
+  "es": "No se activó porque no se permitieron las notificaciones.",
+  "de": "Nicht eingeschaltet, weil Benachrichtigungen nicht erlaubt wurden.",
+  "fr": "Non activé, car les notifications n'ont pas été autorisées.",
+  "it": "Non attivato perché le notifiche non sono state consentite."
+ },
+ "Could not switch this on. Try again.": {
+  "nl": "Aanzetten lukte niet. Probeer opnieuw.",
+  "es": "No se pudo activar. Inténtalo de nuevo.",
+  "de": "Das Einschalten hat nicht geklappt. Versuche es erneut.",
+  "fr": "Impossible de l'activer. Réessaie.",
+  "it": "Impossibile attivarlo. Riprova."
+ },
+ "Rest is over": {
+  "nl": "De rust is voorbij",
+  "es": "El descanso ha terminado",
+  "de": "Die Pause ist vorbei",
+  "fr": "Le repos est terminé",
+  "it": "Il recupero è finito"
+ },
+ "Time for the next set.": {
+  "nl": "Tijd voor de volgende set.",
+  "es": "Toca la siguiente serie.",
+  "de": "Zeit für den nächsten Satz.",
+  "fr": "C'est l'heure de la série suivante.",
+  "it": "È ora della prossima serie."
+ },
+ "An alert when rest is over": {
+  "nl": "Een melding als de rust voorbij is",
+  "es": "Un aviso cuando termine el descanso",
+  "de": "Eine Benachrichtigung, wenn die Pause vorbei ist",
+  "fr": "Une alerte quand le repos est fini",
+  "it": "Un avviso quando il recupero è finito"
+ },
+ "With Alert me when rest is over in Settings, your phone shows a notification when the rest timer ends, also when you are in another app.": {
+  "nl": "Met Waarschuw me als de rust voorbij is in Instellingen toont je telefoon een melding als de rusttimer afloopt, ook als je in een andere app zit.",
+  "es": "Con Avísame cuando termine el descanso en Ajustes, tu teléfono muestra una notificación cuando acaba el temporizador, también si estás en otra app.",
+  "de": "Mit Benachrichtige mich, wenn die Pause vorbei ist in den Einstellungen zeigt dein Telefon eine Benachrichtigung, wenn der Pausentimer abläuft, auch wenn du in einer anderen App bist.",
+  "fr": "Avec Préviens-moi quand le repos est fini dans Réglages, ton téléphone affiche une notification à la fin du minuteur de repos, même si tu es dans une autre appli.",
+  "it": "Con Avvisami quando il recupero è finito in Impostazioni, il telefono mostra una notifica quando il timer finisce, anche se sei in un'altra app."
+ },
+ "On an iPhone, add Yes Coach! to your home screen first and open it from there.": {
+  "nl": "Zet Yes Coach! op een iPhone eerst op je beginscherm en open het vandaar.",
+  "es": "En un iPhone, añade primero Yes Coach! a tu pantalla de inicio y ábrela desde allí.",
+  "de": "Füge Yes Coach! auf einem iPhone zuerst zum Home-Bildschirm hinzu und öffne es von dort.",
+  "fr": "Sur un iPhone, ajoute d'abord Yes Coach! à ton écran d'accueil et ouvre-la depuis là.",
+  "it": "Su iPhone, aggiungi prima Yes Coach! alla schermata Home e aprila da lì."
  }
 }
