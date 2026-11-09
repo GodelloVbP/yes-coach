@@ -1487,6 +1487,8 @@ body.fin-open { overflow: hidden; }
         <h2 id="h-pref">Logging</h2>
         <div class="settings"><label><input type="checkbox" id="set-rir"> Show reps in reserve (RIR) on each set</label></div>
         <div class="settings"><label><input type="checkbox" id="set-prog"> Suggest the next weight from your last workouts</label></div>
+        <div class="settings" id="push-row" hidden><label><input type="checkbox" id="set-push"> Alert me when rest is over, also when I am in another app</label></div>
+        <p class="note" id="push-note" role="status" hidden></p>
         <div class="set-plates" id="set-plates"></div>
       </section>
       <section aria-labelledby="h-food-set">
@@ -1896,7 +1898,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (v === 'exercises') renderExercises();
     if (v === 'plan' && S.ready) renderPlan();
     if (v === 'progress') renderProgress();
-    if (v === 'settings') { foldSettings(); paintExport(); paintImport(); paintConn(); paintLang(); if (S.ready) { paintMe(); buildPlateSettings(); } }
+    if (v === 'settings') { foldSettings(); paintExport(); paintImport(); paintConn(); paintLang(); paintPush(); if (S.ready) { paintMe(); buildPlateSettings(); } }
     if (v === 'train' && S.ready) renderTrain();
     if (S.ready) paintChrome();
   };
@@ -7736,6 +7738,22 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     saveRest();
     paintRest();
   });
+  // rest alerts: when the app goes to the background during a rest, the server is asked to alert at the end; coming back cancels it
+  const pushAway = () => {
+    const P = window.YC_PUSH;
+    if (!P || !P.on() || !REST.ends || REST.pushId || REST.pushing) return;
+    const rem = Math.ceil((REST.ends - Date.now()) / 1000);
+    if (rem < 2) return;
+    REST.pushing = true;
+    P.schedule(rem).then((id) => { REST.pushing = false; REST.pushId = id; if (id && document.visibilityState === 'visible') pushBack(); });
+  };
+  const pushBack = () => {
+    const P = window.YC_PUSH;
+    if (!P || !REST.pushId) return;
+    const id = REST.pushId;
+    REST.pushId = null;
+    P.cancel(id);
+  };
   const savedRest = local.get('yc-rest');
   if (savedRest && savedRest.ends > Date.now() - 5 * 60000) { REST.ends = savedRest.ends; REST.label = savedRest.label; REST.ex = savedRest.ex || null; REST.rang = savedRest.ends < Date.now(); REST.timer = setInterval(paintRest, 250); }
 
@@ -7750,7 +7768,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (!on && lock) { lock.release().catch(() => {}); lock = null; }
   };
   document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') pushAway();
     if (document.visibilityState !== 'visible') return;
+    pushBack();
     wakeLock(wantLock); paintRest();
     // coming back from another app (Claude, after the review request) must never show an empty Train screen
     if (S.ready && S.view === 'train' && $('#pickday').hidden && $('#session').hidden && $('#intro').hidden) { S.away = false; renderTrain(); }
@@ -8904,7 +8924,32 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (sec) { const tog = $('.set-tog', sec); const body = $('.set-body', sec); body.hidden = false; tog.setAttribute('aria-expanded', 'true'); }
     requestAnimationFrame(() => el.scrollIntoView({ block: block || 'center' }));
   }
-  const paintSettings = () => { const cb = $('#set-rir'); cb.checked = showRir(); $('#set-prog').checked = progOn(); $('#set-cal').checked = showCal(); if (S.view === 'settings') { paintMe(); if (!$('#set-plates').contains(document.activeElement)) buildPlateSettings(); } };
+  // rest alerts in Settings: only where the browser can do it and the owner has set it up
+  const paintPush = async () => {
+    const P = window.YC_PUSH;
+    if (!P) return;
+    const row = $('#push-row'), note = $('#push-note');
+    if (P.needsInstall()) { row.hidden = true; note.hidden = false; note.textContent = 'To get an alert when rest is over, add Yes Coach! to your home screen first and open it from there.'; return; }
+    if (!P.supported()) { row.hidden = true; note.hidden = true; return; }
+    row.hidden = false;
+    const st = await P.status();
+    $('#set-push').checked = st === 'on';
+    note.hidden = st !== 'blocked';
+    note.textContent = st === 'blocked' ? 'Notifications are blocked for Yes Coach!. Allow them in your phone settings, then switch this on.' : '';
+  };
+  $('#set-push').addEventListener('change', async () => {
+    const P = window.YC_PUSH, cb = $('#set-push'), note = $('#push-note');
+    if (!P) return;
+    note.hidden = true;
+    if (!cb.checked) { await P.disable(); return; }
+    cb.disabled = true;
+    const r = await P.enable();
+    cb.disabled = false;
+    cb.checked = !!r.ok;
+    if (!r.ok) { note.hidden = false; note.textContent = r.reason === 'blocked' ? 'Notifications are blocked for Yes Coach!. Allow them in your phone settings, then switch this on.' : r.reason === 'dismissed' ? 'Not switched on, because notifications were not allowed.' : 'Could not switch this on. Try again.'; }
+  });
+  let pushSynced = false;
+  const paintSettings = () => { if (S.view === 'settings') paintPush(); if (!pushSynced && window.YC_PUSH) { pushSynced = true; window.YC_PUSH.sync(); } const cb = $('#set-rir'); cb.checked = showRir(); $('#set-prog').checked = progOn(); $('#set-cal').checked = showCal(); if (S.view === 'settings') { paintMe(); if (!$('#set-plates').contains(document.activeElement)) buildPlateSettings(); } };
   $('#set-cal').addEventListener('change', () => { setShowCal($('#set-cal').checked); });
   $('#set-claude-ask').addEventListener('change', () => {
     saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { claude_ask: $('#set-claude-ask').checked }) }).catch(() => {});

@@ -7,6 +7,7 @@ node tests/merge.test.mjs
 node tests/plates.test.mjs
 node tests/parity.test.mjs
 node tests/starter.test.mjs
+node tests/sw.test.mjs
 [ -f tests/progression.test.mjs ] && node tests/progression.test.mjs
 # a suite that crashes or prints no result counts as failed: its remaining checks never ran
 bad=0

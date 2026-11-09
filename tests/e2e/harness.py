@@ -29,6 +29,8 @@ class Backend:
         self.admins = set(admins)
         self.docs = []
         self.grants = None  # None: the OAuth server is off (404)
+        self.push_subs = []  # rest alerts: devices that allowed them
+        self.rest_calls = []  # and what the app asked the rest-push function
     def ticket(self, user, **kw):
         t = dict(id=str(uuid.uuid4()), user_id=user, first_name='Alice', user_email=EMAILS.get(user, 'u@example.com'), type='feature', title='Dark mode', body='please add dark mode', status='open', outcome=None,
                  resolution_note=None, duplicate_of=None, app_version='t', context={}, created_at=now(), updated_at=now(), resolved_at=None, user_seen_at=None)
@@ -59,6 +61,19 @@ class Backend:
             sel = q.get('select', ['*'])[0]
             return rows if sel == '*' else [{c: r[c] for c in sel.split(',')} for r in rows]
         def visible(rows): return rows if me in self.admins else [r for r in rows if r.get('user_id', me) == me]
+        if path == '/rest/v1/push_subs':  # devices that allowed rest alerts
+            if req.method == 'GET': return ok(list(self.push_subs))
+            if req.method == 'DELETE':
+                gone = (q.get('endpoint', [''])[0] or '').replace('eq.', '', 1)
+                self.push_subs = [x for x in self.push_subs if x['endpoint'] != gone]; return empty()
+            rows = body or []
+            for r in (rows if isinstance(rows, list) else [rows]):
+                self.push_subs = [x for x in self.push_subs if x['endpoint'] != r['endpoint']] + [dict(r, user_id=me)]
+            return empty(201)
+        if path == '/functions/v1/rest-push':  # the rest alert function: it only records what was asked
+            call = body or {}
+            self.rest_calls.append(call)
+            return ok({'scheduled': True, 'id': 'alert-%d' % len(self.rest_calls)} if call.get('action') == 'schedule' else {'cancelled': True})
         if path == '/auth/v1/user/oauth/grants':
             if self.grants is None: return ok({'msg': 'oauth server disabled'}, 404)
             if req.method == 'GET': return ok(self.grants)

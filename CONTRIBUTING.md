@@ -33,10 +33,11 @@ sh tests/run.sh
 
 It builds, then runs the unit tests (Node 22) and the end-to-end suites in `tests/e2e/` (headless Chrome through Python Playwright, with Supabase faked in memory; Chrome is expected at `/usr/bin/google-chrome`). It must be green before a pull request. One check, `e2e_search` "with an Undo toast", fails now and then on its own; rerun it before treating it as yours.
 
-If you touch `supabase/functions/mcp/`, also run the connector suite, which `run.sh` does not include:
+If you touch `supabase/functions/mcp/` or `supabase/functions/rest-push/`, also run their suites, which `run.sh` does not include:
 
 ```bash
 node --experimental-strip-types --no-warnings supabase/tests/mcp.test.mjs
+node --experimental-strip-types --no-warnings supabase/tests/rest-push.test.mjs
 ```
 
 Rules for tests:
@@ -74,7 +75,9 @@ The app is written in English and translated on screen by `i18n.js`, by exact st
 supabase functions deploy mcp --project-ref qazvzhhoalkyyasakphs --no-verify-jwt
 ```
 
-  Changed `connector.sql`, `schema.sql` or `tickets.sql`? They need to be run again in the Supabase SQL editor. Say so at the top of the pull request.
+  The same goes for `supabase/functions/rest-push/index.ts` (`supabase functions deploy rest-push --project-ref qazvzhhoalkyyasakphs --no-verify-jwt`).
+
+  Changed `connector.sql`, `schema.sql`, `tickets.sql` or `push.sql`? They need to be run again in the Supabase SQL editor. Say so at the top of the pull request.
 
 ## Pull requests
 
