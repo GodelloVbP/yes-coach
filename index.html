@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-OjpMAfpwOXCLpy7bSVNom05jRgBXpQkS2ezRjHFmG84=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-FSIX4xOL0T108ZDWxEOdhoIHo/xhBQltk/zCKbJPSyU=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-09 10:14Z">
+<meta name="yc-build" content="2026-11-09 10:52Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -95,7 +95,11 @@ h2 { font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-s
 .ex-sug { display: flex; flex-wrap: wrap; align-items: center; gap: 0 0.5rem; margin: 0.15rem 0 0.35rem; font-size: 0.9rem; color: var(--ink); }
 .ex-sug[hidden] { display: none; }
 .ex-sug-why { font-weight: 600; }
-.ex-sug-undo { min-height: 44px; font-size: 0.9rem; }
+.ex-sug-undo, .ex-sug-step { min-height: 44px; font-size: 0.9rem; }
+.ex-stepbox { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; margin: 0 0 0.5rem; }
+.ex-stepbox[hidden] { display: none; }
+.ex-stepbox input { width: 5rem; min-height: 44px; font: inherit; font-weight: 700; color: var(--ink); background: transparent; border: 0; border-bottom: 2px solid var(--ctl); }
+.ex-stepbox .note { flex-basis: 100%; margin: 0; }
 .textbtn { background: none; border: 0; padding: 0 0.25rem; min-height: 44px; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-weight: 600; font-size: var(--t2); }
 .conn-url { flex: 1 1 14rem; min-width: 0; box-sizing: border-box; min-height: 44px; padding: 0 0.6rem; border: 2px solid var(--ink); border-radius: 0; background: transparent; color: var(--ink); font: inherit; font-size: var(--t2); }
 .link { background: none; border: 0; padding: 0.25rem 0; color: var(--ink); text-decoration: underline; cursor: pointer; font-size: var(--t2); font-weight: 600; }
@@ -194,7 +198,9 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 /* one exercise at a time: chips and a Next / Finish bar on phones, a list beside the card on wide screens */
 :root { --fb-h: 80px; }
 .focusbar { display: none; }
-.set-last { display: none; }
+.set-last { display: block; align-self: center; font-family: var(--f-head); font-weight: 700; color: var(--ink-soft); text-align: center; line-height: 1.05; white-space: nowrap; font-size: var(--t1); }
+.set.run .set-last { display: none; }
+#session.focus .set.run .set-last { display: block; }
 .fchip { --ang-bd: var(--line); flex: none; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 52px; padding: 6px 18px; border: 0; background: none; color: var(--ink); cursor: pointer; font-family: var(--f-head); font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; text-align: left; max-width: 14rem; }
 .fchip > span:first-child { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fchip small { font-family: var(--f-body, inherit); font-size: var(--t1); font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--ink-soft); }
@@ -205,12 +211,7 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .focus-toggle { flex: none; display: flex; min-height: 44px; align-items: center; padding: 0 0.5rem; white-space: nowrap; background: none; border: 0; color: var(--ink); font-weight: 700; text-decoration: underline; cursor: pointer; font-size: var(--t2); }
 #session.focus .ex.off { display: none; }
 #session.focus .ex { border-bottom: 0; }
-#session.focus .set-last { display: block; align-self: center; font-family: var(--f-head); font-weight: 700; color: var(--ink-soft); text-align: center; line-height: 1.05; white-space: nowrap; }
-#session.focus .set { grid-template-columns: 2.5rem 3rem minmax(0, 1fr) minmax(0, 1.5fr) 3.5rem; gap: 0.375rem; }
-#session.focus .set.one { grid-template-columns: 2.5rem 3rem minmax(0, 1fr) 3.5rem; }
-#session.focus .set.rir { grid-template-columns: 2.5rem 3rem minmax(0, 1fr) minmax(0, 1.5fr) 2.75rem 3.5rem; }
-#session.focus .set.rir.one { grid-template-columns: 2.5rem 3rem minmax(0, 1fr) 2.75rem 3.5rem; }
-#session.focus .set-last { font-size: var(--t1); }
+#session.focus .set.run { gap: 0.375rem; }
 @media (max-width: 63.99rem) {
   .chips-wrap { display: block; position: sticky; top: 0; z-index: 6; background: var(--bg); border-bottom: 1px solid var(--line); }
   .chips { display: flex; align-items: center; gap: 0.625rem; overflow-x: auto; padding: 0.625rem 1.25rem; scrollbar-width: none; }
@@ -346,10 +347,25 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .ex-lastnote { font-size: var(--t1); color: var(--ink-soft); font-weight: 500; line-height: 1.4; }
 .fill-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; }
 .sets { display: flex; flex-direction: column; gap: 0.375rem; max-width: 32rem; }
-.set { position: relative; display: grid; grid-template-columns: 2.75rem minmax(0, 1fr) minmax(0, 1.25fr) 3.5rem; gap: 0.5rem; align-items: end; min-height: 56px; }
-.set.one { grid-template-columns: 2.75rem minmax(0, 1fr) 3.5rem; }
-.set.rir { grid-template-columns: 2.75rem minmax(0, 1fr) minmax(0, 1.25fr) 3rem 3.5rem; }
-.set.rir.one { grid-template-columns: 2.75rem minmax(0, 1fr) 3rem 3.5rem; }
+.set { position: relative; display: grid; grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) minmax(0, 1.25fr) 3.5rem; gap: 0.375rem; align-items: end; min-height: 56px; }
+.set.one { grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) 3.5rem; }
+.set.rir { grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) minmax(0, 1.25fr) 2.75rem 3.5rem; }
+.set.rir.one { grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) 2.75rem 3.5rem; }
+.set.run { grid-template-columns: 2.75rem repeat(2, minmax(0, 1fr)) 3.5rem; gap: 0.5rem; }
+/* the columns are named once, above the rows; a row keeps only its numbers (the text stays for screen readers, and the dot that marks an edited value) */
+.set-head { display: grid; grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) minmax(0, 1.25fr) 3.5rem; gap: 0.375rem; min-height: 0; align-items: center; font-family: var(--f-head); font-size: var(--t1); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); padding-bottom: 0.125rem; }
+.set-head.one { grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) 3.5rem; }
+.set-head.rir { grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) minmax(0, 1.25fr) 2.75rem 3.5rem; }
+.set-head.rir.one { grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) 2.75rem 3.5rem; }
+.set-head span { text-align: center; white-space: nowrap; }
+.set:not(.run) .fld small { font-size: 0; }
+/* your note for the exercise: open under its name, in its own colour, so it reads as yours and not as a field */
+.ex-stick { margin: 0.25rem 0 0.5rem; }
+.ex-stick.on { background: color-mix(in srgb, var(--pop) 14%, var(--bg)); border-left: 4px solid var(--pop); }
+.ex-stick-t { display: none; width: 100%; box-sizing: border-box; min-height: 5.5rem; max-height: 50vh; resize: vertical; font: inherit; font-size: var(--t3); line-height: 1.45; color: var(--ink); background: transparent; border: 0; padding: 0.75rem; }
+.ex-stick.on .ex-stick-t { display: block; }
+.ex-stick-t:focus { outline: 2px solid var(--ink); outline-offset: -2px; }
+.ex-stick-add { min-height: 44px; padding: 0; font-size: var(--t2); }
 .set.run { grid-template-columns: 2.75rem repeat(2, minmax(0, 1fr)) 3.5rem; }
 #session.focus .set.run { grid-template-columns: 2.5rem 3rem repeat(2, minmax(0, 1fr)) 3.5rem; }
 .run-extra { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.25rem 1rem; padding-left: 3.25rem; }
@@ -397,7 +413,7 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .icon.danger { color: var(--warn); }
 .icon.armed { border-color: var(--warn); color: var(--warn); font-size: var(--t2); }
 .notebox { display: flex; flex-direction: column; gap: 0.25rem; }
-.nt-text { font: inherit; font-size: var(--t2); width: 100%; resize: vertical; color: var(--ink); background: var(--faint); border: 0; border-bottom: 2px solid var(--ctl); border-radius: 0; padding: 0.625rem 0.75rem; }
+.nt-text { font: inherit; font-size: var(--t3); width: 100%; resize: vertical; color: var(--ink); background: var(--faint); border: 0; border-bottom: 2px solid var(--ctl); border-radius: 0; padding: 0.625rem 0.75rem; min-height: 6.5rem; max-height: 50vh; line-height: 1.45; }
 .nt-text:focus { outline: none; border-bottom-color: var(--ink); box-shadow: 0 1px 0 var(--ink); }
 .nt-text::placeholder { color: var(--ink-soft); }
 .nt-meta { min-height: 1.25rem; font-size: var(--t1); color: var(--ink-soft); font-weight: 500; }
@@ -1339,6 +1355,7 @@ body.fin-open { overflow: hidden; }
               <label class="ed-f"><span class="lab">Body part</span><select id="xl-f-group"></select></label>
               <label class="ed-f"><span class="lab">How you measure it</span><select id="xl-f-unit"><option value="kg">Weight in kg</option><option value="stack">Machine pin</option><option value="bw">Bodyweight reps</option><option value="assist">Assistance in kg</option><option value="min">Minutes</option></select></label>
               <p class="note wide" id="xl-unit-note" hidden></p>
+              <label class="ed-f"><span class="lab">Weight step when you go up (optional)</span><input id="xl-f-inc" type="number" min="0" step="0.25" inputmode="decimal" placeholder="2.5"></label>
             </div>
             <div class="foot-row"><button class="skew pop small" type="submit"><span>Add exercise</span></button><button class="textbtn" type="button" id="xl-f-cancel">Cancel</button><span class="note wz-err" id="xl-f-msg" role="alert"></span></div>
           </form>
@@ -1940,6 +1957,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['9 Nov 2026', "Notes that stay, and clearer columns", ["Each exercise has a note of its own, open under its name and kept for every workout. Notes you write to Claude have a bigger box.", "The columns are named once above the sets: Set, Last, Reps and kg.", "The suggestion shows its weight step, so you can set the jump your gym has."]],
     ['9 Nov 2026', "Imports keep your kg, and duplicates can be merged", ["Importing from Strong, Hevy or FitNotes now keeps your weights in kg, also for machines, so your last weights show up when you start a workout.", "Two copies of one exercise can be merged: open the exercise in Exercises, then Merge another exercise into this one. Its sets, training days and notes move over."]],
     ['8 Nov 2026', "Claude can fix your log", ["If Claude is connected, it can now add sets to your log and remove sets from it, for example when a set was logged under the wrong exercise. It cannot edit a set or delete a whole workout."]],
     ['8 Nov 2026', "The rolling order follows a swap", ["Train Back instead of Legs and Legs comes next, also in next week. A day done ahead of its turn no longer drops the day it passed."]],
@@ -3403,6 +3421,35 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     local.set('yc-warmgen', keys.length > 60 ? Object.fromEntries(keys.slice(-60).map((x) => [x, 1])) : done);
     return changed;
   };
+  // the note that belongs to the exercise itself: shown open under its name, saved as you type, kept for every workout
+  const growBox = (ta) => { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight + 2, Math.round(window.innerHeight * 0.5)) + 'px'; };
+  const stickTimers = {};
+  const buildStick = (exId, ex) => {
+    const box = h('div', 'ex-stick');
+    const ta = h('textarea', 'ex-stick-t');
+    ta.rows = 3;
+    ta.maxLength = 1500;
+    ta.id = 'stick-' + exId;
+    ta.value = ex.my_note || '';
+    ta.placeholder = 'Seat, grip, position: it stays here every time.';
+    ta.setAttribute('aria-label', 'Your note for ' + (ex.name || exId));
+    const add = plainBtn('textbtn ex-stick-add', '+ Note for ' + (ex.name || exId), null, () => { box.classList.add('on'); ta.focus(); });
+    add.id = 'stick-add-' + exId;
+    const sync = () => { box.classList.toggle('on', !!ta.value.trim() || document.activeElement === ta); add.hidden = box.classList.contains('on'); };
+    const save = () => {
+      stickTimers[exId] = null;
+      const v = ta.value.trim().slice(0, 1500);
+      S.exercises[exId] = Object.assign({}, S.exercises[exId], { my_note: v || null });
+      S.rootRef.collection('exercises').doc(exId).update({ my_note: v || null }).catch(() => showToast('The note was not saved. Check your connection.', null));
+    };
+    ta.addEventListener('input', () => { growBox(ta); clearTimeout(stickTimers[exId]); stickTimers[exId] = setTimeout(save, 700); });
+    ta.addEventListener('focus', sync);
+    ta.addEventListener('blur', () => { if (stickTimers[exId]) { clearTimeout(stickTimers[exId]); save(); } sync(); });
+    box.append(ta, add);
+    sync();
+    requestAnimationFrame(() => { if (ta.value) growBox(ta); });
+    return box;
+  };
   const buildItem = (item, pos, count) => {
     const ex = S.exercises[item.ex] || { name: item.ex, unit: 'kg' };
     const unit = ex.unit || 'kg';
@@ -3422,14 +3469,33 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     // why the weight is what it is, and a way back to last time's numbers
     const sugRow = h('div', 'ex-sug');
     sugRow.hidden = true;
-    sugRow.append(h('span', 'ex-sug-why', ''), plainBtn('textbtn ex-sug-undo', 'Use last time', null, () => {
+    const stepBtn = plainBtn('textbtn ex-sug-step', 'Step', null, () => { stepBox.hidden = !stepBox.hidden; stepBtn.setAttribute('aria-expanded', String(!stepBox.hidden)); if (!stepBox.hidden) stepIn.focus(); });
+    stepBtn.setAttribute('aria-expanded', 'false');
+    const stepBox = h('div', 'ex-stepbox');
+    stepBox.hidden = true;
+    const stepIn = h('input');
+    stepIn.type = 'number'; stepIn.min = '0'; stepIn.step = '0.25'; stepIn.inputMode = 'decimal'; stepIn.id = 'step-' + item.ex;
+    stepIn.setAttribute('aria-label', 'Weight step when you go up');
+    const stepSave = btn('skew small', 'Save');
+    stepSave.addEventListener('click', () => {
+      const v = stepIn.value === '' ? null : Number(stepIn.value);
+      const upd = { inc: v != null && v > 0 ? v : null };
+      S.exercises[item.ex] = Object.assign({}, S.exercises[item.ex], upd);
+      S.rootRef.collection('exercises').doc(item.ex).update(upd).catch(() => showToast('Not saved. Check your connection.', null));
+      stepBox.hidden = true; stepBtn.setAttribute('aria-expanded', 'false');
+      renderItems();
+      paintSession();
+    });
+    stepIn.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); stepSave.click(); } });
+    stepBox.append(h('span', 'lab', 'Weight step when you go up'), stepIn, stepSave, h('p', 'note', 'Suggestions go up by this much. Use the smallest jump your gym has.'));
+    sugRow.append(h('span', 'ex-sug-why', ''), stepBtn, plainBtn('textbtn ex-sug-undo', 'Use last time', null, () => {
       const m = Object.assign({}, local.get('yc-nosug') || {});
       if (m[sugKey(item)]) delete m[sugKey(item)]; else m[sugKey(item)] = 1;
       const keys = Object.keys(m);
       local.set('yc-nosug', keys.length > 40 ? Object.fromEntries(keys.slice(-40).map((k) => [k, 1])) : m);
       paintSession();
     }));
-    wrap.append(sugRow);
+    wrap.append(sugRow, stepBox);
     // red X, top right: remove this exercise from today only, after a confirm
     const ctl = h('div', 'ex-ctl');
     [['ex-up', '↑', -1, 'up'], ['ex-down', '↓', 1, 'down']].forEach(([cls, glyph, dir, word]) => {
@@ -3459,41 +3525,23 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     ctl.append(xb);
     wrap.append(ctl, rmBox);
     const last = lastSetsFor(item.ex, S.active.date);
+    // your own note for this exercise (seat, grip, position): it stays with the exercise, open, every time you do it
+    wrap.append(buildStick(item.ex, ex));
+    // what the plan wants and what comes next; last time is in the Previous column of the sets
     const cap = h('div', 'ex-cap');
     const bits = [];
     if (item.planned) bits.push(['Target' + (item.target_at ? ' (' + dm(item.target_at) + ')' : ''), item.sets + ' × ' + (item.reps || '?') + (item.target ? ' @ ' + withUnit(item.target, uw) : '')]);
-    bits.push(['Last', last ? fmtSets(last.sets, unit, uw) + ' (' + dm(last.date) + ')' : 'none yet']);
     const pg = progFor(item, true);
     if (pg && pg.load != null) bits.push(['Next', num(pg.load) + (uw ? ' ' + uw : '') + (pg.delta ? ' (' + (pg.delta > 0 ? '+' : '−') + num(Math.abs(pg.delta)) + ')' : '')]);
+    if (!last) bits.push(['Last', 'none yet']);
     bits.forEach(([k, v], i) => { if (i) cap.append(' · '); cap.append(k + ' '); cap.append(h('b', '', v)); });
-    // target, last time, how-to and your last note fold away under one header; closed until you open it, remembered per exercise
-    const det = h('div', 'ex-det');
-    det.id = 'det-' + item.ex;
-    det.append(cap);
-    if (item.note) det.append(h('div', 'ex-tip', item.note));
+    if (bits.length) wrap.append(cap);
+    if (item.note) wrap.append(h('div', 'ex-tip', item.note));
     const ln = lastNoteFor(item.ex);
     if (ln) {
       const t = String(ln.text).replace(/\s+/g, ' ').trim();
-      det.append(h('div', 'ex-lastnote', 'Your note, ' + dm(ln.date) + ': ' + (t.length > 160 ? t.slice(0, 157) + '…' : t)));
+      wrap.append(h('div', 'ex-lastnote', 'Your note, ' + dm(ln.date) + ': ' + (t.length > 160 ? t.slice(0, 157) + '…' : t)));
     }
-    const opened = local.get('yc-exopen') || [];
-    const isOpen = opened.includes(item.ex);
-    det.hidden = !isOpen;
-    const dtog = h('button', 'ex-dtog');
-    dtog.type = 'button';
-    dtog.setAttribute('aria-expanded', String(isOpen));
-    dtog.setAttribute('aria-controls', det.id);
-    dtog.append(h('span', '', [item.planned ? 'Target' : null, 'Last time', item.note ? 'How to' : null, ln ? 'Your note' : null].filter(Boolean).join(' · ')), h('span', 'p-caret'));
-    dtog.lastChild.setAttribute('aria-hidden', 'true');
-    dtog.addEventListener('click', () => {
-      const open = det.hidden;
-      det.hidden = !open;
-      dtog.setAttribute('aria-expanded', String(open));
-      const list = (local.get('yc-exopen') || []).filter((x) => x !== item.ex);
-      if (open) { list.push(item.ex); enter(det); }
-      local.set('yc-exopen', list.slice(-60));
-    });
-    wrap.append(dtog, det);
     let fill = null;
     let why = null;
     if (last) {
@@ -3508,6 +3556,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     }
     const sets = h('div', 'sets');
     const n = rowCount(item);
+    const hd = buildSetHead(item, unit, ex);
+    if (hd) sets.append(hd);
     for (let i = 1; i <= n; i += 1) sets.append(buildSet(item, i, unit));
     wrap.append(sets);
 
@@ -3579,6 +3629,20 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
 
   const setWidth = (inp) => { const len = Math.max(String(inp.value || inp.placeholder || '').length, 1); inp.style.width = (len + 0.5) + 'ch'; };
 
+  // one header for the columns of an exercise, so a row does not repeat "reps" and "kg"
+  const buildSetHead = (item, unit, ex) => {
+    const run = unit === 'min' && isRun(item.ex);
+    const one = !run && (unit === 'min' || unit === 'bw');
+    const rir = showRir() && unit !== 'min';
+    if (run) return null; // runs keep their own layout
+    const row = h('div', 'set-head' + (one ? ' one' : '') + (rir ? ' rir' : ''));
+    row.setAttribute('aria-hidden', 'true');
+    row.append(h('span', '', 'Set'), h('span', '', 'Last'));
+    if (unit === 'min') row.append(h('span', '', 'Minutes'));
+    else { row.append(h('span', '', 'Reps')); if (unit !== 'bw') row.append(h('span', '', unitWord(ex) || 'kg')); if (rir) row.append(h('span', '', 'RIR')); }
+    row.append(h('span', ''));
+    return row;
+  };
   const buildSet = (item, n, unit) => {
     const key = item.ex + '_' + n;
     const ex = S.exercises[item.ex] || {};
@@ -4085,6 +4149,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         const done = keys.length > 0 && keys.every((k) => isDone(storedSet(k)));
         sugRow.hidden = !pg || done;
         if (pg) {
+          const sb = sugRow.querySelector('.ex-sug-step');
+          if (sb) { const ex = S.exercises[it.item.ex] || {}; const inc = incFor(it.item.ex); sb.textContent = 'Step ' + num(inc) + (unitWord(ex) ? ' ' + unitWord(ex) : ''); const si = it.el.querySelector('.ex-stepbox input'); if (si && document.activeElement !== si) si.value = ex.inc != null ? ex.inc : ''; if (si) si.placeholder = num(inc); }
           sugRow.firstChild.textContent = off ? '' : pg.reason;
           sugRow.lastChild.textContent = off ? 'Use the suggestion' : 'Use last time';
         }
@@ -4188,7 +4254,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const buildNote = (key, label, open) => {
     const el = h('div', 'notebox');
     const ta = h('textarea', 'nt-text');
-    ta.rows = 2;
+    ta.rows = 4;
     ta.maxLength = 1500;
     ta.id = 'note-' + key;
     ta.placeholder = key === 'general' ? 'How the workout went, sleep, energy, anything else.' : 'Weights, technique, how it felt.';
@@ -4204,6 +4270,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (old && old.ta.value && (noteTimers[key] || noteBusy[key] || document.activeElement === old.ta)) { ta.value = old.ta.value; box.open = true; }
     noteBoxes[key] = box;
     ta.addEventListener('input', () => {
+      growBox(ta);
       clearTimeout(noteTimers[key]);
       noteTimers[key] = setTimeout(() => { noteTimers[key] = null; writeNote(box); }, 800);
       meta.textContent = 'Saving…';
@@ -5261,13 +5328,15 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (Object.values(S.exercises).some((e) => nameKey(e.name) === nameKey(name))) { msg.textContent = 'You already have ' + name + '.'; return; }
     const unit = $('#xl-f-unit').value;
     const group = $('#xl-f-group').value;
+    const incV = Number($('#xl-f-inc').value);
     let id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'exercise';
     while (S.exercises[id]) id += '-2';
     try {
-      await putExercise(id, { name, group: LIB_GROUP[group] || group, category: unit === 'min' ? 'cardio' : 'strength', unit, better: unit === 'assist' ? 'lower' : 'higher', per_side: false, rest_s: unit === 'stack' ? 75 : 90, shoulder: null, library_id: null });
+      await putExercise(id, { name, group: LIB_GROUP[group] || group, category: unit === 'min' ? 'cardio' : 'strength', unit, better: unit === 'assist' ? 'lower' : 'higher', per_side: false, rest_s: unit === 'stack' ? 75 : 90, shoulder: null, library_id: null, ...(incV > 0 ? { inc: incV } : {}) });
     } catch (e) { msg.textContent = 'Not saved. Check your connection.'; return; }
     closeXlForm();
     $('#xl-f-name').value = '';
+    $('#xl-f-inc').value = '';
     $('#xl-search').value = name;
     XL.tab = 'All';
     XL.sig = '';
@@ -6920,7 +6989,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     o.push('## Rules');
     o.push('- One training day per day they train, or a rotation of fewer days that repeats; fit the session length (about 45 min: 4-5 exercises, 60: 5-6, 90: 6-8).');
     o.push('- Only use exercise ids from the list, and only equipment they have. Leave out exercises marked hard on shoulders if their notes mention a shoulder.');
-    o.push('- target is the starting load in kg as a plain number in a string ("60"). With history: start each lift at about 90% of the load of its recent best set, at the planned reps, so the first weeks leave 2 to 3 reps in reserve; for a lift they have not done, scale from a similar lift they have done, or leave it "". Without history: never guess loads from age, sex or bodyweight; use "" and make that exercise\'s note a calibration cue such as "First session: find a weight you could lift about 12 times, then do 10". Use "" for bodyweight work and for machines with numbered pins.');
+    o.push('- target is the starting load in kg as a plain number in a string ("60"). With history: start each lift at about 90% of the load of its recent best set, at the planned reps, so the first weeks leave 2 to 3 reps in reserve; for a lift they have not done, scale from a similar lift they have done, or leave it "". Without history: never guess loads from age, sex or bodyweight; use "" and make that exercise\'s note a calibration cue such as "First session: find a weight you could lift about 12 times, then do 10". Use "" for bodyweight work and for machines with numbered pins. A load is a weight that exists at their gym: round it to their weight step when they gave one, else to the usual jump (2.5 kg for barbells and cables, 5 kg for barbell leg lifts, 2 kg for dumbbells), and raise a weight by one step at a time.');
     o.push('- reps is text such as "8", "8 to 10", "10 per arm", "max", "30 s". rest_s is rest in seconds. note is one short coaching cue or null.');
     o.push('- kind is Push (chest, shoulders, triceps), Pull (back, biceps), Legs, or Other for full-body or mixed days.');
     if (unmatched.length) o.push('- mapping: for each of these names from their old app, the matching exercise id from the list, or null when nothing matches: ' + unmatched.map((n) => JSON.stringify(n)).join(', '));

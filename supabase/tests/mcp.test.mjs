@@ -759,6 +759,23 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok((sql.match(/path like 'yc\/sessions\/%'/g) || []).length === 3 && /no deletes[\s\S]*not public\.is_oauth_client\(\)/.test(sql), 'connector.sql opens yc/sessions for insert and update, and still refuses deletes');
 }
 
+// ---- weight steps: the person's own jump is readable, and can be set when an exercise is made
+{
+  const T = 'tok.anna.x';
+  rowA('yc/exercises/bench').data.inc = 2.3;
+  const list = (await call(T, 'list_exercises')).json;
+  ok(list.find((x) => x.id === 'bench').weight_step === 2.3 && list.find((x) => x.id === 'row').weight_step === null, 'list_exercises carries weight_step, empty when it is the usual jump');
+  const plan = (await call(T, 'get_plan')).json;
+  ok(plan.days.find((d) => d.id === 'day-1').exercises[0].weight_step === 2.3, 'and so does the plan');
+  let r = await call(T, 'create_exercise', { name: 'Hack squat', weight_step: 2.3 });
+  ok(!r.err && rowA('yc/exercises/' + r.json.id).data.inc === 2.3, 'create_exercise saves the step the way the app stores it');
+  r = await call(T, 'create_exercise', { name: 'Sissy squat', weight_step: -4 });
+  ok(!r.err && rowA('yc/exercises/' + r.json.id).data.inc === undefined, 'a step that makes no sense is left out');
+  const init = (await rpc(T, 'initialize', {})).body.result.instructions;
+  ok(/weight_step/.test(init) && /82\.3/.test(init), 'the instructions say how weights go up');
+  rowA('yc/exercises/bench').data.inc = undefined;
+}
+
 // ---- database errors surface as tool errors, not crashes
 {
   const h2 = createHandler({ url: base, anonKey: 'anon', publicUrl: PUB, siteUrl: base + '/site/' }, async (u, i) => (String(u).includes('/rest/') ? new Response('{}', { status: 500 }) : fetch(u, i)));
