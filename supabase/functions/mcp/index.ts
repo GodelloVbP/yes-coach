@@ -25,6 +25,7 @@ const INSTRUCTIONS = [
   'Yes Coach! is a workout tracker. These tools read the signed-in person\'s own plan, log and notes, and change their plan.',
   'Sets can be added to the log and removed from it, but not edited: to fix a set, remove it and add the right one. A removed set leaves the history and Progress. Plan changes show up in their app at once, and the app keeps an undo for the schedule.',
   'Exercises are referenced by id. Loads are in kg.',
+  'Weights go up in steps. The app suggests the last working weight plus the exercise\'s weight_step once every set reached its reps, so 80 kg with a step of 2.3 becomes 82.3 kg. Without a weight_step the usual jump applies: 2.5 kg, 5 kg for barbell leg lifts, 2 kg for dumbbells, 1 pin on a machine.',
   'Food: search_foods finds foods in the Dutch (NEVO) and international (USDA) tables the app uses; save_custom_food saves a product that is in neither, from the numbers on its label or product page; log_meals saves meals as food ids with grams or a portion; get_food_day and remove_food_entry read and remove entries.',
   'The app reads every nutrient from those tables, so the AI supplies foods and amounts, not nutrient numbers. A search lists the portions a food comes in (a slice, a piece) with grams for one; amounts that are guesses are marked estimated.',
   'A search lists the foods the person logged before at the top, marked yours, with the words they use for them and their own portion sizes; save_my_food and save_meal keep a food, a word, a portion size or a usual meal, and log_meals can log a saved meal.',
@@ -100,7 +101,7 @@ const inWeek = (root: Json): Set<string> => {
 };
 const dayOut = (id: string, d: Json, ex: Record<string, Json>, week: Set<string>): Json => ({
   id, name: d.name, kind: d.kind || 'Other', focus: d.focus || '', in_week: week.has(id),
-  exercises: (d.items || []).map((it: Json) => ({ exercise_id: it.ex, exercise: exName(ex, it.ex), sets: it.sets, reps: it.reps, target_kg: it.target || '', rest_s: it.rest_s, note: it.note || null, superset: it.group || null })),
+  exercises: (d.items || []).map((it: Json) => ({ exercise_id: it.ex, exercise: exName(ex, it.ex), weight_step: ex[it.ex] && ex[it.ex].inc > 0 ? ex[it.ex].inc : null, sets: it.sets, reps: it.reps, target_kg: it.target || '', rest_s: it.rest_s, note: it.note || null, superset: it.group || null })),
 });
 
 // ---------------------------------------------------------------- sessions
@@ -437,8 +438,8 @@ const TOOLS: Tool[] = [
   },
   {
     name: 'list_exercises', title: 'List exercises', annotations: RO, inputSchema: obj({}),
-    description: 'The person\'s exercises: id, name, body part and how the load is counted (kg = weight, stack = machine pin, bw = bodyweight reps, assist = assistance in kg, min = minutes).',
-    run: async (db) => { const ex = await loadExercises(db); return Object.entries(ex).map(([id, e]) => ({ id, name: e.name, group: e.group || 'Other', unit: e.unit || 'kg', category: e.category || 'strength' })).sort((a, b) => (a.name < b.name ? -1 : 1)); },
+    description: 'The person\'s exercises: id, name, body part, how the load is counted (kg = weight, stack = machine pin, bw = bodyweight reps, assist = assistance in kg, min = minutes), the weight step they set (empty means the usual jump) and their own note for the exercise.',
+    run: async (db) => { const ex = await loadExercises(db); return Object.entries(ex).map(([id, e]) => ({ id, name: e.name, group: e.group || 'Other', unit: e.unit || 'kg', category: e.category || 'strength', weight_step: e.inc > 0 ? e.inc : null, note: e.my_note || null })).sort((a, b) => (a.name < b.name ? -1 : 1)); },
   },
   {
     name: 'get_sessions', title: 'Get logged sessions', annotations: RO,
@@ -484,7 +485,7 @@ const TOOLS: Tool[] = [
   },
   {
     name: 'create_exercise', title: 'Create exercise', annotations: ADD,
-    inputSchema: obj({ name: { type: 'string' }, group: { type: 'string', enum: GROUPS }, unit: { type: 'string', enum: UNITS, description: 'kg weights, stack machine pin, bw bodyweight reps, assist assistance kg, min minutes.' } }, ['name']),
+    inputSchema: obj({ name: { type: 'string' }, group: { type: 'string', enum: GROUPS }, unit: { type: 'string', enum: UNITS, description: 'kg weights, stack machine pin, bw bodyweight reps, assist assistance kg, min minutes.' }, weight_step: { type: 'number', description: 'The smallest jump in weight at their gym, e.g. 2.3. Leave out for the usual jump.' } }, ['name']),
     description: 'Adds a new exercise to the exercise list. Returns its id (the existing one if the name is already there).',
     run: async (db, a) => {
       const name = str(a.name, 60);
@@ -495,7 +496,7 @@ const TOOLS: Tool[] = [
       let id = slug(name);
       for (let n = 2; ex[id]; n += 1) id = slug(name) + '-' + n;
       const unit = UNITS.includes(a.unit) ? a.unit : 'kg';
-      await db.put('yc/exercises/' + id, { name, group: GROUPS.includes(a.group) ? a.group : 'Other', category: unit === 'min' ? 'cardio' : 'strength', unit, better: unit === 'assist' ? 'lower' : 'higher', per_side: false, rest_s: unit === 'stack' ? 75 : 90, shoulder: null, library_id: null });
+      await db.put('yc/exercises/' + id, { name, group: GROUPS.includes(a.group) ? a.group : 'Other', category: unit === 'min' ? 'cardio' : 'strength', unit, better: unit === 'assist' ? 'lower' : 'higher', per_side: false, rest_s: unit === 'stack' ? 75 : 90, shoulder: null, library_id: null, ...(Number(a.weight_step) > 0 && Number(a.weight_step) <= 100 ? { inc: Math.round(Number(a.weight_step) * 100) / 100 } : {}) });
       return { id, created: true };
     },
   },
@@ -505,7 +506,7 @@ const TOOLS: Tool[] = [
       id: { type: 'string', description: 'An existing day id to replace. Leave out to create a new day.' }, name: { type: 'string' }, kind: { type: 'string', enum: KINDS }, focus: { type: 'string', description: 'A few words, e.g. "Chest and triceps".' },
       exercises: { type: 'array', maxItems: 12, description: 'The whole list of exercises for the day, in order. It replaces the old list.', items: obj({
         exercise_id: { type: 'string' }, sets: { type: 'integer' }, reps: { type: 'string', description: 'Text, e.g. "8", "8 to 10", "10 per arm", "max", "30 s".' },
-        target_kg: { type: 'string', description: 'Load in kg as a plain number in text, e.g. "60", or "". Leave it empty to let the app suggest the next weight from the last sessions; a load set here replaces that suggestion until the next session is logged.' }, rest_s: { type: 'integer' }, note: { type: 'string', description: 'One short coaching cue.' },
+        target_kg: { type: 'string', description: 'Load in kg as a plain number in text, e.g. "60", or "". A weight that exists at their gym: the last working weight plus the exercise\'s weight_step. Leave it empty to let the app suggest the next weight from the last sessions; a load set here replaces that suggestion until the next session is logged.' }, rest_s: { type: 'integer' }, note: { type: 'string', description: 'One short coaching cue.' },
         superset: { type: 'string', description: 'A short label such as "A". Exercises next to each other with the same label are done as a superset: one set of each in turn, rest after the round. Leave it out for a normal exercise.' },
       }, ['exercise_id', 'sets', 'reps']) },
     }, ['name', 'exercises']),

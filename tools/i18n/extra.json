@@ -6431,5 +6431,96 @@
   "de": "Zwei Kopien einer Übung lassen sich zusammenführen: Öffne die Übung unter Übungen und wähle Eine andere Übung mit dieser zusammenführen. Sätze, Trainingstage und Notizen wandern mit.",
   "fr": "Deux copies d'un exercice peuvent être fusionnées : ouvre l'exercice dans Exercices, puis Fusionner un autre exercice avec celui-ci. Ses séries, jours d'entraînement et notes passent à l'autre.",
   "it": "Due copie di un esercizio si possono unire: apri l'esercizio in Esercizi, poi Unisci un altro esercizio a questo. Le serie, i giorni di allenamento e le note passano all'altro."
+ },
+ "Reps": {
+  "nl": "Herh.",
+  "es": "Reps",
+  "de": "Wdh.",
+  "fr": "Reps",
+  "it": "Reps"
+ },
+ "Set": {
+  "nl": "Set",
+  "es": "Serie",
+  "de": "Satz",
+  "fr": "Série",
+  "it": "Serie"
+ },
+ "Step {0}": {
+  "nl": "Stap {0}",
+  "es": "Paso {0}",
+  "de": "Schritt {0}",
+  "fr": "Palier {0}",
+  "it": "Passo {0}"
+ },
+ "Weight step when you go up (optional)": {
+  "nl": "Gewichtsstap als je omhoog gaat (optioneel)",
+  "es": "Salto de peso al subir (opcional)",
+  "de": "Gewichtsschritt beim Steigern (optional)",
+  "fr": "Palier de poids à l'augmentation (facultatif)",
+  "it": "Salto di peso quando sali (facoltativo)"
+ },
+ "Suggestions go up by this much. Use the smallest jump your gym has.": {
+  "nl": "Suggesties gaan met zoveel omhoog. Neem de kleinste stap die jouw sportschool heeft.",
+  "es": "Las sugerencias suben esta cantidad. Usa el salto más pequeño que haya en tu gimnasio.",
+  "de": "Vorschläge steigen um diesen Betrag. Nimm die kleinste Stufe, die dein Studio hat.",
+  "fr": "Les suggestions augmentent de cette valeur. Prends le plus petit palier de ta salle.",
+  "it": "I suggerimenti salgono di questo valore. Usa il salto più piccolo della tua palestra."
+ },
+ "+ Note for {0}": {
+  "nl": "+ Notitie voor {0}",
+  "es": "+ Nota para {0}",
+  "de": "+ Notiz für {0}",
+  "fr": "+ Note pour {0}",
+  "it": "+ Nota per {0}"
+ },
+ "Seat, grip, position: it stays here every time.": {
+  "nl": "Zitting, grip, houding: het blijft hier elke keer staan.",
+  "es": "Asiento, agarre, posición: se queda aquí cada vez.",
+  "de": "Sitz, Griff, Position: Es bleibt jedes Mal hier stehen.",
+  "fr": "Siège, prise, position : elle reste ici à chaque fois.",
+  "it": "Sedile, presa, posizione: resta qui ogni volta."
+ },
+ "Your note for {0}": {
+  "nl": "Jouw notitie voor {0}",
+  "es": "Tu nota para {0}",
+  "de": "Deine Notiz für {0}",
+  "fr": "Ta note pour {0}",
+  "it": "La tua nota per {0}"
+ },
+ "The note was not saved. Check your connection.": {
+  "nl": "De notitie is niet opgeslagen. Controleer je verbinding.",
+  "es": "La nota no se guardó. Comprueba tu conexión.",
+  "de": "Die Notiz wurde nicht gespeichert. Prüfe deine Verbindung.",
+  "fr": "La note n'a pas été enregistrée. Vérifie ta connexion.",
+  "it": "La nota non è stata salvata. Controlla la connessione."
+ },
+ "Notes that stay, and clearer columns": {
+  "nl": "Notities die blijven, en duidelijkere kolommen",
+  "es": "Notas que se quedan y columnas más claras",
+  "de": "Notizen, die bleiben, und klarere Spalten",
+  "fr": "Des notes qui restent et des colonnes plus claires",
+  "it": "Note che restano e colonne più chiare"
+ },
+ "Each exercise has a note of its own, open under its name and kept for every workout. Notes you write to Claude have a bigger box.": {
+  "nl": "Elke oefening heeft een eigen notitie, open onder de naam en bewaard voor elke training. Notities aan Claude hebben een groter vak.",
+  "es": "Cada ejercicio tiene su propia nota, abierta bajo el nombre y guardada para cada entrenamiento. Las notas para Claude tienen un cuadro más grande.",
+  "de": "Jede Übung hat eine eigene Notiz, offen unter dem Namen und für jedes Training gespeichert. Notizen an Claude haben ein größeres Feld.",
+  "fr": "Chaque exercice a sa propre note, ouverte sous son nom et gardée pour chaque entraînement. Les notes pour Claude ont une zone plus grande.",
+  "it": "Ogni esercizio ha una nota propria, aperta sotto il nome e conservata per ogni allenamento. Le note per Claude hanno un riquadro più grande."
+ },
+ "The columns are named once above the sets: Set, Last, Reps and kg.": {
+  "nl": "De kolommen staan één keer boven de sets: Set, Laatste, Herh. en kg.",
+  "es": "Las columnas se nombran una vez sobre las series: Serie, Última, Reps y kg.",
+  "de": "Die Spalten stehen einmal über den Sätzen: Satz, Zuletzt, Wdh. und kg.",
+  "fr": "Les colonnes sont nommées une fois au-dessus des séries : Série, Dernier, Reps et kg.",
+  "it": "Le colonne sono nominate una volta sopra le serie: Serie, Ultima, Reps e kg."
+ },
+ "The suggestion shows its weight step, so you can set the jump your gym has.": {
+  "nl": "De suggestie toont haar gewichtsstap, zodat je de stap van jouw sportschool kunt instellen.",
+  "es": "La sugerencia muestra su salto de peso, así puedes fijar el de tu gimnasio.",
+  "de": "Der Vorschlag zeigt seinen Gewichtsschritt, sodass du die Stufe deines Studios einstellen kannst.",
+  "fr": "La suggestion affiche son palier de poids, pour que tu règles celui de ta salle.",
+  "it": "Il suggerimento mostra il suo salto di peso, così puoi impostare quello della tua palestra."
  }
 }
