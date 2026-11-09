@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-FSIX4xOL0T108ZDWxEOdhoIHo/xhBQltk/zCKbJPSyU=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-FiyT2Kb2u6l1CvCQeDWXpH1JglPrqyK5/l1MilIZHgM=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-09 10:52Z">
+<meta name="yc-build" content="2026-11-09 11:06Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -96,6 +96,10 @@ h2 { font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-s
 .ex-sug[hidden] { display: none; }
 .ex-sug-why { font-weight: 600; }
 .ex-sug-undo, .ex-sug-step { min-height: 44px; font-size: 0.9rem; }
+.ex-how { margin: 0 0 0.5rem; }
+.ex-how summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; font-size: var(--t2); font-weight: 600; color: var(--ink-soft); }
+.ex-how summary:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.ex-how p { margin: 0 0 0.5rem; font-size: var(--t2); line-height: 1.45; }
 .ex-stepbox { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; margin: 0 0 0.5rem; }
 .ex-stepbox[hidden] { display: none; }
 .ex-stepbox input { width: 5rem; min-height: 44px; font: inherit; font-weight: 700; color: var(--ink); background: transparent; border: 0; border-bottom: 2px solid var(--ctl); }
@@ -1481,6 +1485,7 @@ body.fin-open { overflow: hidden; }
         <div class="foot-row"><input type="text" id="conn-url" class="conn-url" readonly aria-label="Connector address"><button class="skew small" type="button" id="conn-copy"><span>Copy</span></button></div>
         <p class="note">AI apps you allowed to read your data, change your plan and log your food. Disconnecting removes access right away.</p>
         <div id="conn-list"></div>
+        <div class="settings" id="conn-ask-row" hidden><label><input type="checkbox" id="set-claude-ask"> Ask about sending a workout to Claude when it is finished</label></div>
         <span id="conn-state" class="note" aria-live="polite"></span>
       </section>
       <section aria-labelledby="h-imp" id="imp">
@@ -1957,6 +1962,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['9 Nov 2026', "Send a finished workout to Claude any time", ["After a workout, Send to Claude stays on the Today card and on that day in the week, so you can use it after you dismissed the question.", "If you would rather not be asked after every workout, switch it off in Settings, under Connected AI apps.", "Each exercise in a workout has How to do it: what it is and which muscles it works."]],
     ['9 Nov 2026', "Notes that stay, and clearer columns", ["Each exercise has a note of its own, open under its name and kept for every workout. Notes you write to Claude have a bigger box.", "The columns are named once above the sets: Set, Last, Reps and kg.", "The suggestion shows its weight step, so you can set the jump your gym has."]],
     ['9 Nov 2026', "Imports keep your kg, and duplicates can be merged", ["Importing from Strong, Hevy or FitNotes now keeps your weights in kg, also for machines, so your last weights show up when you start a workout.", "Two copies of one exercise can be merged: open the exercise in Exercises, then Merge another exercise into this one. Its sets, training days and notes move over."]],
     ['8 Nov 2026', "Claude can fix your log", ["If Claude is connected, it can now add sets to your log and remove sets from it, for example when a set was logged under the wrong exercise. It cannot edit a set or delete a whole workout."]],
@@ -2149,9 +2155,23 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     renderTrain();
     window.scrollTo({ top: 0 });
   };
+  const reviewPrompt = (day) => 'Review my Yes Coach! workout "' + day.name + '" from ' + day.date + '. Use my Yes Coach connector to read that session and my plan, tell me how it went, and what to change next time.';
+  // "Send to Claude" for a finished day, from the Today card or the day in the week: it stays there after the question was dismissed
+  const claudeDayButton = (day, id) => {
+    const b = btn('skew small', 'Send to Claude');
+    if (id) b.id = id;
+    b.addEventListener('click', () => openInClaude(reviewPrompt(day)));
+    return b;
+  };
+  const addClaudeButton = (host, day, id, hostOk) => {
+    const add = () => { if (!CONN.apps.length || !hostOk() || host.querySelector('.cl-day')) return; const b = claudeDayButton(day, id); b.classList.add('cl-day'); host.append(b); };
+    add();
+    connInfo().then(add).catch(() => {});
+  };
+  const askClaudeOn = () => !(S.root && S.root.settings && S.root.settings.claude_ask === false);
   // after a finished day: offer the review in the user's own Claude (only when a Claude is connected)
   const askClaudeReview = (day) => {
-    const prompt = 'Review my Yes Coach! workout "' + day.name + '" from ' + day.date + '. Use my Yes Coach connector to read that session and my plan, tell me how it went, and what to change next time.';
+    const prompt = reviewPrompt(day);
     const wrap = h('div', 'ydlg');
     const close = () => { wrap.remove(); document.removeEventListener('keydown', onKey); };
     const onKey = (e) => { if (e.key === 'Escape') close(); };
@@ -2483,6 +2503,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       box.dataset.k = kindKey(s.template);
       box.append(h('div', 't-head', 'Done: ' + (t ? t.name : s.label || s.split || 'workout')));
       box.append(h('p', 'note', setsDone(s) + ' sets logged.'));
+      const dayName = t ? t.name : s.label || s.split || 'workout';
+      addClaudeButton(box, { name: dayName, date: s.date }, 'btn-claude-day', () => !!box.querySelector('.t-head') && box.querySelector('.t-head').textContent.indexOf('Done') === 0);
       return;
     }
     if (td.open.length) {
@@ -2813,7 +2835,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (S.sessions[SID()]) queueWrite(SID(), { finished_at: Date.now() });
     const day = { name: (S.templates[a.tpl] || {}).name || 'Workout', date: a.date };
     closeSession();
-    const after = () => connInfo().then((c) => { if (c.apps.length) askClaudeReview(day); }).catch(() => {});
+    const after = () => connInfo().then((c) => { if (c.apps.length && askClaudeOn()) askClaudeReview(day); }).catch(() => {});
     if (sum) showFinish(sum, after); else after();
   };
 
@@ -3553,6 +3575,14 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       why.id = 'why-' + item.ex;
       fr.append(fill, why);
       wrap.append(fr);
+    }
+    // what the exercise is and which muscles it works, one tap away (the library text; nothing for an exercise of your own)
+    const lib = libOfEx(item.ex);
+    if (lib && lib.desc) {
+      const how = h('details', 'ex-how');
+      how.id = 'how-' + item.ex;
+      how.append(h('summary', '', 'How to do it'), h('p', '', lib.desc), h('p', 'note', 'Main ' + lib.primary + (lib.secondary && lib.secondary !== 'none' ? ' · Also ' + lib.secondary : '')));
+      wrap.append(how);
     }
     const sets = h('div', 'sets');
     const n = rowCount(item);
@@ -7993,6 +8023,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         const del = btn('skew small wk-del', 'Delete workout');
         del.addEventListener('click', () => askDeleteSession(sidOf(s), s.template));
         const acts = h('div', 'wk-acts'); acts.append(open, del); box.append(acts);
+        addClaudeButton(acts, { name: t.name, date: s.date }, null, () => sheet.contains(box));
       }
       sheet.append(box);
     });
@@ -8933,6 +8964,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   }
   const paintSettings = () => { const cb = $('#set-rir'); cb.checked = showRir(); $('#set-prog').checked = progOn(); $('#set-cal').checked = showCal(); if (S.view === 'settings') { paintMe(); if (!$('#set-plates').contains(document.activeElement)) buildPlateSettings(); } };
   $('#set-cal').addEventListener('change', () => { setShowCal($('#set-cal').checked); });
+  $('#set-claude-ask').addEventListener('change', () => {
+    saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { claude_ask: $('#set-claude-ask').checked }) }).catch(() => {});
+  });
   $('#set-prog').addEventListener('change', () => {
     saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { progress_suggest: $('#set-prog').checked }) }).catch(() => {});
     if (R) paintSession();
@@ -9201,6 +9235,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#conn-copy').onclick = async () => { $('#conn-state').textContent = (await copyPlain(url, $('#conn-url'))) ? 'Copied.' : 'Press and hold the address to copy it.'; };
     const sb = window.YC_API.sb;
     const box = $('#conn-list');
+    $('#conn-ask-row').hidden = !c.apps.length;
+    $('#set-claude-ask').checked = askClaudeOn();
     if (!c.apps.length) { box.replaceChildren(h('p', 'note', 'None connected.')); return; }
     box.replaceChildren(...c.apps.map((g) => {
       const cl = g.client || {};
