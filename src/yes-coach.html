@@ -329,9 +329,12 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .set.rir.one { grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) 2.75rem 3.5rem; }
 .set.run { grid-template-columns: 2.75rem repeat(2, minmax(0, 1fr)) 3.5rem; gap: 0.5rem; }
 /* the columns are named once, above the rows; a row keeps only its numbers (the text stays for screen readers, and the dot that marks an edited value) */
-.set-head { min-height: 0; align-items: center; font-family: var(--f-head); font-size: var(--t1); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); padding-bottom: 0.125rem; }
+.set-head { display: grid; grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) minmax(0, 1.25fr) 3.5rem; gap: 0.375rem; min-height: 0; align-items: center; font-family: var(--f-head); font-size: var(--t1); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); padding-bottom: 0.125rem; }
+.set-head.one { grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) 3.5rem; }
+.set-head.rir { grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) minmax(0, 1.25fr) 2.75rem 3.5rem; }
+.set-head.rir.one { grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) 2.75rem 3.5rem; }
 .set-head span { text-align: center; white-space: nowrap; }
-.set:not(.set-head):not(.run) .fld small { font-size: 0; }
+.set:not(.run) .fld small { font-size: 0; }
 /* your note for the exercise: open under its name, in its own colour, so it reads as yours and not as a field */
 .ex-stick { margin: 0.25rem 0 0.5rem; }
 .ex-stick.on { background: color-mix(in srgb, var(--pop) 14%, var(--bg)); border-left: 4px solid var(--pop); }
@@ -3574,7 +3577,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const one = !run && (unit === 'min' || unit === 'bw');
     const rir = showRir() && unit !== 'min';
     if (run) return null; // runs keep their own layout
-    const row = h('div', 'set set-head' + (one ? ' one' : '') + (rir ? ' rir' : ''));
+    const row = h('div', 'set-head' + (one ? ' one' : '') + (rir ? ' rir' : ''));
     row.setAttribute('aria-hidden', 'true');
     row.append(h('span', '', 'Set'), h('span', '', 'Last'));
     if (unit === 'min') row.append(h('span', '', 'Minutes'));
