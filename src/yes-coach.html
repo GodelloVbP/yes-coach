@@ -9021,10 +9021,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   });
   // back from Strava: the address says how it went
   const stravaReturn = () => {
-    let r = null;
-    try { const u = new URL(location.href); r = u.searchParams.get('strava'); if (r) { u.searchParams.delete('strava'); history.replaceState(null, '', u.pathname + (u.search || '') + u.hash); } } catch (e) { r = null; }
+    let r = null, why = '';
+    try { const u = new URL(location.href); r = u.searchParams.get('strava'); why = (u.searchParams.get('why') || '').replace(/[^a-zA-Z0-9_ .-]/g, '').slice(0, 40); if (r) { u.searchParams.delete('strava'); u.searchParams.delete('why'); history.replaceState(null, '', u.pathname + (u.search || '') + u.hash); } } catch (e) { r = null; }
     if (!r) return;
-    setTimeout(() => showToast(r === 'ok' ? 'Connected to Strava.' : r === 'denied' ? 'Strava was not connected.' : r === 'scope' ? 'Strava was not connected. Allow Yes Coach! to add activities.' : 'Could not connect Strava. Try again.', null), 600);
+    setTimeout(() => showToast(r === 'ok' ? 'Connected to Strava.' : r === 'denied' ? 'Strava was not connected.' : r === 'scope' ? 'Strava was not connected. Allow Yes Coach! to add activities.' : why ? 'Could not connect Strava (' + why + '). Try again.' : 'Could not connect Strava. Try again.', null), 600);
   };
   // rest alerts in Settings: only where the browser can do it and the owner has set it up
   const paintPush = async () => {
