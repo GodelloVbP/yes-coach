@@ -84,6 +84,15 @@ try:
                 check('back from Strava, %s: %s' % (r, msg), until(lambda: msg in page.text_content('body')), '')
             errs = session(pw, be, ALICE, sx, width=390); check('no page errors (%s)' % r, not errs, errs)
 
+        # an error with a reason shows it, and the address is cleaned up
+        for lang, msg in (('en', 'Could not connect Strava (Strava 400 client_secret invalid)'), ('nl', 'Strava koppelen lukte niet (Strava 400 client_secret invalid)')):
+            be = Backend(); seed(be, finished=None)
+            def sw(page, msg=msg):
+                with_strava(page); page.goto(BASE + '?strava=error&why=Strava%20400%20client_secret%20invalid#settings'); page.wait_for_selector('#v-settings', state='visible', timeout=8000)
+                check('error with a reason (%s): %s' % (lang, msg), until(lambda: msg in page.text_content('body')), '')
+                check('address has no strava or why left', 'why=' not in page.url and 'strava=' not in page.url, page.url)
+            errs = session(pw, be, ALICE, sw, width=390, lang=lang); check('no page errors (reason %s)' % lang, not errs, errs)
+
         # ---- 4. a finished workout is posted by itself when the switch is on
         be = Backend(); seed(be, finished=None, settings={'strava_auto': True}); be.strava_connected = True
         def s4(page):

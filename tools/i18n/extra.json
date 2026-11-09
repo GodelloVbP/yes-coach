@@ -6767,5 +6767,12 @@
   "de": "Strava konnte nicht verbunden werden. Versuche es erneut.",
   "fr": "Impossible de connecter Strava. Réessaie.",
   "it": "Impossibile collegare Strava. Riprova."
+ },
+ "Could not connect Strava ({0}). Try again.": {
+  "nl": "Strava koppelen lukte niet ({0}). Probeer opnieuw.",
+  "es": "No se pudo conectar Strava ({0}). Inténtalo de nuevo.",
+  "de": "Strava konnte nicht verbunden werden ({0}). Versuche es erneut.",
+  "fr": "Impossible de connecter Strava ({0}). Réessaie.",
+  "it": "Impossibile collegare Strava ({0}). Riprova."
  }
 }

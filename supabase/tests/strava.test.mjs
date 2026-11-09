@@ -11,6 +11,7 @@ const USERS = { [TOK.anna]: 'u-anna', [TOK.ben]: 'u-ben', [TOK.app]: 'u-anna' };
 const SERVICE = 'service-key-secret';
 
 let rows = []; // strava_links
+let dbStatus = 0; // when set, the links table answers with this
 const mockLog = [];
 const mock = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://x');
@@ -22,6 +23,7 @@ const mock = http.createServer((req, res) => {
     if (url.pathname === '/auth/v1/user') return USERS[tok] ? send(200, { id: USERS[tok] }) : send(401, {});
     if (url.pathname === '/rest/v1/strava_links') {
       mockLog.push({ method: req.method, tok, apikey: req.headers.apikey });
+      if (dbStatus) return send(dbStatus, { message: 'no such table' });
       if (tok !== SERVICE) return send(401, { message: 'only the service key may use this table' }); // no policy, roles revoked
       const eq = (k) => { const v = url.searchParams.get(k); return v && v.startsWith('eq.') ? decodeURIComponent(v.slice(3)) : null; };
       if (req.method === 'GET') return send(200, rows.filter((r) => !eq('user_id') || r.user_id === eq('user_id')));
@@ -101,6 +103,19 @@ ok((await cb({ code: 'good-code', state: st2, scope: 'activity:write' })).header
 ok(JSON.stringify(rows) === rowsBefore, 'none of that changed what is kept');
 clock -= 11 * 60 * 1000;
 ok((await cb({ code: 'bad-code', state: await stateOf(), scope: 'activity:write' })).headers.get('location').includes('strava=error'), 'Strava refusing the code is an error');
+
+// ---- an error says why, in a few safe words
+const whyOf = (r) => new URL(r.headers.get('location')).searchParams.get('why');
+ok(whyOf(await cb({ code: 'bad-code', state: await stateOf(), scope: 'activity:write' })) === 'Strava 400', 'Strava refusing the code: ' + whyOf(await cb({ code: 'bad-code', state: await stateOf(), scope: 'activity:write' })));
+strava.tokenReply = () => new Response(JSON.stringify({ message: 'Bad Request', errors: [{ resource: 'Application', field: 'client_secret', code: 'invalid' }] }), { status: 400, headers: { 'content-type': 'application/json' } });
+r = await cb({ code: 'good-code', state: await stateOf(), scope: 'activity:write' });
+ok(whyOf(r) === 'Strava 400 client_secret invalid' && !r.headers.get('location').includes('shh-secret'), 'a wrong secret says which field: ' + whyOf(r));
+strava.tokenReply = null;
+dbStatus = 404;
+r = await cb({ code: 'good-code', state: await stateOf(), scope: 'activity:write' });
+ok(r.headers.get('location').includes('strava=error') && whyOf(r) === 'database 404', 'a missing table says database: ' + whyOf(r));
+dbStatus = 0;
+ok(whyOf(await cb({ code: 'good-code', scope: 'activity:write' })) === 'state expired or invalid', 'no state says so');
 
 // ---- posting
 r = await post(TOK.anna, { action: 'post', ...GOOD, name: '' }); ok(r.status === 400, 'needs a name');

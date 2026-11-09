@@ -67,7 +67,10 @@ export const createHandler = (env: Env, f: typeof fetch = fetch, now: () => numb
     const r = await f(STRAVA + '/oauth/token', { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ client_id: env.clientId, client_secret: env.clientSecret, ...body }).toString() });
     return { ok: r.ok, status: r.status, json: await r.json().catch(() => null) };
   };
-  const back = (result: string) => new Response(null, { status: 302, headers: { location: env.appUrl + '?strava=' + result + '#settings', 'cache-control': 'no-store' } });
+  // why: a short reason for the person (and whoever helps them), never a secret; the app shows it with the error
+  const back = (result: string, why = '') => new Response(null, { status: 302, headers: { location: env.appUrl + '?strava=' + result + (why ? '&why=' + encodeURIComponent(why.replace(/[^a-zA-Z0-9_ .-]/g, '').slice(0, 40)) : '') + '#settings', 'cache-control': 'no-store' } });
+  // what Strava said was wrong, e.g. "client_secret invalid", without the values themselves
+  const stravaWhy = (t: { status: number; json: Json }): string => { const e = t.json && Array.isArray(t.json.errors) ? t.json.errors[0] : null; return 'Strava ' + t.status + (e ? ' ' + str(e.field, 20) + ' ' + str(e.code, 20) : ''); };
   // an access token that is good for a while, refreshed when it is about to end; null when the link is gone or was cancelled in Strava
   const fresh = async (uid: string): Promise<string | null> => {
     const l = await getLink(uid);
@@ -87,16 +90,16 @@ export const createHandler = (env: Env, f: typeof fetch = fetch, now: () => numb
       if (url.searchParams.get('error')) return back('denied');
       const uid = await unsign(url.searchParams.get('state') || '');
       const code = url.searchParams.get('code') || '';
-      if (!uid || !code) return back('error');
+      if (!uid || !code) return back('error', !code ? 'no code' : 'state expired or invalid');
       // the person has to have agreed to what the app asks for
       const granted = url.searchParams.get('scope') || '';
       if (!granted.split(',').includes(SCOPE)) return back('scope');
       try {
         const t = await token({ grant_type: 'authorization_code', code });
-        if (!t.ok || !t.json || !t.json.access_token) return back('error');
-        await saveLink(uid, t.json, granted);
+        if (!t.ok || !t.json || !t.json.access_token) return back('error', stravaWhy(t));
+        try { await saveLink(uid, t.json, granted); } catch (e) { return back('error', String((e as Error).message || 'database')); }
         return back('ok');
-      } catch (e) { return back('error'); }
+      } catch (e) { return back('error', 'no answer from Strava'); }
     }
     if (req.method !== 'POST') return reply({ error: 'POST only' }, 405);
     const bearer = (req.headers.get('authorization') || '').replace(/^Bearer\s+/i, '');
