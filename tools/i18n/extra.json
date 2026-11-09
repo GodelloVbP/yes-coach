@@ -6333,5 +6333,103 @@
   "de": "Ist Claude verbunden, kann es jetzt Sätze zu deinem Log hinzufügen und daraus entfernen, zum Beispiel wenn ein Satz unter der falschen Übung steht. Es kann keinen Satz ändern und kein ganzes Training löschen.",
   "fr": "Si Claude est connecté, il peut maintenant ajouter des séries à ton journal et en retirer, par exemple quand une série a été notée sous le mauvais exercice. Il ne peut ni modifier une série ni supprimer un entraînement entier.",
   "it": "Se Claude è collegato, ora può aggiungere serie al tuo diario e toglierne, per esempio quando una serie è finita sotto l'esercizio sbagliato. Non può modificare una serie né eliminare un intero allenamento."
+ },
+ "Pin is the pin position in a machine's weight stack, not kg. Pin sets are left out of the kg volume.": {
+  "nl": "Pin is de stand van de pin in de gewichtenstapel van een machine, geen kg. Pin-sets tellen niet mee in het kg-volume.",
+  "es": "La clavija es la posición del pasador en la pila de pesas de una máquina, no kg. Las series por clavija no cuentan en el volumen en kg.",
+  "de": "Pin ist die Stellung des Stifts im Gewichtspaket einer Maschine, nicht kg. Pin-Sätze zählen nicht zum kg-Volumen.",
+  "fr": "Le cran est la position de la tige dans la pile de poids d'une machine, pas des kg. Les séries au cran ne comptent pas dans le volume en kg.",
+  "it": "Il pin è la posizione del perno nello stack di pesi di una macchina, non i kg. Le serie a pin non contano nel volume in kg."
+ },
+ "You also have {0}, which looks like the same exercise.": {
+  "nl": "Je hebt ook {0}, dat lijkt op dezelfde oefening.",
+  "es": "También tienes {0}, que parece el mismo ejercicio.",
+  "de": "Du hast auch {0}, das sieht nach derselben Übung aus.",
+  "fr": "Tu as aussi {0}, qui semble être le même exercice.",
+  "it": "Hai anche {0}, che sembra lo stesso esercizio."
+ },
+ "Merge another exercise into this one": {
+  "nl": "Voeg een andere oefening samen met deze",
+  "es": "Fusionar otro ejercicio con este",
+  "de": "Eine andere Übung mit dieser zusammenführen",
+  "fr": "Fusionner un autre exercice avec celui-ci",
+  "it": "Unisci un altro esercizio a questo"
+ },
+ "Merge": {
+  "nl": "Samenvoegen",
+  "es": "Fusionar",
+  "de": "Zusammenführen",
+  "fr": "Fusionner",
+  "it": "Unisci"
+ },
+ "Count it as": {
+  "nl": "Tellen als",
+  "es": "Contar como",
+  "de": "Zählen als",
+  "fr": "Compter comme",
+  "it": "Conta come"
+ },
+ "Confirm merge": {
+  "nl": "Samenvoegen bevestigen",
+  "es": "Confirmar la fusión",
+  "de": "Zusammenführen bestätigen",
+  "fr": "Confirmer la fusion",
+  "it": "Conferma l'unione"
+ },
+ "Merge {0} into {1}? Its logged sets, training days and notes move over and are counted as {2}. Sets logged in another measure stay in your log but are not compared. This cannot be undone. Make a Full backup first if you are unsure.": {
+  "nl": "{0} samenvoegen met {1}? De gelogde sets, trainingsdagen en notities gaan mee en tellen als {2}. Sets die in een andere maat zijn gelogd, blijven in je logboek staan maar worden niet vergeleken. Dit kan niet ongedaan worden gemaakt. Maak eerst een volledige back-up als je het niet zeker weet.",
+  "es": "¿Fusionar {0} con {1}? Sus series registradas, días de entrenamiento y notas pasan al otro y cuentan como {2}. Las series registradas en otra medida se quedan en tu registro, pero no se comparan. No se puede deshacer. Haz antes una copia de seguridad completa si no estás seguro.",
+  "de": "{0} mit {1} zusammenführen? Die geloggten Sätze, Trainingstage und Notizen wandern mit und zählen als {2}. Sätze, die in einem anderen Maß geloggt wurden, bleiben in deinem Log, werden aber nicht verglichen. Das lässt sich nicht rückgängig machen. Mach vorher ein vollständiges Backup, wenn du unsicher bist.",
+  "fr": "Fusionner {0} avec {1} ? Ses séries enregistrées, jours d'entraînement et notes passent à l'autre et comptent comme {2}. Les séries enregistrées dans une autre mesure restent dans ton journal mais ne sont pas comparées. Impossible d'annuler. Fais d'abord une sauvegarde complète si tu hésites.",
+  "it": "Unire {0} a {1}? Le serie registrate, i giorni di allenamento e le note passano all'altro e contano come {2}. Le serie registrate in un'altra misura restano nel diario ma non vengono confrontate. Non si può annullare. Fai prima un backup completo se hai dubbi."
+ },
+ "Finish or close your open workout first.": {
+  "nl": "Rond eerst je open training af of sluit hem.",
+  "es": "Termina o cierra antes el entrenamiento abierto.",
+  "de": "Beende oder schließe zuerst dein offenes Training.",
+  "fr": "Termine ou ferme d'abord ton entraînement ouvert.",
+  "it": "Termina o chiudi prima l'allenamento aperto."
+ },
+ "Merging…": {
+  "nl": "Samenvoegen…",
+  "es": "Fusionando…",
+  "de": "Zusammenführen…",
+  "fr": "Fusion…",
+  "it": "Unione…"
+ },
+ "Not merged. Check your connection and try again.": {
+  "nl": "Niet samengevoegd. Controleer je verbinding en probeer opnieuw.",
+  "es": "No se fusionó. Comprueba tu conexión e inténtalo de nuevo.",
+  "de": "Nicht zusammengeführt. Prüfe deine Verbindung und versuche es erneut.",
+  "fr": "Non fusionné. Vérifie ta connexion et réessaie.",
+  "it": "Non unito. Controlla la connessione e riprova."
+ },
+ "Merged {0} into {1}.": {
+  "nl": "{0} is samengevoegd met {1}.",
+  "es": "{0} se fusionó con {1}.",
+  "de": "{0} wurde mit {1} zusammengeführt.",
+  "fr": "{0} a été fusionné avec {1}.",
+  "it": "{0} è stato unito a {1}."
+ },
+ "Imports keep your kg, and duplicates can be merged": {
+  "nl": "Import houdt je kg aan, en dubbele oefeningen kun je samenvoegen",
+  "es": "La importación mantiene tus kg y los duplicados se pueden fusionar",
+  "de": "Der Import behält deine kg, und Duplikate lassen sich zusammenführen",
+  "fr": "L'import garde tes kg et les doublons peuvent être fusionnés",
+  "it": "L'importazione mantiene i tuoi kg e i duplicati si possono unire"
+ },
+ "Importing from Strong, Hevy or FitNotes now keeps your weights in kg, also for machines, so your last weights show up when you start a workout.": {
+  "nl": "Importeren uit Strong, Hevy of FitNotes houdt je gewichten nu in kg, ook bij machines, zodat je laatste gewichten verschijnen als je een training start.",
+  "es": "Importar desde Strong, Hevy o FitNotes ahora mantiene tus pesos en kg, también en máquinas, así que tus últimos pesos aparecen al empezar un entrenamiento.",
+  "de": "Beim Import aus Strong, Hevy oder FitNotes bleiben deine Gewichte jetzt in kg, auch an Maschinen, sodass deine letzten Gewichte beim Start eines Trainings erscheinen.",
+  "fr": "L'import depuis Strong, Hevy ou FitNotes garde maintenant tes poids en kg, aussi sur les machines, donc tes derniers poids apparaissent au début d'un entraînement.",
+  "it": "L'importazione da Strong, Hevy o FitNotes ora mantiene i tuoi pesi in kg, anche sulle macchine, così gli ultimi pesi compaiono quando inizi un allenamento."
+ },
+ "Two copies of one exercise can be merged: open the exercise in Exercises, then Merge another exercise into this one. Its sets, training days and notes move over.": {
+  "nl": "Twee kopieën van één oefening kun je samenvoegen: open de oefening bij Oefeningen en kies Voeg een andere oefening samen met deze. De sets, trainingsdagen en notities gaan mee.",
+  "es": "Dos copias de un ejercicio se pueden fusionar: abre el ejercicio en Ejercicios y elige Fusionar otro ejercicio con este. Sus series, días de entrenamiento y notas pasan al otro.",
+  "de": "Zwei Kopien einer Übung lassen sich zusammenführen: Öffne die Übung unter Übungen und wähle Eine andere Übung mit dieser zusammenführen. Sätze, Trainingstage und Notizen wandern mit.",
+  "fr": "Deux copies d'un exercice peuvent être fusionnées : ouvre l'exercice dans Exercices, puis Fusionner un autre exercice avec celui-ci. Ses séries, jours d'entraînement et notes passent à l'autre.",
+  "it": "Due copie di un esercizio si possono unire: apri l'esercizio in Esercizi, poi Unisci un altro esercizio a questo. Le serie, i giorni di allenamento e le note passano all'altro."
  }
 }
