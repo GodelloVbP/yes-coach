@@ -60,7 +60,7 @@ out = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
        + base_style + '\n<title>Yes Coach!</title>\n<meta name="yc-build" content="' + build + '">\n' + head + '</head><body class="signed-out">' + src[skel.end():])
 out = once(out, '<div class="stick" id="stick">', auth + '<div class="stick" id="stick">')
 out = once(out, '<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>',
-           '<script src="config.js"></script>\n<script src="vendor/supabase.js"></script>\n<script src="captcha.js"></script>\n<script src="plates.js"></script>\n<script src="progression.js"></script>\n<script src="share.js"></script>\n<script src="web.js"></script>\n<script src="tickets.js"></script>\n<script src="push.js"></script>\n<script src="vendor/d3.min.js"></script>')
+           '<script src="config.js"></script>\n<script src="vendor/supabase.js"></script>\n<script src="captcha.js"></script>\n<script src="plates.js"></script>\n<script src="progression.js"></script>\n<script src="share.js"></script>\n<script src="web.js"></script>\n<script src="tickets.js"></script>\n<script src="push.js"></script>\n<script src="strava.js"></script>\n<script src="vendor/d3.min.js"></script>')
 # no third party at runtime: the fonts come from this site (the claude.ai version keeps using Google Fonts)
 out, n = re.subn(r'<link rel="preconnect" href="https://fonts\.g[a-z]+\.com"[^>]*>\s*|<link rel="stylesheet" href="https://fonts\.googleapis\.com/[^"]+">\s*', '', out)
 assert n == 3, n

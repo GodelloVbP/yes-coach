@@ -6655,5 +6655,117 @@
   "de": "Füge Yes Coach! auf einem iPhone zuerst zum Home-Bildschirm hinzu und öffne es von dort.",
   "fr": "Sur un iPhone, ajoute d'abord Yes Coach! à ton écran d'accueil et ouvre-la depuis là.",
   "it": "Su iPhone, aggiungi prima Yes Coach! alla schermata Home e aprila da lì."
+ },
+ "Connect Strava": {
+  "nl": "Strava koppelen",
+  "es": "Conectar Strava",
+  "de": "Strava verbinden",
+  "fr": "Connecter Strava",
+  "it": "Collega Strava"
+ },
+ "Disconnect Strava": {
+  "nl": "Strava ontkoppelen",
+  "es": "Desconectar Strava",
+  "de": "Strava trennen",
+  "fr": "Déconnecter Strava",
+  "it": "Scollega Strava"
+ },
+ "Post finished workouts to Strava automatically": {
+  "nl": "Afgeronde trainingen automatisch op Strava plaatsen",
+  "es": "Publicar automáticamente los entrenamientos terminados en Strava",
+  "de": "Beendete Trainings automatisch auf Strava veröffentlichen",
+  "fr": "Publier automatiquement les entraînements terminés sur Strava",
+  "it": "Pubblica automaticamente gli allenamenti finiti su Strava"
+ },
+ "Connected to Strava. Finished workouts can be posted with their sets in the description.": {
+  "nl": "Gekoppeld aan Strava. Afgeronde trainingen kunnen met hun sets in de beschrijving geplaatst worden.",
+  "es": "Conectado a Strava. Los entrenamientos terminados se pueden publicar con sus series en la descripción.",
+  "de": "Mit Strava verbunden. Beendete Trainings können mit ihren Sätzen in der Beschreibung veröffentlicht werden.",
+  "fr": "Connecté à Strava. Les entraînements terminés peuvent être publiés avec leurs séries dans la description.",
+  "it": "Collegato a Strava. Gli allenamenti finiti possono essere pubblicati con le serie nella descrizione."
+ },
+ "Not connected. Connect it, and workouts you finish can be posted to Strava with their sets in the description.": {
+  "nl": "Niet gekoppeld. Koppel het, dan kun je afgeronde trainingen met hun sets in de beschrijving op Strava plaatsen.",
+  "es": "No conectado. Conéctalo y podrás publicar en Strava los entrenamientos que termines, con sus series en la descripción.",
+  "de": "Nicht verbunden. Verbinde es, dann kannst du beendete Trainings mit ihren Sätzen in der Beschreibung auf Strava veröffentlichen.",
+  "fr": "Non connecté. Connecte-le et tu pourras publier sur Strava les entraînements que tu termines, avec leurs séries dans la description.",
+  "it": "Non collegato. Collegalo e potrai pubblicare su Strava gli allenamenti che finisci, con le serie nella descrizione."
+ },
+ "Could not reach Strava. Try again.": {
+  "nl": "Strava was niet bereikbaar. Probeer opnieuw.",
+  "es": "No se pudo contactar con Strava. Inténtalo de nuevo.",
+  "de": "Strava war nicht erreichbar. Versuche es erneut.",
+  "fr": "Impossible de joindre Strava. Réessaie.",
+  "it": "Impossibile raggiungere Strava. Riprova."
+ },
+ "Post to Strava": {
+  "nl": "Plaatsen op Strava",
+  "es": "Publicar en Strava",
+  "de": "Auf Strava veröffentlichen",
+  "fr": "Publier sur Strava",
+  "it": "Pubblica su Strava"
+ },
+ "On Strava": {
+  "nl": "Op Strava",
+  "es": "En Strava",
+  "de": "Auf Strava",
+  "fr": "Sur Strava",
+  "it": "Su Strava"
+ },
+ "Posted to Strava.": {
+  "nl": "Op Strava geplaatst.",
+  "es": "Publicado en Strava.",
+  "de": "Auf Strava veröffentlicht.",
+  "fr": "Publié sur Strava.",
+  "it": "Pubblicato su Strava."
+ },
+ "Strava needs to be connected again. Settings, Strava.": {
+  "nl": "Strava moet opnieuw gekoppeld worden. Instellingen, Strava.",
+  "es": "Hay que volver a conectar Strava. Ajustes, Strava.",
+  "de": "Strava muss neu verbunden werden. Einstellungen, Strava.",
+  "fr": "Strava doit être reconnecté. Réglages, Strava.",
+  "it": "Strava va ricollegato. Impostazioni, Strava."
+ },
+ "Strava is busy. Try again in a few minutes.": {
+  "nl": "Strava is druk. Probeer het over een paar minuten opnieuw.",
+  "es": "Strava está ocupado. Inténtalo de nuevo en unos minutos.",
+  "de": "Strava ist ausgelastet. Versuche es in ein paar Minuten erneut.",
+  "fr": "Strava est occupé. Réessaie dans quelques minutes.",
+  "it": "Strava è occupato. Riprova tra qualche minuto."
+ },
+ "Could not post to Strava. Try again.": {
+  "nl": "Plaatsen op Strava lukte niet. Probeer opnieuw.",
+  "es": "No se pudo publicar en Strava. Inténtalo de nuevo.",
+  "de": "Das Veröffentlichen auf Strava hat nicht geklappt. Versuche es erneut.",
+  "fr": "Impossible de publier sur Strava. Réessaie.",
+  "it": "Impossibile pubblicare su Strava. Riprova."
+ },
+ "Connected to Strava.": {
+  "nl": "Gekoppeld aan Strava.",
+  "es": "Conectado a Strava.",
+  "de": "Mit Strava verbunden.",
+  "fr": "Connecté à Strava.",
+  "it": "Collegato a Strava."
+ },
+ "Strava was not connected.": {
+  "nl": "Strava is niet gekoppeld.",
+  "es": "Strava no se conectó.",
+  "de": "Strava wurde nicht verbunden.",
+  "fr": "Strava n'a pas été connecté.",
+  "it": "Strava non è stato collegato."
+ },
+ "Strava was not connected. Allow Yes Coach! to add activities.": {
+  "nl": "Strava is niet gekoppeld. Geef Yes Coach! toestemming om activiteiten toe te voegen.",
+  "es": "Strava no se conectó. Permite que Yes Coach! añada actividades.",
+  "de": "Strava wurde nicht verbunden. Erlaube Yes Coach!, Aktivitäten hinzuzufügen.",
+  "fr": "Strava n'a pas été connecté. Autorise Yes Coach! à ajouter des activités.",
+  "it": "Strava non è stato collegato. Consenti a Yes Coach! di aggiungere attività."
+ },
+ "Could not connect Strava. Try again.": {
+  "nl": "Strava koppelen lukte niet. Probeer opnieuw.",
+  "es": "No se pudo conectar Strava. Inténtalo de nuevo.",
+  "de": "Strava konnte nicht verbunden werden. Versuche es erneut.",
+  "fr": "Impossible de connecter Strava. Réessaie.",
+  "it": "Impossibile collegare Strava. Riprova."
  }
 }

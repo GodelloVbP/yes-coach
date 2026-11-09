@@ -1489,6 +1489,12 @@ body.fin-open { overflow: hidden; }
         <div class="settings"><label><input type="checkbox" id="set-prog"> Suggest the next weight from your last workouts</label></div>
         <div class="settings" id="push-row" hidden><label><input type="checkbox" id="set-push"> Alert me when rest is over, also when I am in another app</label></div>
         <p class="note" id="push-note" role="status" hidden></p>
+        <div id="strava-row" hidden>
+          <h3 class="lab">Strava</h3>
+          <p class="note" id="strava-state" role="status"></p>
+          <div class="foot-row"><button class="skew small" type="button" id="strava-connect"><span>Connect Strava</span></button><button class="skew small" type="button" id="strava-off" hidden><span>Disconnect Strava</span></button></div>
+          <div class="settings" id="strava-auto-row" hidden><label><input type="checkbox" id="set-strava-auto"> Post finished workouts to Strava automatically</label></div>
+        </div>
         <div class="set-plates" id="set-plates"></div>
       </section>
       <section aria-labelledby="h-food-set">
@@ -1898,7 +1904,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (v === 'exercises') renderExercises();
     if (v === 'plan' && S.ready) renderPlan();
     if (v === 'progress') renderProgress();
-    if (v === 'settings') { foldSettings(); paintExport(); paintImport(); paintConn(); paintLang(); paintPush(); if (S.ready) { paintMe(); buildPlateSettings(); } }
+    if (v === 'settings') { foldSettings(); paintExport(); paintImport(); paintConn(); paintLang(); paintPush(); paintStrava(); if (S.ready) { paintMe(); buildPlateSettings(); } }
     if (v === 'train' && S.ready) renderTrain();
     if (S.ready) paintChrome();
   };
@@ -2450,6 +2456,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       box.append(h('p', 'note', setsDone(s) + ' sets logged.'));
       const dayName = t ? t.name : s.label || s.split || 'workout';
       addClaudeButton(box, { name: dayName, date: s.date }, 'btn-claude-day', () => !!box.querySelector('.t-head') && box.querySelector('.t-head').textContent.indexOf('Done') === 0);
+      addStravaButton(box, sidOf(s), () => !!box.querySelector('.t-head') && box.querySelector('.t-head').textContent.indexOf('Done') === 0);
       return;
     }
     if (td.open.length) {
@@ -2776,10 +2783,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const finishSession = () => {
     const a = S.active;
     if (!a) return;
+    const finishedSid = SID();
     const sum = daySummary();
     if (S.sessions[SID()]) queueWrite(SID(), { finished_at: Date.now() });
     const day = { name: (S.templates[a.tpl] || {}).name || 'Workout', date: a.date };
     closeSession();
+    if (stravaOn() && stravaAuto() && window.YC_STRAVA.cached()) postToStrava(finishedSid);
     const after = () => connInfo().then((c) => { if (c.apps.length && askClaudeOn()) askClaudeReview(day); }).catch(() => {});
     if (sum) showFinish(sum, after); else after();
   };
@@ -7987,6 +7996,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         del.addEventListener('click', () => askDeleteSession(sidOf(s), s.template));
         const acts = h('div', 'wk-acts'); acts.append(open, del); box.append(acts);
         addClaudeButton(acts, { name: t.name, date: s.date }, null, () => sheet.contains(box));
+        addStravaButton(acts, sidOf(s), () => sheet.contains(box));
       }
       sheet.append(box);
     });
@@ -8925,6 +8935,97 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (sec) { const tog = $('.set-tog', sec); const body = $('.set-body', sec); body.hidden = false; tog.setAttribute('aria-expanded', 'true'); }
     requestAnimationFrame(() => el.scrollIntoView({ block: block || 'center' }));
   }
+  // ---- Strava: a finished workout posted as a Weight Training activity, the sets in its description
+  const stravaOn = () => !!(window.YC_STRAVA && window.YC_STRAVA.enabled());
+  const stravaAuto = () => !!(S.root && S.root.settings && S.root.settings.strava_auto);
+  const localIso = (ms) => { const d = new Date(ms); return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) + 'T' + pad2(d.getHours()) + ':' + pad2(d.getMinutes()) + ':' + pad2(d.getSeconds()); };
+  const stravaPayload = (sid) => {
+    const doc = S.sessions[sid];
+    if (!doc) return null;
+    const done = Object.values(doc.sets || {}).filter((st) => st && !st.removed && isDone(st) && countsAsWork(st)).sort((a, b) => (a.order || 0) - (b.order || 0) || (a.n || 0) - (b.n || 0));
+    if (!done.length) return null;
+    const exIds = [...new Set(done.map((st) => st.ex))];
+    const lines = exIds.map((ex) => {
+      const e = S.exercises[ex] || {};
+      const unit = e.unit || 'kg';
+      const uw = unitWord(e);
+      const parts = [];
+      done.filter((st) => st.ex === ex).forEach((st) => { const t = fmtSet(st, unit, uw); const last = parts[parts.length - 1]; if (last && last.t === t) last.k += 1; else parts.push({ t, k: 1 }); });
+      return (e.name || exName(ex)) + ': ' + parts.map((x) => (x.k > 1 ? x.k + ' × ' : '') + x.t).join(', ');
+    });
+    const ticks = done.map((st) => st.ticked_at || st.at).filter((t) => t > 1e12);
+    const first = doc.started_at && doc.started_at > 1e12 ? Math.min(doc.started_at, ...(ticks.length ? ticks : [doc.started_at])) : ticks.length ? Math.min(...ticks) : null;
+    const spanMin = first && ticks.length ? (Math.max(...ticks) - first) / 60000 : null;
+    const minutes = spanMin != null && spanMin >= 5 && spanMin < 300 ? spanMin : Math.max(10, done.length * 2.5); // no ticks to go by: a guess from the number of sets
+    const startMs = first || (parse(doc.date).getTime() + 12 * 3600000);
+    const t = S.templates[doc.template];
+    return {
+      name: (t ? t.name : doc.label || 'Workout').slice(0, 100), start: localIso(startMs), seconds: Math.round(minutes * 60),
+      description: lines.join('\n') + (doc.note ? '\n\n' + String(doc.note).slice(0, 500) : '') + '\n\nLogged with Yes Coach!',
+    };
+  };
+  const stravaFail = (reason) => showToast(reason === 'reconnect' ? 'Strava needs to be connected again. Settings, Strava.' : reason === 'busy' ? 'Strava is busy. Try again in a few minutes.' : 'Could not post to Strava. Try again.', null);
+  const postToStrava = async (sid) => {
+    const doc = S.sessions[sid];
+    if (!doc || (doc.strava && doc.strava.id)) return false;
+    const p = stravaPayload(sid);
+    if (!p) return false;
+    const r = await window.YC_STRAVA.post(p);
+    if (!r.ok) { stravaFail(r.reason); return false; }
+    queueWrite(sid, { strava: { id: r.id, at: Date.now() } });
+    if (S.sessions[sid]) S.sessions[sid].strava = { id: r.id, at: Date.now() };
+    showToast('Posted to Strava.', null);
+    return true;
+  };
+  // on a finished day: Post to Strava, or a link to it once posted
+  const addStravaButton = (host, sid, hostOk) => {
+    if (!stravaOn()) return;
+    const doc = S.sessions[sid];
+    if (!doc) return;
+    const add = () => {
+      if (!hostOk() || host.querySelector('.st-day')) return;
+      const have = S.sessions[sid] && S.sessions[sid].strava;
+      if (have && have.id) {
+        const a = h('a', 'link st-day', 'On Strava');
+        a.href = 'https://www.strava.com/activities/' + have.id; a.target = '_blank'; a.rel = 'noopener noreferrer';
+        host.append(a);
+      } else if (window.YC_STRAVA.cached() && stravaPayload(sid)) {
+        const b = btn('skew small st-day', 'Post to Strava');
+        b.addEventListener('click', async () => { b.disabled = true; const ok = await postToStrava(sid); if (ok) { b.remove(); add(); } else b.disabled = false; });
+        host.append(b);
+      }
+    };
+    add();
+    window.YC_STRAVA.status().then(add).catch(() => {});
+  };
+  const paintStrava = async () => {
+    if (!stravaOn()) return;
+    const row = $('#strava-row');
+    row.hidden = false;
+    const on = await window.YC_STRAVA.status();
+    $('#strava-state').textContent = on ? 'Connected to Strava. Finished workouts can be posted with their sets in the description.' : 'Not connected. Connect it, and workouts you finish can be posted to Strava with their sets in the description.';
+    $('#strava-connect').hidden = on;
+    $('#strava-off').hidden = !on;
+    $('#strava-auto-row').hidden = !on;
+    $('#set-strava-auto').checked = stravaAuto();
+  };
+  $('#strava-connect').addEventListener('click', async () => {
+    const b = $('#strava-connect'), st = $('#strava-state');
+    b.disabled = true;
+    const ok = await window.YC_STRAVA.connect();
+    if (!ok) { b.disabled = false; st.textContent = 'Could not reach Strava. Try again.'; }
+  });
+  $('#strava-off').addEventListener('click', async () => { $('#strava-off').disabled = true; await window.YC_STRAVA.disconnect(); $('#strava-off').disabled = false; paintStrava(); });
+  $('#set-strava-auto').addEventListener('change', () => {
+    saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { strava_auto: $('#set-strava-auto').checked }) }).catch(() => {});
+  });
+  // back from Strava: the address says how it went
+  const stravaReturn = () => {
+    let r = null;
+    try { const u = new URL(location.href); r = u.searchParams.get('strava'); if (r) { u.searchParams.delete('strava'); history.replaceState(null, '', u.pathname + (u.search || '') + u.hash); } } catch (e) { r = null; }
+    if (!r) return;
+    setTimeout(() => showToast(r === 'ok' ? 'Connected to Strava.' : r === 'denied' ? 'Strava was not connected.' : r === 'scope' ? 'Strava was not connected. Allow Yes Coach! to add activities.' : 'Could not connect Strava. Try again.', null), 600);
+  };
   // rest alerts in Settings: only where the browser can do it and the owner has set it up
   const paintPush = async () => {
     const P = window.YC_PUSH;
@@ -9384,6 +9485,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const hashView = location.hash.slice(1); // index.html#progress opens that page; #home opens the landing page
     fromLanding = !hasAccount;
     setView(VIEWS.includes(hashView) ? hashView : hasAccount ? 'train' : 'home');
+    stravaReturn();
     const a = local.get('yc-active');
     if (a && a.date && a.tpl) S.active = a;
     let db = null, user = null;
