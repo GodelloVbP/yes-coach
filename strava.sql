@@ -15,3 +15,5 @@ create table if not exists public.strava_links (
 );
 alter table public.strava_links enable row level security;
 revoke all on public.strava_links from anon, authenticated;
+-- The function uses the service key. Some projects no longer give that role access to new tables by default (a 403 "permission denied").
+grant all on public.strava_links to service_role;
