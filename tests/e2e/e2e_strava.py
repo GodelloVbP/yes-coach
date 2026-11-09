@@ -22,8 +22,12 @@ def seed(be, finished=True, settings=None):
     if finished is None: return  # no workout yet today
     be.docs.append({'path': 'yc/sessions/' + T, 'data': dict({'date': T, 'template': 'legs', 'split': 'Legs', 'label': 'Legs', 'started_at': now_ms - 1900000, 'sets': sets}, **({'finished_at': now_ms - 500000} if finished else {}))})
 
-def with_strava(page, on=True):
-    page.route('**/config.js', lambda r: r.fulfill(status=200, content_type='application/javascript', body=r.fetch().text().replace('strava: false', 'strava: %s' % ('true' if on else 'false'))))
+def with_strava(page, on=True, only="'alice@example.com'"):
+    def cfg(r):
+        t = re.sub(r"strava: (true|false)", 'strava: %s' % ('true' if on else 'false'), r.fetch().text(), count=1)
+        t = re.sub(r"stravaOnly: \[[^\]]*\]", 'stravaOnly: [%s]' % only, t, count=1)
+        r.fulfill(status=200, content_type='application/javascript', body=t)
+    page.route('**/config.js', cfg)
 
 def open_row(page):
     page.click('#tab-settings'); page.wait_for_selector('#v-settings .set-tog', state='visible')
@@ -33,14 +37,21 @@ server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory'
 time.sleep(1)
 try:
     with sync_playwright() as pw:
-        # ---- 1. not set up: nothing shows, and no button on a finished day
+        # ---- 1. not on the list (the shipped config names only the owner), or switched off: nothing shows, and no button on a finished day
         be = Backend(); seed(be); be.strava_connected = True
         def s1(page):
             page.click('#tab-settings'); page.wait_for_selector('#v-settings .set-tog', state='visible'); page.wait_for_timeout(300)
-            check('not switched on: no Strava block', page.locator('#strava-row').is_hidden())
+            check('not on the owner list: no Strava block', page.locator('#strava-row').is_hidden())
             page.click('#tab-train'); page.wait_for_selector('#today-card .t-head'); page.wait_for_timeout(500)
             check('and no Post to Strava button', page.locator('.st-day').count() == 0 and not be.strava_calls, be.strava_calls)
         errs = session(pw, be, ALICE, s1, width=390); check('no page errors (off)', not errs, errs)
+        for label, kw in (('switched off', dict(on=False)), ('on for someone else only', dict(only="'someone@else.com'"))):
+            be = Backend(); seed(be); be.strava_connected = True
+            def s1b(page, kw=kw, label=label):
+                with_strava(page, **kw); page.goto(BASE); page.wait_for_selector('#today-card .t-head', timeout=8000); page.wait_for_timeout(500)
+                page.click('#tab-settings'); page.wait_for_selector('#v-settings .set-tog', state='visible'); page.wait_for_timeout(300)
+                check(label + ': no Strava block, no button', page.locator('#strava-row').is_hidden() and page.locator('.st-day').count() == 0 and not be.strava_calls, be.strava_calls)
+            errs = session(pw, be, ALICE, s1b, width=390); check('no page errors (%s)' % label, not errs, errs)
 
         # ---- 2. connecting: Settings shows it, the button goes to Strava
         be = Backend(); seed(be, finished=None)

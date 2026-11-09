@@ -2,8 +2,13 @@
 // Needs config.js strava: true, strava.sql and the strava function; without that nothing here shows up.
 (function () {
   const cfg = window.YC_CONFIG || {};
-  const enabled = () => !!cfg.strava;
   const sb = () => window.YC_API && window.YC_API.sb;
+  // a new Strava app lets one athlete connect until Strava reviews it: config.js stravaOnly names who sees this
+  const only = (cfg.stravaOnly || []).map((e) => String(e).toLowerCase());
+  let who = only.length ? null : '*';
+  const learn = (session) => { const e = session && session.user && session.user.email; who = e ? String(e).toLowerCase() : ''; };
+  const enabled = () => !!cfg.strava && (who === '*' || (!!who && only.indexOf(who) >= 0));
+  if (cfg.strava && only.length) { const hear = () => { if (sb()) sb().auth.onAuthStateChange((ev, session) => learn(session)); else setTimeout(hear, 100); }; hear(); }
   let known = { v: null, at: 0 };
   const call = async (body) => {
     const { data } = await sb().auth.getSession();
