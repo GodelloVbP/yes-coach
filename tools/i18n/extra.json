@@ -6522,5 +6522,68 @@
   "de": "Der Vorschlag zeigt seinen Gewichtsschritt, sodass du die Stufe deines Studios einstellen kannst.",
   "fr": "La suggestion affiche son palier de poids, pour que tu règles celui de ta salle.",
   "it": "Il suggerimento mostra il suo salto di peso, così puoi impostare quello della tua palestra."
+ },
+ "How to do it": {
+  "nl": "Zo voer je het uit",
+  "es": "Cómo se hace",
+  "de": "So geht es",
+  "fr": "Comment le faire",
+  "it": "Come si fa"
+ },
+ "Main {0}": {
+  "nl": "Hoofdspier {0}",
+  "es": "Músculo principal {0}",
+  "de": "Hauptmuskel {0}",
+  "fr": "Muscle principal {0}",
+  "it": "Muscolo principale {0}"
+ },
+ "Main {0} · Also {1}": {
+  "nl": "Hoofdspier {0} · Ook {1}",
+  "es": "Músculo principal {0} · También {1}",
+  "de": "Hauptmuskel {0} · Auch {1}",
+  "fr": "Muscle principal {0} · Aussi {1}",
+  "it": "Muscolo principale {0} · Anche {1}"
+ },
+ "Also {0}": {
+  "nl": "Ook {0}",
+  "es": "También {0}",
+  "de": "Auch {0}",
+  "fr": "Aussi {0}",
+  "it": "Anche {0}"
+ },
+ "Ask about sending a workout to Claude when it is finished": {
+  "nl": "Vragen of een training naar Claude gestuurd moet worden als die klaar is",
+  "es": "Preguntar si enviar un entrenamiento a Claude al terminarlo",
+  "de": "Fragen, ob ein Training an Claude gesendet werden soll, wenn es fertig ist",
+  "fr": "Demander si un entraînement doit être envoyé à Claude une fois terminé",
+  "it": "Chiedere se inviare un allenamento a Claude quando è finito"
+ },
+ "Send a finished workout to Claude any time": {
+  "nl": "Stuur een afgeronde training altijd naar Claude",
+  "es": "Envía un entrenamiento terminado a Claude cuando quieras",
+  "de": "Ein beendetes Training jederzeit an Claude senden",
+  "fr": "Envoie un entraînement terminé à Claude quand tu veux",
+  "it": "Invia un allenamento finito a Claude quando vuoi"
+ },
+ "After a workout, Send to Claude stays on the Today card and on that day in the week, so you can use it after you dismissed the question.": {
+  "nl": "Na een training blijft Naar Claude versturen op de kaart van vandaag en bij die dag in de week staan, ook nadat je de vraag hebt weggedrukt.",
+  "es": "Tras un entrenamiento, Enviar a Claude se queda en la tarjeta de hoy y en ese día de la semana, también si descartaste la pregunta.",
+  "de": "Nach einem Training bleibt An Claude senden auf der Karte für heute und bei diesem Tag in der Woche, auch wenn du die Frage weggeklickt hast.",
+  "fr": "Après un entraînement, Envoyer à Claude reste sur la carte d'aujourd'hui et sur ce jour de la semaine, même si tu as fermé la question.",
+  "it": "Dopo un allenamento, Invia a Claude resta nella scheda di oggi e su quel giorno della settimana, anche se hai chiuso la domanda."
+ },
+ "If you would rather not be asked after every workout, switch it off in Settings, under Connected AI apps.": {
+  "nl": "Wil je niet na elke training gevraagd worden? Zet het uit bij Instellingen, onder Gekoppelde AI-apps.",
+  "es": "Si prefieres que no te pregunten tras cada entrenamiento, desactívalo en Ajustes, en Apps de IA conectadas.",
+  "de": "Wenn du nicht nach jedem Training gefragt werden möchtest, schalte es in den Einstellungen unter Verbundene KI-Apps aus.",
+  "fr": "Si tu préfères ne pas être interrogé après chaque entraînement, désactive-le dans Réglages, sous Applis d’IA connectées.",
+  "it": "Se preferisci non ricevere la domanda dopo ogni allenamento, disattivalo in Impostazioni, sotto App IA collegate."
+ },
+ "Each exercise in a workout has How to do it: what it is and which muscles it works.": {
+  "nl": "Elke oefening in een training heeft Zo voer je het uit: wat het is en welke spieren het traint.",
+  "es": "Cada ejercicio de un entrenamiento tiene Cómo se hace: qué es y qué músculos trabaja.",
+  "de": "Jede Übung in einem Training hat So geht es: was sie ist und welche Muskeln sie trainiert.",
+  "fr": "Chaque exercice d'un entraînement a Comment le faire : ce que c'est et quels muscles il travaille.",
+  "it": "Ogni esercizio di un allenamento ha Come si fa: cos'è e quali muscoli lavora."
  }
 }
