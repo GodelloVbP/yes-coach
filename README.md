@@ -62,7 +62,7 @@ Change `src/yes-coach.html` (the same file runs the claude.ai version), run `pyt
 
 ## Connector (an AI app reads your data, changes your plan and logs your food)
 
-People connect their own AI app (Claude, for example) to their Yes Coach! account. The AI can read the plan, log and notes, change training days, the weekly schedule and exercises, answer notes, and log meals and remove food entries. It can not touch logged sets.
+People connect their own AI app (Claude, for example) to their Yes Coach! account. The AI can read the plan, log and notes, change training days, the weekly schedule and exercises, answer notes, add sets to the log and remove sets from it, and log meals and remove food entries. It can not edit a set or delete a session.
 
 The weekly schedule in rotation mode (`schedule: { mode: "rotation", days, rotation, per_week }`) treats `days` as the weekdays the person can train and `per_week` (optional, else the profile's `days_per_week`) as how many sessions a week; with fewer sessions than days they are spread evenly over the days, so the same weekdays are not needed every week. `set_schedule` takes `sessions_per_week`. Custom workouts (Train, Change today's workout) start blank and are logged under a hidden training day `yc/templates/custom-<date>` with `adhoc: true`; it names the session but is never part of the plan, so `get_plan` leaves it out. Run sets (exercises named run or jog, and the library's Treadmill run and Outdoor run) also carry `km`, `elev` (altitude gain in m) and `where` (`outdoor` or `treadmill`); `get_sessions` returns them with the pace.
 

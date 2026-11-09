@@ -124,14 +124,14 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok(authCalls === before, 'token check is cached');
   const list = await rpc('tok.anna.x', 'tools/list');
   const names = list.body.result.tools.map((t) => t.name);
-  ok(names.length === 19 && !names.some((x) => /delete|remove|session/.test(x) && !['get_sessions', 'remove_food_entry', 'remove_saved'].includes(x)), 'tool list: ' + names);
+  ok(names.length === 21 && !names.some((x) => /delete|remove|session/.test(x) && !['get_sessions', 'remove_food_entry', 'remove_saved', 'remove_sets'].includes(x)), 'tool list: ' + names);
   ok(list.body.result.tools.every((t) => t.inputSchema.type === 'object' && t.annotations && t.description && t.title && t.annotations.title === t.title && t.name.length <= 64 && (t.annotations.readOnlyHint === true || typeof t.annotations.destructiveHint === 'boolean')), 'schemas, titles, hints');
   const toolNames = list.body.result.tools.map((t) => t.name);
   ok(list.body.result.tools.every((t) => !toolNames.some((n) => n !== t.name && (t.description + JSON.stringify(t.inputSchema)).includes(n))), 'descriptions do not mention other tools');
   ok(list.body.result.tools.every((t) => !/\b(always|never|must|should|instruction|ignore|before calling|call this)/i.test(t.description)), 'descriptions are plain, no directives');
   const init = (await rpc('tok.anna.x', 'initialize', {})).body.result.instructions;
   ok(!/\b(call|first|never|must|should)\b/i.test(init), 'server instructions are descriptive: ' + init);
-  ok(list.body.result.tools.filter((t) => t.annotations.destructiveHint === true).map((t) => t.name).sort().join() === 'answer_note,remove_food_entry,remove_saved,save_meal,save_training_day,set_schedule', 'overwriting tools are destructive');
+  ok(list.body.result.tools.filter((t) => t.annotations.destructiveHint === true).map((t) => t.name).sort().join() === 'answer_note,remove_food_entry,remove_saved,remove_sets,save_meal,save_training_day,set_schedule', 'overwriting tools are destructive');
   ok(list.body.result.tools.find((t) => t.name === 'log_meals').annotations.idempotentHint === false, 'logging a meal twice adds it twice, so it is not idempotent');
   ok(list.body.result.tools.filter((t) => t.annotations.readOnlyHint).length === 9, 'read-only hints');
   ok((await rpc('tok.anna.x', 'tools/call', { name: 'zzz' })).body.error.code === -32602, 'unknown tool');
@@ -671,6 +671,92 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok((await call(T, 'save_meal', { name: 'Last in the list', items: [{ food: egg, grams: 50 }] })).json.replaced === true, 'and saving under the same name replaces the live meal instead of overwriting it as a new one');
   for (let k = rows.length - 1; k >= sizeBefore; k -= 1) if (/yc\/(meals|myfoods)\/(aaa|zzz-live)/.test(rows[k].path)) rows.splice(k, 1);
   settings.show_calories = false;
+}
+
+// ---- the log: sets can be added and removed, never edited, and a removed set is gone from every read
+{
+  const T = 'tok.anna.x';
+  const sessionRow = (path) => rows.find((x) => x.user_id === A && x.path === path);
+  const list = (await call(T, 'get_sessions', { from: '2026-10-01', to: '2026-10-01' })).json[0];
+  ok(list.session_id === '2026-10-01' && list.exercises[0].sets.map((st) => st.set_id).sort().join() === 'a,b,w', 'reads carry session_id and set_id: ' + JSON.stringify(list).slice(0, 200));
+  const idOfRep = (reps) => list.exercises[0].sets.find((st) => st.reps === reps).set_id;
+
+  // removing
+  let before = JSON.stringify(sessionRow('yc/sessions/2026-10-01').data);
+  let r = await call(T, 'remove_sets', { session_id: '2026-10-01', set_ids: ['bench_1', 'nope_9'] });
+  ok(r.err && /nope_9/.test(r.text) && JSON.stringify(sessionRow('yc/sessions/2026-10-01').data) === before, 'an unknown set id refuses the whole call and changes nothing');
+  r = await call(T, 'remove_sets', { session_id: '2026-10-01' });
+  ok(r.err, 'needs set_ids or exercise_id');
+  r = await call(T, 'remove_sets', { session_id: '2026-10-01', set_ids: ['bench_1'], exercise_id: 'bench' });
+  ok(r.err, 'not both');
+  r = await call(T, 'remove_sets', { session_id: '2026-10-02', set_ids: ['bench_1'] });
+  ok(r.err && /No session/.test(r.text), 'unknown session');
+  r = await call(T, 'remove_sets', { session_id: 'nonsense', set_ids: ['bench_1'] });
+  ok(r.err, 'bad session id');
+  r = await call(T, 'remove_sets', { session_id: '2026-10-01', set_ids: [idOfRep(6)] });
+  const gone = sessionRow('yc/sessions/2026-10-01').data.sets.b;
+  ok(!r.err && r.json.removed === 1 && r.json.sets[0].load === 65 && r.json.sets[0].reps === 6 && gone.removed === true && gone.done === false && gone.reps === 6, 'one set removed the way the app flags it, numbers kept: ' + r.text.slice(0, 200));
+  ok((await call(T, 'get_sessions', { from: '2026-10-01', to: '2026-10-01' })).json[0].exercises[0].sets.map((st) => st.reps).join() === '10,8', 'it is gone from the session read (warm-up and the 8 stay)');
+  const h = (await call(T, 'get_exercise_history', { exercise_id: 'bench' })).json;
+  ok(h.sessions.find((x) => x.date === '2026-10-01').best.load === 60 && h.sessions.find((x) => x.date === '2026-10-01').working_sets === 1, 'and from the exercise history');
+  r = await call(T, 'remove_sets', { session_id: '2026-10-01', set_ids: [idOfRep(6)] });
+  ok(r.err, 'a set cannot be removed twice');
+
+  // adding
+  r = await call(T, 'add_sets', { date: '2026-10-01', exercise_id: 'bench', sets: [{ reps: 5, load: 70 }] });
+  ok(!r.err && r.json.set_ids.join() === 'bench_4', 'a new set takes the next row, never a removed one: ' + r.text.slice(0, 200));
+  const added = sessionRow('yc/sessions/2026-10-01').data.sets.bench_4;
+  ok(added.ex === 'bench' && added.n === 4 && added.done === true && added.kind === 'work' && added.load === 70 && added.reps === 5 && added.unit === 'kg:total' && added.via === 'connector' && added.order > sessionRow('yc/sessions/2026-10-01').data.sets.z.order, 'stored like a ticked set: ' + JSON.stringify(added));
+  ok(sessionRow('yc/sessions/2026-10-01').data.sets.a.reps === 8 && sessionRow('yc/sessions/2026-10-01').data.sets.z.done === false, 'the other sets are as they were');
+
+  r = await call(T, 'add_sets', { date: '2026-10-20', exercise_id: 'row', day_id: 'day-2', sets: [{ reps: 10, load: 40 }, { reps: 10, load: 40 }, { reps: 8, load: 42.5, rir: 2, note: 'knee on the bench' }] });
+  const made = sessionRow('yc/sessions/2026-10-20');
+  ok(!r.err && made && made.data.template === 'day-2' && made.data.label === 'Pull' && made.data.split === 'Back' && made.data.finished_at && Object.keys(made.data.sets).join() === 'row_1,row_2,row_3', 'a date without a session gets one from the training day, complete because it is in the past: ' + r.text.slice(0, 200));
+  ok(r.json.session.exercises.length === 1 && r.json.session.exercises[0].sets.length === 3 && r.json.session.exercises[0].sets[2].rir === 2, 'the reply shows the sets');
+  r = await call(T, 'add_sets', { date: '2026-10-20', exercise_id: 'row', sets: [{ reps: 6, load: 45 }] });
+  ok(!r.err && r.json.set_ids.join() === 'row_4' && Object.keys(sessionRow('yc/sessions/2026-10-20').data.sets).length === 4, 'adding again continues the numbering');
+  r = await call(T, 'add_sets', { date: '2026-10-08', session_id: '2026-10-08~day-1', exercise_id: 'pullup', sets: [{ reps: 7 }] });
+  ok(!r.err && sessionRow('yc/sessions/2026-10-08~day-1').data.sets.pullup_2 && !sessionRow('yc/sessions/2026-10-08'), 'a second session on a date is addressed by its session_id');
+
+  // the user's case: curls logged as rows, taken out and logged as curls
+  await call(T, 'create_exercise', { name: 'Curl' });
+  const wrong = (await call(T, 'add_sets', { date: '2026-10-21', exercise_id: 'row', sets: [{ reps: 10, load: 10 }, { reps: 10, load: 10 }, { reps: 10, load: 10 }] })).json;
+  r = await call(T, 'remove_sets', { session_id: '2026-10-21', exercise_id: 'row' });
+  ok(!r.err && r.json.removed === 3 && r.json.sets.every((x) => x.load === 10 && x.exercise_id === 'row'), 'all sets of an exercise go at once, with their numbers in the reply');
+  r = await call(T, 'add_sets', { date: '2026-10-21', exercise_id: 'curl', sets: r.json.sets.map((x) => ({ reps: x.reps, load: x.load })) });
+  const day21 = (await call(T, 'get_sessions', { from: '2026-10-21', to: '2026-10-21' })).json[0];
+  ok(!r.err && day21.exercises.length === 1 && day21.exercises[0].exercise === 'Curl' && day21.exercises[0].sets.length === 3, 'the same sets now stand under the right exercise');
+  ok((await call(T, 'get_exercise_history', { exercise_id: 'row' })).json.sessions.every((x) => x.date !== '2026-10-21'), 'and the row history no longer has them');
+
+  // checks on what is added
+  const bad = async (args, re, what) => { const x = await call(T, 'add_sets', { exercise_id: 'bench', date: '2026-10-01', ...args }); ok(x.err && re.test(x.text), what + ': ' + x.text.slice(0, 120)); };
+  await bad({ date: '2999-01-01', sets: [{ reps: 5 }] }, /today or earlier/, 'future date');
+  await bad({ date: '2026-02-31', sets: [{ reps: 5 }] }, /real day/, 'not a date');
+  await bad({ exercise_id: 'nope', sets: [{ reps: 5 }] }, /Unknown exercise/, 'unknown exercise');
+  await bad({ sets: [] }, /at least one/, 'no sets');
+  await bad({ sets: Array.from({ length: 21 }, () => ({ reps: 5 })) }, /At most 20/, 'too many');
+  await bad({ sets: [{ load: 50 }] }, /Set 1: reps are needed/, 'reps missing');
+  await bad({ sets: [{ reps: 5.5 }] }, /whole number/, 'half reps');
+  await bad({ sets: [{ reps: 5, load: -3 }] }, /load/, 'negative load');
+  await bad({ sets: [{ reps: 5, rir: 11 }] }, /rir/, 'rir out of range');
+  await bad({ day_id: 'nope', date: '2026-10-25', sets: [{ reps: 5 }] }, /Unknown day id/, 'unknown day');
+  await bad({ session_id: '2026-10-02', sets: [{ reps: 5 }] }, /start with the date/, 'session id from another date');
+  ok(!rows.some((x) => x.user_id === A && x.path === 'yc/sessions/2026-10-25') && !rows.some((x) => x.user_id === A && x.path === 'yc/sessions/2026-02-31'), 'a refused call leaves no session behind');
+  await call(T, 'create_exercise', { name: 'Plank', unit: 'min' });
+  r = await call(T, 'add_sets', { date: '2026-10-22', exercise_id: 'plank', sets: [{ reps: 5 }] });
+  ok(r.err && /minutes/.test(r.text), 'an exercise counted in minutes needs minutes');
+  r = await call(T, 'add_sets', { date: '2026-10-22', exercise_id: 'plank', sets: [{ minutes: 2.5 }] });
+  ok(!r.err && sessionRow('yc/sessions/2026-10-22').data.sets.plank_1.minutes === 2.5, 'and takes them');
+  r = await call(T, 'add_sets', { date: '2026-10-23', exercise_id: 'bench', sets: [{ reps: 8, load: 50, type: 'warmup' }, { reps: 8, load: 60, type: 'bogus' }] });
+  ok(!r.err && sessionRow('yc/sessions/2026-10-23').data.sets.bench_1.kind === 'warmup' && sessionRow('yc/sessions/2026-10-23').data.sets.bench_2.kind === 'work', 'set types are kept, an unknown one becomes work');
+
+  // people stay apart
+  r = await call('tok.ben.x', 'remove_sets', { session_id: '2026-10-01', exercise_id: 'bench' });
+  ok(r.err && sessionRow('yc/sessions/2026-10-01').data.sets.a.removed !== true, 'another person cannot reach her log');
+  ok(!rows.some((x) => x.user_id === B && x.path.startsWith('yc/sessions/')), 'and adding for ben goes to ben only');
+  // the database file allows exactly this: sessions written, nothing deleted
+  const sql = readFileSync(new URL('../../connector.sql', import.meta.url), 'utf8');
+  ok((sql.match(/path like 'yc\/sessions\/%'/g) || []).length === 3 && /no deletes[\s\S]*not public\.is_oauth_client\(\)/.test(sql), 'connector.sql opens yc/sessions for insert and update, and still refuses deletes');
 }
 
 // ---- database errors surface as tool errors, not crashes
