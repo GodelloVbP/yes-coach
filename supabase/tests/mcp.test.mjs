@@ -764,7 +764,9 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   const T = 'tok.anna.x';
   rowA('yc/exercises/bench').data.inc = 2.3;
   const list = (await call(T, 'list_exercises')).json;
-  ok(list.find((x) => x.id === 'bench').weight_step === 2.3 && list.find((x) => x.id === 'row').weight_step === null, 'list_exercises carries weight_step, empty when it is the usual jump');
+  ok(list.find((x) => x.id === 'bench').weight_step === 2.3 && list.find((x) => x.id === 'bench').weight_step_from === 'set', 'list_exercises carries the person\'s own weight_step');
+  ok(list.find((x) => x.id === 'row').weight_step === 2.5 && list.find((x) => x.id === 'row').weight_step_from === 'usual', 'without one, the usual jump is given and named as such: ' + JSON.stringify(list.find((x) => x.id === 'row')));
+  ok(list.find((x) => x.id === 'pullup').weight_step === null && list.find((x) => x.id === 'pullup').weight_step_from === null, 'a bodyweight exercise has no step');
   const plan = (await call(T, 'get_plan')).json;
   ok(plan.days.find((d) => d.id === 'day-1').exercises[0].weight_step === 2.3, 'and so does the plan');
   let r = await call(T, 'create_exercise', { name: 'Hack squat', weight_step: 2.3 });
@@ -774,6 +776,52 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   const init = (await rpc(T, 'initialize', {})).body.result.instructions;
   ok(/weight_step/.test(init) && /82\.3/.test(init), 'the instructions say how weights go up');
   rowA('yc/exercises/bench').data.inc = undefined;
+}
+
+// ---- the step is learned from the log, and a plan change can say up, hold or down instead of a weight
+{
+  const T = 'tok.anna.x';
+  {
+    await call(T, 'create_exercise', { name: 'Leg press machine' });
+    // a machine that goes in fives: 100 and 105 each used twice, one slip at 101
+    await call(T, 'add_sets', { date: '2026-10-26', exercise_id: 'leg-press-machine', sets: [{ reps: 10, load: 100 }, { reps: 10, load: 100 }, { reps: 10, load: 101 }] });
+    await call(T, 'add_sets', { date: '2026-10-28', exercise_id: 'leg-press-machine', sets: [{ reps: 10, load: 105 }, { reps: 10, load: 105 }, { reps: 9, load: 100 }, { reps: 12, load: 60, type: 'warmup' }] });
+  }
+  const lp = (await call(T, 'list_exercises')).json.find((x) => x.id === 'leg-press-machine');
+  ok(lp.weight_step === 5 && lp.weight_step_from === 'log', 'the step comes from the weights that were lifted: ' + JSON.stringify(lp));
+  const one = (over) => ({ name: 'Step day', exercises: [{ exercise_id: 'leg-press-machine', sets: 3, reps: '10', ...over }] });
+  let r = await call(T, 'save_training_day', one({ progress: 'up' }));
+  const dayId = r.json.day.id;
+  ok(!r.err && r.json.day.exercises[0].target_kg === '110' && r.json.day.exercises[0].last_load === 105 && r.json.weights[0].target_kg === '110' && r.json.weights[0].weight_step === 5, 'up: one step over the last working weight, and the reply says so: ' + JSON.stringify(r.json.weights));
+  ok(rowA('yc/templates/' + dayId).data.items[0].target === '110', 'stored as a plain target the app already understands');
+  r = await call(T, 'save_training_day', { id: dayId, ...one({ progress: 'hold' }) });
+  ok(!r.err && r.json.day.exercises[0].target_kg === '105', 'hold: the last working weight');
+  r = await call(T, 'save_training_day', { id: dayId, ...one({ progress: 'down', target_kg: '300' }) });
+  ok(!r.err && r.json.day.exercises[0].target_kg === '100', 'down: one step under it, whatever target_kg said');
+  r = await call(T, 'save_training_day', { id: dayId, ...one({ progress: 'auto', target_kg: '300' }) });
+  ok(!r.err && r.json.day.exercises[0].target_kg === '' && !r.json.weights, 'auto: left to the app');
+  r = await call(T, 'save_training_day', { id: dayId, ...one({ target_kg: '112' }) });
+  ok(!r.err && r.json.day.exercises[0].target_kg === '110' && r.json.weights[0].asked_kg === 112, 'a weight that cannot be loaded moves to the nearest one that can: ' + JSON.stringify(r.json.weights));
+  r = await call(T, 'save_training_day', { id: dayId, ...one({ target_kg: '115' }) });
+  ok(!r.err && r.json.day.exercises[0].target_kg === '115' && !r.json.weights, 'a weight on the grid is kept as it is');
+  // a usual step is a guess, so a number is taken as given; and with no history there is nothing to move from
+  await call(T, 'create_exercise', { name: 'Face pull new' });
+  r = await call(T, 'save_training_day', { id: dayId, name: 'Step day', exercises: [{ exercise_id: 'row', sets: 3, reps: '10', target_kg: '51' }, { exercise_id: 'face-pull-new', sets: 3, reps: '10', progress: 'up', target_kg: 'light' }, { exercise_id: 'pullup', sets: 3, reps: 'max', progress: 'up' }] });
+  const got = r.json.day.exercises.map((x) => x.target_kg);
+  ok(!r.err && got[0] === '51', 'a guessed step moves nothing: ' + got);
+  ok(r.json.weights.length === 2 && r.json.weights.every((x) => /No working weight/.test(x.note)) && got[1] === 'light' && got[2] === '', 'no weight to move from is said, not guessed: ' + JSON.stringify(r.json.weights));
+  // an assisted machine: heavier is less help
+  await call(T, 'create_exercise', { name: 'Assisted dip', unit: 'assist' });
+  await call(T, 'add_sets', { date: '2026-10-29', exercise_id: 'assisted-dip', sets: [{ reps: 8, load: 30 }, { reps: 8, load: 30 }] });
+  r = await call(T, 'save_training_day', { id: dayId, name: 'Step day', exercises: [{ exercise_id: 'assisted-dip', sets: 3, reps: '8', progress: 'up' }] });
+  ok(!r.err && r.json.day.exercises[0].target_kg === '25', 'up on an assisted machine takes help away: ' + r.json.day.exercises[0].target_kg);
+  // small plates: a bar goes up by two of the smallest plate
+  rowA('yc/exercises/bench').data.library_id = 'l04';
+  rowA('yc').data.settings = { ...(rowA('yc').data.settings || {}), plates: [20, 10, 5, 0.5] };
+  ok((await call(T, 'list_exercises')).json.find((x) => x.id === 'bench').weight_step === 1, 'a barbell lift steps by two of the smallest plate the person has');
+  delete rowA('yc').data.settings.plates; delete rowA('yc/exercises/bench').data.library_id;
+  const init = (await rpc(T, 'initialize', {})).body.result.instructions;
+  ok(/up, hold or down/.test(init) && /does not have to be asked/.test(init), 'the instructions say the weights are worked out, not asked for');
 }
 
 // ---- database errors surface as tool errors, not crashes

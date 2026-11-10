@@ -19,13 +19,15 @@ const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const KINDS = ['Push', 'Pull', 'Legs', 'Other'];
 const UNITS = ['kg', 'bw', 'stack', 'assist', 'min'];
 const SET_KINDS = ['work', 'warmup', 'drop', 'test'];
+const PROGRESS = ['auto', 'up', 'hold', 'down'];
 const GROUPS = ['Chest', 'Back', 'Shoulders', 'Arms', 'Legs', 'Core', 'Other'];
 
 const INSTRUCTIONS = [
   'Yes Coach! is a workout tracker. These tools read the signed-in person\'s own plan, log and notes, and change their plan.',
   'Sets can be added to the log and removed from it, but not edited: to fix a set, remove it and add the right one. A removed set leaves the history and Progress. Plan changes show up in their app at once, and the app keeps an undo for the schedule.',
   'Exercises are referenced by id. Loads are in kg.',
-  'Weights go up in steps. The app suggests the last working weight plus the exercise\'s weight_step once every set reached its reps, so 80 kg with a step of 2.3 becomes 82.3 kg. Without a weight_step the usual jump applies: 2.5 kg, 5 kg for barbell leg lifts, 2 kg for dumbbells, 1 pin on a machine.',
+  'Weights go up in steps, and every exercise comes with its weight_step and where that step comes from: set (the person chose it), log (the smallest jump between weights they have lifted) or usual (the smallest usual jump for the equipment). The app suggests the last working weight plus one step once every set reached its reps, so 80 kg with a step of 2.3 becomes 82.3 kg.',
+  'A plan change can say up, hold or down for an exercise, and the weight is worked out from the log, so the person does not have to be asked which weights their gym has.',
   'Food: search_foods finds foods in the Dutch (NEVO) and international (USDA) tables the app uses; save_custom_food saves a product that is in neither, from the numbers on its label or product page; log_meals saves meals as food ids with grams or a portion; get_food_day and remove_food_entry read and remove entries.',
   'The app reads every nutrient from those tables, so the AI supplies foods and amounts, not nutrient numbers. A search lists the portions a food comes in (a slice, a piece) with grams for one; amounts that are guesses are marked estimated.',
   'A search lists the foods the person logged before at the top, marked yours, with the words they use for them and their own portion sizes; save_my_food and save_meal keep a food, a word, a portion size or a usual meal, and log_meals can log a saved meal.',
@@ -99,14 +101,77 @@ const inWeek = (root: Json): Set<string> => {
   if (!sc || !sc.enabled) return new Set();
   return new Set(sc.mode === 'rotation' ? sc.rotation || [] : Object.values(sc.week || {}).filter(Boolean) as string[]);
 };
-const dayOut = (id: string, d: Json, ex: Record<string, Json>, week: Set<string>): Json => ({
+const dayOut = (id: string, d: Json, ex: Record<string, Json>, week: Set<string>, w: Weights): Json => ({
   id, name: d.name, kind: d.kind || 'Other', focus: d.focus || '', in_week: week.has(id),
-  exercises: (d.items || []).map((it: Json) => ({ exercise_id: it.ex, exercise: exName(ex, it.ex), weight_step: ex[it.ex] && ex[it.ex].inc > 0 ? ex[it.ex].inc : null, sets: it.sets, reps: it.reps, target_kg: it.target || '', rest_s: it.rest_s, note: it.note || null, superset: it.group || null })),
+  exercises: (d.items || []).map((it: Json) => ({ exercise_id: it.ex, exercise: exName(ex, it.ex), ...stepOut(w, it.ex), last_load: w.last(it.ex), sets: it.sets, reps: it.reps, target_kg: it.target || '', rest_s: it.rest_s, note: it.note || null, superset: it.group || null })),
 });
 
 // ---------------------------------------------------------------- sessions
 const isDone = (st: Json): boolean => !!st && st.done !== false && !st.removed;
 const isWork = (st: Json): boolean => !!st && st.kind !== 'warmup' && st.kind !== 'test';
+
+// ---------------------------------------------------------------- weight steps
+// The app's own rule (progression.js: defaultInc, learnInc, resolveInc), copied because an Edge Function cannot import from the page.
+// tests/parity.test.mjs keeps the equipment lists below the same as the app's exercise library.
+const LIB_DUMBBELL = new Set('l02 l03 l16 l20 l22 l24 l26 l27 l30 l31 l32 l39 l40 l46 l47 l48 l49 l50 l069 l070 l071 l087 l090 l091 l095 l096 l100 l101 l102 l127 l130 l131 l133 l139 l141 l143 l144 l150 l151 l152 l153 l158 l159 l163 l173 l176 l178 l179 l180 l194 l195 l196 l198 l199 l211 l212 l215 l221 l238 l240 l259 l275 l276 l277 l278 l279 l280 l281 l282 l283'.split(' '));
+const LIB_CABLE = new Set('l06 l07 l10 l14 l18 l23 l25 l28 l29 l34 l36 l37 l38 l54 l60 l61 l072 l073 l074 l104 l105 l106 l107 l134 l135 l136 l140 l154 l155 l160 l161 l170 l171 l172 l174 l224 l231 l232 l256'.split(' '));
+const LIB_BARBELL = new Set('l04 l27 l29 l33 l40 l42 l50 l53 l067 l068 l088 l092 l093 l094 l096 l098 l099 l120 l121 l124 l125 l128 l129 l131 l148 l149 l153 l157 l162 l164 l175 l177 l179 l180 l181 l185 l186 l187 l188 l193 l195 l197 l211 l213 l214 l216 l217 l221 l257 l271 l272 l273 l274 l276 l277'.split(' '));
+const STEP_SESSIONS = 60; // how far back the log is read for the step and the last weight
+const round2 = (x: number): number => Math.round(x * 100) / 100;
+const usualStep = (e: Json, minPlate: number): number => {
+  const unit = e.unit || 'kg';
+  if (unit === 'stack') return 1;
+  if (unit === 'assist') return 5;
+  if (unit === 'kg' && e.load_basis === 'per_side') return minPlate;
+  const id = e.library_id || '', name = String(e.name || '');
+  if (LIB_DUMBBELL.has(id) || (!id && /dumbbell|kettlebell/i.test(name))) return 2;
+  if (LIB_CABLE.has(id) || (!id && /cable/i.test(name))) return 2.5;
+  if (LIB_BARBELL.has(id) || (!id && /barbell|ez-bar|trap bar|safety squat/i.test(name))) return round2(minPlate * 2);
+  return 2.5;
+};
+// the smallest gap between two neighbouring weights that were each used for two sets or more; a gap over twice the usual jump is a jump over weights
+const learnStep = (loads: number[], usual: number): number | null => {
+  const count: Record<string, number> = {};
+  loads.forEach((x) => { const v = Number(x); if (x != null && isFinite(v) && v >= 0) count[round2(v)] = (count[round2(v)] || 0) + 1; });
+  const seen = Object.keys(count).filter((k) => count[k] >= 2).map(Number).sort((a, b) => a - b);
+  let best: number | null = null;
+  for (let i = 1; i < seen.length; i += 1) { const g = round2(seen[i] - seen[i - 1]); if (g >= 0.25 && (best == null || g < best)) best = g; }
+  return best == null || best > 2 * usual ? null : best;
+};
+type Weights = { step: (id: string) => { inc: number; from: string } | null; last: (id: string) => number | null };
+// what the log says about every exercise: its step, and the weight most working sets were done at in its last session
+const weightsOf = (root: Json | null, ex: Record<string, Json>, sessions: { path: string; data: Json }[]): Weights => {
+  const plates = root && root.settings && Array.isArray(root.settings.plates) ? root.settings.plates.map(Number).filter((x: number) => x > 0) : [];
+  const minPlate = plates.length ? Math.min(...plates) : 1.25;
+  const loads: Record<string, number[]> = {}, last: Record<string, number> = {};
+  sessions.slice().sort((a, b) => (String(a.data.date) < String(b.data.date) ? 1 : -1)).forEach((r) => {
+    const by: Record<string, number[]> = {};
+    Object.values(r.data.sets || {}).forEach((st: Json) => { if (isDone(st) && (st.kind == null || st.kind === 'work') && st.ex && typeof st.load === 'number') (by[st.ex] = by[st.ex] || []).push(st.load); });
+    Object.entries(by).forEach(([id, ls]) => {
+      (loads[id] = loads[id] || []).push(...ls);
+      if (last[id] !== undefined) return;
+      // the load most sets were done at; ties go to the harder one (less help on an assisted machine)
+      const assist = ex[id] && ex[id].unit === 'assist';
+      const n: Record<string, number> = {};
+      ls.forEach((l) => { n[l] = (n[l] || 0) + 1; });
+      last[id] = Object.keys(n).map(Number).reduce((a, c) => (n[c] > n[a] || (n[c] === n[a] && (assist ? c < a : c > a)) ? c : a));
+    });
+  });
+  return {
+    step: (id) => {
+      const e = ex[id];
+      const unit = e ? e.unit || 'kg' : '';
+      if (!e || (unit !== 'kg' && unit !== 'stack' && unit !== 'assist')) return null;
+      if (Number(e.inc) > 0) return { inc: Number(e.inc), from: 'set' };
+      const usual = usualStep(e, minPlate);
+      const learned = learnStep(loads[id] || [], usual);
+      return learned != null ? { inc: learned, from: 'log' } : { inc: usual, from: 'usual' };
+    },
+    last: (id) => (last[id] === undefined ? null : last[id]),
+  };
+};
+const stepOut = (w: Weights, id: string): Json => { const s = w.step(id); return { weight_step: s ? s.inc : null, weight_step_from: s ? s.from : null }; };
+const loadWeights = async (db: Db, root: Json | null, ex: Record<string, Json>): Promise<Weights> => weightsOf(root, ex, await db.list('yc/sessions/', { desc: true, limit: STEP_SESSIONS }));
 // a run set also carries distance (km), climb (m) and where it happened; the pace follows from time and distance
 const runOut = (st: Json): Json => {
   if (st.km == null && st.elev == null && !st.where) return {};
@@ -429,17 +494,22 @@ const TOOLS: Tool[] = [
   },
   {
     name: 'get_plan', title: 'Get training plan', annotations: RO, inputSchema: obj({}),
-    description: 'The training plan: every training day with its exercises (sets, reps, starting load in kg, rest, note), whether it is in the week, and the weekly schedule.',
+    description: 'The training plan: every training day with its exercises (sets, reps, starting load in kg, rest, note, the weight step with where it comes from, and last_load, the weight of the last session\'s working sets), whether it is in the week, and the weekly schedule.',
     run: async (db) => {
       const [root, ex, days] = await Promise.all([db.get('yc'), loadExercises(db), loadDays(db)]);
       const week = inWeek(root);
-      return { schedule: readSchedule(root, days), days: byOrder(days).map((id) => dayOut(id, days[id], ex, week)) };
+      const w = await loadWeights(db, root, ex);
+      return { schedule: readSchedule(root, days), days: byOrder(days).map((id) => dayOut(id, days[id], ex, week, w)) };
     },
   },
   {
     name: 'list_exercises', title: 'List exercises', annotations: RO, inputSchema: obj({}),
-    description: 'The person\'s exercises: id, name, body part, how the load is counted (kg = weight, stack = machine pin, bw = bodyweight reps, assist = assistance in kg, min = minutes), the weight step they set (empty means the usual jump) and their own note for the exercise.',
-    run: async (db) => { const ex = await loadExercises(db); return Object.entries(ex).map(([id, e]) => ({ id, name: e.name, group: e.group || 'Other', unit: e.unit || 'kg', category: e.category || 'strength', weight_step: e.inc > 0 ? e.inc : null, note: e.my_note || null })).sort((a, b) => (a.name < b.name ? -1 : 1)); },
+    description: 'The person\'s exercises: id, name, body part, how the load is counted (kg = weight, stack = machine pin, bw = bodyweight reps, assist = assistance in kg, min = minutes), the weight step with where it comes from (set by the person, log: the smallest jump between weights they lifted, or usual for the equipment; empty for bodyweight and minutes) and their own note for the exercise.',
+    run: async (db) => {
+      const [root, ex] = await Promise.all([db.get('yc'), loadExercises(db)]);
+      const w = await loadWeights(db, root, ex);
+      return Object.entries(ex).map(([id, e]) => ({ id, name: e.name, group: e.group || 'Other', unit: e.unit || 'kg', category: e.category || 'strength', ...stepOut(w, id), note: e.my_note || null })).sort((a, b) => (a.name < b.name ? -1 : 1));
+    },
   },
   {
     name: 'get_sessions', title: 'Get logged sessions', annotations: RO,
@@ -506,20 +576,39 @@ const TOOLS: Tool[] = [
       id: { type: 'string', description: 'An existing day id to replace. Leave out to create a new day.' }, name: { type: 'string' }, kind: { type: 'string', enum: KINDS }, focus: { type: 'string', description: 'A few words, e.g. "Chest and triceps".' },
       exercises: { type: 'array', maxItems: 12, description: 'The whole list of exercises for the day, in order. It replaces the old list.', items: obj({
         exercise_id: { type: 'string' }, sets: { type: 'integer' }, reps: { type: 'string', description: 'Text, e.g. "8", "8 to 10", "10 per arm", "max", "30 s".' },
-        target_kg: { type: 'string', description: 'Load in kg as a plain number in text, e.g. "60", or "". A weight that exists at their gym: the last working weight plus the exercise\'s weight_step. Leave it empty to let the app suggest the next weight from the last sessions; a load set here replaces that suggestion until the next session is logged.' }, rest_s: { type: 'integer' }, note: { type: 'string', description: 'One short coaching cue.' },
+        progress: { type: 'string', enum: PROGRESS, description: 'How the weight moves from the last working weight, worked out here from the log: auto (the app picks the next weight from the last sessions, the same as an empty target_kg), up (one weight step heavier), hold (the same weight) or down (one step lighter). With up, hold or down no target_kg is needed and the result says which weight was saved.' },
+        target_kg: { type: 'string', description: 'Load in kg as a plain number in text, e.g. "60", or "". Empty lets the app suggest the next weight from the last sessions. A number is moved to the nearest weight the person can load (their last working weight plus or minus whole steps) when the step is known from their setting or their log; the result says what was saved. A load set here replaces the app\'s suggestion until the next session is logged.' }, rest_s: { type: 'integer' }, note: { type: 'string', description: 'One short coaching cue.' },
         superset: { type: 'string', description: 'A short label such as "A". Exercises next to each other with the same label are done as a superset: one set of each in turn, rest after the round. Leave it out for a normal exercise.' },
       }, ['exercise_id', 'sets', 'reps']) },
     }, ['name', 'exercises']),
     description: 'Create a training day or replace an existing one (name, kind, focus and the whole exercise list). The exercise list given replaces the old one. A new day is not part of the week until the schedule includes it.',
     run: async (db, a) => {
-      const [ex, days] = await Promise.all([loadExercises(db), loadDays(db)]);
+      const [root, ex, days] = await Promise.all([db.get('yc'), loadExercises(db), loadDays(db)]);
       const name = str(a.name, 40);
       if (!name) fail('Give the day a name.');
       if (!Array.isArray(a.exercises) || !a.exercises.length) fail('A day needs at least one exercise.');
+      const w = await loadWeights(db, root, ex);
+      const weights: Json[] = []; // what was done with each weight that was asked for, so the AI can tell the person
       const items = a.exercises.slice(0, 12).map((it: Json, k: number) => {
         const exId = str(it && it.exercise_id, 80);
         if (!ex[exId]) fail('Unknown exercise_id "' + exId + '". Call list_exercises or create_exercise.');
-        return { ex: exId, order: k + 1, sets: int(it.sets, 1, 8, 3), reps: str(it.reps, 20, '10'), target: str(it.target_kg, 20), target_at: today(), rest_s: int(it.rest_s, 0, 600, 90), note: it.note ? str(it.note, 140) : null, group: it.superset ? str(it.superset, 8) : '' } as Json;
+        let target = str(it.target_kg, 20);
+        const move = PROGRESS.includes(it.progress) ? it.progress : '';
+        const step = w.step(exId), last = w.last(exId);
+        const assist = ex[exId].unit === 'assist'; // heavier there means less help
+        if (move === 'auto') target = '';
+        else if (move && (!step || last == null)) {
+          weights.push({ exercise_id: exId, progress: move, target_kg: target, note: 'No working weight in the last ' + STEP_SESSIONS + ' sessions to move from, so ' + (target ? 'target_kg was kept.' : 'the app suggests the weight.') });
+        } else if (move && step) {
+          const to = move === 'hold' ? last! : (move === 'up') !== assist ? last! + step.inc : Math.max(0, last! - step.inc);
+          target = String(round2(to));
+          weights.push({ exercise_id: exId, progress: move, last_load: last, weight_step: step.inc, weight_step_from: step.from, target_kg: target });
+        } else if (target && /^\d+([.,]\d+)?$/.test(target.trim()) && step && step.from !== 'usual' && last != null) {
+          const asked = Number(target.trim().replace(',', '.'));
+          const to = round2(Math.max(0, last + Math.round((asked - last) / step.inc) * step.inc));
+          if (to !== asked) { weights.push({ exercise_id: exId, asked_kg: asked, target_kg: String(to), last_load: last, weight_step: step.inc, weight_step_from: step.from, note: 'Moved to the nearest weight the person can load.' }); target = String(to); }
+        }
+        return { ex: exId, order: k + 1, sets: int(it.sets, 1, 8, 3), reps: str(it.reps, 20, '10'), target, target_at: today(), rest_s: int(it.rest_s, 0, 600, 90), note: it.note ? str(it.note, 140) : null, group: it.superset ? str(it.superset, 8) : '' } as Json;
       });
       // a superset is two or more exercises next to each other; a lone label is dropped, and a label reused further down becomes its own group
       const used = new Set<string>();
@@ -541,7 +630,7 @@ const TOOLS: Tool[] = [
       const old = days[id] || { order: Object.values(days).reduce((m: number, d: Json) => (d.adhoc ? m : Math.max(m, d.order || 0)), 0) + 1 };
       const doc = { ...old, name, kind: KINDS.includes(a.kind) ? a.kind : old.kind || 'Other', focus: str(a.focus, 80, old.focus || ''), items };
       await db.put('yc/templates/' + id, doc);
-      return { saved: true, day: dayOut(id, doc, ex, new Set()), created: !days[id] };
+      return { saved: true, day: dayOut(id, doc, ex, new Set(), w), created: !days[id], ...(weights.length ? { weights } : {}) };
     },
   },
   {

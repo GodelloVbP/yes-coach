@@ -6774,5 +6774,82 @@
   "de": "Strava konnte nicht verbunden werden ({0}). Versuche es erneut.",
   "fr": "Impossible de connecter Strava ({0}). Réessaie.",
   "it": "Impossibile collegare Strava ({0}). Riprova."
+ },
+ "Remove warm-ups": {
+  "nl": "Opwarmsets weg",
+  "es": "Quitar calentamiento",
+  "de": "Aufwärmsätze weg",
+  "fr": "Retirer l’échauffement",
+  "it": "Togli riscaldamento"
+ },
+ "Remove this set": {
+  "nl": "Deze set weghalen",
+  "es": "Quitar esta serie",
+  "de": "Diesen Satz entfernen",
+  "fr": "Retirer cette série",
+  "it": "Rimuovi questa serie"
+ },
+ "Removed the warm-up sets of {0}.": {
+  "nl": "Opwarmsets van {0} weggehaald.",
+  "es": "Series de calentamiento de {0} quitadas.",
+  "de": "Aufwärmsätze von {0} entfernt.",
+  "fr": "Séries d’échauffement de {0} retirées.",
+  "it": "Serie di riscaldamento di {0} rimosse."
+ },
+ "Untick the sets after set {0} first.": {
+  "nl": "Vink eerst de sets na set {0} uit.",
+  "es": "Desmarca primero las series después de la serie {0}.",
+  "de": "Entferne zuerst die Häkchen bei den Sätzen nach Satz {0}.",
+  "fr": "Décoche d’abord les séries après la série {0}.",
+  "it": "Deseleziona prima le serie dopo la serie {0}."
+ },
+ "Taken from your log: the smallest jump between weights you used.": {
+  "nl": "Uit je logboek: de kleinste stap tussen gewichten die je hebt gebruikt.",
+  "es": "Sacado de tu registro: el salto más pequeño entre pesos que has usado.",
+  "de": "Aus deinem Protokoll: der kleinste Schritt zwischen Gewichten, die du benutzt hast.",
+  "fr": "Tiré de ton journal : le plus petit palier entre les poids que tu as utilisés.",
+  "it": "Preso dal tuo registro: il salto più piccolo tra i pesi che hai usato."
+ },
+ "Warm-ups you can take away, weights that find their own step": {
+  "nl": "Opwarmsets die je weg kunt halen, gewichten die hun eigen stap vinden",
+  "es": "Calentamientos que puedes quitar, pesos que encuentran su propio salto",
+  "de": "Aufwärmsätze zum Entfernen, Gewichte, die ihren Schritt selbst finden",
+  "fr": "Des échauffements à retirer, des poids qui trouvent leur palier",
+  "it": "Riscaldamenti che puoi togliere, pesi che trovano il loro salto"
+ },
+ "Remove warm-ups takes the warm-up sets away and leaves your working sets. Any set that is not ticked can go on its own: tap its number, then Remove this set.": {
+  "nl": "Opwarmsets weg haalt de opwarmsets weg en laat je werksets staan. Elke set die niet is afgevinkt kan ook los weg: tik op het nummer en dan op Deze set weghalen.",
+  "es": "Quitar calentamiento quita las series de calentamiento y deja tus series de trabajo. Cualquier serie sin marcar se puede quitar sola: toca su número y luego Quitar esta serie.",
+  "de": "Aufwärmsätze weg entfernt die Aufwärmsätze und lässt deine Arbeitssätze stehen. Jeder Satz ohne Häkchen lässt sich auch einzeln entfernen: tippe auf seine Nummer, dann auf Diesen Satz entfernen.",
+  "fr": "Retirer l’échauffement enlève les séries d’échauffement et garde tes séries de travail. Toute série non cochée peut partir seule : touche son numéro, puis Retirer cette série.",
+  "it": "Togli riscaldamento rimuove le serie di riscaldamento e lascia le serie di lavoro. Ogni serie non spuntata si può togliere da sola: tocca il suo numero, poi Rimuovi questa serie."
+ },
+ "The second exercise for a body part gets two warm-up sets instead of four.": {
+  "nl": "De tweede oefening voor een lichaamsdeel krijgt twee opwarmsets in plaats van vier.",
+  "es": "El segundo ejercicio de una zona del cuerpo recibe dos series de calentamiento en vez de cuatro.",
+  "de": "Die zweite Übung für einen Körperteil bekommt zwei Aufwärmsätze statt vier.",
+  "fr": "Le deuxième exercice pour une partie du corps reçoit deux séries d’échauffement au lieu de quatre.",
+  "it": "Il secondo esercizio per una parte del corpo riceve due serie di riscaldamento invece di quattro."
+ },
+ "The weight step follows your log: the smallest jump between weights you have used. Barbell lifts go up by two of your smallest plate. A step you set yourself still wins.": {
+  "nl": "De gewichtsstap volgt je logboek: de kleinste stap tussen gewichten die je hebt gebruikt. Oefeningen met een stang gaan omhoog met twee keer je kleinste schijf. Een stap die je zelf instelt gaat nog steeds voor.",
+  "es": "El salto de peso sigue tu registro: el salto más pequeño entre pesos que has usado. Los ejercicios con barra suben dos veces tu disco más pequeño. Un salto que pongas tú sigue mandando.",
+  "de": "Der Gewichtsschritt folgt deinem Protokoll: der kleinste Schritt zwischen Gewichten, die du benutzt hast. Langhantelübungen steigen um zweimal deine kleinste Scheibe. Ein Schritt, den du selbst einstellst, gilt weiterhin zuerst.",
+  "fr": "Le palier de poids suit ton journal : le plus petit palier entre les poids que tu as utilisés. Les exercices à la barre montent de deux fois ton plus petit disque. Un palier que tu règles toi-même passe toujours en premier.",
+  "it": "Il salto di peso segue il tuo registro: il salto più piccolo tra i pesi che hai usato. Gli esercizi con bilanciere salgono di due volte il tuo disco più piccolo. Un salto che imposti tu vale ancora per primo."
+ },
+ "Each set shows how much more or less it is than last time.": {
+  "nl": "Elke set laat zien hoeveel meer of minder het is dan de vorige keer.",
+  "es": "Cada serie muestra cuánto más o menos es que la última vez.",
+  "de": "Jeder Satz zeigt, wie viel mehr oder weniger es ist als beim letzten Mal.",
+  "fr": "Chaque série montre combien c’est de plus ou de moins que la dernière fois.",
+  "it": "Ogni serie mostra quanto è in più o in meno rispetto all’ultima volta."
+ },
+ "A connected AI can move a weight one step up or down without asking which weights your gym has.": {
+  "nl": "Een gekoppelde AI kan een gewicht één stap omhoog of omlaag zetten zonder te vragen welke gewichten jouw sportschool heeft.",
+  "es": "Una IA conectada puede subir o bajar un peso un salto sin preguntar qué pesos hay en tu gimnasio.",
+  "de": "Eine verbundene KI kann ein Gewicht um einen Schritt erhöhen oder senken, ohne zu fragen, welche Gewichte dein Studio hat.",
+  "fr": "Une IA connectée peut monter ou baisser un poids d’un palier sans demander quels poids ta salle possède.",
+  "it": "Un’IA collegata può alzare o abbassare un peso di un salto senza chiedere quali pesi ha la tua palestra."
  }
 }

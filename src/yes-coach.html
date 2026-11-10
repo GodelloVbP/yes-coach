@@ -375,6 +375,8 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .fld input::placeholder { color: var(--ink-soft); font-family: var(--f-body); font-size: var(--t3); font-style: italic; font-weight: 500; opacity: 1; }
 .fld small { font-size: var(--t2); font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
 .fld.sug input { color: var(--ink-soft); font-weight: 600; }
+.fld-d { position: absolute; left: 0; top: -0.375rem; font-family: var(--f-head); font-size: var(--t1); font-weight: 700; line-height: 1; color: var(--ink-soft); white-space: nowrap; pointer-events: none; }
+.fld-d[hidden] { display: none; }
 .fld.edited small::after { content: ""; display: inline-block; width: 7px; height: 7px; margin-left: 5px; border-radius: 50%; background: var(--ink); vertical-align: 0.15em; }
 .set-tick { position: relative; width: 3.5rem; height: 3.5rem; display: inline-flex; align-items: center; justify-content: center; border: 2px solid var(--ink); background: var(--paper); color: var(--ink); font-family: var(--f-head); font-size: var(--t4); font-weight: 700; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transform: skewX(-8deg); padding: 0; }
 .set-tick > span { display: inline-block; transform: skewX(8deg); visibility: hidden; }
@@ -1912,6 +1914,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['10 Nov 2026', "Warm-ups you can take away, weights that find their own step", ["Remove warm-ups takes the warm-up sets away and leaves your working sets. Any set that is not ticked can go on its own: tap its number, then Remove this set.", "The second exercise for a body part gets two warm-up sets instead of four.", "The weight step follows your log: the smallest jump between weights you have used. Barbell lifts go up by two of your smallest plate. A step you set yourself still wins.", "Each set shows how much more or less it is than last time.", "A connected AI can move a weight one step up or down without asking which weights your gym has."]],
     ['9 Nov 2026', "An alert when rest is over", ["With Alert me when rest is over in Settings, your phone shows a notification when the rest timer ends, also when you are in another app.", "On an iPhone, add Yes Coach! to your home screen first and open it from there."]],
     ['9 Nov 2026', "Send a finished workout to Claude any time", ["After a workout, Send to Claude stays on the Today card and on that day in the week, so you can use it after you dismissed the question.", "If you would rather not be asked after every workout, switch it off in Settings, under Connected AI apps.", "Each exercise in a workout has How to do it: what it is and which muscles it works."]],
     ['9 Nov 2026', "Notes that stay, and clearer columns", ["Each exercise has a note of its own, open under its name and kept for every workout. Notes you write to Claude have a bigger box.", "The columns are named once above the sets: Set, Last, Reps and kg.", "The suggestion shows its weight step, so you can set the jump your gym has."]],
@@ -2943,7 +2946,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (isDone(st)) return st.kind || 'work';
     const d = draftsFor(SID())[key];
     if (d && d.kind) return d.kind;
-    return st && st.kind ? st.kind : item.kind || 'work';
+    return st && !st.removed && st.kind ? st.kind : item.kind || 'work';
   };
   // Which working set a row is: warm-up rows in front do not count, so row 4 after three warm-ups is working set 1.
   const workIndex = (item, n) => {
@@ -2956,11 +2959,23 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const progOn = () => !(S.root && S.root.settings && S.root.settings.progress_suggest === false);
   const sugKey = (item) => SID() + '|' + item.ex;
   const sugOffFor = (item) => !!(local.get('yc-nosug') || {})[sugKey(item)];
-  const incFor = (exId) => {
+  // The weight step of an exercise and where it comes from: your own setting ('set'), the smallest jump between weights you have
+  // used in your last 60 sessions ('log'), or the smallest usual jump for the equipment ('usual'). Nobody is asked.
+  const incInfo = (exId) => {
+    const ck = 'inc|' + exId;
+    if (lastCache && lastCache.has(ck)) return lastCache.get(ck);
     const e = S.exercises[exId] || {};
     const lib = typeof libOfEx === 'function' ? libOfEx(exId) : null;
-    return window.YC_PROGRESSION.defaultInc({ inc: e.inc, unit: e.unit, load_basis: e.load_basis, equipment: lib && lib.equipment, name: e.name, group: lib ? lib.group : e.group });
+    const plates = typeof plateCfg === 'function' && PL() ? plateCfg().plates : [];
+    const loads = [];
+    if (!(Number(e.inc) > 0)) {
+      sessionsSorted().slice(0, 60).forEach((s) => workSets(s, exId).forEach((st) => { if (st.load != null && (st.kind == null || st.kind === 'work')) loads.push(st.load); }));
+    }
+    const r = window.YC_PROGRESSION.resolveInc({ inc: e.inc, unit: e.unit, load_basis: e.load_basis, equipment: lib && lib.equipment, name: e.name, group: lib ? lib.group : e.group, minPlate: plates.length ? Math.min(...plates) : null }, loads);
+    if (lastCache) lastCache.set(ck, r);
+    return r;
   };
+  const incFor = (exId) => incInfo(exId).inc;
   // ignoreOff: the line under the name still needs the suggestion when today's switch to "last time" is on
   const progFor = (item, ignoreOff) => {
     const P = window.YC_PROGRESSION;
@@ -3368,7 +3383,26 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const n = rowCount(item);
     for (let i = 1; i <= n; i += 1) if (kindAt(item, item.ex + '_' + i) !== 'work') return [];
     const load = warmLoad(item);
-    return load == null ? [] : lib.warmups(load, isBarbell(item.ex) ? barFor(item.ex) : null);
+    return load == null ? [] : lib.warmups(load, isBarbell(item.ex) ? barFor(item.ex) : null, warmAlready(item));
+  };
+  // an earlier exercise today works the same body part: two warm-up sets do
+  const warmAlready = (item) => {
+    const body = (id) => groupOf((S.exercises[id] || {}).group);
+    const items = sessionItems();
+    const at = items.findIndex((i) => i.ex === item.ex);
+    return items.slice(0, Math.max(0, at)).some((i) => i.kind !== 'warmup' && (S.exercises[i.ex] || {}).category !== 'cardio' && body(i.ex) === body(item.ex));
+  };
+  // the warm-up rows that can still be taken away: not ticked, and no ticked row after the first of them
+  const warmRows = (item) => {
+    const n = rowCount(item);
+    const out = [];
+    for (let i = 1; i <= n; i += 1) {
+      const key = item.ex + '_' + i;
+      const done = isDone(storedSet(key));
+      if (out.length && done) return [];
+      if (!done && item.kind !== 'warmup' && kindAt(item, key) === 'warmup') out.push(i);
+    }
+    return out;
   };
   // no rendering here: the caller repaints
   const addWarmups = (item) => {
@@ -3463,7 +3497,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       paintSession();
     });
     stepIn.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); stepSave.click(); } });
-    stepBox.append(h('span', 'lab', 'Weight step when you go up'), stepIn, stepSave, h('p', 'note', 'Suggestions go up by this much. Use the smallest jump your gym has.'));
+    const stepFrom = h('p', 'note ex-step-from', 'Taken from your log: the smallest jump between weights you used.');
+    stepFrom.hidden = true;
+    stepBox.append(h('span', 'lab', 'Weight step when you go up'), stepIn, stepSave, stepFrom, h('p', 'note', 'Suggestions go up by this much. Use the smallest jump your gym has.'));
     sugRow.append(h('span', 'ex-sug-why', ''), stepBtn, plainBtn('textbtn ex-sug-undo', 'Use last time', null, () => {
       const m = Object.assign({}, local.get('yc-nosug') || {});
       if (m[sugKey(item)]) delete m[sugKey(item)]; else m[sugKey(item)] = 1;
@@ -3551,7 +3587,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const less = plainBtn('icon boxed', '−', 'Remove the last set of ' + ex.name, () => removeLastSet(item));
     const noteBtn = plainBtn('icon boxed', '✎', 'Note about ' + ex.name);
     const warm = btn('skew small ex-warm', '+ Warm-up');
-    warm.addEventListener('click', () => { if (addWarmups(item)) { renderItems(); paintSession(); } });
+    warm.addEventListener('click', () => { if (warmRows(item).length) removeWarmups(item); else if (addWarmups(item)) { renderItems(); paintSession(); } });
     acts.append(more, warm, less, noteBtn);
     // minutes <-> kg: one tap to the other, for every day using this exercise (the Plan editor has the finer choices)
     const toV = unit === 'min' ? 'kg:total' : 'min:';
@@ -3666,7 +3702,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       if (run) { mkField('km', 'km', 'Distance in km'); mkField('elev', 'm ↑', 'Altitude gain in metres'); }
     } else {
       mkField('reps', 'reps', 'Reps');
-      if (unit !== 'bw') mkField('load', unitWord(ex), 'Load in ' + loadLabel(ex));
+      if (unit !== 'bw') { mkField('load', unitWord(ex), 'Load in ' + loadLabel(ex)); refs.diff = h('span', 'fld-d', ''); refs.diff.hidden = true; refs.load.parentElement.append(refs.diff); }
       if (rir) { mkField('rir', 'RIR', 'Reps in reserve'); refs.rir.parentElement.classList.add('rir-f'); }
     }
     const tick = h('button', 'set-tick');
@@ -3811,6 +3847,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       b.addEventListener('click', (ev) => { ev.stopPropagation(); closeMenus(); setKind(refs, k); refs.num.focus(); });
       m.append(b);
     });
+    if (!isDone(storedSet(refs.key))) {
+      const rm = h('button', 'kmenu-rm', 'Remove this set');
+      rm.type = 'button';
+      rm.setAttribute('role', 'menuitem');
+      rm.addEventListener('click', (ev) => { ev.stopPropagation(); closeMenus(); removeRows(refs.item, [refs.n], 'Removed set ' + refs.n + ' of ' + exName(refs.item.ex) + '.'); });
+      m.append(rm);
+    }
     refs.row.append(m);
     refs.num.setAttribute('aria-expanded', 'true');
     openMenu = { el: m, btn: refs.num };
@@ -4054,6 +4097,62 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     }
   };
 
+  // Take rows away wherever they are; the rows after them move up. Ticked sets keep their place, so nothing ticked may come after the first row taken.
+  const removeRows = (item, ns, text) => {
+    const date = SID();
+    const cur = rowCount(item);
+    ns = ns.filter((n) => n >= 1 && n <= cur);
+    if (!ns.length) return false;
+    const first = Math.min(...ns);
+    const keyOf = (n) => item.ex + '_' + n;
+    if (isDone(storedSet(keyOf(first)))) { showToast('Untick set ' + first + ' first to remove it.', null); return false; }
+    for (let n = first + 1; n <= cur; n += 1) if (isDone(storedSet(keyOf(n)))) { showToast('Untick the sets after set ' + first + ' first.', null); return false; }
+    if (cur - ns.length < 1) { removeFromToday(item); return true; }
+    const ds = draftsFor(date);
+    const draftBack = {};
+    draftRows(ds, item.ex).forEach(([k]) => { draftBack[k] = clone(ds[k]); });
+    // what each row that stays holds: what was typed, over what an unticked saved set still had
+    const keep = [];
+    const gone = [];
+    for (let n = first; n <= cur; n += 1) {
+      const key = keyOf(n);
+      const st = storedSet(key);
+      const live = st && !st.removed;
+      if (live) gone.push(key);
+      if (!ns.includes(n)) {
+        const d = {};
+        if (live) { VALUE_FIELDS.forEach((f) => { if (st[f] != null) d[f] = num(st[f]); }); if (st.kind && st.kind !== (item.kind || 'work')) d.kind = st.kind; }
+        keep.push(Object.assign(d, ds[key] || {}));
+      }
+      delete ds[key];
+    }
+    keep.forEach((d, i) => { if (Object.keys(d).length) ds[keyOf(first + i)] = d; });
+    saveDrafts();
+    if (gone.length) {
+      const body = {};
+      gone.forEach((k) => { body[k] = { done: false, removed: true, at: Date.now() }; optimistic(date, k, { done: false, removed: true }); });
+      queueWrite(date, { sets: body }, gone);
+    }
+    setRows(item, cur - ns.length);
+    renderItems();
+    paintSession();
+    showToast(text, () => {
+      const dd = draftsFor(date);
+      draftRows(dd, item.ex).forEach(([k]) => { delete dd[k]; });
+      Object.assign(dd, draftBack);
+      saveDrafts();
+      if (gone.length) {
+        const body = {};
+        gone.forEach((k) => { body[k] = { removed: false, at: Date.now() }; optimistic(date, k, { removed: false }); });
+        queueWrite(date, { sets: body }, gone);
+      }
+      setRows(item, cur);
+      if (R && R.sid === date) { renderItems(); paintSession(); }
+    });
+    return true;
+  };
+  const removeWarmups = (item) => removeRows(item, warmRows(item), 'Removed the warm-up sets of ' + exName(item.ex) + '.');
+
   // ---- painting values, states and labels without rebuilding inputs you are typing in
   const tickLabel = (refs, state, v, pending, err) => {
     const ex = S.exercises[refs.item.ex] || {};
@@ -4102,8 +4201,17 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     }
     const kindNow = currentKind(refs);
     paintKind(refs, kindNow);
-    const lastWas = (() => { const l = kindNow === 'warmup' ? null : lastSetsFor(refs.item.ex, S.active.date); const st = l && l.sets[workIndex(refs.item, refs.n) - 1]; return st ? fmtSet(st, refs.unit, '') : '–'; })();
+    const lastSt = (() => { const l = kindNow === 'warmup' ? null : lastSetsFor(refs.item.ex, S.active.date); return (l && l.sets[workIndex(refs.item, refs.n) - 1]) || null; })();
+    const lastWas = lastSt ? fmtSet(lastSt, refs.unit, '') : '–';
     if (refs.lastEl.textContent !== lastWas) refs.lastEl.textContent = lastWas;
+    if (refs.diff) {
+      // how much more or less than the same set last time, so a jump is plain in the row itself
+      const now = parseNum(refs.load.value.trim() === '' && refs.load.dataset.clr !== undefined ? refs.load.dataset.clr : refs.load.value);
+      const d = !on && lastSt && lastSt.load != null && now != null ? Math.round((now - lastSt.load) * 100) / 100 : 0;
+      const txt = d ? (d > 0 ? '+' : '−') + num(Math.abs(d)) : '';
+      if (refs.diff.textContent !== txt) refs.diff.textContent = txt;
+      refs.diff.hidden = !txt;
+    }
     const { pending, err } = paintPending(refs, q, on);
     let upd = refs.row.querySelector('.upd');
     if (state === 'corrected' && !upd) { upd = h('span', 'upd', 'updated'); refs.row.append(upd); }
@@ -4125,7 +4233,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const keys = Object.keys(R.sets).filter((k) => R.sets[k].item.ex === it.item.ex);
       it.el.classList.toggle('is-done', keys.length > 0 && keys.every((k) => isDone(storedSet(k))));
       const wb = it.el.querySelector('.ex-warm');
-      if (wb) wb.hidden = !warmRamp(it.item).length;
+      if (wb) { const rm = warmRows(it.item).length > 0; wb.hidden = !rm && !warmRamp(it.item).length; (wb.querySelector('span') || wb).textContent = rm ? 'Remove warm-ups' : '+ Warm-up'; wb.classList.toggle('rm', rm); }
       const sugRow = it.el.querySelector('.ex-sug');
       if (sugRow) {
         const pg = progFor(it.item, true);
@@ -4134,7 +4242,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         sugRow.hidden = !pg || done;
         if (pg) {
           const sb = sugRow.querySelector('.ex-sug-step');
-          if (sb) { const ex = S.exercises[it.item.ex] || {}; const inc = incFor(it.item.ex); sb.textContent = 'Step ' + num(inc) + (unitWord(ex) ? ' ' + unitWord(ex) : ''); const si = it.el.querySelector('.ex-stepbox input'); if (si && document.activeElement !== si) si.value = ex.inc != null ? ex.inc : ''; if (si) si.placeholder = num(inc); }
+          if (sb) { const ex = S.exercises[it.item.ex] || {}; const info = incInfo(it.item.ex); const inc = info.inc; const sf = it.el.querySelector('.ex-step-from'); if (sf) sf.hidden = info.from !== 'log'; sb.textContent = 'Step ' + num(inc) + (unitWord(ex) ? ' ' + unitWord(ex) : ''); const si = it.el.querySelector('.ex-stepbox input'); if (si && document.activeElement !== si) si.value = ex.inc != null ? ex.inc : ''; if (si) si.placeholder = num(inc); }
           sugRow.firstChild.textContent = off ? '' : pg.reason;
           sugRow.lastChild.textContent = off ? 'Use the suggestion' : 'Use last time';
         }

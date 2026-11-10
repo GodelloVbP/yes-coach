@@ -54,5 +54,7 @@ eq(ramp(39.5, 20), '', 'under 40 kg: none');
 eq(ramp(100, null), '50x5 70x3 85x1', 'no bar: starts at 50%');
 eq(ramp(100, 15), '15x10 50x5 70x3 85x1', 'bar of 15');
 eq(ramp('x', 20), '', 'junk gives none');
+eq(warmups(100, 20, true).map((w) => w.load + 'x' + w.reps).join(' '), '60x5 80x2', 'short ramp: two sets, no bar');
+eq(warmups(40, 20, true).map((w) => w.load + 'x' + w.reps).join(' '), '25x5 32.5x2', 'short ramp at 40 kg');
 ok(warmups(200, 20).every((w, i, a) => !i || w.load > a[i - 1].load), 'always climbing');
 console.log(n + ' checks passed');
