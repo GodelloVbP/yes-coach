@@ -460,8 +460,26 @@ const loadMeals = async (db: Db): Promise<Saved[]> => (await db.list('yc/meals/'
 const savedOut = (m: Saved, cal: boolean) => ({ id: m.id, name: m.name, times_logged: m.n, items: m.items.map(itemOut), ...macros(sumItems(m.items), cal) });
 
 // one food of a meal as the AI gave it (a food id, and grams or a portion), checked against the tables and the person's own portion sizes
+// A food by the word the person used, without a search in between. It is taken only when there is no doubt: the one food of
+// their own that the word fits (or the one they call exactly that), else the one food in the tables with exactly that name.
+// Anything else gives the few closest foods back, so nothing is logged under a guess.
+const foodByName = (tables: FoodDb, fdb: FoodDb, mine: Mine[], said: string): { key?: string; options: Food[] } => {
+  const toks = wordsOf(said), q = fold(said).trim();
+  if (!toks.length) return { options: [] };
+  const yours = mine.filter((m) => fdb.byKey.has(m.food) && mineMatches(m, toks)).sort((a, b) => b.n - a.n || b.last - a.last);
+  if (yours.length === 1) return { key: yours[0].food, options: [] };
+  const called = yours.filter((m) => fold(m.name) === q || Object.keys(m.aka).some((k) => fold(k) === q));
+  if (called.length === 1) return { key: called[0].food, options: [] };
+  const hits = searchFoods(tables, said, 12);
+  if (!yours.length) {
+    const exact = hits.filter((f) => fold(f.name) === q || fold(f.alt) === q);
+    if (exact.length === 1) return { key: foodKey(exact[0].src, exact[0].ref), options: [] };
+  }
+  const seen = new Set<string>();
+  return { options: [...yours.map((m) => fdb.byKey.get(m.food) as Food), ...hits].filter((f) => { const k = foodKey(f.src, f.ref); return !seen.has(k) && !!seen.add(k); }).slice(0, 4) };
+};
 const resolveItem = (fdb: FoodDb, mineBy: Map<string, Mine>, it: Json): { item: Item; said: string } => {
-  if (!it || typeof it !== 'object') fail('Each food needs a "food" id and grams or a portion.');
+  if (!it || typeof it !== 'object' || (!it.food && !it.name)) fail('Each food needs a name or a "food" id, and grams or a portion.');
   const key = str(it.food, 40);
   const food = fdb.byKey.get(key);
   if (!food) fail('Unknown food "' + key + '". Use the "food" value of a search result, like "nevo:123".');
@@ -469,12 +487,15 @@ const resolveItem = (fdb: FoodDb, mineBy: Map<string, Mine>, it: Json): { item: 
   const own = mineBy.get(key);
   let g: number;
   if (Number(it.grams) > 0) g = Number(it.grams);
-  else if (it.portion && it.portion.label) {
-    const want = fold(it.portion.label);
-    const mineHit = own ? Object.entries(own.portions).find(([l]) => fold(l) === want) : undefined;
+  else if (it.portion && (it.portion.label || Number(it.portion.count) > 0)) {
+    const mineAll = own ? Object.entries(own.portions) : [];
     const list = portionsOf(fdb, fd).list;
+    // no label: the everyday portion, the person's own before the table's (the first one a search shows)
+    const want = it.portion.label ? fold(it.portion.label) : fold(mineAll.length ? mineAll[0][0] : list.length ? list[0].label : '');
+    const mineHit = mineAll.find(([l]) => fold(l) === want);
     const hit = mineHit ? { grams: mineHit[1] } : list.find((x) => fold(x.label) === want);
-    if (!hit) fail('"' + it.portion.label + '" is not a portion of ' + fd.name + '. Its portions: ' + [...(own ? Object.entries(own.portions).map(([l, gr]) => ({ label: l, grams: gr })) : []), ...list].slice(0, 8).map((x) => x.label + ' (' + x.grams + ' g)').join(', ') + '. Or give grams.');
+    if (!hit && !it.portion.label) fail('No portion size is known for ' + fd.name + '. Give grams.');
+    if (!hit) return fail('"' + it.portion.label + '" is not a portion of ' + fd.name + '. Its portions: ' + [...(own ? Object.entries(own.portions).map(([l, gr]) => ({ label: l, grams: gr })) : []), ...list].slice(0, 8).map((x) => x.label + ' (' + x.grams + ' g)').join(', ') + '. Or give grams.');
     const count = Number(it.portion.count);
     g = hit.grams * (count > 0 ? count : 1);
   } else fail('Give grams or a portion for ' + fd.name + '.');
@@ -900,15 +921,16 @@ const TOOLS: Tool[] = [
         name: { type: 'string', description: 'The person\'s own words, short, e.g. "2 slices bread with egg, cheese and mustard". Optional for a single food.' },
         saved: { type: 'string', description: 'The id of one of the person\'s saved meals: logs it as it was saved. Use it instead of items.' },
         items: { type: 'array', minItems: 1, maxItems: 12, items: obj({
-          food: { type: 'string', description: 'The "food" value of a search result, e.g. "nevo:123".' },
+          name: { type: 'string', description: 'The food in the person\'s words, one or two plain words, e.g. "kaas", "banana". Enough for a food they logged before or one with exactly that name; no search is needed then.' },
+          food: { type: 'string', description: 'Instead of name: the "food" id of a search result, e.g. "nevo:123".' },
           grams: { type: 'number', description: 'Amount in grams (millilitres for drinks). Use it when the person said a weight.' },
-          portion: obj({ label: { type: 'string', description: 'A label from that food\'s "portions" in a search result, including the person\'s own.' }, count: { type: 'number', description: 'How many of that portion. Default 1.' } }, ['label']),
+          portion: obj({ label: { type: 'string', description: 'A label from that food\'s "portions", including the person\'s own. Leave out for the food\'s everyday portion (a slice, a piece).' }, count: { type: 'number', description: 'How many of that portion. Default 1.' } }),
           estimated: { type: 'boolean', description: 'false only when the person said the exact weight. Default true: a guess or a typical portion.' },
           said: { type: 'string', description: 'The word the person used for this food, e.g. "kaas". It is remembered, so the next search for that word finds this food first.' },
-        }, ['food']) },
+        }) },
       }) },
     }, ['meals']),
-    description: 'Save one or more meals to the person\'s food log. Each food is a "food" id from a search plus grams or a portion; the app reads the nutrients from its tables, so there are no nutrient fields. A meal with several foods becomes one entry with its items inside; a meal with one food is a normal entry. A saved meal can be logged by its id. Foods are remembered for next time. Returns what was saved and the day totals.',
+    description: 'Save one or more meals to the person\'s food log. Each food is a name or a "food" id, plus grams or a portion; the app reads the nutrients from its tables, so there are no nutrient fields. A name is taken when it can only mean one food; otherwise nothing is saved and the closest foods come back with their ids and portions. A meal with several foods becomes one entry with its items inside; a meal with one food is a normal entry. A saved meal can be logged by its id. Foods are remembered for next time. Returns what was saved and the day totals.',
     run: async (db, a, ctx) => {
       if (badDate(a.date)) fail(DATE_ERR);
       if (!Array.isArray(a.meals) || !a.meals.length) fail('Give at least one meal.');
@@ -924,6 +946,23 @@ const TOOLS: Tool[] = [
       const usedSaved = new Map<string, { sm: Saved; times: number }>();
       const note = (i: Item, said: string) => { const k = foodKey(i.src, i.ref); if (!fdb.byKey.has(k)) return; // only foods the tables know are remembered
          const u = uses.get(k) || { name: i.name, said: new Set<string>(), times: 0 }; u.times += 1; if (said) u.said.add(said); uses.set(k, u); };
+      // foods given by name: each is looked up once, and the ones that need choosing come back together
+      const named = new Map<Json, Json>();
+      const matched: Json[] = []; // which food each name became, so the AI can tell the person
+      const open: string[] = [];
+      a.meals.forEach((m: Json) => (Array.isArray(m && m.items) ? m.items : []).slice(0, 12).forEach((it: Json) => {
+        if (!it || typeof it !== 'object' || it.food || !str(it.name, 80)) return;
+        const said = str(it.name, 80);
+        const r = foodByName(tables, fdb, mine, said);
+        if (r.key) {
+          // no amount said: one everyday portion ("a banana")
+          named.set(it, { ...it, food: r.key, said: it.said || said, ...(Number(it.grams) > 0 || it.portion ? {} : { portion: { count: 1 } }) });
+          matched.push({ said, food: r.key, name: (fdb.byKey.get(r.key) as Food).name });
+          return;
+        }
+        open.push('"' + said + '": ' + (r.options.length ? r.options.map((f) => { const k = foodKey(f.src, f.ref); const own = mineBy.get(k); const ps = [...(own ? Object.entries(own.portions).map(([label, grams]) => ({ label, grams })) : []), ...portionsOf(fdb, f).list].slice(0, 3); return k + ' ' + f.name + (ps.length ? ' [' + ps.map((x) => x.label + ' ' + x.grams + ' g').join(', ') + ']' : ''); }).join('; ') : 'nothing found, try one plain word'));
+      }));
+      if (open.length) fail('Nothing was saved. These foods need choosing: ' + open.join(' | ') + '. Send the meals again with "food" set to the right id for these; the other names can stay as they are.');
       const meals = a.meals.map((m: Json) => {
         if (m && m.saved) {
           const sm = savedAll.find((x) => x.id === str(m.saved, 60));
@@ -934,7 +973,7 @@ const TOOLS: Tool[] = [
         }
         const raw = Array.isArray(m && m.items) ? m.items : [];
         if (raw.length > 12) fail('At most 12 foods in one meal. Nothing was saved; split it into two meals.');
-        const items = raw.map((it: Json) => { const r = resolveItem(fdb, mineBy, it); note(r.item, r.said); return r.item; });
+        const items = raw.map((it: Json) => { const r = resolveItem(fdb, mineBy, named.get(it) || it); note(r.item, r.said); return r.item; });
         if (!items.length) fail('Each meal needs at least one food or a saved meal.');
         return { name: str(m && m.name, 80), items };
       });
@@ -956,7 +995,9 @@ const TOOLS: Tool[] = [
       } catch (e) { /* ignored */ }
       const day = foodDayOut(date, after, root);
       const cal = caloriesShown(root);
-      return { saved: Object.entries(add).map(([id, e]) => entryOut(id, e, cal)), day };
+      // the day's other entries are not repeated here: the totals say where the day stands
+      const { entries: _all, ...dayTotals } = day;
+      return { saved: Object.entries(add).map(([id, e]) => entryOut(id, e, cal)), ...(matched.length ? { matched } : {}), day: { ...dayTotals, entries_today: (_all || []).length } };
     },
   },
   {

@@ -269,7 +269,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok(Math.abs(e1.items.reduce((t, i) => t + i.p, 0) - e1.p) <= 0.3, 'entry protein adds up from its items');
   ok(Math.abs(e1.kcal - e1.items.reduce((t, i) => t + i.kcal, 0)) <= 2, 'entry kcal adds up from its items');
   ok(r.json.saved.length === 1 && r.json.saved[0].id === id1 && r.json.saved[0].items.length === 4 && !('kcal' in r.json.saved[0]), 'the reply lists what was saved, without calories');
-  ok(r.json.day.totals.protein_g === e1.p && r.json.day.entries.length === 1, 'the reply has the day totals');
+  ok(r.json.day.totals.protein_g === e1.p && r.json.day.entries_today === 1 && r.json.day.entries === undefined, 'the reply has the day totals, not the whole day again');
 
   // a second call adds to the same day without touching the first entry
   r = await call(T, 'log_meals', { meals: [{ items: [{ food: (await pick('appel')).food, portion: { label: (await pick('appel')).portions[0].label } }] }] });
@@ -523,8 +523,9 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok((await call(T, 'save_meal', { name: 'x', items: Array.from({ length: 13 }, () => items[1]) })).err, 'at most 12 foods in a saved meal');
 
   // from an entry already in the log
-  const day = (await call(T, 'log_meals', { meals: [{ name: 'Lunch', items: items.slice(0, 2) }, { items: [{ food: egg.food, grams: 60 }] }] })).json.day;
-  const [lunch, single] = day.entries.slice(-2);
+  const logged = (await call(T, 'log_meals', { meals: [{ name: 'Lunch', items: items.slice(0, 2) }, { items: [{ food: egg.food, grams: 60 }] }] })).json;
+  const day = logged.day;
+  const [lunch, single] = logged.saved;
   r = await call(T, 'save_meal', { name: 'Usual lunch', from_entry: { date: day.date, entry_id: lunch.id } });
   ok(!r.err && r.json.saved.items.length === 2 && r.json.saved.id === 'usual-lunch', 'a logged meal is saved as it was: ' + r.text.slice(0, 120));
   r = await call(T, 'save_meal', { name: 'Just an egg', from_entry: { date: day.date, entry_id: single.id } });
@@ -608,7 +609,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok(!r.err && r.json.removed.placeholder === true && !(await call(T, 'get_food_day', { date: '2026-09-15' })).json.entries.some((e) => e.id === 'q1'), 'once the person says what it was, the placeholder can be removed');
   const bread = (await call(T, 'search_foods', { query: 'tarwebrood bruin', limit: 1 })).json.results[0].food;
   r = await call(T, 'log_meals', { date: '2026-09-15', meals: [{ name: 'Sandwich', items: [{ food: bread, grams: 70 }] }] });
-  ok(!r.err && r.json.day.totals.protein_g > 0.3 && r.json.day.entries.some((e) => e.id === 'q2' && e.placeholder), 'logging a meal on a day with placeholders adds to the totals and leaves them listed');
+  ok(!r.err && r.json.day.totals.protein_g > 0.3 && (await call(T, 'get_food_day', { date: r.json.day.date })).json.entries.some((e) => e.id === 'q2' && e.placeholder), 'logging a meal on a day with placeholders adds to the totals and leaves them listed');
 }
 
 // ---- things found in review, each checked
@@ -846,6 +847,30 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   delete rowA('yc').data.settings.plates; delete rowA('yc/exercises/bench').data.library_id;
   const init = (await rpc(T, 'initialize', {})).body.result.instructions;
   ok(/up, hold or down/.test(init) && /does not have to be asked/.test(init), 'the instructions say the weights are worked out, not asked for');
+}
+
+// ---- meals by the words the person said: no search in between when the word can only mean one food
+{
+  const T = 'tok.anna.x', day = '2026-08-03';
+  const dayRow = () => rows.find((x) => x.user_id === A && x.path === 'yc/food/' + day);
+  let r = await call(T, 'log_meals', { date: day, meals: [{ name: 'fruit', items: [{ name: 'banaan', portion: { count: 2 } }] }] });
+  const banana = r.json && r.json.matched && r.json.matched[0];
+  ok(!r.err && banana.said === 'banaan' && /^nevo:/.test(banana.food) && banana.name === 'Banaan', 'a name that is exactly one food is taken, and the reply says which: ' + r.text.slice(0, 200));
+  const first = Object.values(dayRow().data.entries)[0];
+  ok(first.g > 0 && first.g % 2 === 0 && first.est === true, 'a count without a label is that many everyday portions, marked as a guess: ' + JSON.stringify(first).slice(0, 160));
+  ok(r.text.length < 480, 'the reply is small: ' + r.text.length);
+  r = await call(T, 'log_meals', { date: day, meals: [{ items: [{ name: 'banaan' }] }] });
+  ok(!r.err && r.json.matched[0].name === 'Banaan' && Object.keys(dayRow().data.entries).length === 2, 'no amount at all is one everyday portion, and a food logged before is found by its word');
+  const before = JSON.stringify(dayRow().data);
+  r = await call(T, 'log_meals', { date: day, meals: [{ name: 'lunch', items: [{ name: 'banaan', grams: 100 }, { name: 'yoghurt', grams: 150 }, { name: 'qwertyzz', grams: 5 }] }] });
+  ok(r.err && /Nothing was saved/.test(r.text) && /"yoghurt": nevo:\d+ Yoghurt/.test(r.text) && /"qwertyzz": nothing found/.test(r.text) && !/"banaan"/.test(r.text) && JSON.stringify(dayRow().data) === before, 'a word that fits several foods saves nothing and gives the closest ones with ids, all at once: ' + r.text.slice(0, 160));
+  const pickId = r.text.match(/"yoghurt": (nevo:\d+)/)[1];
+  r = await call(T, 'log_meals', { date: day, meals: [{ name: 'lunch', items: [{ name: 'banaan', grams: 100 }, { food: pickId, grams: 150, said: 'yoghurt' }] }] });
+  ok(!r.err && r.json.matched.length === 1 && r.json.saved[0].items.length === 2, 'names and ids go together in one meal');
+  r = await call(T, 'log_meals', { date: day, meals: [{ items: [{ name: 'yoghurt', grams: 200 }] }] });
+  ok(!r.err && r.json.matched[0].food === pickId, 'once chosen, the word is enough next time: ' + r.text.slice(0, 200));
+  r = await call(T, 'log_meals', { date: day, meals: [{ items: [{ grams: 200 }] }] });
+  ok(r.err && /name or a "food" id/.test(r.text), 'a food with neither name nor id is refused');
 }
 
 // ---- database errors surface as tool errors, not crashes
