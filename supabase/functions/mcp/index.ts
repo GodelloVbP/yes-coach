@@ -35,7 +35,7 @@ const INSTRUCTIONS = [
 ].join(' ');
 
 // ---------------------------------------------------------------- small helpers
-const text = (v: Json): string => JSON.stringify(v, null, 1);
+const text = (v: Json): string => JSON.stringify(v);
 const str = (v: Json, max: number, d = ''): string => (v == null ? d : String(v).trim().slice(0, max));
 const int = (v: Json, lo: number, hi: number, d: number): number => { const n = Math.round(Number(v)); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : d; };
 const slug = (s: string): string => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
