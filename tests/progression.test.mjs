@@ -18,8 +18,11 @@ t('parseReps', () => {
   assert.equal(P.parseReps('until it burns'), null);
 });
 t('default increments', () => {
-  assert.equal(P.defaultInc({ unit: 'kg', equipment: 'Barbell', group: 'Legs', name: 'Squat' }), 5);
-  assert.equal(P.defaultInc({ unit: 'kg', equipment: 'Barbell', group: 'Back', name: 'Deadlift' }), 5);
+  assert.equal(P.defaultInc({ unit: 'kg', equipment: 'Barbell', group: 'Legs', name: 'Squat' }), 2.5); // the smallest jump, also for the big lifts
+  assert.equal(P.defaultInc({ unit: 'kg', equipment: 'Barbell', group: 'Back', name: 'Deadlift' }), 2.5);
+  assert.equal(P.defaultInc({ unit: 'kg', equipment: 'Barbell', minPlate: 0.5 }), 1); // two of the smallest plate
+  assert.equal(P.defaultInc({ unit: 'kg', equipment: 'Barbell', minPlate: 2.5 }), 5);
+  assert.equal(P.defaultInc({ unit: 'kg', load_basis: 'per_side', minPlate: 2.5 }), 2.5);
   assert.equal(P.defaultInc({ unit: 'kg', equipment: 'Barbell', group: 'Chest', name: 'Bench press' }), 2.5);
   assert.equal(P.defaultInc({ unit: 'kg', equipment: 'Dumbbell', group: 'Chest' }), 2);
   assert.equal(P.defaultInc({ unit: 'kg', equipment: 'Plate-loaded machine', load_basis: 'per_side' }), 1.25);
@@ -126,5 +129,22 @@ t('warm-up, drop and test sets are ignored', () => {
 t('steps that do not fit the plates are rounded', () => {
   assert.equal(S({ inc: 2, uw: 'kg', history: [H('2026-11-02', [20, 20, 20], 8)] }).load, 22);
   assert.equal(S({ unit: 'stack', inc: 1, uw: 'pin', history: [H('2026-11-02', [7, 7, 7], 8)] }).reason, '+1 pin: all 3 sets reached 8 last time');
+});
+t('the step the log shows', () => {
+  assert.equal(P.learnInc([40, 40, 45, 45, 50, 50], 2.5), 5); // a machine that goes in fives
+  assert.equal(P.learnInc([60, 60, 61, 61], 2.5), 1); // small plates
+  assert.equal(P.learnInc([20, 20, 24, 24, 24], 2), 4); // two dumbbells, counted together
+  assert.equal(P.learnInc([40, 40, 41, 45, 45], 2.5), 5); // one set at 41 is a slip
+  assert.equal(P.learnInc([40, 40, 60, 60], 2.5), null); // a jump over weights, not a step
+  assert.equal(P.learnInc([40, 40, 40], 2.5), null);
+  assert.equal(P.learnInc([], 2.5), null);
+  assert.equal(P.learnInc([null, '', 'x', 40, 40], 2.5), null);
+});
+t('where the step comes from', () => {
+  assert.deepEqual(P.resolveInc({ unit: 'kg', inc: 2.3 }, [40, 40, 45, 45]), { inc: 2.3, from: 'set' });
+  assert.deepEqual(P.resolveInc({ unit: 'kg' }, [40, 40, 45, 45]), { inc: 5, from: 'log' });
+  assert.deepEqual(P.resolveInc({ unit: 'kg' }, [40, 40]), { inc: 2.5, from: 'usual' });
+  assert.deepEqual(P.resolveInc({ unit: 'stack' }, [5, 5, 6, 6]), { inc: 1, from: 'log' });
+  assert.deepEqual(P.resolveInc({ unit: 'bw' }, [5, 5, 6, 6]), { inc: 2.5, from: 'usual' });
 });
 console.log('progression ok,', n, 'groups');

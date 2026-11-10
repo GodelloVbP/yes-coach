@@ -128,6 +128,33 @@ try:
             check('turning it off is saved', until(lambda: (root(be).get('settings') or {}).get('progress_suggest') is False), root(be))
         errs = session(pw, be, ALICE, s9, width=390); check('no page errors (settings)', not errs, errs)
 
+        # ---- 9b. the row says how much more than last time, and the step is learned from the log
+        be = Backend(); seed(be)
+        def s9b(page):
+            open_day(page)
+            diff = lambda n: page.locator('.set:has(#f-bench_%d-load) .fld-d' % n)
+            check('the row shows the jump', diff(1).is_visible() and diff(1).text_content() == '+2.5', diff(1).text_content())
+            page.fill('#f-bench_1-load', '55')
+            check('a typed weight shows its own difference', until(lambda: diff(1).text_content() == '−5'), diff(1).text_content())
+            page.fill('#f-bench_1-load', '60')
+            check('the same weight as last time shows none', until(lambda: not diff(1).is_visible()))
+            check('the row fits a phone', page.evaluate('() => document.documentElement.scrollWidth <= window.innerWidth'))
+        errs = session(pw, be, ALICE, s9b, width=360); check('no page errors (difference)', not errs, errs)
+        be = Backend(); seed(be, loads=(65, 65, 65))
+        older = (datetime.date.today() - datetime.timedelta(days=9)).isoformat()
+        be.docs.append({'path': 'yc/sessions/' + older, 'data': {'date': older, 'template': 'push', 'sets': {
+            'bench_%d' % (i + 1): {'ex': 'bench', 'n': i + 1, 'kind': 'work', 'reps': 8, 'load': 60, 'done': True, 'at': i + 1} for i in range(3)}}})
+        def s9c(page):
+            open_day(page)
+            check('60 and 65 were lifted, so the step is 5', page.input_value('#f-bench_1-load') == '70' and '+5 kg' in sug_text(page) and 'Step 5 kg' in sug_text(page), (page.input_value('#f-bench_1-load'), sug_text(page)))
+            page.click('.ex:not(.off) .ex-sug-step')
+            check('and the box says it comes from the log', page.locator('.ex:not(.off) .ex-step-from').is_visible())
+            page.fill('#step-bench', '2.5'); page.keyboard.press('Enter')
+            check('an own step still wins', until(lambda: page.input_value('#f-bench_1-load') == '67.5'), page.input_value('#f-bench_1-load'))
+            page.click('.ex:not(.off) .ex-sug-step')
+            check('and the log line goes', not page.locator('.ex:not(.off) .ex-step-from').is_visible())
+        errs = session(pw, be, ALICE, s9c, width=390); check('no page errors (learned step)', not errs, errs)
+
         # ---- 10. on a big screen
         be = Backend(); seed(be)
         def s10(page):

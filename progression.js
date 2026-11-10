@@ -22,26 +22,52 @@
 
   var INC_DEFAULT = 2.5;
   var BARBELL = /barbell|ez-bar|trap bar|safety squat/i;
-  var LEGS = /deadlift|squat|leg press|lunge|hip thrust/i;
 
   var round2 = function (x) { return Math.round(x * 100) / 100; };
   var numStr = function (x) { return String(round2(x)); };
   var fill = function (tpl, args) { return tpl.replace(/\{(\d)\}/g, function (_, i) { return args[Number(i)]; }); };
 
-  // The step for one exercise: an own setting wins, else it follows the kind of equipment.
-  // ex: { inc, unit, load_basis, equipment, name, group }
+  // The step for one exercise: an own setting wins, else the smallest usual jump for the kind of equipment.
+  // ex: { inc, unit, load_basis, equipment, name, group, minPlate }. minPlate: the smallest plate the person has (a bar goes up by two of them).
   function defaultInc(ex) {
     ex = ex || {};
     var own = Number(ex.inc);
     if (own > 0) return own;
+    var plate = Number(ex.minPlate) > 0 ? Number(ex.minPlate) : 1.25;
     if (ex.unit === 'stack') return 1;
     if (ex.unit === 'assist') return 5;
-    if (ex.unit === 'kg' && ex.load_basis === 'per_side') return 1.25;
+    if (ex.unit === 'kg' && ex.load_basis === 'per_side') return plate;
     var eq = String(ex.equipment || '');
     if (/dumbbell|kettlebell/i.test(eq)) return 2;
     if (/cable/i.test(eq)) return 2.5;
-    if (BARBELL.test(eq)) return ex.group === 'Legs' || LEGS.test(ex.name || '') ? 5 : 2.5;
+    if (BARBELL.test(eq)) return round2(plate * 2);
     return INC_DEFAULT;
+  }
+
+  // The step the log shows: the smallest gap between two neighbouring weights that were each used for two sets or more.
+  // One set at an odd weight (a slip of the finger) proves nothing, and a gap wider than twice the usual jump is a jump over weights, not a step.
+  // loads: the load of every working set, repeats included. usual: the jump that applies without this.
+  function learnInc(loads, usual) {
+    var count = {};
+    (loads || []).forEach(function (x) { var v = Number(x); if (x != null && x !== '' && isFinite(v) && v >= 0) count[round2(v)] = (count[round2(v)] || 0) + 1; });
+    var seen = Object.keys(count).filter(function (k) { return count[k] >= 2; }).map(Number).sort(function (a, b) { return a - b; });
+    var best = null;
+    for (var i = 1; i < seen.length; i += 1) {
+      var g = round2(seen[i] - seen[i - 1]);
+      if (g >= 0.25 && (best == null || g < best)) best = g;
+    }
+    if (best == null || (Number(usual) > 0 && best > 2 * Number(usual))) return null;
+    return best;
+  }
+
+  // The step and where it comes from: 'set' (the person's own), 'log' (learned from what they lifted) or 'usual' (the kind of equipment).
+  function resolveInc(ex, loads) {
+    ex = ex || {};
+    if (Number(ex.inc) > 0) return { inc: Number(ex.inc), from: 'set' };
+    var usual = defaultInc(ex);
+    var unit = ex.unit || 'kg';
+    var learned = unit === 'kg' || unit === 'stack' || unit === 'assist' ? learnInc(loads, usual) : null;
+    return learned != null ? { inc: learned, from: 'log' } : { inc: usual, from: 'usual' };
   }
 
   // Plan reps: "8" or "10 per arm" is fixed, "8-12" is a range, "max" is as many as possible. Anything else gives null.
@@ -210,7 +236,7 @@
     return out({ load: L, reps: plan.n, repsBySet: null, kind: 'same', delta: 0, reason: fill(R.short, [plan.n]), lastLoad: L }); // not reached for fixed reps: a miss is already a short set
   }
 
-  var api = { suggest: suggest, parseReps: parseReps, defaultInc: defaultInc, stepFor: stepFor, REASONS: R };
+  var api = { suggest: suggest, parseReps: parseReps, defaultInc: defaultInc, learnInc: learnInc, resolveInc: resolveInc, stepFor: stepFor, REASONS: R };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.YC_PROGRESSION = api;
 })(typeof window !== 'undefined' ? window : this);
