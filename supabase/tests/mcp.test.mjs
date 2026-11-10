@@ -149,7 +149,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok(p.days[0].exercises[0].exercise === 'Bench press' && p.days[0].exercises[0].target_kg === '60', 'plan day');
   const e = (await call('tok.anna.x', 'list_exercises')).json;
   ok(e.length === 3 && e[0].name === 'Bench press' && !e.some((x) => x.name === 'Squat'), 'exercises scoped to user');
-  const s = (await call('tok.anna.x', 'get_sessions', { limit: 10 })).json;
+  const s = (await call('tok.anna.x', 'get_sessions', { limit: 10, detail: true })).json;
   ok(s.length === 3 && s[0].date === '2026-10-15', 'sessions newest first');
   const s1 = s.find((x) => x.date === '2026-10-01');
   ok(s1.exercises[0].sets.length === 3 && !s1.exercises[0].sets.some((t) => t.load === 70), 'unticked set left out');
@@ -161,7 +161,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok(h.sessions.length === 2 && h.sessions[0].date === '2026-10-08' && h.sessions[1].best.load === 65 && h.sessions[1].working_sets === 2, 'history ignores warmup + unticked');
   ok(h.sessions[1].best.estimated_1rm === 78, 'epley ' + h.sessions[1].best.estimated_1rm);
   const hb = (await call('tok.anna.x', 'get_exercise_history', { exercise_id: 'pullup' })).json;
-  ok(hb.sessions[0].best.reps === 7 && hb.sessions[0].best.estimated_1rm === null, 'bodyweight history');
+  ok(hb.sessions[0].best.reps === 7 && hb.sessions[0].best.estimated_1rm === undefined, 'bodyweight history');
   ok((await call('tok.anna.x', 'get_exercise_history', { exercise_id: 'squat' })).err, 'other user exercise unknown');
   const nt = (await call('tok.anna.x', 'get_notes')).json;
   ok(nt.length === 1 && nt[0].note_id === 'n1', 'waiting notes');
@@ -193,7 +193,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   r = await call('tok.anna.x', 'save_training_day', { name: 'Arms', exercises: [{ exercise_id: 'bench', sets: 3, reps: '5', superset: 'A' }, { exercise_id: 'lateral-raise', sets: 3, reps: '12', superset: 'A' }, { exercise_id: 'bench', sets: 3, reps: '5', superset: 'B' }] });
   const ts = rows.find((x) => x.user_id === A && x.path === 'yc/templates/' + r.json.day.id).data;
   ok(!r.err && ts.items[0].group === 'A' && ts.items[1].group === 'A' && !('group' in ts.items[2]), 'superset kept on neighbours, dropped on a lone item');
-  ok(r.json.day.exercises[0].superset === 'A' && r.json.day.exercises[2].superset === null, 'superset is read back');
+  ok(r.json.day.exercises[0].superset === 'A' && r.json.day.exercises[2].superset === undefined, 'superset is read back');
   r = await call('tok.anna.x', 'save_training_day', { name: 'Split', exercises: [{ exercise_id: 'bench', sets: 3, reps: '5', superset: 'A' }, { exercise_id: 'lateral-raise', sets: 3, reps: '5', superset: 'A' }, { exercise_id: 'bench', sets: 3, reps: '5' }, { exercise_id: 'lateral-raise', sets: 3, reps: '5', superset: 'A' }, { exercise_id: 'bench', sets: 3, reps: '5', superset: 'A' }] });
   const t2 = rows.find((x) => x.user_id === A && x.path === 'yc/templates/' + r.json.day.id).data;
   ok(t2.items[0].group === 'A' && t2.items[3].group && t2.items[3].group !== 'A' && t2.items[3].group === t2.items[4].group, 'a label reused further down is a separate group');
@@ -236,7 +236,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
 
   // search
   let r = await search('kaas');
-  ok(r.results.length === 10 && r.results.every((x) => /^(nevo|usda):/.test(x.food) && x.per_100.protein_g != null && x.portions.length && x.portions_are), 'search: ids, nutrients per 100, portions');
+  ok(r.results.length === 8 && r.results.every((x) => /^(nevo|usda):/.test(x.food) && x.per_100.protein_g != null && x.portions.length && x.unit === undefined) && /grams for one/i.test(r.portions_are), 'search: ids, nutrients per 100, portions, and where the sizes come from said once: ' + r.portions_are);
   ok(!('kcal' in r.results[0].per_100) && /hidden/.test(r.calories), 'calories hidden by default, and the result says so');
   ok((await search('kaas', 3)).results.length === 3, 'search limit');
   r = await search('bruin brood');
@@ -463,7 +463,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   r = await call(T, 'save_custom_food', { name: "Mama's lasagne", kcal_per_100: 165, protein_per_100: 9.5, carbs_per_100: 14, fat_per_100: 8, portions: [{ label: 'plate', grams: 350 }], said: ['lasagna'] });
   ok(!r.err && r.json.saved.food === 'own:mama-s-lasagne' && r.json.saved.per_100.protein_g === 9.5 && r.json.saved.unit === 'g' && r.json.replaced === false, 'a custom food is saved: ' + r.text);
   s1 = (await call(T, 'search_foods', { query: 'lasagne' })).json.results[0];
-  ok(s1.food === 'own:mama-s-lasagne' && s1.yours === true && s1.unit === 'g' && s1.per_100.protein_g === 9.5 && s1.per_100.carbs_g === 14 && s1.portions[0].label === 'plate', 'search finds her own food first with her numbers and portion: ' + JSON.stringify(s1));
+  ok(s1.food === 'own:mama-s-lasagne' && s1.yours === true && s1.unit === undefined && s1.per_100.protein_g === 9.5 && s1.per_100.carbs_g === 14 && s1.portions[0].label === 'plate', 'search finds her own food first with her numbers and portion: ' + JSON.stringify(s1));
   ok((await call(T, 'search_foods', { query: 'lasagna' })).json.results[0].food === 'own:mama-s-lasagne', 'and by the other word she uses');
   ok((await call(TB, 'search_foods', { query: 'lasagne' })).json.results.every((v) => v.food !== 'own:mama-s-lasagne'), 'another person does not get her custom food');
   r = await call(T, 'log_meals', { meals: [{ items: [{ food: 'own:mama-s-lasagne', grams: 200 }] }] });
@@ -602,7 +602,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   let r = await call(T, 'get_food_day', { date: '2026-09-15' });
   const q1 = r.json.entries.find((e) => e.id === 'q1');
   ok(!r.err && r.json.entries.length === 3 && q1.placeholder === true && q1.logged_at === '2026-09-15T12:32:00.000Z', 'a placeholder is listed, flagged and timed: ' + JSON.stringify(q1));
-  ok(r.json.entries.find((e) => e.id === 'q2').logged_at === null && !r.json.entries.find((e) => e.id === 'r1').placeholder, 'a bad time is null, a normal entry is not flagged');
+  ok(r.json.entries.find((e) => e.id === 'q2').logged_at === undefined && !r.json.entries.find((e) => e.id === 'r1').placeholder, 'a bad time is left out, a normal entry is not flagged');
   ok(r.json.totals.protein_g === 0.3 && r.json.totals.carbs_g === 14, 'the totals leave placeholders out');
   r = await call(T, 'remove_food_entry', { date: '2026-09-15', entry_id: 'q1' });
   ok(!r.err && r.json.removed.placeholder === true && !(await call(T, 'get_food_day', { date: '2026-09-15' })).json.entries.some((e) => e.id === 'q1'), 'once the person says what it was, the placeholder can be removed');
@@ -623,7 +623,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   seed(A, 'yc/food/2026-07-01', { date: '2026-07-01', entries: { rough: { name: 'Big lunch', p: 25, c: null, f: null, kcal: null, rough: true, at: 1 }, full: { name: 'Apple', p: 0.3, c: 14, f: 0.2, kcal: 62, at: 2 } } });
   let r = await call(T, 'get_food_day', { date: '2026-07-01' });
   const rough = r.json.entries.find((e) => e.id === 'rough');
-  ok(rough.kcal === null && rough.rough === true && rough.protein_g === 25 && r.json.entries.find((e) => e.id === 'full').kcal === 62, 'a missing calorie figure is null, not 0, and a rough entry is flagged: ' + JSON.stringify(rough));
+  ok(rough.kcal === undefined && rough.rough === true && rough.protein_g === 25 && r.json.entries.find((e) => e.id === 'full').kcal === 62, 'a missing calorie figure is left out, not 0, and a rough entry is flagged: ' + JSON.stringify(rough));
   ok(/1 entry has no calories/.test(r.json.calories_note) && r.json.totals.kcal === 62 && r.json.totals.protein_g === 25.3, 'the day says its calorie total is a minimum: ' + JSON.stringify(r.json.calories_note));
   settings.show_calories = false;
   r = await call(T, 'get_food_day', { date: '2026-07-01' });
@@ -677,7 +677,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
 {
   const T = 'tok.anna.x';
   const sessionRow = (path) => rows.find((x) => x.user_id === A && x.path === path);
-  const list = (await call(T, 'get_sessions', { from: '2026-10-01', to: '2026-10-01' })).json[0];
+  const list = (await call(T, 'get_sessions', { from: '2026-10-01', to: '2026-10-01', detail: true })).json[0];
   ok(list.session_id === '2026-10-01' && list.exercises[0].sets.map((st) => st.set_id).sort().join() === 'a,b,w', 'reads carry session_id and set_id: ' + JSON.stringify(list).slice(0, 200));
   const idOfRep = (reps) => list.exercises[0].sets.find((st) => st.reps === reps).set_id;
 
@@ -696,7 +696,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   r = await call(T, 'remove_sets', { session_id: '2026-10-01', set_ids: [idOfRep(6)] });
   const gone = sessionRow('yc/sessions/2026-10-01').data.sets.b;
   ok(!r.err && r.json.removed === 1 && r.json.sets[0].load === 65 && r.json.sets[0].reps === 6 && gone.removed === true && gone.done === false && gone.reps === 6, 'one set removed the way the app flags it, numbers kept: ' + r.text.slice(0, 200));
-  ok((await call(T, 'get_sessions', { from: '2026-10-01', to: '2026-10-01' })).json[0].exercises[0].sets.map((st) => st.reps).join() === '10,8', 'it is gone from the session read (warm-up and the 8 stay)');
+  ok((await call(T, 'get_sessions', { from: '2026-10-01', to: '2026-10-01' })).json[0].exercises[0].sets === 'warmup 10@30, 8@60', 'it is gone from the session read (warm-up and the 8 stay)');
   const h = (await call(T, 'get_exercise_history', { exercise_id: 'bench' })).json;
   ok(h.sessions.find((x) => x.date === '2026-10-01').best.load === 60 && h.sessions.find((x) => x.date === '2026-10-01').working_sets === 1, 'and from the exercise history');
   r = await call(T, 'remove_sets', { session_id: '2026-10-01', set_ids: [idOfRep(6)] });
@@ -712,7 +712,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   r = await call(T, 'add_sets', { date: '2026-10-20', exercise_id: 'row', day_id: 'day-2', sets: [{ reps: 10, load: 40 }, { reps: 10, load: 40 }, { reps: 8, load: 42.5, rir: 2, note: 'knee on the bench' }] });
   const made = sessionRow('yc/sessions/2026-10-20');
   ok(!r.err && made && made.data.template === 'day-2' && made.data.label === 'Pull' && made.data.split === 'Back' && made.data.finished_at && Object.keys(made.data.sets).join() === 'row_1,row_2,row_3', 'a date without a session gets one from the training day, complete because it is in the past: ' + r.text.slice(0, 200));
-  ok(r.json.session.exercises.length === 1 && r.json.session.exercises[0].sets.length === 3 && r.json.session.exercises[0].sets[2].rir === 2, 'the reply shows the sets');
+  ok(r.json.session.exercises.length === 1 && r.json.session.exercises[0].sets === '10@40, 10@40, 8@42.5 rir2 "knee on the bench"', 'the reply shows the sets, one line: ' + r.json.session.exercises[0].sets);
   r = await call(T, 'add_sets', { date: '2026-10-20', exercise_id: 'row', sets: [{ reps: 6, load: 45 }] });
   ok(!r.err && r.json.set_ids.join() === 'row_4' && Object.keys(sessionRow('yc/sessions/2026-10-20').data.sets).length === 4, 'adding again continues the numbering');
   r = await call(T, 'add_sets', { date: '2026-10-08', session_id: '2026-10-08~day-1', exercise_id: 'pullup', sets: [{ reps: 7 }] });
@@ -725,14 +725,14 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok(!r.err && r.json.removed === 3 && r.json.sets.every((x) => x.load === 10 && x.exercise_id === 'row'), 'all sets of an exercise go at once, with their numbers in the reply');
   r = await call(T, 'add_sets', { date: '2026-10-21', exercise_id: 'curl', sets: r.json.sets.map((x) => ({ reps: x.reps, load: x.load })) });
   const day21 = (await call(T, 'get_sessions', { from: '2026-10-21', to: '2026-10-21' })).json[0];
-  ok(!r.err && day21.exercises.length === 1 && day21.exercises[0].exercise === 'Curl' && day21.exercises[0].sets.length === 3, 'the same sets now stand under the right exercise');
+  ok(!r.err && day21.exercises.length === 1 && day21.exercises[0].exercise === 'Curl' && day21.exercises[0].sets.split(', ').length === 3, 'the same sets now stand under the right exercise');
   ok((await call(T, 'get_exercise_history', { exercise_id: 'row' })).json.sessions.every((x) => x.date !== '2026-10-21'), 'and the row history no longer has them');
 
   // checks on what is added
   const bad = async (args, re, what) => { const x = await call(T, 'add_sets', { exercise_id: 'bench', date: '2026-10-01', ...args }); ok(x.err && re.test(x.text), what + ': ' + x.text.slice(0, 120)); };
   await bad({ date: '2999-01-01', sets: [{ reps: 5 }] }, /today or earlier/, 'future date');
   await bad({ date: '2026-02-31', sets: [{ reps: 5 }] }, /real day/, 'not a date');
-  await bad({ exercise_id: 'nope', sets: [{ reps: 5 }] }, /Unknown exercise/, 'unknown exercise');
+  await bad({ exercise_id: 'nope', sets: [{ reps: 5 }] }, /No exercise is called "nope"/, 'unknown exercise');
   await bad({ sets: [] }, /at least one/, 'no sets');
   await bad({ sets: Array.from({ length: 21 }, () => ({ reps: 5 })) }, /At most 20/, 'too many');
   await bad({ sets: [{ load: 50 }] }, /Set 1: reps are needed/, 'reps missing');
@@ -750,6 +750,30 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   r = await call(T, 'add_sets', { date: '2026-10-23', exercise_id: 'bench', sets: [{ reps: 8, load: 50, type: 'warmup' }, { reps: 8, load: 60, type: 'bogus' }] });
   ok(!r.err && sessionRow('yc/sessions/2026-10-23').data.sets.bench_1.kind === 'warmup' && sessionRow('yc/sessions/2026-10-23').data.sets.bench_2.kind === 'work', 'set types are kept, an unknown one becomes work');
 
+  // a whole dictated workout in one call, by the names the person says
+  await call(T, 'create_exercise', { name: 'Incline bench press' });
+  r = await call(T, 'add_sets', { date: '2026-10-24', exercises: [
+    { exercise: 'Row', sets: [{ reps: 10, load: 50 }, { reps: 9, load: 50 }] },
+    { exercise: 'incline bench', sets: [{ reps: 8, load: 40 }] },
+    { exercise: 'pull-up', sets: [{ reps: 7 }] },
+    { exercise: 'row', sets: [{ reps: 8, load: 50 }] }] });
+  const d24 = sessionRow('yc/sessions/2026-10-24');
+  ok(!r.err && r.json.added === 5 && r.json.set_ids.join() === 'row_1,row_2,incline-bench-press_1,pullup_1,row_3' && Object.keys(d24.data.sets).length === 5, 'several exercises go in with one call and one write: ' + (r.text || '').slice(0, 200));
+  ok(r.json.session.exercises.find((x) => x.exercise_id === 'row').sets === '10@50, 9@50, 8@50' && r.json.session.exercises.find((x) => x.exercise_id === 'pullup').sets === '7', 'the reply is one short line per exercise: ' + JSON.stringify(r.json.session.exercises));
+  ok(r.text.length < 420, 'and it is small: ' + r.text.length + ' characters');
+  let before24 = JSON.stringify(d24.data);
+  r = await call(T, 'add_sets', { date: '2026-10-24', exercises: [{ exercise: 'row', sets: [{ reps: 8, load: 50 }] }, { exercise: 'press', sets: [{ reps: 8, load: 60 }] }] });
+  ok(r.err && /Several exercises fit "press"/.test(r.text) && /incline-bench-press \(Incline bench press\)/.test(r.text) && JSON.stringify(sessionRow('yc/sessions/2026-10-24').data) === before24, 'a name that fits two is asked back with both, and nothing of the call is saved: ' + r.text.slice(0, 200));
+  r = await call(T, 'add_sets', { date: '2026-10-24', exercises: [{ exercise: 'Bench press', sets: [{ reps: 8, load: 60 }] }] });
+  ok(!r.err && r.json.set_ids.join() === 'bench_1', 'the full name is exact, so it is taken');
+  r = await call(T, 'add_sets', { date: '2026-10-24', exercises: [{ exercise: 'inclined benchpress', sets: [{ reps: 8, load: 60 }] }] });
+  ok(r.err && /No exercise is called/.test(r.text) && /Closest: .*incline-bench-press/.test(r.text), 'a near miss comes back with the closest ones: ' + r.text.slice(0, 200));
+  r = await call(T, 'add_sets', { date: '2026-10-24', exercises: [{ exercise: 'row', sets: [{ reps: 8, load: 50 }] }, { exercise: 'pull-up', sets: [{ load: 5 }] }] });
+  ok(r.err && /Pull-up, set 1: reps are needed/.test(r.text) && JSON.stringify(sessionRow('yc/sessions/2026-10-24').data).includes('"row_3"') && !JSON.stringify(sessionRow('yc/sessions/2026-10-24').data).includes('"row_4"'), 'a wrong set in the second exercise refuses the first one too: ' + r.text.slice(0, 120));
+  r = await call(T, 'add_sets', { exercise: 'row', sets: [{ reps: 8, load: 50 }] });
+  const todayNl = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Amsterdam' }).format(new Date());
+  ok(!r.err && r.json.session.date === todayNl && sessionRow('yc/sessions/' + todayNl), 'without a date it is today where the person lives');
+
   // people stay apart
   r = await call('tok.ben.x', 'remove_sets', { session_id: '2026-10-01', exercise_id: 'bench' });
   ok(r.err && sessionRow('yc/sessions/2026-10-01').data.sets.a.removed !== true, 'another person cannot reach her log');
@@ -766,7 +790,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   const list = (await call(T, 'list_exercises')).json;
   ok(list.find((x) => x.id === 'bench').weight_step === 2.3 && list.find((x) => x.id === 'bench').weight_step_from === 'set', 'list_exercises carries the person\'s own weight_step');
   ok(list.find((x) => x.id === 'row').weight_step === 2.5 && list.find((x) => x.id === 'row').weight_step_from === 'usual', 'without one, the usual jump is given and named as such: ' + JSON.stringify(list.find((x) => x.id === 'row')));
-  ok(list.find((x) => x.id === 'pullup').weight_step === null && list.find((x) => x.id === 'pullup').weight_step_from === null, 'a bodyweight exercise has no step');
+  ok(list.find((x) => x.id === 'pullup').weight_step === undefined && list.find((x) => x.id === 'pullup').weight_step_from === undefined, 'a bodyweight exercise has no step');
   const plan = (await call(T, 'get_plan')).json;
   ok(plan.days.find((d) => d.id === 'day-1').exercises[0].weight_step === 2.3, 'and so does the plan');
   let r = await call(T, 'create_exercise', { name: 'Hack squat', weight_step: 2.3 });
@@ -799,7 +823,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   r = await call(T, 'save_training_day', { id: dayId, ...one({ progress: 'down', target_kg: '300' }) });
   ok(!r.err && r.json.day.exercises[0].target_kg === '100', 'down: one step under it, whatever target_kg said');
   r = await call(T, 'save_training_day', { id: dayId, ...one({ progress: 'auto', target_kg: '300' }) });
-  ok(!r.err && r.json.day.exercises[0].target_kg === '' && !r.json.weights, 'auto: left to the app');
+  ok(!r.err && r.json.day.exercises[0].target_kg === undefined && !r.json.weights, 'auto: left to the app');
   r = await call(T, 'save_training_day', { id: dayId, ...one({ target_kg: '112' }) });
   ok(!r.err && r.json.day.exercises[0].target_kg === '110' && r.json.weights[0].asked_kg === 112, 'a weight that cannot be loaded moves to the nearest one that can: ' + JSON.stringify(r.json.weights));
   r = await call(T, 'save_training_day', { id: dayId, ...one({ target_kg: '115' }) });
@@ -809,7 +833,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   r = await call(T, 'save_training_day', { id: dayId, name: 'Step day', exercises: [{ exercise_id: 'row', sets: 3, reps: '10', target_kg: '51' }, { exercise_id: 'face-pull-new', sets: 3, reps: '10', progress: 'up', target_kg: 'light' }, { exercise_id: 'pullup', sets: 3, reps: 'max', progress: 'up' }] });
   const got = r.json.day.exercises.map((x) => x.target_kg);
   ok(!r.err && got[0] === '51', 'a guessed step moves nothing: ' + got);
-  ok(r.json.weights.length === 2 && r.json.weights.every((x) => /No working weight/.test(x.note)) && got[1] === 'light' && got[2] === '', 'no weight to move from is said, not guessed: ' + JSON.stringify(r.json.weights));
+  ok(r.json.weights.length === 2 && r.json.weights.every((x) => /No working weight/.test(x.note)) && got[1] === 'light' && got[2] === undefined, 'no weight to move from is said, not guessed: ' + JSON.stringify(r.json.weights));
   // an assisted machine: heavier is less help
   await call(T, 'create_exercise', { name: 'Assisted dip', unit: 'assist' });
   await call(T, 'add_sets', { date: '2026-10-29', exercise_id: 'assisted-dip', sets: [{ reps: 8, load: 30 }, { reps: 8, load: 30 }] });
