@@ -1063,12 +1063,12 @@
   "fr": "+ {0} de plus",
   "it": "+ {0} altri"
  },
- "Free. No ads.": {
-  "nl": "Gratis. Geen advertenties.",
-  "es": "Gratis. Sin anuncios.",
-  "de": "Kostenlos. Keine Werbung.",
-  "fr": "Gratuit. Sans pub.",
-  "it": "Gratis. Senza pubblicità."
+ "Free forever. No tracking, no ads.": {
+  "nl": "Altijd gratis. Geen tracking, geen advertenties.",
+  "es": "Gratis para siempre. Sin rastreo, sin anuncios.",
+  "de": "Für immer kostenlos. Kein Tracking, keine Werbung.",
+  "fr": "Gratuit pour toujours. Sans suivi, sans pub.",
+  "it": "Gratis per sempre. Senza tracciamento, senza pubblicità."
  },
  "Done": {
   "nl": "Klaar",

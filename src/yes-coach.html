@@ -2192,7 +2192,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return {
       title: sum.name, date, minutes: sum.minutes, sets: sum.sets, volume: sum.volume, note: sum.note,
       lines: sum.lines.map((l) => ({ name: l.name, detail: l.detail, sets: T(l.n === 1 ? '1 set' : l.n + ' sets'), pr: l.pr })),
-      words: { time: T('Time'), sets: T('Working sets'), volume: T('Volume'), pr: T('PR'), more: T('+ {0} more'), tagline: T('Free. No ads.') },
+      words: { time: T('Time'), sets: T('Working sets'), volume: T('Volume'), pr: T('PR'), more: T('+ {0} more'), tagline: T('Free forever. No tracking, no ads.') },
     };
   };
   const showFinish = (sum, after) => {
