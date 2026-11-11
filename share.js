@@ -127,7 +127,7 @@
       }
       // footer
       ctx.fillStyle = SOFT; ctx.font = '700 34px ' + HEAD;
-      ctx.fillText(String(wd.tagline || 'Free. No ads.').toUpperCase(), PAD, H - 64);
+      ctx.fillText(String(wd.tagline || 'Free forever. No tracking, no ads.').toUpperCase(), PAD, H - 64);
       return cv;
     });
   }

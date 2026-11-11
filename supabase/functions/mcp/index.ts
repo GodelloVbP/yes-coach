@@ -19,13 +19,15 @@ const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const KINDS = ['Push', 'Pull', 'Legs', 'Other'];
 const UNITS = ['kg', 'bw', 'stack', 'assist', 'min'];
 const SET_KINDS = ['work', 'warmup', 'drop', 'test'];
+const PROGRESS = ['auto', 'up', 'hold', 'down'];
 const GROUPS = ['Chest', 'Back', 'Shoulders', 'Arms', 'Legs', 'Core', 'Other'];
 
 const INSTRUCTIONS = [
   'Yes Coach! is a workout tracker. These tools read the signed-in person\'s own plan, log and notes, and change their plan.',
   'Sets can be added to the log and removed from it, but not edited: to fix a set, remove it and add the right one. A removed set leaves the history and Progress. Plan changes show up in their app at once, and the app keeps an undo for the schedule.',
-  'Exercises are referenced by id. Loads are in kg.',
-  'Weights go up in steps. The app suggests the last working weight plus the exercise\'s weight_step once every set reached its reps, so 80 kg with a step of 2.3 becomes 82.3 kg. Without a weight_step the usual jump applies: 2.5 kg, 5 kg for barbell leg lifts, 2 kg for dumbbells, 1 pin on a machine.',
+  'Exercises are referenced by id. Loads are in kg. A whole workout can be logged at once under the exercise names the person says, without reading the exercise list.',
+  'Weights go up in steps, and every exercise comes with its weight_step and where that step comes from: set (the person chose it), log (the smallest jump between weights they have lifted) or usual (the smallest usual jump for the equipment). The app suggests the last working weight plus one step once every set reached its reps, so 80 kg with a step of 2.3 becomes 82.3 kg.',
+  'A plan change can say up, hold or down for an exercise, and the weight is worked out from the log, so the person does not have to be asked which weights their gym has.',
   'Food: search_foods finds foods in the Dutch (NEVO) and international (USDA) tables the app uses; save_custom_food saves a product that is in neither, from the numbers on its label or product page; log_meals saves meals as food ids with grams or a portion; get_food_day and remove_food_entry read and remove entries.',
   'The app reads every nutrient from those tables, so the AI supplies foods and amounts, not nutrient numbers. A search lists the portions a food comes in (a slice, a piece) with grams for one; amounts that are guesses are marked estimated.',
   'A search lists the foods the person logged before at the top, marked yours, with the words they use for them and their own portion sizes; save_my_food and save_meal keep a food, a word, a portion size or a usual meal, and log_meals can log a saved meal.',
@@ -33,7 +35,14 @@ const INSTRUCTIONS = [
 ].join(' ');
 
 // ---------------------------------------------------------------- small helpers
-const text = (v: Json): string => JSON.stringify(v, null, 1);
+// What a tool sends back: compact JSON without the empty fields (null and ""). A model pays for every character, and an absent
+// field says the same as an empty one. 0, false and an empty list stay: they are answers.
+const lean = (v: Json): Json => {
+  if (Array.isArray(v)) return v.map(lean);
+  if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).filter(([, x]) => x != null && x !== '').map(([k, x]) => [k, lean(x)]));
+  return v;
+};
+const text = (v: Json): string => JSON.stringify(lean(v));
 const str = (v: Json, max: number, d = ''): string => (v == null ? d : String(v).trim().slice(0, max));
 const int = (v: Json, lo: number, hi: number, d: number): number => { const n = Math.round(Number(v)); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : d; };
 const slug = (s: string): string => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
@@ -91,7 +100,7 @@ const readSchedule = (root: Json, days: Record<string, Json>): Json => {
   const sc = root && root.schedule;
   if (!sc || !sc.enabled) return { mode: 'none', note: 'No schedule set. Each day falls on its own weekday if it has one.' };
   const name = (id: string) => (days[id] ? days[id].name + ' (' + id + ')' : '(missing day ' + id + ')');
-  if (sc.mode === 'rotation') return { mode: 'rotation', note: sc.per_week && sc.per_week < (sc.days || []).length ? 'The weekdays are the days the person can train. They train ' + sc.per_week + ' times a week, spread over those days, and the days repeat in order.' : 'The days repeat in order on these weekdays.', weekdays: sc.days || [], ...(sc.per_week ? { sessions_per_week: sc.per_week } : {}), rotation: (sc.rotation || []).map(name) };
+  if (sc.mode === 'rotation') return { mode: 'rotation', note: sc.per_week && sc.per_week < (sc.days || []).length ? 'The weekdays are the days the person can train. They train ' + sc.per_week + ' times a week, spread over those days, and the day trained longest ago comes next.' : 'On these weekdays the day trained longest ago comes next.', weekdays: sc.days || [], ...(sc.per_week ? { sessions_per_week: sc.per_week } : {}), rotation: (sc.rotation || []).map(name) };
   return { mode: 'fixed', week: Object.fromEntries(WEEKDAYS.map((w) => [w, sc.week && sc.week[w] ? name(sc.week[w]) : 'rest'])) };
 };
 const inWeek = (root: Json): Set<string> => {
@@ -99,28 +108,100 @@ const inWeek = (root: Json): Set<string> => {
   if (!sc || !sc.enabled) return new Set();
   return new Set(sc.mode === 'rotation' ? sc.rotation || [] : Object.values(sc.week || {}).filter(Boolean) as string[]);
 };
-const dayOut = (id: string, d: Json, ex: Record<string, Json>, week: Set<string>): Json => ({
+const dayOut = (id: string, d: Json, ex: Record<string, Json>, week: Set<string>, w: Weights): Json => ({
   id, name: d.name, kind: d.kind || 'Other', focus: d.focus || '', in_week: week.has(id),
-  exercises: (d.items || []).map((it: Json) => ({ exercise_id: it.ex, exercise: exName(ex, it.ex), weight_step: ex[it.ex] && ex[it.ex].inc > 0 ? ex[it.ex].inc : null, sets: it.sets, reps: it.reps, target_kg: it.target || '', rest_s: it.rest_s, note: it.note || null, superset: it.group || null })),
+  exercises: (d.items || []).map((it: Json) => ({ exercise_id: it.ex, exercise: exName(ex, it.ex), ...stepOut(w, it.ex), last_load: w.last(it.ex), sets: it.sets, reps: it.reps, target_kg: it.target || '', rest_s: it.rest_s, note: it.note || null, superset: it.group || null })),
 });
 
 // ---------------------------------------------------------------- sessions
 const isDone = (st: Json): boolean => !!st && st.done !== false && !st.removed;
 const isWork = (st: Json): boolean => !!st && st.kind !== 'warmup' && st.kind !== 'test';
+
+// ---------------------------------------------------------------- weight steps
+// The app's own rule (progression.js: defaultInc, learnInc, resolveInc), copied because an Edge Function cannot import from the page.
+// tests/parity.test.mjs keeps the equipment lists below the same as the app's exercise library.
+const LIB_DUMBBELL = new Set('l02 l03 l16 l20 l22 l24 l26 l27 l30 l31 l32 l39 l40 l46 l47 l48 l49 l50 l069 l070 l071 l087 l090 l091 l095 l096 l100 l101 l102 l127 l130 l131 l133 l139 l141 l143 l144 l150 l151 l152 l153 l158 l159 l163 l173 l176 l178 l179 l180 l194 l195 l196 l198 l199 l211 l212 l215 l221 l238 l240 l259 l275 l276 l277 l278 l279 l280 l281 l282 l283'.split(' '));
+const LIB_CABLE = new Set('l06 l07 l10 l14 l18 l23 l25 l28 l29 l34 l36 l37 l38 l54 l60 l61 l072 l073 l074 l104 l105 l106 l107 l134 l135 l136 l140 l154 l155 l160 l161 l170 l171 l172 l174 l224 l231 l232 l256'.split(' '));
+const LIB_BARBELL = new Set('l04 l27 l29 l33 l40 l42 l50 l53 l067 l068 l088 l092 l093 l094 l096 l098 l099 l120 l121 l124 l125 l128 l129 l131 l148 l149 l153 l157 l162 l164 l175 l177 l179 l180 l181 l185 l186 l187 l188 l193 l195 l197 l211 l213 l214 l216 l217 l221 l257 l271 l272 l273 l274 l276 l277'.split(' '));
+const STEP_SESSIONS = 60; // how far back the log is read for the step and the last weight
+const round2 = (x: number): number => Math.round(x * 100) / 100;
+const usualStep = (e: Json, minPlate: number): number => {
+  const unit = e.unit || 'kg';
+  if (unit === 'stack') return 1;
+  if (unit === 'assist') return 5;
+  if (unit === 'kg' && e.load_basis === 'per_side') return minPlate;
+  const id = e.library_id || '', name = String(e.name || '');
+  if (LIB_DUMBBELL.has(id) || (!id && /dumbbell|kettlebell/i.test(name))) return 2;
+  if (LIB_CABLE.has(id) || (!id && /cable/i.test(name))) return 2.5;
+  if (LIB_BARBELL.has(id) || (!id && /barbell|ez-bar|trap bar|safety squat/i.test(name))) return round2(minPlate * 2);
+  return 2.5;
+};
+// the smallest gap between two neighbouring weights that were each used for two sets or more; a gap over twice the usual jump is a jump over weights
+const learnStep = (loads: number[], usual: number): number | null => {
+  const count: Record<string, number> = {};
+  loads.forEach((x) => { const v = Number(x); if (x != null && isFinite(v) && v >= 0) count[round2(v)] = (count[round2(v)] || 0) + 1; });
+  const seen = Object.keys(count).filter((k) => count[k] >= 2).map(Number).sort((a, b) => a - b);
+  let best: number | null = null;
+  for (let i = 1; i < seen.length; i += 1) { const g = round2(seen[i] - seen[i - 1]); if (g >= 0.25 && (best == null || g < best)) best = g; }
+  return best == null || best > 2 * usual ? null : best;
+};
+type Weights = { step: (id: string) => { inc: number; from: string } | null; last: (id: string) => number | null };
+// what the log says about every exercise: its step, and the weight most working sets were done at in its last session
+const weightsOf = (root: Json | null, ex: Record<string, Json>, sessions: { path: string; data: Json }[]): Weights => {
+  const plates = root && root.settings && Array.isArray(root.settings.plates) ? root.settings.plates.map(Number).filter((x: number) => x > 0) : [];
+  const minPlate = plates.length ? Math.min(...plates) : 1.25;
+  const loads: Record<string, number[]> = {}, last: Record<string, number> = {};
+  sessions.slice().sort((a, b) => (String(a.data.date) < String(b.data.date) ? 1 : -1)).forEach((r) => {
+    const by: Record<string, number[]> = {};
+    Object.values(r.data.sets || {}).forEach((st: Json) => { if (isDone(st) && (st.kind == null || st.kind === 'work') && st.ex && typeof st.load === 'number') (by[st.ex] = by[st.ex] || []).push(st.load); });
+    Object.entries(by).forEach(([id, ls]) => {
+      (loads[id] = loads[id] || []).push(...ls);
+      if (last[id] !== undefined) return;
+      // the load most sets were done at; ties go to the harder one (less help on an assisted machine)
+      const assist = ex[id] && ex[id].unit === 'assist';
+      const n: Record<string, number> = {};
+      ls.forEach((l) => { n[l] = (n[l] || 0) + 1; });
+      last[id] = Object.keys(n).map(Number).reduce((a, c) => (n[c] > n[a] || (n[c] === n[a] && (assist ? c < a : c > a)) ? c : a));
+    });
+  });
+  return {
+    step: (id) => {
+      const e = ex[id];
+      const unit = e ? e.unit || 'kg' : '';
+      if (!e || (unit !== 'kg' && unit !== 'stack' && unit !== 'assist')) return null;
+      if (Number(e.inc) > 0) return { inc: Number(e.inc), from: 'set' };
+      const usual = usualStep(e, minPlate);
+      const learned = learnStep(loads[id] || [], usual);
+      return learned != null ? { inc: learned, from: 'log' } : { inc: usual, from: 'usual' };
+    },
+    last: (id) => (last[id] === undefined ? null : last[id]),
+  };
+};
+const stepOut = (w: Weights, id: string): Json => { const s = w.step(id); return { weight_step: s ? s.inc : null, weight_step_from: s ? s.from : null }; };
+const loadWeights = async (db: Db, root: Json | null, ex: Record<string, Json>): Promise<Weights> => weightsOf(root, ex, await db.list('yc/sessions/', { desc: true, limit: STEP_SESSIONS }));
 // a run set also carries distance (km), climb (m) and where it happened; the pace follows from time and distance
 const runOut = (st: Json): Json => {
   if (st.km == null && st.elev == null && !st.where) return {};
   const pace = st.km > 0 && st.minutes > 0 ? Math.round((st.minutes / st.km) * 60) : null;
   return { distance_km: st.km ?? null, altitude_gain_m: st.elev ?? null, where: st.where === 'treadmill' ? 'treadmill' : st.where ? 'outdoors' : null, pace_min_per_km: pace == null ? null : Math.floor(pace / 60) + ':' + String(pace % 60).padStart(2, '0'), speed_kmh: st.km > 0 && st.minutes > 0 ? Math.round((st.km / (st.minutes / 60)) * 10) / 10 : null };
 };
-const sessionOut = (path: string, s: Json, ex: Record<string, Json>, days: Record<string, Json>): Json => {
+// One set in a few characters: "8@60" (reps at load), "8" (bodyweight), "12min 2.1km"; the type in front when it is not a working set,
+// then reps in reserve and the note.
+const setLine = (st: Json): string => {
+  const run = runOut(st);
+  const core = st.reps == null && st.minutes != null
+    ? st.minutes + 'min' + (st.km != null ? ' ' + st.km + 'km' : '') + (st.elev != null ? ' +' + st.elev + 'm' : '') + (run.where === 'treadmill' ? ' treadmill' : '')
+    : (st.reps ?? '?') + (st.load != null ? '@' + st.load : '');
+  return (st.kind && st.kind !== 'work' ? st.kind + ' ' : '') + core + (st.rir != null ? ' rir' + st.rir : '') + (st.note ? ' "' + st.note + '"' : '');
+};
+const sessionOut = (path: string, s: Json, ex: Record<string, Json>, days: Record<string, Json>, detail = false): Json => {
   const by: Record<string, Json[]> = {};
   Object.entries(s.sets || {}).filter(([, st]) => isDone(st as Json) && !(st as Json).removed).sort((a: Json, b: Json) => (a[1].order || 0) - (b[1].order || 0)).forEach(([key, st]: [string, Json]) => { (by[st.ex] = by[st.ex] || []).push({ ...st, _key: key }); });
   return {
     session_id: idOf(path), date: s.date, label: s.label || '', day: s.template && days[s.template] ? days[s.template].name : null, finished: !!s.finished_at, note: s.note || null,
     exercises: Object.entries(by).map(([id, sets]) => ({
       exercise_id: id, exercise: exName(ex, id),
-      sets: sets.map((st: Json) => ({ set_id: st._key, n: st.n, type: st.kind || 'work', reps: st.reps ?? null, load: st.load ?? null, minutes: st.minutes ?? null, ...runOut(st), rir: st.rir ?? null, note: st.note || null })),
+      sets: detail ? sets.map((st: Json) => ({ set_id: st._key, n: st.n, type: st.kind || 'work', reps: st.reps ?? null, load: st.load ?? null, minutes: st.minutes ?? null, ...runOut(st), rir: st.rir ?? null, note: st.note || null })) : sets.map(setLine).join(', '),
     })),
   };
 };
@@ -379,8 +460,26 @@ const loadMeals = async (db: Db): Promise<Saved[]> => (await db.list('yc/meals/'
 const savedOut = (m: Saved, cal: boolean) => ({ id: m.id, name: m.name, times_logged: m.n, items: m.items.map(itemOut), ...macros(sumItems(m.items), cal) });
 
 // one food of a meal as the AI gave it (a food id, and grams or a portion), checked against the tables and the person's own portion sizes
+// A food by the word the person used, without a search in between. It is taken only when there is no doubt: the one food of
+// their own that the word fits (or the one they call exactly that), else the one food in the tables with exactly that name.
+// Anything else gives the few closest foods back, so nothing is logged under a guess.
+const foodByName = (tables: FoodDb, fdb: FoodDb, mine: Mine[], said: string): { key?: string; options: Food[] } => {
+  const toks = wordsOf(said), q = fold(said).trim();
+  if (!toks.length) return { options: [] };
+  const yours = mine.filter((m) => fdb.byKey.has(m.food) && mineMatches(m, toks)).sort((a, b) => b.n - a.n || b.last - a.last);
+  if (yours.length === 1) return { key: yours[0].food, options: [] };
+  const called = yours.filter((m) => fold(m.name) === q || Object.keys(m.aka).some((k) => fold(k) === q));
+  if (called.length === 1) return { key: called[0].food, options: [] };
+  const hits = searchFoods(tables, said, 12);
+  if (!yours.length) {
+    const exact = hits.filter((f) => fold(f.name) === q || fold(f.alt) === q);
+    if (exact.length === 1) return { key: foodKey(exact[0].src, exact[0].ref), options: [] };
+  }
+  const seen = new Set<string>();
+  return { options: [...yours.map((m) => fdb.byKey.get(m.food) as Food), ...hits].filter((f) => { const k = foodKey(f.src, f.ref); return !seen.has(k) && !!seen.add(k); }).slice(0, 4) };
+};
 const resolveItem = (fdb: FoodDb, mineBy: Map<string, Mine>, it: Json): { item: Item; said: string } => {
-  if (!it || typeof it !== 'object') fail('Each food needs a "food" id and grams or a portion.');
+  if (!it || typeof it !== 'object' || (!it.food && !it.name)) fail('Each food needs a name or a "food" id, and grams or a portion.');
   const key = str(it.food, 40);
   const food = fdb.byKey.get(key);
   if (!food) fail('Unknown food "' + key + '". Use the "food" value of a search result, like "nevo:123".');
@@ -388,12 +487,15 @@ const resolveItem = (fdb: FoodDb, mineBy: Map<string, Mine>, it: Json): { item: 
   const own = mineBy.get(key);
   let g: number;
   if (Number(it.grams) > 0) g = Number(it.grams);
-  else if (it.portion && it.portion.label) {
-    const want = fold(it.portion.label);
-    const mineHit = own ? Object.entries(own.portions).find(([l]) => fold(l) === want) : undefined;
+  else if (it.portion && (it.portion.label || Number(it.portion.count) > 0)) {
+    const mineAll = own ? Object.entries(own.portions) : [];
     const list = portionsOf(fdb, fd).list;
+    // no label: the everyday portion, the person's own before the table's (the first one a search shows)
+    const want = it.portion.label ? fold(it.portion.label) : fold(mineAll.length ? mineAll[0][0] : list.length ? list[0].label : '');
+    const mineHit = mineAll.find(([l]) => fold(l) === want);
     const hit = mineHit ? { grams: mineHit[1] } : list.find((x) => fold(x.label) === want);
-    if (!hit) fail('"' + it.portion.label + '" is not a portion of ' + fd.name + '. Its portions: ' + [...(own ? Object.entries(own.portions).map(([l, gr]) => ({ label: l, grams: gr })) : []), ...list].slice(0, 8).map((x) => x.label + ' (' + x.grams + ' g)').join(', ') + '. Or give grams.');
+    if (!hit && !it.portion.label) fail('No portion size is known for ' + fd.name + '. Give grams.');
+    if (!hit) return fail('"' + it.portion.label + '" is not a portion of ' + fd.name + '. Its portions: ' + [...(own ? Object.entries(own.portions).map(([l, gr]) => ({ label: l, grams: gr })) : []), ...list].slice(0, 8).map((x) => x.label + ' (' + x.grams + ' g)').join(', ') + '. Or give grams.');
     const count = Number(it.portion.count);
     g = hit.grams * (count > 0 ? count : 1);
   } else fail('Give grams or a portion for ' + fd.name + '.');
@@ -409,7 +511,34 @@ const RO = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, o
 const WR = { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false }; // overwrites plan data
 const ADD = { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false }; // only adds
 const LOG = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false }; // only adds, and every call adds again
-const obj = (properties: Json, required: string[] = []) => ({ type: 'object', properties, required, additionalProperties: false });
+// kept small on purpose: every chat with the connector carries all the schemas, so nothing is said that a model does not need
+const obj = (properties: Json, required: string[] = []) => ({ type: 'object', properties, ...(required.length ? { required } : {}) });
+
+// the sets of one exercise, as add_sets takes them
+const SETS_IN = { type: 'array', maxItems: 20, description: 'The sets, in the order they were done. Each is a done set, as if the person had ticked it.', items: obj({
+  reps: { type: 'integer', description: 'Needed unless the exercise is counted in minutes.' }, load: { type: 'number', description: 'kg, machine pin, or assistance kg, as the exercise is counted. Leave out for bodyweight.' },
+  minutes: { type: 'number', description: 'Needed when the exercise is counted in minutes.' }, type: { type: 'string', enum: SET_KINDS, description: 'work (default), warmup, drop or test (not counted in Progress).' },
+  rir: { type: 'integer', description: 'Reps in reserve, 0 to 10.' }, note: { type: 'string' },
+  distance_km: { type: 'number' }, altitude_gain_m: { type: 'number' }, where: { type: 'string', enum: ['outdoor', 'treadmill'] },
+}) };
+// An exercise by its id or by what the person calls it. One exact name wins; else the one exercise whose name has every word that was said.
+// None or several: the call is refused with the closest ones, so nothing is logged under a guess.
+const findExercise = (ex: Record<string, Json>, said: Json): string => {
+  const t = str(said, 80);
+  if (!t) fail('Say which exercise: its id or its name.');
+  if (ex[t]) return t;
+  const norm = (x: Json): string => fold(x).replace(/[^a-z0-9]+/g, ' ').trim();
+  const q = norm(t), qw = q.split(' ').filter(Boolean);
+  const all = Object.entries(ex).map(([id, e]) => ({ id, name: String(e.name || id), n: norm(e.name || id) }));
+  const exact = all.filter((x) => x.n === q || norm(x.id) === q);
+  if (exact.length === 1) return exact[0].id;
+  const within = exact.length ? exact : all.filter((x) => { const w = x.n.split(' '); return qw.length > 0 && qw.every((v) => w.includes(v)); });
+  if (within.length === 1) return within[0].id;
+  const show = (l: { id: string; name: string }[]) => l.slice(0, 8).map((x) => x.id + ' (' + x.name + ')').join(', ');
+  if (within.length > 1) fail('Several exercises fit "' + t + '": ' + show(within) + '. Use the id of the right one. Nothing was saved.');
+  const near = all.map((x) => ({ ...x, s: qw.filter((v) => x.n.split(' ').some((w) => w === v || (v.length > 3 && (w.startsWith(v) || v.startsWith(w))))).length })).filter((x) => x.s > 0).sort((a, b) => b.s - a.s);
+  return fail('No exercise is called "' + t + '".' + (near.length ? ' Closest: ' + show(near) + '. Use one of these ids, or' : ' Call list_exercises, or') + ' create_exercise for a new one. Nothing was saved.');
+};
 
 const TOOLS: Tool[] = [
   {
@@ -421,7 +550,7 @@ const TOOLS: Tool[] = [
       return {
         profile: (root && root.profile) || {}, schedule: readSchedule(root, days),
         training_days: byOrder(days).map((id) => ({ id, name: days[id].name, kind: days[id].kind || 'Other', exercises: (days[id].items || []).length, in_week: week.has(id) })),
-        recent_sessions: recent.map((r) => { const s = sessionOut(r.path, r.data, ex, days); return { date: s.date, label: s.label, day: s.day, exercises: s.exercises.length, sets: s.exercises.reduce((n: number, e: Json) => n + e.sets.length, 0) }; }),
+        recent_sessions: recent.map((r) => { const s = sessionOut(r.path, r.data, ex, days, true); return { date: s.date, label: s.label, day: s.day, exercises: s.exercises.length, sets: s.exercises.reduce((n: number, e: Json) => n + e.sets.length, 0) }; }),
         notes_waiting: notes.filter((n) => (n.data.status || 'new') === 'new' && !n.data.reply).length,
         today: today(),
       };
@@ -429,27 +558,32 @@ const TOOLS: Tool[] = [
   },
   {
     name: 'get_plan', title: 'Get training plan', annotations: RO, inputSchema: obj({}),
-    description: 'The training plan: every training day with its exercises (sets, reps, starting load in kg, rest, note), whether it is in the week, and the weekly schedule.',
+    description: 'The training plan: every training day with its exercises (sets, reps, starting load in kg, rest, note, the weight step with where it comes from, and last_load, the weight of the last session\'s working sets), whether it is in the week, and the weekly schedule.',
     run: async (db) => {
       const [root, ex, days] = await Promise.all([db.get('yc'), loadExercises(db), loadDays(db)]);
       const week = inWeek(root);
-      return { schedule: readSchedule(root, days), days: byOrder(days).map((id) => dayOut(id, days[id], ex, week)) };
+      const w = await loadWeights(db, root, ex);
+      return { schedule: readSchedule(root, days), days: byOrder(days).map((id) => dayOut(id, days[id], ex, week, w)) };
     },
   },
   {
     name: 'list_exercises', title: 'List exercises', annotations: RO, inputSchema: obj({}),
-    description: 'The person\'s exercises: id, name, body part, how the load is counted (kg = weight, stack = machine pin, bw = bodyweight reps, assist = assistance in kg, min = minutes), the weight step they set (empty means the usual jump) and their own note for the exercise.',
-    run: async (db) => { const ex = await loadExercises(db); return Object.entries(ex).map(([id, e]) => ({ id, name: e.name, group: e.group || 'Other', unit: e.unit || 'kg', category: e.category || 'strength', weight_step: e.inc > 0 ? e.inc : null, note: e.my_note || null })).sort((a, b) => (a.name < b.name ? -1 : 1)); },
+    description: 'The person\'s exercises: id, name, body part, unit when the load is not counted in kg (stack = machine pin, bw = bodyweight reps, assist = assistance in kg, min = minutes), category when it is not strength, the weight step with where it comes from (set by the person, log: the smallest jump between weights they lifted, or usual for the equipment; empty for bodyweight and minutes) and their own note for the exercise.',
+    run: async (db) => {
+      const [root, ex] = await Promise.all([db.get('yc'), loadExercises(db)]);
+      const w = await loadWeights(db, root, ex);
+      return Object.entries(ex).map(([id, e]) => ({ id, name: e.name, group: e.group || 'Other', ...(e.unit && e.unit !== 'kg' ? { unit: e.unit } : {}), ...(e.category && e.category !== 'strength' ? { category: e.category } : {}), ...stepOut(w, id), note: e.my_note || null })).sort((a, b) => (a.name < b.name ? -1 : 1));
+    },
   },
   {
     name: 'get_sessions', title: 'Get logged sessions', annotations: RO,
-    inputSchema: obj({ from: { type: 'string', description: 'First date, YYYY-MM-DD. Optional.' }, to: { type: 'string', description: 'Last date, YYYY-MM-DD. Optional.' }, limit: { type: 'integer', description: 'How many sessions, newest first. Default 10, most 60.' } }),
-    description: 'Logged sessions, newest first, with every ticked set per exercise (reps, load, set type, reps in reserve, notes; for runs also distance, altitude gain, treadmill or outdoors, pace and speed).',
+    inputSchema: obj({ from: { type: 'string', description: 'First date, YYYY-MM-DD. Optional.' }, to: { type: 'string', description: 'Last date, YYYY-MM-DD. Optional.' }, limit: { type: 'integer', description: 'How many sessions, newest first. Default 10, most 60.' }, detail: { type: 'boolean', description: 'true: every set as its own object with its set_id (what removing a set takes), and pace and speed for runs. Default false.' } }),
+    description: 'Logged sessions, newest first. Per exercise, sets is one line in the order done: each set as reps@load ("8@60, 8@60, 7@60"), reps alone for bodyweight, "12min 2.1km" for time and distance; warmup, drop or test stands in front of a set that is not a working set, rir2 means 2 reps in reserve, and a note follows in quotes.',
     run: async (db, a) => {
       if (a.from != null && !isDate(a.from)) fail('from must be YYYY-MM-DD.');
       if (a.to != null && !isDate(a.to)) fail('to must be YYYY-MM-DD.');
       const [ex, days, rows] = await Promise.all([loadExercises(db), loadDays(db), db.list('yc/sessions/', { desc: true, limit: int(a.limit, 1, 60, 10), gte: a.from, lte: a.to ? a.to + '~z' : undefined })]);
-      return rows.map((r) => sessionOut(r.path, r.data, ex, days));
+      return rows.map((r) => sessionOut(r.path, r.data, ex, days, a.detail === true));
     },
   },
   {
@@ -506,20 +640,39 @@ const TOOLS: Tool[] = [
       id: { type: 'string', description: 'An existing day id to replace. Leave out to create a new day.' }, name: { type: 'string' }, kind: { type: 'string', enum: KINDS }, focus: { type: 'string', description: 'A few words, e.g. "Chest and triceps".' },
       exercises: { type: 'array', maxItems: 12, description: 'The whole list of exercises for the day, in order. It replaces the old list.', items: obj({
         exercise_id: { type: 'string' }, sets: { type: 'integer' }, reps: { type: 'string', description: 'Text, e.g. "8", "8 to 10", "10 per arm", "max", "30 s".' },
-        target_kg: { type: 'string', description: 'Load in kg as a plain number in text, e.g. "60", or "". A weight that exists at their gym: the last working weight plus the exercise\'s weight_step. Leave it empty to let the app suggest the next weight from the last sessions; a load set here replaces that suggestion until the next session is logged.' }, rest_s: { type: 'integer' }, note: { type: 'string', description: 'One short coaching cue.' },
+        progress: { type: 'string', enum: PROGRESS, description: 'How the weight moves from the last working weight, worked out here from the log: auto (the app picks the next weight from the last sessions, the same as an empty target_kg), up (one weight step heavier), hold (the same weight) or down (one step lighter). With up, hold or down no target_kg is needed and the result says which weight was saved.' },
+        target_kg: { type: 'string', description: 'Load in kg as a plain number in text, e.g. "60", or "". Empty lets the app suggest the next weight from the last sessions. A number is moved to the nearest weight the person can load (their last working weight plus or minus whole steps) when the step is known from their setting or their log; the result says what was saved. A load set here replaces the app\'s suggestion until the next session is logged.' }, rest_s: { type: 'integer' }, note: { type: 'string', description: 'One short coaching cue.' },
         superset: { type: 'string', description: 'A short label such as "A". Exercises next to each other with the same label are done as a superset: one set of each in turn, rest after the round. Leave it out for a normal exercise.' },
       }, ['exercise_id', 'sets', 'reps']) },
     }, ['name', 'exercises']),
     description: 'Create a training day or replace an existing one (name, kind, focus and the whole exercise list). The exercise list given replaces the old one. A new day is not part of the week until the schedule includes it.',
     run: async (db, a) => {
-      const [ex, days] = await Promise.all([loadExercises(db), loadDays(db)]);
+      const [root, ex, days] = await Promise.all([db.get('yc'), loadExercises(db), loadDays(db)]);
       const name = str(a.name, 40);
       if (!name) fail('Give the day a name.');
       if (!Array.isArray(a.exercises) || !a.exercises.length) fail('A day needs at least one exercise.');
+      const w = await loadWeights(db, root, ex);
+      const weights: Json[] = []; // what was done with each weight that was asked for, so the AI can tell the person
       const items = a.exercises.slice(0, 12).map((it: Json, k: number) => {
         const exId = str(it && it.exercise_id, 80);
         if (!ex[exId]) fail('Unknown exercise_id "' + exId + '". Call list_exercises or create_exercise.');
-        return { ex: exId, order: k + 1, sets: int(it.sets, 1, 8, 3), reps: str(it.reps, 20, '10'), target: str(it.target_kg, 20), target_at: today(), rest_s: int(it.rest_s, 0, 600, 90), note: it.note ? str(it.note, 140) : null, group: it.superset ? str(it.superset, 8) : '' } as Json;
+        let target = str(it.target_kg, 20);
+        const move = PROGRESS.includes(it.progress) ? it.progress : '';
+        const step = w.step(exId), last = w.last(exId);
+        const assist = ex[exId].unit === 'assist'; // heavier there means less help
+        if (move === 'auto') target = '';
+        else if (move && (!step || last == null)) {
+          weights.push({ exercise_id: exId, progress: move, target_kg: target, note: 'No working weight in the last ' + STEP_SESSIONS + ' sessions to move from, so ' + (target ? 'target_kg was kept.' : 'the app suggests the weight.') });
+        } else if (move && step) {
+          const to = move === 'hold' ? last! : (move === 'up') !== assist ? last! + step.inc : Math.max(0, last! - step.inc);
+          target = String(round2(to));
+          weights.push({ exercise_id: exId, progress: move, last_load: last, weight_step: step.inc, weight_step_from: step.from, target_kg: target });
+        } else if (target && /^\d+([.,]\d+)?$/.test(target.trim()) && step && step.from !== 'usual' && last != null) {
+          const asked = Number(target.trim().replace(',', '.'));
+          const to = round2(Math.max(0, last + Math.round((asked - last) / step.inc) * step.inc));
+          if (to !== asked) { weights.push({ exercise_id: exId, asked_kg: asked, target_kg: String(to), last_load: last, weight_step: step.inc, weight_step_from: step.from, note: 'Moved to the nearest weight the person can load.' }); target = String(to); }
+        }
+        return { ex: exId, order: k + 1, sets: int(it.sets, 1, 8, 3), reps: str(it.reps, 20, '10'), target, target_at: today(), rest_s: int(it.rest_s, 0, 600, 90), note: it.note ? str(it.note, 140) : null, group: it.superset ? str(it.superset, 8) : '' } as Json;
       });
       // a superset is two or more exercises next to each other; a lone label is dropped, and a label reused further down becomes its own group
       const used = new Set<string>();
@@ -541,13 +694,13 @@ const TOOLS: Tool[] = [
       const old = days[id] || { order: Object.values(days).reduce((m: number, d: Json) => (d.adhoc ? m : Math.max(m, d.order || 0)), 0) + 1 };
       const doc = { ...old, name, kind: KINDS.includes(a.kind) ? a.kind : old.kind || 'Other', focus: str(a.focus, 80, old.focus || ''), items };
       await db.put('yc/templates/' + id, doc);
-      return { saved: true, day: dayOut(id, doc, ex, new Set()), created: !days[id] };
+      return { saved: true, day: dayOut(id, doc, ex, new Set(), w), created: !days[id], ...(weights.length ? { weights } : {}) };
     },
   },
   {
     name: 'set_schedule', title: 'Set weekly schedule', annotations: WR,
     inputSchema: obj({
-      mode: { type: 'string', enum: ['rotation', 'fixed'], description: 'rotation: the days repeat in order on the chosen weekdays. fixed: each weekday has its own day.' },
+      mode: { type: 'string', enum: ['rotation', 'fixed'], description: 'rotation: on the chosen weekdays the day trained longest ago comes next; day_ids sets the order of days not trained yet. fixed: each weekday has its own day.' },
       weekdays: { type: 'array', items: { type: 'string', enum: WEEKDAYS }, description: 'rotation: the weekdays they can train.' },
       day_ids: { type: 'array', items: { type: 'string' }, description: 'rotation: day ids in the order they repeat.' },
       sessions_per_week: { type: 'integer', description: 'rotation: how many sessions a week, 1 to 7. With fewer than the weekdays given, the sessions are spread over those weekdays. Leave out to train on every weekday given.' },
@@ -593,30 +746,21 @@ const TOOLS: Tool[] = [
   {
     name: 'add_sets', title: 'Add sets to the log', annotations: LOG,
     inputSchema: obj({
-      date: { type: 'string', description: 'YYYY-MM-DD, today or earlier.' },
-      exercise_id: { type: 'string' },
-      sets: { type: 'array', maxItems: 20, description: 'The sets, in the order they were done. Each is a done set, as if the person had ticked it.', items: obj({
-        reps: { type: 'integer', description: 'Needed unless the exercise is counted in minutes.' }, load: { type: 'number', description: 'kg, machine pin, or assistance kg, as the exercise is counted. Leave out for bodyweight.' },
-        minutes: { type: 'number', description: 'Needed when the exercise is counted in minutes.' }, type: { type: 'string', enum: SET_KINDS, description: 'work (default), warmup, drop or test (not counted in Progress).' },
-        rir: { type: 'integer', description: 'Reps in reserve, 0 to 10.' }, note: { type: 'string' },
-        distance_km: { type: 'number' }, altitude_gain_m: { type: 'number' }, where: { type: 'string', enum: ['outdoor', 'treadmill'] },
-      }) },
+      date: { type: 'string', description: 'YYYY-MM-DD, today or earlier. Leave out for today in the person\'s own time zone.' },
+      exercises: { type: 'array', minItems: 1, maxItems: 15, description: 'One exercise or a whole workout: every exercise with its sets, in the order done.', items: obj({ exercise: { type: 'string', description: 'Its id, or its name as the person says it ("bench press").' }, sets: SETS_IN }, ['exercise', 'sets']) },
       session_id: { type: 'string', description: 'Only when the person did two sessions on one date: the session_id of the one to add to, e.g. 2026-10-08~day-1. Leave out to use the date\'s own session.' },
       day_id: { type: 'string', description: 'Only when no session exists on that date yet: the training day it belongs to. Leave out for a session without a plan day.' },
-    }, ['date', 'exercise_id', 'sets']),
-    description: 'Add done sets of one exercise to the log, to a session that is there or to a new one for that date. Each set gets a set_id. A set cannot be edited afterwards: to correct one, remove it and add the right one.',
+    }, ['exercises']),
+    description: 'Add done sets to the log, for one exercise or a whole workout at once, to a session that is there or to a new one for that date. Exercises are found by id or by name, so the exercise list is not needed to log; a name that fits none or several comes back with the closest ones and nothing is saved. Each set gets a set_id. A set cannot be edited afterwards: to correct one, remove it and add the right one.',
     run: async (db, a) => {
-      if (!realDate(a.date)) fail(DATE_ERR);
-      if (a.date > new Date(Date.now() + 864e5).toISOString().slice(0, 10)) fail('Sets can only be added for today or earlier.');
-      const [ex, days] = await Promise.all([loadExercises(db), loadDays(db)]);
-      const exId = str(a.exercise_id, 80);
-      const e = ex[exId];
-      if (!e) fail('Unknown exercise_id "' + exId + '". Call list_exercises or create_exercise.');
-      if (!Array.isArray(a.sets) || !a.sets.length) fail('Give at least one set.');
-      if (a.sets.length > 20) fail('At most 20 sets in one call.');
-      const unit = e.unit || 'kg';
-      const sid = a.session_id ? str(a.session_id, 80) : a.date;
-      if (sid.slice(0, 10) !== a.date || (sid.length > 10 && sid[10] !== '~')) fail('session_id has to start with the date, like ' + a.date + ' or ' + a.date + '~day-1.');
+      const [root, ex, days] = await Promise.all([a.date ? Promise.resolve(null) : db.get('yc'), loadExercises(db), loadDays(db)]);
+      const date: string = a.date || localToday(root) || fail(NO_TZ);
+      if (!realDate(date)) fail(DATE_ERR);
+      if (date > new Date(Date.now() + 864e5).toISOString().slice(0, 10)) fail('Sets can only be added for today or earlier.');
+      const asked: Json[] = Array.isArray(a.exercises) && a.exercises.length ? a.exercises : [{ exercise: a.exercise ?? a.exercise_id, sets: a.sets }];
+      if (asked.length > 15) fail('At most 15 exercises in one call.');
+      const sid = a.session_id ? str(a.session_id, 80) : date;
+      if (sid.slice(0, 10) !== date || (sid.length > 10 && sid[10] !== '~')) fail('session_id has to start with the date, like ' + date + ' or ' + date + '~day-1.');
       const dayId = a.day_id ? str(a.day_id, 40) : '';
       if (dayId && !days[dayId]) fail('Unknown day id "' + dayId + '". Call get_plan.');
       const path = 'yc/sessions/' + sid;
@@ -626,42 +770,56 @@ const TOOLS: Tool[] = [
         if (!Number.isFinite(n) || n < lo || n > hi || (whole && !Number.isInteger(n))) fail(what + ' has to be ' + (whole ? 'a whole number' : 'a number') + ' from ' + lo + ' to ' + hi + '.');
         return Math.round(n * 100) / 100;
       };
-      const made = a.sets.map((raw: Json, i: number) => {
-        const st = raw || {};
-        const at = 'Set ' + (i + 1) + ': ';
-        const reps = num(st.reps, at + 'reps', 1, 1000, true);
-        const minutes = num(st.minutes, at + 'minutes', 0.1, 1000);
-        if (unit === 'min' ? minutes == null : reps == null) fail(at + (unit === 'min' ? 'minutes are needed, because this exercise is counted in minutes.' : 'reps are needed.'));
-        const out: Json = { kind: SET_KINDS.includes(st.type) ? st.type : 'work', reps, load: num(st.load, at + 'load', 0, 1000), minutes, rir: num(st.rir, at + 'rir', 0, 10, true), note: st.note ? str(st.note, 140) : null };
-        const km = num(st.distance_km, at + 'distance_km', 0, 1000);
-        const elev = num(st.altitude_gain_m, at + 'altitude_gain_m', 0, 20000);
-        if (km != null) out.km = km;
-        if (elev != null) out.elev = elev;
-        if (st.where === 'outdoor' || st.where === 'treadmill') out.where = st.where;
-        return out;
+      // everything is checked before anything is written: one wrong name or number refuses the whole call
+      const groups = asked.map((g: Json) => {
+        const exId = findExercise(ex, g && g.exercise);
+        const e = ex[exId];
+        const who = asked.length > 1 ? e.name + ', ' : '';
+        if (!Array.isArray(g.sets) || !g.sets.length) fail(who ? who + 'give at least one set.' : 'Give at least one set.');
+        if (g.sets.length > 20) fail('At most 20 sets ' + (who ? 'for one exercise.' : 'in one call.'));
+        const unit = e.unit || 'kg';
+        const made = g.sets.map((raw: Json, i: number) => {
+          const st = raw || {};
+          const at = who + (who ? 'set ' : 'Set ') + (i + 1) + ': ';
+          const reps = num(st.reps, at + 'reps', 1, 1000, true);
+          const minutes = num(st.minutes, at + 'minutes', 0.1, 1000);
+          if (unit === 'min' ? minutes == null : reps == null) fail(at + (unit === 'min' ? 'minutes are needed, because this exercise is counted in minutes.' : 'reps are needed.'));
+          const out: Json = { kind: SET_KINDS.includes(st.type) ? st.type : 'work', reps, load: num(st.load, at + 'load', 0, 1000), minutes, rir: num(st.rir, at + 'rir', 0, 10, true), note: st.note ? str(st.note, 140) : null };
+          const km = num(st.distance_km, at + 'distance_km', 0, 1000);
+          const elev = num(st.altitude_gain_m, at + 'altitude_gain_m', 0, 20000);
+          if (km != null) out.km = km;
+          if (elev != null) out.elev = elev;
+          if (st.where === 'outdoor' || st.where === 'treadmill') out.where = st.where;
+          return out;
+        });
+        return { exId, e, unit, made };
       });
       // a new session starts like one the app starts; a past date is complete, today may still be going
       if (!(await db.get(path))) {
         const t = dayId ? days[dayId] : null;
         const now = Date.now();
-        await db.ensure(path, { date: a.date, source: 'connector', template: dayId || null, split: t ? ({ Pull: 'Back', Push: 'Chest', Legs: 'Legs' } as Json)[t.kind] || t.name : 'Other', label: t ? t.name : 'workout', note: null, started_at: now, updated_at: now, ...(a.date < today() ? { finished_at: now } : {}), sets: {} });
+        await db.ensure(path, { date, source: 'connector', template: dayId || null, split: t ? ({ Pull: 'Back', Push: 'Chest', Legs: 'Legs' } as Json)[t.kind] || t.name : 'Other', label: t ? t.name : 'workout', note: null, started_at: now, updated_at: now, ...(date < today() ? { finished_at: now } : {}), sets: {} });
       }
       const doc = (await db.get(path)) || {};
-      const sets: Json = doc.sets || {};
-      // the next free row for this exercise counts removed rows too, so a new set never lands on an old key
-      let n = Object.entries(sets).reduce((m, [k, st]: [string, Json]) => (st && st.ex === exId ? Math.max(m, Number(k.slice(exId.length + 1)) || 0, st.n || 0) : m), 0);
-      let order = Object.values(sets).reduce((m: number, st: Json) => (st && st.ex === exId ? Math.max(m, st.order || 0) : m), 0) || Math.max(9999, ...Object.values(sets).map((st: Json) => (st && st.order) || 0)) + 100;
+      const sets: Json = { ...(doc.sets || {}) };
       const now = Date.now();
       const patch: Json = {};
-      const added = made.map((m: Json) => {
-        n += 1; order += 1;
-        const key = exId + '_' + n;
-        patch[key] = { ex: exId, n, order, ...m, done: true, at: now, ticked_at: now, unit: unit === 'kg' ? 'kg:' + (e.load_basis === 'per_side' ? 'per_side' : 'total') : unit, via: 'connector' };
-        return key;
+      const added: string[] = [];
+      groups.forEach(({ exId, e, unit, made }: Json) => {
+        // the next free row for this exercise counts removed rows too, so a new set never lands on an old key
+        let n = Object.entries(sets).reduce((m, [k, st]: [string, Json]) => (st && st.ex === exId ? Math.max(m, Number(k.slice(exId.length + 1)) || 0, st.n || 0) : m), 0);
+        let order = Object.values(sets).reduce((m: number, st: Json) => (st && st.ex === exId ? Math.max(m, st.order || 0) : m), 0) || Math.max(9999, ...Object.values(sets).map((st: Json) => (st && st.order) || 0)) + 100;
+        made.forEach((m: Json) => {
+          n += 1; order += 1;
+          const key = exId + '_' + n;
+          patch[key] = sets[key] = { ex: exId, n, order, ...m, done: true, at: now, ticked_at: now, unit: unit === 'kg' ? 'kg:' + (e.load_basis === 'per_side' ? 'per_side' : 'total') : unit, via: 'connector' };
+          added.push(key);
+        });
       });
       const after = await db.patch(path, { updated_at: now, sets: patch });
       const out = sessionOut(path, after, ex, days);
-      return { added: added.length, set_ids: added, session: { ...out, exercises: out.exercises.filter((x: Json) => x.exercise_id === exId) } };
+      const ids = new Set(groups.map((g: Json) => g.exId));
+      return { added: added.length, set_ids: added, session: { ...out, exercises: out.exercises.filter((x: Json) => ids.has(x.exercise_id)) } };
     },
   },
   {
@@ -703,11 +861,11 @@ const TOOLS: Tool[] = [
     name: 'search_foods', title: 'Search foods', annotations: RO,
     inputSchema: obj({
       query: { type: 'string', description: 'One or two plain words, Dutch or English, e.g. "gouda", "brown bread", "ei gekookt". Dutch compound words work: "brood" also finds "tarwebrood".' },
-      type: { type: 'string', description: 'Optional food group to stay inside, as shown in results: Bread, Cheese, Eggs, Dairy, Meat, Fish, Vegetables, Fruit, Potatoes, Grains, Legumes, Spreads, Sauces, Spices, Fats and oils, Nuts and seeds, Sweets, Snacks, Drinks, Meals and more.' },
+      type: { type: 'string', description: 'Optional food group to stay inside, as results show it: Bread, Cheese, Eggs, Dairy, Meat, Fish, Vegetables, Fruit, Grains, Spreads, Drinks, Meals and more.' },
       queries: { type: 'array', maxItems: 8, description: 'Several foods in one go, instead of query: one search each, e.g. [{"query":"tarwebrood bruin"},{"query":"goudse","type":"Cheese"}].', items: obj({ query: { type: 'string' }, type: { type: 'string' } }, ['query']) },
-      limit: { type: 'integer', description: 'Results per search, 1 to 15. Default 10 for one search, 6 each for several.' },
+      limit: { type: 'integer', description: 'Results per search, 1 to 15. Default 8 for one search, 4 each for several.' },
     }),
-    description: 'Search the NEVO (Dutch) and USDA food tables the app uses. Each result has a "food" id, its nutrients per 100 g, and the portions it can be given in (RIVM household measures such as a slice or a piece, with grams for one). Foods the person logged before come first, marked yours, with the words they use for them and their own portion sizes. Plain, common foods rank next. An empty result means nothing matched; one plain word in Dutch or English usually finds it.',
+    description: 'Search the NEVO (Dutch) and USDA food tables the app uses. Each result has a "food" id, its nutrients per 100 g, and the portions it can be given in (a slice, a piece) with grams for one. Foods the person logged before come first, marked yours, with the words they use for them and their own portion sizes; plain, common foods rank next. An empty result means nothing matched; one plain word in Dutch or English usually finds it.',
     run: async (db, a, ctx) => {
       const many = Array.isArray(a.queries) && a.queries.length > 0;
       if (many && a.queries.length > 8) fail('At most 8 searches at once.');
@@ -716,11 +874,18 @@ const TOOLS: Tool[] = [
       const [tables, root, mine] = await Promise.all([ctx.foods(), db.get('yc'), loadMine(db).catch(() => [] as Mine[])]);
       const fdb = withOwn(tables, mine);
       const cal = caloriesShown(root);
-      const limit = int(a.limit, 1, 15, many ? 6 : 10);
+      const limit = int(a.limit, 1, 15, many ? 4 : 8);
+      const most = many ? 4 : 6; // portions shown per food
+      const sources = new Set<string>();
       const out = (it: Food, m?: Mine) => {
         const pt = portionsOf(fdb, it);
         const own = m ? Object.entries(m.portions).map(([label, grams]) => ({ label, grams, yours: true })) : [];
-        return { food: foodKey(it.src, it.ref), name: it.name, ...(it.alt ? { english: it.alt } : {}), type: it.type, unit: it.unit, per_100: macros(per(it, 100), cal), portions: [...own, ...pt.list].slice(0, 6), portions_are: own.length ? 'the person\'s own portion sizes first, then ' + pt.source : pt.source, ...(m ? { yours: true, times_logged: m.n, said: Object.keys(m.aka) } : {}) };
+        // one portion per label (the first is the everyday one), the unit only when it is not grams, and where the sizes come from once per reply
+        const labels = new Set<string>();
+        const portions = [...own, ...pt.list].filter((x) => !labels.has(fold(x.label)) && !!labels.add(fold(x.label))).slice(0, most);
+        const rough = !/^RIVM/.test(pt.source) && pt.list.length > 0;
+        if (pt.list.length) sources.add(rough ? 'rough' : 'rivm');
+        return { food: foodKey(it.src, it.ref), name: it.name, ...(it.alt ? { english: it.alt } : {}), type: it.type, ...(it.unit && it.unit !== 'g' ? { unit: it.unit } : {}), per_100: macros(per(it, 100), cal), portions, ...(own.length ? { portions_are: 'the person\'s own portion sizes first' } : {}), ...(rough ? { rough_portions: true } : {}), ...(m ? { yours: true, times_logged: m.n, said: Object.keys(m.aka) } : {}) };
       };
       const one = (x: { query: string; type: string }) => {
         const toks = wordsOf(x.query);
@@ -733,8 +898,8 @@ const TOOLS: Tool[] = [
         return { results: [...yours.map(([m, it]) => out(it, m)), ...hits.map((it) => out(it))] };
       };
       const hidden = cal ? {} : { calories: 'Calories are hidden for this person: leave them out of your answer.' };
-      if (many) return { searches: asked.map((x: Json) => ({ query: x.query, ...(x.type ? { type: x.type } : {}), ...one(x) })), ...hidden };
-      return { ...one(asked[0]), ...hidden };
+      const found = many ? { searches: asked.map((x: Json) => ({ query: x.query, ...(x.type ? { type: x.type } : {}), ...one(x) })) } : one(asked[0]);
+      return { ...found, ...(sources.size ? { portions_are: 'Grams for one (ml when the food has unit ml). ' + (sources.has('rivm') ? 'RIVM household measures' : '') + (sources.size > 1 ? '; ' : '') + (sources.has('rough') ? 'with rough_portions: rough sizes for this kind of food' : '') + '.' } : {}), ...hidden };
     },
   },
   {
@@ -756,15 +921,16 @@ const TOOLS: Tool[] = [
         name: { type: 'string', description: 'The person\'s own words, short, e.g. "2 slices bread with egg, cheese and mustard". Optional for a single food.' },
         saved: { type: 'string', description: 'The id of one of the person\'s saved meals: logs it as it was saved. Use it instead of items.' },
         items: { type: 'array', minItems: 1, maxItems: 12, items: obj({
-          food: { type: 'string', description: 'The "food" value of a search result, e.g. "nevo:123".' },
+          name: { type: 'string', description: 'The food in the person\'s words, one or two plain words, e.g. "kaas", "banana". Enough for a food they logged before or one with exactly that name; no search is needed then.' },
+          food: { type: 'string', description: 'Instead of name: the "food" id of a search result, e.g. "nevo:123".' },
           grams: { type: 'number', description: 'Amount in grams (millilitres for drinks). Use it when the person said a weight.' },
-          portion: obj({ label: { type: 'string', description: 'A label from that food\'s "portions" in a search result, including the person\'s own.' }, count: { type: 'number', description: 'How many of that portion. Default 1.' } }, ['label']),
+          portion: obj({ label: { type: 'string', description: 'A label from that food\'s "portions", including the person\'s own. Leave out for the food\'s everyday portion (a slice, a piece).' }, count: { type: 'number', description: 'How many of that portion. Default 1.' } }),
           estimated: { type: 'boolean', description: 'false only when the person said the exact weight. Default true: a guess or a typical portion.' },
           said: { type: 'string', description: 'The word the person used for this food, e.g. "kaas". It is remembered, so the next search for that word finds this food first.' },
-        }, ['food']) },
+        }) },
       }) },
     }, ['meals']),
-    description: 'Save one or more meals to the person\'s food log. Each food is a "food" id from a search plus grams or a portion; the app reads the nutrients from its tables, so there are no nutrient fields. A meal with several foods becomes one entry with its items inside; a meal with one food is a normal entry. A saved meal can be logged by its id. Foods are remembered for next time. Returns what was saved and the day totals.',
+    description: 'Save one or more meals to the person\'s food log. Each food is a name or a "food" id, plus grams or a portion; the app reads the nutrients from its tables, so there are no nutrient fields. A name is taken when it can only mean one food; otherwise nothing is saved and the closest foods come back with their ids and portions. A meal with several foods becomes one entry with its items inside; a meal with one food is a normal entry. A saved meal can be logged by its id. Foods are remembered for next time. Returns what was saved and the day totals.',
     run: async (db, a, ctx) => {
       if (badDate(a.date)) fail(DATE_ERR);
       if (!Array.isArray(a.meals) || !a.meals.length) fail('Give at least one meal.');
@@ -780,6 +946,23 @@ const TOOLS: Tool[] = [
       const usedSaved = new Map<string, { sm: Saved; times: number }>();
       const note = (i: Item, said: string) => { const k = foodKey(i.src, i.ref); if (!fdb.byKey.has(k)) return; // only foods the tables know are remembered
          const u = uses.get(k) || { name: i.name, said: new Set<string>(), times: 0 }; u.times += 1; if (said) u.said.add(said); uses.set(k, u); };
+      // foods given by name: each is looked up once, and the ones that need choosing come back together
+      const named = new Map<Json, Json>();
+      const matched: Json[] = []; // which food each name became, so the AI can tell the person
+      const open: string[] = [];
+      a.meals.forEach((m: Json) => (Array.isArray(m && m.items) ? m.items : []).slice(0, 12).forEach((it: Json) => {
+        if (!it || typeof it !== 'object' || it.food || !str(it.name, 80)) return;
+        const said = str(it.name, 80);
+        const r = foodByName(tables, fdb, mine, said);
+        if (r.key) {
+          // no amount said: one everyday portion ("a banana")
+          named.set(it, { ...it, food: r.key, said: it.said || said, ...(Number(it.grams) > 0 || it.portion ? {} : { portion: { count: 1 } }) });
+          matched.push({ said, food: r.key, name: (fdb.byKey.get(r.key) as Food).name });
+          return;
+        }
+        open.push('"' + said + '": ' + (r.options.length ? r.options.map((f) => { const k = foodKey(f.src, f.ref); const own = mineBy.get(k); const ps = [...(own ? Object.entries(own.portions).map(([label, grams]) => ({ label, grams })) : []), ...portionsOf(fdb, f).list].slice(0, 3); return k + ' ' + f.name + (ps.length ? ' [' + ps.map((x) => x.label + ' ' + x.grams + ' g').join(', ') + ']' : ''); }).join('; ') : 'nothing found, try one plain word'));
+      }));
+      if (open.length) fail('Nothing was saved. These foods need choosing: ' + open.join(' | ') + '. Send the meals again with "food" set to the right id for these; the other names can stay as they are.');
       const meals = a.meals.map((m: Json) => {
         if (m && m.saved) {
           const sm = savedAll.find((x) => x.id === str(m.saved, 60));
@@ -790,7 +973,7 @@ const TOOLS: Tool[] = [
         }
         const raw = Array.isArray(m && m.items) ? m.items : [];
         if (raw.length > 12) fail('At most 12 foods in one meal. Nothing was saved; split it into two meals.');
-        const items = raw.map((it: Json) => { const r = resolveItem(fdb, mineBy, it); note(r.item, r.said); return r.item; });
+        const items = raw.map((it: Json) => { const r = resolveItem(fdb, mineBy, named.get(it) || it); note(r.item, r.said); return r.item; });
         if (!items.length) fail('Each meal needs at least one food or a saved meal.');
         return { name: str(m && m.name, 80), items };
       });
@@ -812,7 +995,9 @@ const TOOLS: Tool[] = [
       } catch (e) { /* ignored */ }
       const day = foodDayOut(date, after, root);
       const cal = caloriesShown(root);
-      return { saved: Object.entries(add).map(([id, e]) => entryOut(id, e, cal)), day };
+      // the day's other entries are not repeated here: the totals say where the day stands
+      const { entries: _all, ...dayTotals } = day;
+      return { saved: Object.entries(add).map(([id, e]) => entryOut(id, e, cal)), ...(matched.length ? { matched } : {}), day: { ...dayTotals, entries_today: (_all || []).length } };
     },
   },
   {
@@ -863,15 +1048,15 @@ const TOOLS: Tool[] = [
     inputSchema: obj({
       name: { type: 'string', description: 'What the person calls it, e.g. "Mama\'s lasagne" or "Protein shake (Jumbo)".' },
       unit: { type: 'string', enum: ['g', 'ml'], description: 'g for foods, ml for drinks. All numbers below are per 100 of this unit. Default g.' },
-      kcal_per_100: { type: 'number', description: 'Calories per 100 g or 100 ml, 0 to 900.' },
-      protein_per_100: { type: 'number', description: 'Protein in grams per 100 g or 100 ml, 0 to 100.' },
-      carbs_per_100: { type: 'number', description: 'Carbohydrates in grams per 100 g or 100 ml, 0 to 100.' },
-      fat_per_100: { type: 'number', description: 'Fat in grams per 100 g or 100 ml, 0 to 100.' },
+      kcal_per_100: { type: 'number', description: 'Calories, 0 to 900.' },
+      protein_per_100: { type: 'number', description: 'Grams of protein, 0 to 100.' },
+      carbs_per_100: { type: 'number', description: 'Grams of carbohydrate, 0 to 100.' },
+      fat_per_100: { type: 'number', description: 'Grams of fat, 0 to 100.' },
       source: { type: 'string', description: 'Where the numbers come from: the web address of the product page, or a short note such as "package label". Shown next to the food in the app.' },
       said: { type: 'array', maxItems: 6, items: { type: 'string' }, description: 'Other words the person uses for it. A search for these finds it first.' },
       portions: { type: 'array', maxItems: 6, description: 'The person\'s own portion sizes: a name and the grams (or ml) of one, e.g. [{"label":"scoop","grams":30}].', items: obj({ label: { type: 'string' }, grams: { type: 'number' } }, ['label', 'grams']) },
     }, ['name', 'kcal_per_100', 'protein_per_100', 'carbs_per_100', 'fat_per_100']),
-    description: 'Save a food that is not in the NEVO or USDA tables, such as something home-made or a branded product, with its numbers per 100 g or 100 ml: calories, protein, carbs and fat, and whether it is a food or a drink. The numbers are the ones printed on the package or shown on the maker\'s or a shop\'s product page, given by the person or read from that page when the person asks for a product to be looked up on the internet. This does not search the internet and does not estimate; the numbers are saved as given, with where they come from. Saving the same name again replaces the numbers. The food then comes first in food searches, marked yours, with a "food" id like "own:lasagne", and is logged by grams or portion like any other food.',
+    description: 'Save a food that is not in the NEVO or USDA tables (home-made, or a branded product) with its numbers per 100 g or 100 ml. The numbers are the ones on the package or on the maker\'s or a shop\'s product page, given by the person or read from that page when they ask for a product to be looked up. This does not search the internet and does not estimate: the numbers are saved as given, with where they come from. Saving the same name again replaces them. The food then comes first in food searches, marked yours, with a "food" id like "own:lasagne".',
     run: async (db, a) => {
       const name = str(a.name, 60);
       const slug = myId(name);

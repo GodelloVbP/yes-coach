@@ -25,4 +25,17 @@ same('rough sizes by kind of food', literal(app, 'const PORTIONS ='), literal(fn
 same('portion ranking', parts(body(app, 'const measureScore =')), parts(body(fn, 'const measureScore =')));
 const split = (src) => (src.match(/const wordsOf = .*/) || [''])[0].replace(/foldW|fold/g, 'F').replace(/\(t[^)]*\)[^=]*=>/, '(t) =>');
 same('word splitting', split(app), split(fn));
+// weight steps: the connector knows the kind of equipment of a library exercise from three lists of ids; they follow the app's library
+{
+  const i = app.indexOf('const LIB = [') + 'const LIB = '.length;
+  let d = 0, k = i; for (; k < app.length; k++) { if (app[k] === '[') d++; else if (app[k] === ']' && --d === 0) break; }
+  const lib = JSON.parse(app.slice(i, k + 1));
+  const ids = (re) => lib.filter((l) => re.test(l.equipment || '')).map((l) => l.id);
+  const inFn = (name) => { const m = fn.match(new RegExp('const ' + name + " = new Set\\('([^']*)'")); return m ? m[1].split(' ') : null; };
+  same('dumbbell exercises', ids(/dumbbell|kettlebell/i), inFn('LIB_DUMBBELL'));
+  same('cable exercises', ids(/cable/i), inFn('LIB_CABLE'));
+  same('barbell exercises', ids(/barbell|ez-bar|trap bar|safety squat/i), inFn('LIB_BARBELL'));
+  const prog = fs.readFileSync(new URL('../progression.js', import.meta.url), 'utf8');
+  for (const re of ['/dumbbell|kettlebell/i', '/cable/i', '/barbell|ez-bar|trap bar|safety squat/i']) { n++; if (!prog.includes(re) || !fn.includes(re)) { console.error('FAIL the equipment words differ:', re); process.exit(1); } }
+}
 console.log(n, 'parity checks passed');

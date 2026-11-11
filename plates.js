@@ -47,8 +47,9 @@
   }
   // The warm-up ramp for a working load: the empty bar for 10, then 50% for 5, 70% for 3 and 85% for 1, each rounded to 2.5 kg.
   // Under 40 kg there is nothing to warm up for. bar is null for exercises without a bar (the ramp then starts at 50%).
+  // short: the body part is warm already (an earlier exercise today worked it), so two sets do: 60% for 5 and 80% for 2.
   var WARM_MIN = 40;
-  function warmups(total, bar) {
+  function warmups(total, bar, short) {
     total = Number(total);
     if (!isFinite(total) || total < WARM_MIN) return [];
     var out = [];
@@ -56,8 +57,8 @@
       var last = out.length ? out[out.length - 1].load : 0;
       if (load > last && load < total) out.push({ load: load, reps: reps });
     };
-    if (bar != null && Number(bar) > 0) take(Number(bar), 10);
-    [[0.5, 5], [0.7, 3], [0.85, 1]].forEach(function (s) { take(Math.round(total * s[0] / 2.5) * 2.5, s[1]); });
+    if (!short && bar != null && Number(bar) > 0) take(Number(bar), 10);
+    (short ? [[0.6, 5], [0.8, 2]] : [[0.5, 5], [0.7, 3], [0.85, 1]]).forEach(function (s) { take(Math.round(total * s[0] / 2.5) * 2.5, s[1]); });
     return out;
   }
   root.YC_PLATES = { PLATES: PLATES, BARS: BARS, plan: plan, warmups: warmups, WARM_MIN: WARM_MIN };
