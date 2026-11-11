@@ -25,6 +25,11 @@ same('rough sizes by kind of food', literal(app, 'const PORTIONS ='), literal(fn
 same('portion ranking', parts(body(app, 'const measureScore =')), parts(body(fn, 'const measureScore =')));
 const split = (src) => (src.match(/const wordsOf = .*/) || [''])[0].replace(/foldW|fold/g, 'F').replace(/\(t[^)]*\)[^=]*=>/, '(t) =>');
 same('word splitting', split(app), split(fn));
+const line = (src, head) => (src.match(new RegExp(head + '.*')) || [''])[0].replace(/\(w: string\): string =>/, '(w) =>').replace(/\s+/g, ' ');
+same('plural endings', line(app, 'const singular = '), line(fn, 'const singular = '));
+same('loose and English words (aliases)', literal(app, 'const ALIASES ='), literal(fn, 'const ALIASES ='));
+same('little words left out of a search (stop words)', literal(app, 'const STOP ='), literal(fn, 'const STOP ='));
+same('drink words', [line(app, 'const DRINK_RE = '), line(app, 'const NOT_DRINK_RE = ')].map((x) => x.replace(/^\s*const (NOT_)?DRINK_RE = /, '')), [line(fn, 'const DRINK_RE = '), line(fn, 'const NOT_DRINK_RE = ')].map((x) => x.replace(/^\s*const (NOT_)?DRINK_RE = /, '')));
 // weight steps: the connector knows the kind of equipment of a library exercise from three lists of ids; they follow the app's library
 {
   const i = app.indexOf('const LIB = [') + 'const LIB = '.length;

@@ -252,6 +252,34 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok(r.results.length === 8 && r.results.every((x) => /^(nevo|usda):/.test(x.food) && x.per_100.protein_g != null && x.portions.length && x.unit === undefined) && /grams for one/i.test(r.portions_are), 'search: ids, nutrients per 100, portions, and where the sizes come from said once: ' + r.portions_are);
   ok(!('kcal' in r.results[0].per_100) && /hidden/.test(r.calories), 'calories hidden by default, and the result says so');
   ok((await search('kaas', 3)).results.length === 3, 'search limit');
+  // loose and English words find the food people mean (from a test with blind agents that logged 52 meals)
+  {
+    const top = async (q, n = 1) => (await search(q, n)).results.map((x) => x.name);
+    const want = [['wholegrain bread', /^Tarwebrood volkoren/], ['whole wheat bread', /^Tarwebrood volkoren/], ['white bread', /^Tarwebrood wit/], ['brown bread', /^Tarwebrood bruin/], ['cheese', /^Kaas Goudse 48\+/], ['kaas', /^Kaas Goudse 48\+/], ['cherry tomatoes', /^Tomaat kers/], ['orange juice', /^Sap sinaasappel/], ['granola', /^Muesli krokante/], ['passata', /^Tomaat gezeefd/], ['fries', /^Frites bereid/], ['pasta', /^Pasta witte gem gekookt/], ['white rice', /^Rijst witte gekookt/], ['cola', /^Frisdrank m suiker m cafeine/], ['pils', /^Bier pils/], ['beer', /^Bier pils/], ['oatmeal', /^Pap havermout/], ['chicken breast', /^Kipfilet bereid/], ['coffee', /^Koffie bereid/], ['latte', /^Koffie latte macchiato/], ['greek yoghurt', /^Yoghurt Griekse/], ['boiled egg', /^Ei kippen- gekookt/], ['mayo', /^Mayonaise$/], ['pancake', /^Pannenkoek huishoudelijk/], ['volkoren pita', /^Bread, pita, whole-wheat/], ['baked salmon', /^Fish, salmon, Atlantic, farmed, cooked/], ['protein shake', /Protein powder whey based/], ['toast', /^Tarwebrood/], ['brood wit', /^Tarwe.*brood wit/], ['coffee with milk', /^(Koffie|Melk)/], ['koffie met melk', /^(Koffie|Melk)/]];
+    for (const [q, re] of want) { const got = await top(q); ok(re.test(got[0] || ''), 'search "' + q + '" finds ' + re + ', got ' + got[0]); }
+    ok((await top('brood', 3)).every((n) => /^Tarwebrood/.test(n)), 'bare "brood" leads with bread, not rolls and pastries: ' + (await top('brood', 3)));
+    ok((await top('pils', 8)).length === 1 && (await top('latte', 8)).length === 1, 'a loose word does not drag in unrelated foods behind the right one');
+    ok((await top('cheese', 8)).length === 8, 'general words (cheese) still fill the list');
+    ok((await top('tomatoes', 8)).some((n) => /^Tomaat/.test(n)), 'plural English words find the food (tomatoes, sandwiches)');
+    ok(!(await top('chicken', 6)).some((n) => /^Tarwebrood/.test(n)), 'ordinary searches are unchanged');
+    // raw or cooked is said, and drinks count in millilitres
+    const rice = (await search('rijst witte', 8)).results;
+    ok(rice.find((x) => /gekookt/.test(x.name)).state === 'cooked' && rice.find((x) => /rauw/.test(x.name)).state === 'raw', 'rice says raw or cooked');
+    ok((await search('koffie bereid', 1)).results[0].state === undefined, 'drinks have no raw/cooked');
+    const cola = (await search('cola', 1)).results[0];
+    ok(cola.unit === 'ml', 'a soft drink is counted in ml');
+    r = await call(T, 'log_meals', { date: '2026-10-26', meals: [{ name: 'cola', items: [{ food: cola.food, grams: 330 }] }] });
+    ok(!r.err && /330 ml/.test(JSON.stringify(r.json)), 'and logged as ml: ' + r.text.slice(0, 200));
+    // household amounts the RIVM table lacks come first
+    const label = async (q) => (await search(q, 1)).results[0].portions[0].label;
+    ok((await label('cornflakes')) === 'kom (bowl)' && (await label('pasta')) === 'bord (plate)' && (await label('white rice')) === 'bord (plate)', 'a bowl of cereal, a plate of pasta and rice');
+    const pasta = (await search('pasta', 1)).results[0].portions[0];
+    ok(pasta.grams === 250, 'a plate of pasta is 250 g');
+    const beer = (await search('beer', 1)).results[0].portions.map((x) => x.label);
+    ok(beer.includes('glas (glass)') && beer.includes('flesje (bottle)'), 'a glass and a bottle of beer: ' + beer);
+    r = await call(T, 'log_meals', { date: '2026-10-26', meals: [{ name: 'bowl of cornflakes', items: [{ food: (await search('cornflakes', 1)).results[0].food, portion: { label: 'kom (bowl)' } }] }] });
+    ok(!r.err && /40 g/.test(JSON.stringify(r.json)), 'a bowl of cornflakes can be logged by its label: ' + r.text.slice(0, 200));
+  }
   r = await search('bruin brood');
   ok(r.results.some((x) => x.name === 'Tarwebrood bruin'), 'a Dutch compound word is found by its last part: ' + r.results.map((x) => x.name));
   r = await search('Ei gekookt');
@@ -566,7 +594,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok((await call(T, 'remove_saved', {})).err && (await call(T, 'remove_saved', { food: pb.food, meal: 'usual-lunch' })).err, 'exactly one of food or meal');
   ok((await call(T, 'remove_saved', { food: 'nevo:123456' })).err && (await call(T, 'remove_saved', { meal: 'nope' })).err && (await call(T, 'remove_saved', { meal: 'constructor' })).err, 'unknown ones are refused');
   r = await call(T, 'remove_saved', { food: pb.food });
-  ok(!r.err && r.json.removed.food === pb.food && (await first('pb')).yours !== true, 'a forgotten food is no longer "yours"');
+  ok(!r.err && r.json.removed.food === pb.food && (await first('pb'))?.yours !== true, 'a forgotten food is no longer "yours"');
   ok(!(await call(T, 'get_my_foods')).json.foods.some((f) => f.food === pb.food), 'nor listed');
   await call(T, 'log_meals', { meals: [{ items: [{ food: pb.food, grams: 10, said: 'pb' }] }] });
   const back = (await call(T, 'search_foods', { query: 'pb' })).json.results[0];

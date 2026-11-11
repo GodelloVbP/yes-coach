@@ -61,6 +61,10 @@ try:
             check('one line: a portion, its amount and protein', re.search(r'\d+(\.\d+)? g · P \d', line) is not None, line)
             check('the data source credit is still shown', 'NEVO' in page.inner_text('#fd-hits .fd-credit'))
             check('no per-100 g numbers, no group tag, no calories', 'per 100' not in page.inner_text('#fd-hits') and page.locator('#fd-hits .fd-bub').count() == 0 and 'kcal' not in page.inner_text('#fd-hits'))
+            # English and loose words find the Dutch food people mean
+            for q, pre in (('wholegrain bread', 'Tarwebrood volkoren'), ('cheese', 'Kaas Goudse'), ('cherry tomatoes', 'Tomaat kers'), ('brood wit', 'Tarwe')):
+                search(q); n = names()
+                check('"%s" finds %s first' % (q, pre), n[0].startswith(pre), n)
             # a word that is only a synonym still finds its food when nothing else matches
             if SYN:
                 search(SYN[0])
