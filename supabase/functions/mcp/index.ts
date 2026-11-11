@@ -252,9 +252,9 @@ const n0 = (v: Json): number => (typeof v === 'number' && Number.isFinite(v) ? v
 const round1 = (n: number): number => Math.round(n * 10) / 10;
 const FOOD_FILES = ['foods-nevo.json', 'foods-usda.json', 'portions-nevo.json'];
 // what counts as a drink, counted in millilitres (the same words as the app)
-const DRINK_RE = /\b(melk|milk|karnemelk|drank|drink|juice|sap|smoothie|shake|koffie|coffee|thee|tea)\b/;
+const DRINK_RE = /^(melk|milk|karnemelk|drank|drink|juice|sap|smoothie|shake|koffie|coffee|thee|tea)\b/; // the first word of the name: "Melk volle" is a drink, "Tarwebrood wit melk" is bread
 const NOT_DRINK_RE = /poeder|powder|gecondenseerd|condensed|ijs|ice cream|pudding|vla|cake|koek|bar\b|reep/;
-const isDrink = (it: Food): boolean => it.unit === 'ml' || it.type === 'Drinks' || it.type === 'Alcohol' || (DRINK_RE.test(fold(it.name + ' ' + (it.alt || ''))) && !NOT_DRINK_RE.test(fold(it.name + ' ' + (it.alt || ''))));
+const isDrink = (it: Food): boolean => !/poeder|powder/.test(fold(it.name + ' ' + (it.alt || ''))) && (it.unit === 'ml' || it.type === 'Drinks' || it.type === 'Alcohol' || ((DRINK_RE.test(fold(it.name)) || DRINK_RE.test(fold(it.alt || ''))) && !NOT_DRINK_RE.test(fold(it.name + ' ' + (it.alt || '')))));
 
 const loadFoods = async (env: Env, f: typeof fetch): Promise<FoodDb> => {
   const base = env.siteUrl.replace(/\/?$/, '/');
@@ -427,6 +427,10 @@ const EXTRA_PORTIONS: [RegExp, string, number][] = [
   [/(rijst|rice).*(gekookt|boiled|cooked)/, 'bord (plate)', 200],
   [/(couscous|quinoa|bulgur).*(gekookt|boiled|cooked)/, 'bord (plate)', 200],
   [/^pizza\b/, 'hele pizza (whole)', 400],
+  [/bolognese/, 'bord (plate)', 400],
+  [/^(frites|friet)(?!.*(onbereid|diepvries))/, 'klein (small)', 110],
+  [/^(frites|friet)(?!.*(onbereid|diepvries))/, 'middel (medium)', 175],
+  [/^(frites|friet)(?!.*(onbereid|diepvries))/, 'groot (large)', 270],
   [/^(bier|beer)\b/, 'glas (glass)', 250],
   [/^(bier|beer)\b/, 'flesje (bottle)', 300],
 ];

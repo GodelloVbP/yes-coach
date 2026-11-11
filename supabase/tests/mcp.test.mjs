@@ -271,6 +271,9 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
     const rice = (await search('rijst witte', 8)).results;
     ok(rice.find((x) => /gekookt/.test(x.name)).state === 'cooked' && rice.find((x) => /rauw/.test(x.name)).state === 'raw', 'rice says raw or cooked');
     ok((await search('koffie bereid', 1)).results[0].state === undefined, 'drinks have no raw/cooked');
+    const bread = (await search('tarwebrood wit melk', 1)).results[0], milk = (await search('melk volle', 1)).results[0], porridge = (await search('pap havermout', 1)).results[0];
+    ok(bread.unit === undefined && porridge.unit === undefined && milk.unit === 'ml', 'only drinks are ml: milk is, bread made with milk and porridge are not: ' + [bread.unit, porridge.unit, milk.unit]);
+    ok((await search('protein powder', 1)).results[0].unit === undefined, 'a protein powder is counted in grams, not ml');
     const cola = (await search('cola', 1)).results[0];
     ok(cola.unit === 'ml', 'a soft drink is counted in ml');
     r = await call(T, 'log_meals', { date: '2026-10-26', meals: [{ name: 'cola', items: [{ food: cola.food, grams: 330 }] }] });
@@ -280,6 +283,9 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
     ok((await label('cornflakes')) === 'kom (bowl)' && (await label('pasta')) === 'bord (plate)' && (await label('white rice')) === 'bord (plate)', 'a bowl of cereal, a plate of pasta and rice');
     const pasta = (await search('pasta', 1)).results[0].portions[0];
     ok(pasta.grams === 250, 'a plate of pasta is 250 g');
+    const fries = (await search('friet', 1)).results[0].portions.map((x) => x.label + ' ' + x.grams);
+    ok(fries.includes('klein (small) 110') && fries.includes('middel (medium) 175') && fries.includes('groot (large) 270'), 'snack bar fries come in small, medium and large: ' + fries);
+    ok((await search('spaghetti bolognese', 1)).results[0].portions[0].label === 'bord (plate)', 'a plate of bolognese');
     const beer = (await search('beer', 1)).results[0].portions.map((x) => x.label);
     ok(beer.includes('glas (glass)') && beer.includes('flesje (bottle)'), 'a glass and a bottle of beer: ' + beer);
     r = await call(T, 'log_meals', { date: '2026-10-26', meals: [{ name: 'bowl of cornflakes', items: [{ food: (await search('cornflakes', 1)).results[0].food, portion: { label: 'kom (bowl)' } }] }] });

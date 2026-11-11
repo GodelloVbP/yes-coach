@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-yPnfSpdgjJfnEOWQO9VvfpTeGjese95X8wVAHaj4QAQ=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-rfg6dpDkVN+waWUpqa0s5DAg0iIhWx3w80A5XsgqRtk=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-11 15:14Z">
+<meta name="yc-build" content="2026-11-11 15:19Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -5951,7 +5951,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const singular = (w) => (w.length > 4 && /(oes|ches|shes|sses|xes)$/.test(w) ? w.slice(0, -2) : w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w);
   const wordsOf = (t) => foldW(t).split(/[^a-z0-9]+/).filter(Boolean).map(singular);
   // what counts as a drink, counted in millilitres (the same words as the connector)
-  const DRINK_RE = /\b(melk|milk|karnemelk|drank|drink|juice|sap|smoothie|shake|koffie|coffee|thee|tea)\b/;
+  const DRINK_RE = /^(melk|milk|karnemelk|drank|drink|juice|sap|smoothie|shake|koffie|coffee|thee|tea)\b/; // the first word of the name: "Melk volle" is a drink, "Tarwebrood wit melk" is bread
   const NOT_DRINK_RE = /poeder|powder|gecondenseerd|condensed|ijs|ice cream|pudding|vla|cake|koek|bar\b|reep/;
   const loadFoodDb = () => fdbLoad || (fdbLoad = Promise.all((window.YC_FOOD_FILES || ['foods-nevo.json', 'foods-usda.json', 'portions-nevo.json']).map((u) => fetch(u).then((r) => (r.ok ? r.json() : null)).catch(() => null))).then((docs) => {
     const items = [];
@@ -5966,7 +5966,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     items.forEach(shortName);
     items.forEach((it) => {
       const n = foldW(it.name + ' ' + (it.alt || ''));
-      it.drink = it.unit === 'ml' || it.type === 'Drinks' || it.type === 'Alcohol' || (DRINK_RE.test(n) && !NOT_DRINK_RE.test(n));
+      it.drink = !/poeder|powder/.test(n) && (it.unit === 'ml' || it.type === 'Drinks' || it.type === 'Alcohol' || ((DRINK_RE.test(foldW(it.name)) || DRINK_RE.test(foldW(it.alt || ''))) && !NOT_DRINK_RE.test(n)));
       it.u = it.drink ? 'ml' : 'g';
     });
     FDB = { items, srcs, portie, byKey: new Map(items.map((it) => [it.src + ':' + it.ref, it])) };
@@ -6090,6 +6090,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     [['salmon', 'baked salmon', 'salmon fillet', 'zalm', 'zalmfilet', 'zalm gebakken'], ['salmon atlantic farmed cooked dry heat', 'zalm kweek']],
     [['protein shake', 'protein powder', 'whey', 'whey protein', 'whey protein powder', 'eiwitpoeder', 'eiwit shake', 'proteine shake', 'proteine poeder'], ['protein powder whey based']],
     [['toast', 'toasted bread', 'geroosterd brood', 'roosterbrood'], ['tarwebrood wit', 'tarwebrood bruin']],
+    [['sushi', 'maki', 'sushi roll', 'sushi salmon', 'sushi tuna', 'sushi tonijn'], ['sushi m zalm en komkommer']],
+    [['tomato soup', 'tomatensoep', 'soep tomaat'], ['soup tomato canned prepared equal volume water', 'soup tomato canned prepared equal volume milk']],
+    [['tomato cream soup', 'cream of tomato soup', 'tomatensoep room'], ['soup tomato canned prepared equal volume milk', 'soup tomato bisque canned prepared']],
+    [['tuna sandwich', 'tonijn sandwich', 'broodje tonijn', 'tuna salad', 'tonijnsalade'], ['tonijnsalade', 'tonijn in water blik']],
   ];
   const aliasFor = (q) => { const k = wordsOf(q).join(' '); const hit = ALIASES.find(([keys]) => keys.some((x) => wordsOf(x).join(' ') === k)); return hit ? { to: hit[1], more: hit[2] === true } : null; };
   // a loose word looks for the food people most likely mean; the plain search follows only for the general words (cheese, bread, milk) or when that finds nothing
