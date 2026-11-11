@@ -32,6 +32,7 @@ const INSTRUCTIONS = [
   'The app reads every nutrient from those tables, so the AI supplies foods and amounts, not nutrient numbers. A search lists the portions a food comes in (a slice, a piece) with grams for one; amounts that are guesses are marked estimated.',
   'A search lists the foods the person logged before at the top, marked yours, with the words they use for them and their own portion sizes; save_my_food and save_meal keep a food, a word, a portion size or a usual meal, and log_meals can log a saved meal.',
   'People who switched calories off in the app get results without calories, with a note saying so.',
+  'Every tool result ends with a line giving today\'s date and weekday in the person\'s time zone.',
 ].join(' ');
 
 // ---------------------------------------------------------------- small helpers
@@ -234,6 +235,15 @@ const localToday = (root: Json): string | null => {
   } catch (e) { return null; } // not a time zone this runtime knows
 };
 const NO_TZ = 'The person\'s time zone is not saved yet (it is saved when they open Yes Coach! on their phone). Give the date as YYYY-MM-DD.';
+// one line for the end of every tool result: the date, so a chat that does not know it (or an old chat) does not guess
+const todayLine = (tz: string): string => {
+  const date = localToday({ settings: { tz } });
+  if (date) {
+    try { return 'Today is ' + new Intl.DateTimeFormat('en-GB', { timeZone: tz, weekday: 'long' }).format(new Date()) + ' ' + date + ' (' + tz + ').'; } catch (e) { /* below */ }
+  }
+  const utc = today();
+  return 'Today is ' + new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC', weekday: 'long' }).format(new Date()) + ' ' + utc + ' (UTC; the person\'s time zone is not saved yet).';
+};
 const badDate = (v: Json): boolean => v != null && v !== '' && !realDate(v);
 const DATE_ERR = 'date must be a real day, like 2026-11-06.';
 const n0 = (v: Json): number => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
@@ -1199,13 +1209,25 @@ export const createHandler = (env: Env, f: typeof fetch = fetch) => {
     if (seen.size > 500) seen.clear();
     return u.id;
   };
-  const rpc = async (db: Db, m: Json): Promise<Json | null> => {
+  const tzSeen = new Map<string, { tz: string; until: number }>();
+  const dayLine = async (db: Db, userId: string): Promise<string> => {
+    let tz = '';
+    const hit = tzSeen.get(userId);
+    if (hit && hit.until > Date.now()) tz = hit.tz;
+    else {
+      try { const root = await db.get('yc'); tz = root && root.settings && typeof root.settings.tz === 'string' ? root.settings.tz : ''; } catch (e) { tz = ''; }
+      tzSeen.set(userId, { tz, until: Date.now() + 60000 });
+      if (tzSeen.size > 500) tzSeen.clear();
+    }
+    return todayLine(tz);
+  };
+  const rpc = async (db: Db, m: Json, userId: string): Promise<Json | null> => {
     const id = m && m.id;
     if (!m || m.jsonrpc !== '2.0' || typeof m.method !== 'string') return rpcErr(id, -32600, 'Invalid request');
     if (id === undefined) return null; // a notification
     if (m.method === 'initialize') {
       const asked = m.params && m.params.protocolVersion;
-      return rpcOk(id, { protocolVersion: PROTOCOLS.includes(asked) ? asked : PROTOCOLS[0], capabilities: { tools: { listChanged: false } }, serverInfo: { name: 'yes-coach', title: 'Yes Coach!', version: '0.1.0' }, instructions: INSTRUCTIONS });
+      return rpcOk(id, { protocolVersion: PROTOCOLS.includes(asked) ? asked : PROTOCOLS[0], capabilities: { tools: { listChanged: false } }, serverInfo: { name: 'yes-coach', title: 'Yes Coach!', version: '0.1.0' }, instructions: INSTRUCTIONS + ' ' + (await dayLine(db, userId)) });
     }
     if (m.method === 'ping') return rpcOk(id, {});
     if (m.method === 'tools/list') return rpcOk(id, { tools: TOOLS.map(({ name, title, description, inputSchema, annotations }) => ({ name, title, description, inputSchema, annotations: { title, ...annotations } })) });
@@ -1214,9 +1236,9 @@ export const createHandler = (env: Env, f: typeof fetch = fetch) => {
       if (!tool) return rpcErr(id, -32602, 'Unknown tool');
       try {
         const out = await tool.run(db, (m.params && m.params.arguments) || {}, ctx);
-        return rpcOk(id, { content: [{ type: 'text', text: text(out) }] });
+        return rpcOk(id, { content: [{ type: 'text', text: text(out) }, { type: 'text', text: await dayLine(db, userId) }] });
       } catch (e) {
-        return rpcOk(id, { content: [{ type: 'text', text: e instanceof ToolError ? e.message : 'Something went wrong. Try again.' }], isError: true });
+        return rpcOk(id, { content: [{ type: 'text', text: e instanceof ToolError ? e.message : 'Something went wrong. Try again.' }, { type: 'text', text: await dayLine(db, userId) }], isError: true });
       }
     }
     return rpcErr(id, -32601, 'Method not found');
@@ -1236,10 +1258,10 @@ export const createHandler = (env: Env, f: typeof fetch = fetch) => {
     const db = database(env, token, userId, f);
     if (Array.isArray(body) && body.length > 20) return reply(rpcErr(null, -32600, 'Too many requests in one batch'), 400);
     if (Array.isArray(body)) {
-      const out = (await Promise.all(body.map((m) => rpc(db, m)))).filter((x) => x !== null);
+      const out = (await Promise.all(body.map((m) => rpc(db, m, userId)))).filter((x) => x !== null);
       return out.length ? reply(out) : reply(null, 202);
     }
-    const out = await rpc(db, body);
+    const out = await rpc(db, body, userId);
     return out ? reply(out) : reply(null, 202);
   };
 };
