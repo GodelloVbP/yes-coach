@@ -1914,6 +1914,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['11 Nov 2026', "Food search that understands English", ["Searching Food by an English word finds the Dutch food: bread, cheese, cola, fries, granola.", "Ask Claude to log a meal: it finds the right food more often, tells raw from cooked and counts drinks in ml."]],
     ['11 Nov 2026', "The rolling order runs over your whole log", ["In a rolling week, the next workout is the one you trained longest ago. A new round no longer starts from the top of your list, so Legs on Sunday is not followed by Legs on Monday.", "Put a workout on another day, or add one on a rest day, and the days after it follow on from it. The same workout is kept off the two days before.", "Moves you made earlier this week in a rolling plan are cleared once. Make them again if you still need them."]],
     ['10 Nov 2026', "Warm-ups you can take away, weights that find their own step", ["Remove warm-ups takes the warm-up sets away and leaves your working sets. Any set that is not ticked can go on its own: tap its number, then Remove this set.", "The second exercise for a body part gets two warm-up sets instead of four.", "The weight step follows your log: the smallest jump between weights you have used. Barbell lifts go up by two of your smallest plate. A step you set yourself still wins.", "Each set shows how much more or less it is than last time.", "A connected AI can move a weight one step up or down without asking which weights your gym has."]],
     ['9 Nov 2026', "An alert when rest is over", ["With Alert me when rest is over in Settings, your phone shows a notification when the rest timer ends, also when you are in another app.", "On an iPhone, add Yes Coach! to your home screen first and open it from there."]],
@@ -5887,7 +5888,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   let fdbLoad = null;
   const FD = { pick: null, t: 0, replace: null, rough: false }; // replace: the one-tap entry being filled in, { id, date }
   const foldW = (t) => String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-  const wordsOf = (t) => foldW(t).split(/[^a-z0-9]+/).filter(Boolean).map((w) => (w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w));
+  const singular = (w) => (w.length > 4 && /(oes|ches|shes|sses|xes)$/.test(w) ? w.slice(0, -2) : w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w);
+  const wordsOf = (t) => foldW(t).split(/[^a-z0-9]+/).filter(Boolean).map(singular);
+  // what counts as a drink, counted in millilitres (the same words as the connector)
+  const DRINK_RE = /^(melk|milk|karnemelk|drank|drink|juice|sap|smoothie|shake|koffie|coffee|thee|tea)\b/; // the first word of the name: "Melk volle" is a drink, "Tarwebrood wit melk" is bread
+  const NOT_DRINK_RE = /poeder|powder|gecondenseerd|condensed|ijs|ice cream|pudding|vla|cake|koek|bar\b|reep/;
   const loadFoodDb = () => fdbLoad || (fdbLoad = Promise.all((window.YC_FOOD_FILES || ['foods-nevo.json', 'foods-usda.json', 'portions-nevo.json']).map((u) => fetch(u).then((r) => (r.ok ? r.json() : null)).catch(() => null))).then((docs) => {
     const items = [];
     const srcs = new Set();
@@ -5901,8 +5906,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     items.forEach(shortName);
     items.forEach((it) => {
       const n = foldW(it.name + ' ' + (it.alt || ''));
-      it.drink = it.unit === 'ml' || it.type === 'Drinks' || it.type === 'Alcohol'
-        || (/\b(melk|milk|karnemelk|drank|drink|juice|sap|smoothie|shake|koffie|coffee|thee|tea)\b/.test(n) && !/poeder|powder|gecondenseerd|condensed|ijs|ice cream|pudding|vla|cake|koek|bar\b|reep/.test(n));
+      it.drink = !/poeder|powder/.test(n) && (it.unit === 'ml' || it.type === 'Drinks' || it.type === 'Alcohol' || ((DRINK_RE.test(foldW(it.name)) || DRINK_RE.test(foldW(it.alt || ''))) && !NOT_DRINK_RE.test(n)));
       it.u = it.drink ? 'ml' : 'g';
     });
     FDB = { items, srcs, portie, byKey: new Map(items.map((it) => [it.src + ':' + it.ref, it])) };
@@ -5942,26 +5946,32 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   const foodCredit = () => (FDB && FDB.srcs.has('nevo') ? 'Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven' + (FDB.srcs.has('usda') ? ' and other data sources (USDA FoodData Central).' : '.') : 'Food data: USDA FoodData Central.');
   // every word you type must start a word of the name; the first word, exact words and short names rank higher
-  const PROCESSED = ['breaded', 'fried', 'battered', 'canned', 'frozen', 'sweetened', 'flavored', 'tender', 'nugget', 'patty', 'microwaved', 'fast', 'restaurant', 'sliced', 'deli', 'roll', 'prepackaged', 'powder', 'luncheon', 'dried', 'gedroogd', 'sauce', 'pie', 'taart', 'strudel', 'turnover', 'flap'];
-  const searchFoods = (q) => {
-    const toks = wordsOf(q);
+  const PROCESSED = ['breaded', 'fried', 'battered', 'canned', 'frozen', 'sweetened', 'flavored', 'tender', 'nugget', 'patty', 'microwaved', 'fast', 'restaurant', 'sliced', 'deli', 'roll', 'prepackaged', 'powder', 'luncheon', 'dried', 'gedroogd', 'sauce', 'pie', 'taart', 'strudel', 'turnover', 'flap', 'light', 'zero', 'diet', 'lite', 'suikervrij'];
+  const STOP = ['met', 'zonder', 'with', 'without', 'and', 'en', 'of', 'de', 'het', 'een', 'a', 'an', 'the', 'in', 'van', 'from', 'on'];
+  const searchOne = (q) => {
+    const typed = wordsOf(q);
+    const toks = typed.filter((t) => !STOP.includes(t)).length ? typed.filter((t) => !STOP.includes(t)) : typed; // "coffee with milk": the little words are not searched for
     if (!toks.length || !FDB) return [];
     const has = (ws, t) => ws.some((w) => w.startsWith(t));
+    const hasEnd = (ws, t) => ws.some((w) => w.startsWith(t) || (w.length > t.length && w.endsWith(t))); // or the end of a Dutch compound: "brood" in "tarwebrood"
     const out = [];
     FDB.items.forEach((it) => {
       const main = toks.every((t) => has(it.w, t));
       const alt = !main && it.w2.length && toks.every((t) => has(it.w2, t));
+      const comp = !main && !alt && toks.every((t) => hasEnd(it.w, t));
+      const compAlt = !main && !alt && !comp && it.w2.length > 0 && toks.every((t) => hasEnd(it.w2, t));
       // a synonym ("mosterdkool" for amsoi) only counts when the name does not match, and ranks below real name matches
-      const viaSyn = !main && !alt && it.wsyn && it.wsyn.length > 0 && toks.every((t) => has(it.w, t) || has(it.wsyn, t));
-      if (!main && !alt && !viaSyn) return;
-      const ws = main ? it.w : alt ? it.w2 : it.w.concat(it.wsyn);
-      let sc = (ws[0] && ws[0].startsWith(toks[0]) ? 20 : 0) + (ws[0] === toks[0] ? 5 : 0) - Math.min(12, ws.length) + (it.src === 'nevo' ? 3 : 0) - (viaSyn ? 25 : 0);
+      const viaSyn = !main && !alt && !comp && !compAlt && it.wsyn && it.wsyn.length > 0 && toks.every((t) => has(it.w, t) || has(it.wsyn, t));
+      if (!main && !alt && !comp && !compAlt && !viaSyn) return;
+      const ws = main || comp ? it.w : alt || compAlt ? it.w2 : it.w.concat(it.wsyn);
+      let sc = (ws[0] ? (ws[0].startsWith(toks[0]) ? 20 : ws[0].length > toks[0].length && ws[0].endsWith(toks[0]) ? 16 : 0) : 0) + (ws[0] === toks[0] ? 5 : 0) - Math.min(12, ws.length) + (it.src === 'nevo' ? 3 : 0) - (viaSyn ? 25 : 0) - (comp || compAlt ? 4 : 0);
       toks.forEach((t) => { if (ws.includes(t)) sc += 3; });
+      toks.forEach((t) => { if (ws.includes(t + 'je') || ws.includes(t + 'jes')) sc -= 8; }); // "broodje" is not "brood"
       // plain foods before processed and branded ones, unless you typed those words
       PROCESSED.forEach((p) => { if (ws.includes(p) && !toks.includes(p)) sc -= 3; });
       if (it.src === 'usda' && /\b[A-Z]{3,}\b/.test(it.name)) sc -= 4;
       if (ws.includes('whole') && !toks.includes('whole')) sc += 2;
-      out.push([sc, it, alt, viaSyn]);
+      out.push([sc, it, alt || compAlt, viaSyn]);
     });
     // with three or more real name matches the synonym ones are only noise
     const real = out.filter((x) => !x[3]);
@@ -5974,6 +5984,67 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       else if (leaders.length < 12) leaders.push(Object.assign(hit, { similar: [] }));
     });
     return leaders;
+  };
+  // what people type in English (or loosely) for foods the tables name in Dutch: the first search below is the food they most likely mean. Both copies carry this list.
+  const ALIASES = [
+    [['bread', 'brood'], ['tarwebrood'], true],
+    [['wholegrain bread', 'whole grain bread', 'wholemeal bread', 'whole wheat bread', 'wholewheat bread', 'volkoren brood', 'volkorenbrood'], ['tarwebrood volkoren']],
+    [['brown bread', 'bruin brood', 'bruinbrood'], ['tarwebrood bruin']],
+    [['white bread', 'wit brood', 'witbrood'], ['tarwebrood wit']],
+    [['multigrain bread', 'multi grain bread', 'meergranen brood'], ['meergranenbrood']],
+    [['rye bread', 'rogge brood'], ['roggebrood']],
+    [['cheese', 'kaas', 'gouda', 'gouda cheese'], ['kaas goudse 48+'], true],
+    [['cherry tomato', 'cherry tomatoes', 'tomato cherry'], ['tomaat kers']],
+    [['passata', 'tomato passata', 'sieved tomato'], ['tomaat gezeefd']],
+    [['orange juice', 'jus d orange', 'jus'], ['sap sinaasappel']],
+    [['apple juice'], ['sap appel']],
+    [['red wine'], ['wijn rode']],
+    [['white wine'], ['wijn witte droge']],
+    [['wine'], ['wijn'], true],
+    [['beer', 'pils', 'pilsner', 'lager'], ['bier pils']],
+    [['cola', 'coca cola', 'coke', 'pepsi', 'soda', 'soft drink', 'fizzy drink'], ['frisdrank m suiker m cafeine']],
+    [['diet coke', 'cola zero', 'coke zero', 'cola light'], ['frisdrank light m cafeine']],
+    [['fries', 'french fries', 'friet', 'frietjes', 'patat'], ['frites bereid gem']],
+    [['pasta', 'spaghetti', 'penne', 'macaroni', 'fusilli'], ['pasta witte gem gekookt']],
+    [['rice', 'white rice', 'rijst'], ['rijst witte gekookt']],
+    [['brown rice'], ['rijst zilvervlies gekookt']],
+    [['oatmeal', 'porridge', 'havermout pap'], ['pap havermout bereid']],
+    [['oats', 'rolled oats', 'oat flakes', 'havermout', 'haver'], ['vlokken haver']],
+    [['granola'], ['muesli krokante noten']],
+    [['mayo', 'mayonnaise'], ['mayonaise']],
+    [['chicken breast', 'chicken fillet', 'kipfilet'], ['kipfilet bereid', 'kipfilet rauw']],
+    [['coffee', 'koffie'], ['koffie bereid']],
+    [['cappuccino'], ['koffie cappuccino vers']],
+    [['latte', 'caffe latte', 'cafe latte', 'latte macchiato'], ['koffie latte macchiato']],
+    [['milk', 'melk'], ['melk halfvolle', 'melk volle'], true],
+    [['semi skimmed milk', 'semi-skimmed milk', 'halfvolle melk'], ['melk halfvolle']],
+    [['whole milk', 'full fat milk', 'volle melk'], ['melk volle']],
+    [['skimmed milk', 'skim milk', 'magere melk'], ['melk magere']],
+    [['greek yoghurt', 'greek yogurt', 'griekse yoghurt'], ['yoghurt griekse']],
+    [['egg', 'eggs', 'ei', 'eieren'], ['ei kippen gekookt gem', 'ei kippen gebakken', 'ei kippen rauw gem'], true],
+    [['boiled egg', 'boiled eggs', 'gekookt ei'], ['ei kippen gekookt gem']],
+    [['fried egg', 'fried eggs', 'gebakken ei', 'spiegelei'], ['ei kippen gebakken']],
+    [['pancake', 'pancakes', 'dutch pancake', 'dutch pancakes', 'pannenkoek'], ['pannenkoek huishoudelijk bereid m margarine']],
+    [['dark chocolate', 'pure chocolade'], ['chocolade puur']],
+    [['whole wheat pita', 'wholegrain pita', 'volkoren pita', 'whole grain pita'], ['bread pita whole wheat']],
+    [['salmon', 'baked salmon', 'salmon fillet', 'zalm', 'zalmfilet', 'zalm gebakken'], ['salmon atlantic farmed cooked dry heat', 'zalm kweek']],
+    [['protein shake', 'protein powder', 'whey', 'whey protein', 'whey protein powder', 'eiwitpoeder', 'eiwit shake', 'proteine shake', 'proteine poeder'], ['protein powder whey based']],
+    [['toast', 'toasted bread', 'geroosterd brood', 'roosterbrood'], ['tarwebrood wit', 'tarwebrood bruin']],
+    [['sushi', 'maki', 'sushi roll', 'sushi salmon', 'sushi tuna', 'sushi tonijn'], ['sushi m zalm en komkommer']],
+    [['tomato soup', 'tomatensoep', 'soep tomaat'], ['soup tomato canned prepared equal volume water', 'soup tomato canned prepared equal volume milk']],
+    [['tomato cream soup', 'cream of tomato soup', 'tomatensoep room'], ['soup tomato canned prepared equal volume milk', 'soup tomato bisque canned prepared']],
+    [['tuna sandwich', 'tonijn sandwich', 'broodje tonijn', 'tuna salad', 'tonijnsalade'], ['tonijnsalade', 'tonijn in water blik']],
+  ];
+  const aliasFor = (q) => { const k = wordsOf(q).join(' '); const hit = ALIASES.find(([keys]) => keys.some((x) => wordsOf(x).join(' ') === k)); return hit ? { to: hit[1], more: hit[2] === true } : null; };
+  // a loose word looks for the food people most likely mean; the plain search follows only for the general words (cheese, bread, milk) or when that finds nothing
+  const searchFoods = (q) => {
+    const al = aliasFor(q);
+    if (!al) return searchOne(q);
+    const out = [];
+    const add = (list) => list.forEach((hit) => { if (!out.some((o) => o.it === hit.it)) out.push(hit); });
+    al.to.forEach((query) => add(searchOne(query)));
+    if (al.more || !out.length) add(searchOne(q));
+    return out.slice(0, 12);
   };
   // the same food for a person: same name stem and the same numbers per 100 g or ml (within 5%), so there is nothing to choose between them
   const stemOf = (it) => (it.stem != null ? it.stem : (it.stem = wordsOf(it.name).slice(0, it.src === 'usda' ? 2 : 1).join(' ')));

@@ -6879,5 +6879,26 @@
   "de": "Verschiebungen, die du diese Woche in einem rollenden Plan gemacht hast, werden einmalig gelöscht. Mach sie neu, wenn du sie noch brauchst.",
   "fr": "Les déplacements faits plus tôt cette semaine dans un plan tournant sont effacés une fois. Refais-les si tu en as encore besoin.",
   "it": "Gli spostamenti fatti prima questa settimana in un piano a rotazione vengono cancellati una volta. Rifalli se ti servono ancora."
+ },
+ "Food search that understands English": {
+  "nl": "Voedsel zoeken dat Engels begrijpt",
+  "es": "Una búsqueda de comida que entiende inglés",
+  "de": "Lebensmittelsuche, die Englisch versteht",
+  "fr": "Une recherche d'aliments qui comprend l'anglais",
+  "it": "Una ricerca di cibi che capisce l'inglese"
+ },
+ "Searching Food by an English word finds the Dutch food: bread, cheese, cola, fries, granola.": {
+  "nl": "Zoek je in Eten op een Engels woord, dan vindt de app het Nederlandse product: bread, cheese, cola, fries, granola.",
+  "es": "Si buscas en Comida con una palabra en inglés, la app encuentra el alimento neerlandés: bread, cheese, cola, fries, granola.",
+  "de": "Suchst du unter Ernährung mit einem englischen Wort, findet die App das niederländische Lebensmittel: bread, cheese, cola, fries, granola.",
+  "fr": "Si tu cherches dans Alimentation avec un mot anglais, l'appli trouve l'aliment néerlandais : bread, cheese, cola, fries, granola.",
+  "it": "Se cerchi in Cibo con una parola inglese, l'app trova l'alimento olandese: bread, cheese, cola, fries, granola."
+ },
+ "Ask Claude to log a meal: it finds the right food more often, tells raw from cooked and counts drinks in ml.": {
+  "nl": "Laat Claude een maaltijd loggen: het vindt vaker het juiste product, ziet het verschil tussen rauw en gekookt en telt drinken in ml.",
+  "es": "Pide a Claude que registre una comida: encuentra el alimento correcto más a menudo, distingue crudo de cocinado y cuenta las bebidas en ml.",
+  "de": "Lass Claude eine Mahlzeit eintragen: Es findet öfter das richtige Lebensmittel, unterscheidet roh von gekocht und zählt Getränke in ml.",
+  "fr": "Demande à Claude d'enregistrer un repas : il trouve plus souvent le bon aliment, distingue cru et cuit et compte les boissons en ml.",
+  "it": "Chiedi a Claude di registrare un pasto: trova più spesso l'alimento giusto, distingue crudo da cotto e conta le bevande in ml."
  }
 }

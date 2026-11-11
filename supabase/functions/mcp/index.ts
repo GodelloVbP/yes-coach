@@ -32,6 +32,7 @@ const INSTRUCTIONS = [
   'The app reads every nutrient from those tables, so the AI supplies foods and amounts, not nutrient numbers. A search lists the portions a food comes in (a slice, a piece) with grams for one; amounts that are guesses are marked estimated.',
   'A search lists the foods the person logged before at the top, marked yours, with the words they use for them and their own portion sizes; save_my_food and save_meal keep a food, a word, a portion size or a usual meal, and log_meals can log a saved meal.',
   'People who switched calories off in the app get results without calories, with a note saying so.',
+  'Rice, pasta, meat and eggs are listed both raw and cooked with very different numbers; a search result says which (state), and the amount is the weight in that state. Drinks are counted in millilitres. Common foods can be searched by their English names too.',
   'Every tool result ends with a line giving today\'s date and weekday in the person\'s time zone.',
 ].join(' ');
 
@@ -219,7 +220,8 @@ const bestSet = (sets: Json[], unit: string): Json | null => {
 type Food = { src: 'nevo' | 'usda' | 'own'; ref: string; name: string; alt: string; type: string; tf: string; wsyn: string[]; kcal: number; p: number; c: number; f: number; unit: 'g' | 'ml'; w: string[]; w2: string[] };
 type FoodDb = { items: Food[]; byKey: Map<string, Food>; portie: Record<string, Json[]> };
 const fold = (t: Json): string => String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-const wordsOf = (t: Json): string[] => fold(t).split(/[^a-z0-9]+/).filter(Boolean).map((w) => (w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w));
+const singular = (w: string): string => (w.length > 4 && /(oes|ches|shes|sses|xes)$/.test(w) ? w.slice(0, -2) : w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w);
+const wordsOf = (t: Json): string[] => fold(t).split(/[^a-z0-9]+/).filter(Boolean).map(singular);
 const foodKey = (src: string, ref: Json): string => src + ':' + ref;
 const realDate = (v: Json): boolean => isDate(v) && !Number.isNaN(Date.parse(v + 'T00:00:00Z')) && new Date(v + 'T00:00:00Z').toISOString().slice(0, 10) === v;
 // today in the person's own time zone, which the app saves in root.settings.tz when it is opened. Until then it is not known,
@@ -249,6 +251,10 @@ const DATE_ERR = 'date must be a real day, like 2026-11-06.';
 const n0 = (v: Json): number => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
 const round1 = (n: number): number => Math.round(n * 10) / 10;
 const FOOD_FILES = ['foods-nevo.json', 'foods-usda.json', 'portions-nevo.json'];
+// what counts as a drink, counted in millilitres (the same words as the app)
+const DRINK_RE = /^(melk|milk|karnemelk|drank|drink|juice|sap|smoothie|shake|koffie|coffee|thee|tea)\b/; // the first word of the name: "Melk volle" is a drink, "Tarwebrood wit melk" is bread
+const NOT_DRINK_RE = /poeder|powder|gecondenseerd|condensed|ijs|ice cream|pudding|vla|cake|koek|bar\b|reep/;
+const isDrink = (it: Food): boolean => !/poeder|powder/.test(fold(it.name + ' ' + (it.alt || ''))) && (it.unit === 'ml' || it.type === 'Drinks' || it.type === 'Alcohol' || ((DRINK_RE.test(fold(it.name)) || DRINK_RE.test(fold(it.alt || ''))) && !NOT_DRINK_RE.test(fold(it.name + ' ' + (it.alt || '')))));
 
 const loadFoods = async (env: Env, f: typeof fetch): Promise<FoodDb> => {
   const base = env.siteUrl.replace(/\/?$/, '/');
@@ -265,17 +271,20 @@ const loadFoods = async (env: Env, f: typeof fetch): Promise<FoodDb> => {
     else if (d.src === 'usda') for (const [ref, name, g, kcal, p, c, fat] of d.foods) items.push({ src: 'usda', ref: String(ref), name, alt: '', type: d.groups[g], kcal: kcal || 0, p: p || 0, c: c || 0, f: fat || 0, unit: 'g', w: wordsOf(name), wsyn: [], tf: fold(d.groups[g]), w2: [] });
   }
   if (!items.length) fail('The food tables could not be loaded. Try again in a minute.');
+  for (const it of items) it.unit = isDrink(it) ? 'ml' : 'g';
   return { items, byKey: new Map(items.map((it) => [foodKey(it.src, it.ref), it])), portie };
 };
 
 // the search the app uses (every typed word starts a word of the name; short, plain, Dutch foods first), plus a second pass for
 // Dutch compound words ("brood" finds "tarwebrood") when the first pass fills fewer than the limit
-const PROCESSED = ['breaded', 'fried', 'battered', 'canned', 'frozen', 'sweetened', 'flavored', 'tender', 'nugget', 'patty', 'microwaved', 'fast', 'restaurant', 'sliced', 'deli', 'roll', 'prepackaged', 'powder', 'luncheon', 'dried', 'gedroogd', 'sauce', 'pie', 'taart', 'strudel', 'turnover', 'flap'];
-const searchFoods = (db: FoodDb, q: string, limit: number, type = ''): Food[] => {
-  const toks = wordsOf(q);
+const PROCESSED = ['breaded', 'fried', 'battered', 'canned', 'frozen', 'sweetened', 'flavored', 'tender', 'nugget', 'patty', 'microwaved', 'fast', 'restaurant', 'sliced', 'deli', 'roll', 'prepackaged', 'powder', 'luncheon', 'dried', 'gedroogd', 'sauce', 'pie', 'taart', 'strudel', 'turnover', 'flap', 'light', 'zero', 'diet', 'lite', 'suikervrij'];
+const STOP = ['met', 'zonder', 'with', 'without', 'and', 'en', 'of', 'de', 'het', 'een', 'a', 'an', 'the', 'in', 'van', 'from', 'on'];
+const searchOne = (db: FoodDb, q: string, limit: number, type = ''): Food[] => {
+  const typed = wordsOf(q);
+  const toks = typed.filter((t) => !STOP.includes(t)).length ? typed.filter((t) => !STOP.includes(t)) : typed; // "coffee with milk": the little words are not searched for
   if (!toks.length) return [];
   const starts = (ws: string[], t: string) => ws.some((w) => w.startsWith(t));
-  const inside = (ws: string[], t: string) => ws.some((w) => w.includes(t));
+  const inside = (ws: string[], t: string) => ws.some((w) => w.startsWith(t) || (w.length > t.length && w.endsWith(t))); // or the end of a Dutch compound: "brood" in "tarwebrood"
   const tk = fold(type);
   const hits: [number, Food, boolean][] = [];
   for (const it of db.items) {
@@ -285,13 +294,14 @@ const searchFoods = (db: FoodDb, q: string, limit: number, type = ''): Food[] =>
     let viaSyn = false;
     if (toks.every((t) => starts(it.w, t))) ws = it.w;
     else if (it.w2.length && toks.every((t) => starts(it.w2, t))) ws = it.w2;
-    else if (toks.every((t) => inside(it.w, t))) { ws = it.w; penalty = 15; }
-    else if (it.w2.length && toks.every((t) => inside(it.w2, t))) { ws = it.w2; penalty = 15; }
+    else if (toks.every((t) => inside(it.w, t))) { ws = it.w; penalty = 4; }
+    else if (it.w2.length && toks.every((t) => inside(it.w2, t))) { ws = it.w2; penalty = 4; }
     // a synonym ("mosterdkool" for amsoi) only counts when the name does not match, and ranks below real name matches
     else if (it.wsyn.length && toks.every((t) => starts(it.w, t) || starts(it.wsyn, t))) { ws = it.w.concat(it.wsyn); penalty = 25; viaSyn = true; }
     if (!ws) continue;
-    let sc = (ws[0] && ws[0].startsWith(toks[0]) ? 20 : 0) + (ws[0] === toks[0] ? 5 : 0) - Math.min(12, ws.length) + (it.src === 'nevo' ? 3 : 0) - penalty;
+    let sc = (ws[0] ? (ws[0].startsWith(toks[0]) ? 20 : ws[0].length > toks[0].length && ws[0].endsWith(toks[0]) ? 16 : 0) : 0) + (ws[0] === toks[0] ? 5 : 0) - Math.min(12, ws.length) + (it.src === 'nevo' ? 3 : 0) - penalty;
     for (const t of toks) if (ws.includes(t)) sc += 3;
+    for (const t of toks) if (ws.includes(t + 'je') || ws.includes(t + 'jes')) sc -= 8; // "broodje" is not "brood"
     for (const w of PROCESSED) if (ws.includes(w) && !toks.includes(w)) sc -= 3;
     if (it.src === 'usda' && /\b[A-Z]{3,}\b/.test(it.name)) sc -= 4;
     if (ws.includes('whole') && !toks.includes('whole')) sc += 2;
@@ -302,6 +312,82 @@ const searchFoods = (db: FoodDb, q: string, limit: number, type = ''): Food[] =>
   return (real.length >= 3 ? real : hits).sort((a, b) => b[0] - a[0]).slice(0, limit).map((h) => h[1]);
 };
 
+// what people type in English (or loosely) for foods the tables name in Dutch: the first search below is the food they most likely mean. Both copies carry this list.
+const ALIASES = [
+  [['bread', 'brood'], ['tarwebrood'], true],
+  [['wholegrain bread', 'whole grain bread', 'wholemeal bread', 'whole wheat bread', 'wholewheat bread', 'volkoren brood', 'volkorenbrood'], ['tarwebrood volkoren']],
+  [['brown bread', 'bruin brood', 'bruinbrood'], ['tarwebrood bruin']],
+  [['white bread', 'wit brood', 'witbrood'], ['tarwebrood wit']],
+  [['multigrain bread', 'multi grain bread', 'meergranen brood'], ['meergranenbrood']],
+  [['rye bread', 'rogge brood'], ['roggebrood']],
+  [['cheese', 'kaas', 'gouda', 'gouda cheese'], ['kaas goudse 48+'], true],
+  [['cherry tomato', 'cherry tomatoes', 'tomato cherry'], ['tomaat kers']],
+  [['passata', 'tomato passata', 'sieved tomato'], ['tomaat gezeefd']],
+  [['orange juice', 'jus d orange', 'jus'], ['sap sinaasappel']],
+  [['apple juice'], ['sap appel']],
+  [['red wine'], ['wijn rode']],
+  [['white wine'], ['wijn witte droge']],
+  [['wine'], ['wijn'], true],
+  [['beer', 'pils', 'pilsner', 'lager'], ['bier pils']],
+  [['cola', 'coca cola', 'coke', 'pepsi', 'soda', 'soft drink', 'fizzy drink'], ['frisdrank m suiker m cafeine']],
+  [['diet coke', 'cola zero', 'coke zero', 'cola light'], ['frisdrank light m cafeine']],
+  [['fries', 'french fries', 'friet', 'frietjes', 'patat'], ['frites bereid gem']],
+  [['pasta', 'spaghetti', 'penne', 'macaroni', 'fusilli'], ['pasta witte gem gekookt']],
+  [['rice', 'white rice', 'rijst'], ['rijst witte gekookt']],
+  [['brown rice'], ['rijst zilvervlies gekookt']],
+  [['oatmeal', 'porridge', 'havermout pap'], ['pap havermout bereid']],
+  [['oats', 'rolled oats', 'oat flakes', 'havermout', 'haver'], ['vlokken haver']],
+  [['granola'], ['muesli krokante noten']],
+  [['mayo', 'mayonnaise'], ['mayonaise']],
+  [['chicken breast', 'chicken fillet', 'kipfilet'], ['kipfilet bereid', 'kipfilet rauw']],
+  [['coffee', 'koffie'], ['koffie bereid']],
+  [['cappuccino'], ['koffie cappuccino vers']],
+  [['latte', 'caffe latte', 'cafe latte', 'latte macchiato'], ['koffie latte macchiato']],
+  [['milk', 'melk'], ['melk halfvolle', 'melk volle'], true],
+  [['semi skimmed milk', 'semi-skimmed milk', 'halfvolle melk'], ['melk halfvolle']],
+  [['whole milk', 'full fat milk', 'volle melk'], ['melk volle']],
+  [['skimmed milk', 'skim milk', 'magere melk'], ['melk magere']],
+  [['greek yoghurt', 'greek yogurt', 'griekse yoghurt'], ['yoghurt griekse']],
+  [['egg', 'eggs', 'ei', 'eieren'], ['ei kippen gekookt gem', 'ei kippen gebakken', 'ei kippen rauw gem'], true],
+  [['boiled egg', 'boiled eggs', 'gekookt ei'], ['ei kippen gekookt gem']],
+  [['fried egg', 'fried eggs', 'gebakken ei', 'spiegelei'], ['ei kippen gebakken']],
+  [['pancake', 'pancakes', 'dutch pancake', 'dutch pancakes', 'pannenkoek'], ['pannenkoek huishoudelijk bereid m margarine']],
+  [['dark chocolate', 'pure chocolade'], ['chocolade puur']],
+  [['whole wheat pita', 'wholegrain pita', 'volkoren pita', 'whole grain pita'], ['bread pita whole wheat']],
+  [['salmon', 'baked salmon', 'salmon fillet', 'zalm', 'zalmfilet', 'zalm gebakken'], ['salmon atlantic farmed cooked dry heat', 'zalm kweek']],
+  [['protein shake', 'protein powder', 'whey', 'whey protein', 'whey protein powder', 'eiwitpoeder', 'eiwit shake', 'proteine shake', 'proteine poeder'], ['protein powder whey based']],
+  [['toast', 'toasted bread', 'geroosterd brood', 'roosterbrood'], ['tarwebrood wit', 'tarwebrood bruin']],
+  [['sushi', 'maki', 'sushi roll', 'sushi salmon', 'sushi tuna', 'sushi tonijn'], ['sushi m zalm en komkommer']],
+  [['tomato soup', 'tomatensoep', 'soep tomaat'], ['soup tomato canned prepared equal volume water', 'soup tomato canned prepared equal volume milk']],
+  [['tomato cream soup', 'cream of tomato soup', 'tomatensoep room'], ['soup tomato canned prepared equal volume milk', 'soup tomato bisque canned prepared']],
+  [['tuna sandwich', 'tonijn sandwich', 'broodje tonijn', 'tuna salad', 'tonijnsalade'], ['tonijnsalade', 'tonijn in water blik']],
+];
+const aliasFor = (q: string): { to: string[]; more: boolean } | null => { const k = wordsOf(q).join(' '); const hit = ALIASES.find(([keys]) => (keys as string[]).some((x) => wordsOf(x).join(' ') === k)); return hit ? { to: hit[1] as string[], more: hit[2] === true } : null; };
+// a loose word looks for the food people most likely mean; the plain search follows only for the general words (cheese, bread, milk) or when that finds nothing
+const searchFoods = (db: FoodDb, q: string, limit: number, type = ''): Food[] => {
+  const al = aliasFor(q);
+  if (!al) return searchOne(db, q, limit, type);
+  const out: Food[] = [];
+  for (const query of al.to) for (const f of searchOne(db, query, limit, type)) if (!out.includes(f)) out.push(f);
+  if (al.more || !out.length) for (const f of searchOne(db, q, limit, type)) if (!out.includes(f)) out.push(f); // the plain search only when the usual food is not there
+  return out.slice(0, limit);
+};
+
+// nothing matched every word ("cake slice"): the foods that match all but one of the words, then fewer; says which words matched
+const looser = (db: FoodDb, q: string, limit: number, type = ''): { foods: Food[]; words: string } | null => {
+  const raw = fold(q).split(/[^a-z0-9]+/).filter(Boolean).filter((w) => !STOP.includes(singular(w)));
+  if (raw.length < 2 || raw.length > 5) return null;
+  for (let k = raw.length - 1; k >= 1; k--) {
+    const subs: string[][] = [];
+    const pick = (from: number, cur: string[]) => { if (cur.length === k) { subs.push(cur); return; } for (let i = from; i < raw.length; i++) pick(i + 1, [...cur, raw[i]]); };
+    pick(0, []);
+    const out: Food[] = [];
+    let words = '';
+    for (const sub of subs) for (const f of searchOne(db, sub.join(' '), limit, type)) if (!out.includes(f)) { out.push(f); if (!words) words = sub.join(' '); }
+    if (out.length) return { foods: out.slice(0, limit), words };
+  }
+  return null;
+};
 // rough small, medium and large portions by kind of food, in grams (the same table the app falls back on)
 const SIZES: Record<string, number[]> = {
   Meals: [200, 350, 500], Restaurant: [200, 350, 500], 'Fast food': [150, 250, 400], Soups: [200, 250, 350],
@@ -332,15 +418,43 @@ const measureScore = (m: string, type: string, g: number): number => {
   if (/^snee/.test(t)) return /zonder korst|dun/.test(t) ? 6 : 7;
   return 5;
 };
+// household amounts people say that the RIVM table does not list for these foods: a bowl of cereal, a plate of pasta, a whole pizza, a beer; they come first
+const EXTRA_PORTIONS: [RegExp, string, number][] = [
+  [/\b(cornflake|ontbijtgranen|cereal|rice krispies)/, 'kom (bowl)', 40],
+  [/^(muesli|granola)|krokante|crunchy muesli/, 'kom (bowl)', 60],
+  [/^pap |porridge/, 'kom (bowl)', 250],
+  [/(pasta|spaghetti|macaroni|noedels|noodles).*(gekookt|boiled|cooked)/, 'bord (plate)', 250],
+  [/(rijst|rice).*(gekookt|boiled|cooked)/, 'bord (plate)', 200],
+  [/(couscous|quinoa|bulgur).*(gekookt|boiled|cooked)/, 'bord (plate)', 200],
+  [/^pizza\b/, 'hele pizza (whole)', 400],
+  [/bolognese/, 'bord (plate)', 400],
+  [/^(frites|friet)(?!.*(onbereid|diepvries))/, 'klein (small)', 110],
+  [/^(frites|friet)(?!.*(onbereid|diepvries))/, 'middel (medium)', 175],
+  [/^(frites|friet)(?!.*(onbereid|diepvries))/, 'groot (large)', 270],
+  [/^(bier|beer)\b/, 'glas (glass)', 250],
+  [/^(bier|beer)\b/, 'flesje (bottle)', 300],
+];
+const NOT_EXTRA = /reep|bar\b|saus|sauce|deeg|dough|crust|bodem/;
 // the amounts a food can be given in, best first: RIVM's household measures (grams per one), else rough sizes by kind of food
 const portionsOf = (db: FoodDb, it: Food): { source: string; list: { label: string; grams: number }[] } => {
   const rp = it.src === 'nevo' ? db.portie[it.ref] : null;
+  const nm = fold(it.name + ' ' + (it.alt || ''));
+  const extra = it.src === 'own' || NOT_EXTRA.test(nm) ? [] : EXTRA_PORTIONS.filter(([re]) => re.test(nm)).map(([, label, grams]) => ({ label, grams }));
   if (rp && rp.length) {
     const ranked = rp.map((m: Json, i: number) => [measureScore(String(m[0]), it.type, Number(m[1])), i, m] as [number, number, Json]).sort((a, b) => b[0] - a[0] || a[1] - b[1]);
-    return { source: 'RIVM household measures, grams for one', list: ranked.map(([, , m]) => ({ label: String(m[0]), grams: Number(m[1]) })).filter((x) => x.grams > 0) };
+    return { source: 'RIVM household measures, grams for one', list: [...extra, ...ranked.map(([, , m]) => ({ label: String(m[0]), grams: Number(m[1]) })).filter((x) => x.grams > 0)] };
   }
   const s = SIZES[it.type] || [50, 100, 200];
-  return { source: 'rough sizes for this kind of food', list: ['small', 'medium', 'large'].map((label, i) => ({ label, grams: s[i] })) };
+  return { source: 'rough sizes for this kind of food', list: [...extra, ...['small', 'medium', 'large'].map((label, i) => ({ label, grams: s[i] }))] };
+};
+// raw or cooked, for the foods where it changes the numbers a lot (rice 352 kcal raw, 146 cooked): the amount is the weight in that state
+const STATE_GROUPS = ['Meat', 'Fish', 'Grains', 'Potatoes', 'Vegetables', 'Legumes', 'Eggs', 'Plant-based', 'Meals'];
+const stateOf = (it: Food): string => {
+  if (!STATE_GROUPS.includes(it.type)) return '';
+  const n = fold(it.name + ' ' + (it.alt || ''));
+  if (/\b(rauw|rauwe|onbereid|raw|uncooked|unprepared|dry)\b/.test(n)) return 'raw';
+  if (/\b(gekookt|gebakken|gebraden|gegrild|gestoofd|bereid|boiled|cooked|baked|roasted|fried|grilled|steamed|stewed|prepared)\b/.test(n)) return 'cooked';
+  return '';
 };
 const per = (it: Food, g: number) => { const k = g / 100; return { kcal: Math.round(it.kcal * k), p: round1(it.p * k), c: round1(it.c * k), f: round1(it.f * k) }; };
 const caloriesShown = (root: Json): boolean => {
@@ -875,7 +989,7 @@ const TOOLS: Tool[] = [
       queries: { type: 'array', maxItems: 8, description: 'Several foods in one go, instead of query: one search each, e.g. [{"query":"tarwebrood bruin"},{"query":"goudse","type":"Cheese"}].', items: obj({ query: { type: 'string' }, type: { type: 'string' } }, ['query']) },
       limit: { type: 'integer', description: 'Results per search, 1 to 15. Default 8 for one search, 4 each for several.' },
     }),
-    description: 'Search the NEVO (Dutch) and USDA food tables the app uses. Each result has a "food" id, its nutrients per 100 g, and the portions it can be given in (a slice, a piece) with grams for one. Foods the person logged before come first, marked yours, with the words they use for them and their own portion sizes; plain, common foods rank next. An empty result means nothing matched; one plain word in Dutch or English usually finds it.',
+    description: 'Search the NEVO (Dutch) and USDA food tables the app uses. Each result has a "food" id, its nutrients per 100 g, and the portions it can be given in (a slice, a piece) with grams for one. Foods the person logged before come first, marked yours, with the words they use for them and their own portion sizes; plain, common foods rank next. Rice, pasta, meat and eggs come both raw and cooked: each result says which (state), and the amount is the weight in that state. Drinks are in ml. An empty result means nothing matched; one plain word in Dutch or English usually finds it.',
     run: async (db, a, ctx) => {
       const many = Array.isArray(a.queries) && a.queries.length > 0;
       if (many && a.queries.length > 8) fail('At most 8 searches at once.');
@@ -895,7 +1009,7 @@ const TOOLS: Tool[] = [
         const portions = [...own, ...pt.list].filter((x) => !labels.has(fold(x.label)) && !!labels.add(fold(x.label))).slice(0, most);
         const rough = !/^RIVM/.test(pt.source) && pt.list.length > 0;
         if (pt.list.length) sources.add(rough ? 'rough' : 'rivm');
-        return { food: foodKey(it.src, it.ref), name: it.name, ...(it.alt ? { english: it.alt } : {}), type: it.type, ...(it.unit && it.unit !== 'g' ? { unit: it.unit } : {}), per_100: macros(per(it, 100), cal), portions, ...(own.length ? { portions_are: 'the person\'s own portion sizes first' } : {}), ...(rough ? { rough_portions: true } : {}), ...(m ? { yours: true, times_logged: m.n, said: Object.keys(m.aka) } : {}) };
+        return { food: foodKey(it.src, it.ref), name: it.name, ...(it.alt ? { english: it.alt } : {}), type: it.type, ...(stateOf(it) ? { state: stateOf(it) } : {}), ...(it.unit && it.unit !== 'g' ? { unit: it.unit } : {}), per_100: macros(per(it, 100), cal), portions, ...(own.length ? { portions_are: 'the person\'s own portion sizes first' } : {}), ...(rough ? { rough_portions: true } : {}), ...(m ? { yours: true, times_logged: m.n, said: Object.keys(m.aka) } : {}) };
       };
       const one = (x: { query: string; type: string }) => {
         const toks = wordsOf(x.query);
@@ -904,7 +1018,11 @@ const TOOLS: Tool[] = [
           .sort((p, q) => q[0].n - p[0].n || q[0].last - p[0].last).slice(0, Math.min(5, limit));
         const taken = new Set(yours.map(([m]) => m.food));
         const hits = searchFoods(tables, x.query, limit + taken.size, x.type).filter((it) => !taken.has(foodKey(it.src, it.ref))).slice(0, limit - yours.length);
-        if (!yours.length && !hits.length) return { results: [], note: 'Nothing matched' + (x.type ? ' in that group' : '') + '. One plain word in Dutch or English usually works.' };
+        if (!yours.length && !hits.length) {
+          const l = looser(tables, x.query, limit, x.type);
+          if (l) return { results: l.foods.map((it) => out(it)), note: 'Nothing matched every word; these match "' + l.words + '".' };
+          return { results: [], note: 'Nothing matched' + (x.type ? ' in that group' : '') + '. One plain word in Dutch or English usually works.' };
+        }
         return { results: [...yours.map(([m, it]) => out(it, m)), ...hits.map((it) => out(it))] };
       };
       const hidden = cal ? {} : { calories: 'Calories are hidden for this person: leave them out of your answer.' };
