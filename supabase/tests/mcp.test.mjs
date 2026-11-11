@@ -131,6 +131,19 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok(list.body.result.tools.every((t) => !/\b(always|never|must|should|instruction|ignore|before calling|call this)/i.test(t.description)), 'descriptions are plain, no directives');
   const init = (await rpc('tok.anna.x', 'initialize', {})).body.result.instructions;
   ok(!/\b(call|first|never|must|should)\b/i.test(init), 'server instructions are descriptive: ' + init);
+  // today's date: the last line of every result and of the instructions, in the person's time zone (UTC until it is saved)
+  {
+    const dayIn = (tz) => { const d = new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); return new Intl.DateTimeFormat('en-GB', { timeZone: tz, weekday: 'long' }).format(new Date()) + ' ' + d; };
+    const res = await rpc('tok.anna.x', 'tools/call', { name: 'get_overview', arguments: {} });
+    const blocks = res.body.result.content;
+    ok(blocks.length === 2 && blocks[1].text === 'Today is ' + dayIn('Europe/Amsterdam') + ' (Europe/Amsterdam).', 'result ends with the date in their time zone: ' + JSON.stringify(blocks[1]));
+    ok(JSON.parse(blocks[0].text), 'the data is still its own block');
+    ok(init.endsWith('Today is ' + dayIn('Europe/Amsterdam') + ' (Europe/Amsterdam).'), 'instructions end with the date');
+    const ben = await rpc('tok.ben.x', 'tools/call', { name: 'get_overview', arguments: {} });
+    ok(ben.body.result.content[1].text === 'Today is ' + dayIn('UTC') + ' (UTC; the person\'s time zone is not saved yet).', 'no time zone saved: UTC, and it says so: ' + ben.body.result.content[1].text);
+    const bad = await rpc('tok.anna.x', 'tools/call', { name: 'get_sessions', arguments: { date: 'tomorrow' } });
+    ok(bad.body.result.content[bad.body.result.content.length - 1].text.startsWith('Today is '), 'an error carries it too');
+  }
   ok(list.body.result.tools.filter((t) => t.annotations.destructiveHint === true).map((t) => t.name).sort().join() === 'answer_note,remove_food_entry,remove_saved,remove_sets,save_meal,save_training_day,set_schedule', 'overwriting tools are destructive');
   ok(list.body.result.tools.find((t) => t.name === 'log_meals').annotations.idempotentHint === false, 'logging a meal twice adds it twice, so it is not idempotent');
   ok(list.body.result.tools.filter((t) => t.annotations.readOnlyHint).length === 9, 'read-only hints');
