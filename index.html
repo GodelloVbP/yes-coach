@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-IBI9f8MCTtZUBhl6dukGpxCuWgxkYTowqXjEujuT+5U=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-yPnfSpdgjJfnEOWQO9VvfpTeGjese95X8wVAHaj4QAQ=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-11 15:04Z">
+<meta name="yc-build" content="2026-11-11 15:14Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -6007,26 +6007,31 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const foodCredit = () => (FDB && FDB.srcs.has('nevo') ? 'Based on data from NEVO online version 2025/9.0, RIVM, Bilthoven' + (FDB.srcs.has('usda') ? ' and other data sources (USDA FoodData Central).' : '.') : 'Food data: USDA FoodData Central.');
   // every word you type must start a word of the name; the first word, exact words and short names rank higher
   const PROCESSED = ['breaded', 'fried', 'battered', 'canned', 'frozen', 'sweetened', 'flavored', 'tender', 'nugget', 'patty', 'microwaved', 'fast', 'restaurant', 'sliced', 'deli', 'roll', 'prepackaged', 'powder', 'luncheon', 'dried', 'gedroogd', 'sauce', 'pie', 'taart', 'strudel', 'turnover', 'flap', 'light', 'zero', 'diet', 'lite', 'suikervrij'];
+  const STOP = ['met', 'zonder', 'with', 'without', 'and', 'en', 'of', 'de', 'het', 'een', 'a', 'an', 'the', 'in', 'van', 'from', 'on'];
   const searchOne = (q) => {
-    const toks = wordsOf(q);
+    const typed = wordsOf(q);
+    const toks = typed.filter((t) => !STOP.includes(t)).length ? typed.filter((t) => !STOP.includes(t)) : typed; // "coffee with milk": the little words are not searched for
     if (!toks.length || !FDB) return [];
     const has = (ws, t) => ws.some((w) => w.startsWith(t));
+    const hasEnd = (ws, t) => ws.some((w) => w.startsWith(t) || (w.length > t.length && w.endsWith(t))); // or the end of a Dutch compound: "brood" in "tarwebrood"
     const out = [];
     FDB.items.forEach((it) => {
       const main = toks.every((t) => has(it.w, t));
       const alt = !main && it.w2.length && toks.every((t) => has(it.w2, t));
+      const comp = !main && !alt && toks.every((t) => hasEnd(it.w, t));
+      const compAlt = !main && !alt && !comp && it.w2.length > 0 && toks.every((t) => hasEnd(it.w2, t));
       // a synonym ("mosterdkool" for amsoi) only counts when the name does not match, and ranks below real name matches
-      const viaSyn = !main && !alt && it.wsyn && it.wsyn.length > 0 && toks.every((t) => has(it.w, t) || has(it.wsyn, t));
-      if (!main && !alt && !viaSyn) return;
-      const ws = main ? it.w : alt ? it.w2 : it.w.concat(it.wsyn);
-      let sc = (ws[0] && ws[0].startsWith(toks[0]) ? 20 : 0) + (ws[0] === toks[0] ? 5 : 0) - Math.min(12, ws.length) + (it.src === 'nevo' ? 3 : 0) - (viaSyn ? 25 : 0);
+      const viaSyn = !main && !alt && !comp && !compAlt && it.wsyn && it.wsyn.length > 0 && toks.every((t) => has(it.w, t) || has(it.wsyn, t));
+      if (!main && !alt && !comp && !compAlt && !viaSyn) return;
+      const ws = main || comp ? it.w : alt || compAlt ? it.w2 : it.w.concat(it.wsyn);
+      let sc = (ws[0] ? (ws[0].startsWith(toks[0]) ? 20 : ws[0].length > toks[0].length && ws[0].endsWith(toks[0]) ? 16 : 0) : 0) + (ws[0] === toks[0] ? 5 : 0) - Math.min(12, ws.length) + (it.src === 'nevo' ? 3 : 0) - (viaSyn ? 25 : 0) - (comp || compAlt ? 4 : 0);
       toks.forEach((t) => { if (ws.includes(t)) sc += 3; });
       toks.forEach((t) => { if (ws.includes(t + 'je') || ws.includes(t + 'jes')) sc -= 8; }); // "broodje" is not "brood"
       // plain foods before processed and branded ones, unless you typed those words
       PROCESSED.forEach((p) => { if (ws.includes(p) && !toks.includes(p)) sc -= 3; });
       if (it.src === 'usda' && /\b[A-Z]{3,}\b/.test(it.name)) sc -= 4;
       if (ws.includes('whole') && !toks.includes('whole')) sc += 2;
-      out.push([sc, it, alt, viaSyn]);
+      out.push([sc, it, alt || compAlt, viaSyn]);
     });
     // with three or more real name matches the synonym ones are only noise
     const real = out.filter((x) => !x[3]);
@@ -6081,6 +6086,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     [['fried egg', 'fried eggs', 'gebakken ei', 'spiegelei'], ['ei kippen gebakken']],
     [['pancake', 'pancakes', 'dutch pancake', 'dutch pancakes', 'pannenkoek'], ['pannenkoek huishoudelijk bereid m margarine']],
     [['dark chocolate', 'pure chocolade'], ['chocolade puur']],
+    [['whole wheat pita', 'wholegrain pita', 'volkoren pita', 'whole grain pita'], ['bread pita whole wheat']],
+    [['salmon', 'baked salmon', 'salmon fillet', 'zalm', 'zalmfilet', 'zalm gebakken'], ['salmon atlantic farmed cooked dry heat', 'zalm kweek']],
+    [['protein shake', 'protein powder', 'whey', 'whey protein', 'whey protein powder', 'eiwitpoeder', 'eiwit shake', 'proteine shake', 'proteine poeder'], ['protein powder whey based']],
+    [['toast', 'toasted bread', 'geroosterd brood', 'roosterbrood'], ['tarwebrood wit', 'tarwebrood bruin']],
   ];
   const aliasFor = (q) => { const k = wordsOf(q).join(' '); const hit = ALIASES.find(([keys]) => keys.some((x) => wordsOf(x).join(' ') === k)); return hit ? { to: hit[1], more: hit[2] === true } : null; };
   // a loose word looks for the food people most likely mean; the plain search follows only for the general words (cheese, bread, milk) or when that finds nothing

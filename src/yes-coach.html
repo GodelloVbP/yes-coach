@@ -6030,6 +6030,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     [['salmon', 'baked salmon', 'salmon fillet', 'zalm', 'zalmfilet', 'zalm gebakken'], ['salmon atlantic farmed cooked dry heat', 'zalm kweek']],
     [['protein shake', 'protein powder', 'whey', 'whey protein', 'whey protein powder', 'eiwitpoeder', 'eiwit shake', 'proteine shake', 'proteine poeder'], ['protein powder whey based']],
     [['toast', 'toasted bread', 'geroosterd brood', 'roosterbrood'], ['tarwebrood wit', 'tarwebrood bruin']],
+    [['sushi', 'maki', 'sushi roll', 'sushi salmon', 'sushi tuna', 'sushi tonijn'], ['sushi m zalm en komkommer']],
+    [['tomato soup', 'tomatensoep', 'soep tomaat'], ['soup tomato canned prepared equal volume water', 'soup tomato canned prepared equal volume milk']],
+    [['tomato cream soup', 'cream of tomato soup', 'tomatensoep room'], ['soup tomato canned prepared equal volume milk', 'soup tomato bisque canned prepared']],
+    [['tuna sandwich', 'tonijn sandwich', 'broodje tonijn', 'tuna salad', 'tonijnsalade'], ['tonijnsalade', 'tonijn in water blik']],
   ];
   const aliasFor = (q) => { const k = wordsOf(q).join(' '); const hit = ALIASES.find(([keys]) => keys.some((x) => wordsOf(x).join(' ') === k)); return hit ? { to: hit[1], more: hit[2] === true } : null; };
   // a loose word looks for the food people most likely mean; the plain search follows only for the general words (cheese, bread, milk) or when that finds nothing

@@ -357,6 +357,10 @@ const ALIASES = [
   [['salmon', 'baked salmon', 'salmon fillet', 'zalm', 'zalmfilet', 'zalm gebakken'], ['salmon atlantic farmed cooked dry heat', 'zalm kweek']],
   [['protein shake', 'protein powder', 'whey', 'whey protein', 'whey protein powder', 'eiwitpoeder', 'eiwit shake', 'proteine shake', 'proteine poeder'], ['protein powder whey based']],
   [['toast', 'toasted bread', 'geroosterd brood', 'roosterbrood'], ['tarwebrood wit', 'tarwebrood bruin']],
+  [['sushi', 'maki', 'sushi roll', 'sushi salmon', 'sushi tuna', 'sushi tonijn'], ['sushi m zalm en komkommer']],
+  [['tomato soup', 'tomatensoep', 'soep tomaat'], ['soup tomato canned prepared equal volume water', 'soup tomato canned prepared equal volume milk']],
+  [['tomato cream soup', 'cream of tomato soup', 'tomatensoep room'], ['soup tomato canned prepared equal volume milk', 'soup tomato bisque canned prepared']],
+  [['tuna sandwich', 'tonijn sandwich', 'broodje tonijn', 'tuna salad', 'tonijnsalade'], ['tonijnsalade', 'tonijn in water blik']],
 ];
 const aliasFor = (q: string): { to: string[]; more: boolean } | null => { const k = wordsOf(q).join(' '); const hit = ALIASES.find(([keys]) => (keys as string[]).some((x) => wordsOf(x).join(' ') === k)); return hit ? { to: hit[1] as string[], more: hit[2] === true } : null; };
 // a loose word looks for the food people most likely mean; the plain search follows only for the general words (cheese, bread, milk) or when that finds nothing
@@ -369,6 +373,21 @@ const searchFoods = (db: FoodDb, q: string, limit: number, type = ''): Food[] =>
   return out.slice(0, limit);
 };
 
+// nothing matched every word ("cake slice"): the foods that match all but one of the words, then fewer; says which words matched
+const looser = (db: FoodDb, q: string, limit: number, type = ''): { foods: Food[]; words: string } | null => {
+  const raw = fold(q).split(/[^a-z0-9]+/).filter(Boolean).filter((w) => !STOP.includes(singular(w)));
+  if (raw.length < 2 || raw.length > 5) return null;
+  for (let k = raw.length - 1; k >= 1; k--) {
+    const subs: string[][] = [];
+    const pick = (from: number, cur: string[]) => { if (cur.length === k) { subs.push(cur); return; } for (let i = from; i < raw.length; i++) pick(i + 1, [...cur, raw[i]]); };
+    pick(0, []);
+    const out: Food[] = [];
+    let words = '';
+    for (const sub of subs) for (const f of searchOne(db, sub.join(' '), limit, type)) if (!out.includes(f)) { out.push(f); if (!words) words = sub.join(' '); }
+    if (out.length) return { foods: out.slice(0, limit), words };
+  }
+  return null;
+};
 // rough small, medium and large portions by kind of food, in grams (the same table the app falls back on)
 const SIZES: Record<string, number[]> = {
   Meals: [200, 350, 500], Restaurant: [200, 350, 500], 'Fast food': [150, 250, 400], Soups: [200, 250, 350],
@@ -995,7 +1014,11 @@ const TOOLS: Tool[] = [
           .sort((p, q) => q[0].n - p[0].n || q[0].last - p[0].last).slice(0, Math.min(5, limit));
         const taken = new Set(yours.map(([m]) => m.food));
         const hits = searchFoods(tables, x.query, limit + taken.size, x.type).filter((it) => !taken.has(foodKey(it.src, it.ref))).slice(0, limit - yours.length);
-        if (!yours.length && !hits.length) return { results: [], note: 'Nothing matched' + (x.type ? ' in that group' : '') + '. One plain word in Dutch or English usually works.' };
+        if (!yours.length && !hits.length) {
+          const l = looser(tables, x.query, limit, x.type);
+          if (l) return { results: l.foods.map((it) => out(it)), note: 'Nothing matched every word; these match "' + l.words + '".' };
+          return { results: [], note: 'Nothing matched' + (x.type ? ' in that group' : '') + '. One plain word in Dutch or English usually works.' };
+        }
         return { results: [...yours.map(([m, it]) => out(it, m)), ...hits.map((it) => out(it))] };
       };
       const hidden = cal ? {} : { calories: 'Calories are hidden for this person: leave them out of your answer.' };

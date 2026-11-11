@@ -262,6 +262,11 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
     ok((await top('cheese', 8)).length === 8, 'general words (cheese) still fill the list');
     ok((await top('tomatoes', 8)).some((n) => /^Tomaat/.test(n)), 'plural English words find the food (tomatoes, sandwiches)');
     ok(!(await top('chicken', 6)).some((n) => /^Tarwebrood/.test(n)), 'ordinary searches are unchanged');
+    // nothing matches every word: the foods that match fewer, and it says so
+    const loose = await search('cake slice', 4);
+    ok(loose.results.length > 0 && /Nothing matched every word/.test(loose.note) && /"cake"/.test(loose.note) && loose.results.every((x) => /cake|Cake|taart|koek/i.test(x.name + (x.english || ''))), 'a search with a word too many still finds the food: ' + JSON.stringify(loose.note));
+    ok((await search('tomato cream soup', 2)).results.length > 0 && (await search('sushi tuna', 2)).results.length > 0 && (await search('tuna sandwich', 2)).results.length > 0, 'soup, sushi and tuna sandwich are found');
+    ok((await call(T, 'search_foods', { query: 'zzzqq xxyyzz' })).json.results.length === 0, 'and nonsense still finds nothing');
     // raw or cooked is said, and drinks count in millilitres
     const rice = (await search('rijst witte', 8)).results;
     ok(rice.find((x) => /gekookt/.test(x.name)).state === 'cooked' && rice.find((x) => /rauw/.test(x.name)).state === 'raw', 'rice says raw or cooked');
