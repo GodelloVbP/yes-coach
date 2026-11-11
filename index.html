@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-9tIUVhZ4wYLnddxixAl0XsAQd3ptuffgRl0tC1/Qg18=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-93KZa1pagybOoWuAthgDdiQ6TuceK8roCFRnBhf2hQ8=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-10 21:06Z">
+<meta name="yc-build" content="2026-11-11 08:27Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -1974,6 +1974,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['11 Nov 2026', "The rolling order runs over your whole log", ["In a rolling week, the next workout is the one you trained longest ago. A new round no longer starts from the top of your list, so Legs on Sunday is not followed by Legs on Monday.", "Put a workout on another day, or add one on a rest day, and the days after it follow on from it. The same workout is kept off the two days before.", "Moves you made earlier this week in a rolling plan are cleared once. Make them again if you still need them."]],
     ['10 Nov 2026', "Warm-ups you can take away, weights that find their own step", ["Remove warm-ups takes the warm-up sets away and leaves your working sets. Any set that is not ticked can go on its own: tap its number, then Remove this set.", "The second exercise for a body part gets two warm-up sets instead of four.", "The weight step follows your log: the smallest jump between weights you have used. Barbell lifts go up by two of your smallest plate. A step you set yourself still wins.", "Each set shows how much more or less it is than last time.", "A connected AI can move a weight one step up or down without asking which weights your gym has."]],
     ['9 Nov 2026', "An alert when rest is over", ["With Alert me when rest is over in Settings, your phone shows a notification when the rest timer ends, also when you are in another app.", "On an iPhone, add Yes Coach! to your home screen first and open it from there."]],
     ['9 Nov 2026', "Send a finished workout to Claude any time", ["After a workout, Send to Claude stays on the Today card and on that day in the week, so you can use it after you dismissed the question.", "If you would rather not be asked after every workout, switch it off in Settings, under Connected AI apps.", "Each exercise in a workout has How to do it: what it is and which muscles it works."]],
@@ -7970,38 +7971,56 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const rot = (sc.rotation || []).filter((id) => S.templates[id]);
     return (sc.days || []).length && rot.length ? Object.assign({}, sc, { rotation: rot }) : { enabled: true, mode: 'fixed', week: {} };
   };
-  // The rotation is rolling: the next training day in the list goes on your next training weekday.
-  // A day done ahead of its turn (Back while Legs is next) swaps places with the one it passed, so Legs is next and nothing is lost.
-  // The order only changes for the round in progress; the next round starts from the list again.
-  // A day swapped into today ("Change today's workout") counts at once, so the plan is right before it is logged.
-  const swappedInToday = () => {
-    const wk = S.weeks[mondayOf(today())] || {};
-    const mv = wk.moves || {};
-    return ((wk.adds || {})[today()] || []).filter((t) => S.templates[t] && (!mv['add:' + t + ':' + today()] || mv['add:' + t + ':' + today()] === today()));
-  };
-  const rotationState = (rot) => {
-    const n = rot.length;
-    const fresh = () => rot.map((_, i) => i);
-    let pos = 0, order = fresh();
+  // The rotation is rolling over your whole log, not per week: the next training weekday gets the day you trained longest ago.
+  // Days never trained come first, in the order of the list. Train Legs on a Saturday and Legs goes to the back of the line,
+  // so Monday gets whatever has waited longest.
+  // A day you put on a date yourself (moved there, swapped in today, or added on a rest day) counts on that date, and the
+  // days after it follow on from it. A moved day leaves its old date free. The planned day is also kept off the two days
+  // before such a date, so the same day does not come up twice in a row.
+  const ROLL_KEY = /^(.+)@(\d{4}-\d\d-\d\d)$/; // a rolling day moved in the week sheet: <day id>@<the date it was planned on>
+  const rollingPlan = (sc, upto) => {
+    const rot = sc.rotation;
+    let q = rot.map((_, i) => i); // places in the list, longest ago first
     const take = (tpl) => {
-      for (let k = 0; k < n; k += 1) {
-        const j = (pos + k) % n;
-        if (rot[order[j]] !== tpl) continue;
-        if (pos + k < n) { [order[pos], order[j]] = [order[j], order[pos]]; pos += 1; } else { order = fresh(); pos = j + 1; } // past the end: a new round
-        if (pos >= n) { pos = 0; order = fresh(); }
-        return true;
-      }
-      return false;
+      const k = q.findIndex((i) => rot[i] === tpl);
+      if (k < 0) return -1;
+      const idx = q[k];
+      q = q.slice(0, k).concat(q.slice(k + 1), [idx]);
+      return idx;
     };
     Object.values(S.sessions).filter((s) => s.template && hasDone(s)).sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0)).forEach((s) => take(s.template));
     const trainedToday = Object.values(S.sessions).some((s) => s.date === today() && hasDone(s));
-    const swapped = !trainedToday && swappedInToday().map(take).some(Boolean);
-    return { pos, order, swapped };
-  };
-  const rollFrom = (sc) => {
-    const trainedToday = Object.values(S.sessions).some((s) => s.date === today() && hasDone(s));
-    const st = rotationState(sc.rotation);
-    return { from: trainedToday || st.swapped ? addDays(today(), 1) : today(), pos: st.pos, order: st.order };
+    const from = trainedToday ? addDays(today(), 1) : today();
+    const pins = [];
+    const gone = new Set(); // planned dates a moved day left
+    for (let ws = mondayOf(from); ws <= upto; ws = addDays(ws, 7)) {
+      const wk = S.weeks[ws] || {};
+      const mv = wk.moves || {};
+      Object.keys(mv).forEach((k) => {
+        const m = ROLL_KEY.exec(k);
+        if (!m || !rot.includes(m[1])) return;
+        gone.add(m[2]);
+        if (mv[k] && mv[k] !== 'skip' && mv[k] >= from) pins.push({ key: k, tpl: m[1], date: mv[k] });
+      });
+      Object.keys(wk.adds || {}).forEach((d) => (wk.adds[d] || []).forEach((tpl) => {
+        if (!rot.includes(tpl)) return;
+        const k = 'add:' + tpl + ':' + d;
+        const to = mv[k] || d;
+        if (to !== 'skip' && to >= from) pins.push({ key: k, tpl, date: to });
+      }));
+    }
+    const slots = new Set(trainingDates(sc, from, upto).filter((d) => !gone.has(d)));
+    const out = [];
+    for (let d = from; d <= upto; d = addDays(d, 1)) {
+      const here = pins.filter((p) => p.date === d);
+      here.forEach((p) => out.push({ key: p.key, tpl: p.tpl, date: d, rolling: true, placed: true, idx: take(p.tpl) }));
+      if (here.length || !slots.has(d)) continue;
+      const soon = new Set(pins.filter((p) => p.date > d && p.date <= addDays(d, 2)).map((p) => p.tpl));
+      const k = Math.max(0, q.findIndex((i) => !soon.has(rot[i])));
+      const tpl = rot[q[k]];
+      out.push({ key: tpl + '@' + d, tpl, date: d, rolling: true, placed: true, idx: take(tpl) });
+    }
+    return out;
   };
   // Rotation: the picked weekdays are the days you can train. Sessions a week (schedule.per_week, set in Plan or with the plan)
   // is how many of them are used. With fewer sessions than picked days they are spread evenly over the picked days, week after
@@ -8040,24 +8059,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     }
     return rhythm.dates.filter((d) => d >= from && d <= to);
   };
-  // the default plan for one week, before moves: [{key, tpl, date}]. roll = {from, pos}: the first date still to plan and its place in the list.
-  const plannedFor = (ws, sc, roll) => {
+  // the default plan for one week, before moves: [{key, tpl, date}]. A rolling plan comes with its moves already in (placed).
+  const plannedFor = (ws, sc) => {
     const out = [];
     if (sc && sc.mode === 'fixed') {
       WEEKDAYS.forEach((w, i) => { const id = (sc.week || {})[w]; if (id && S.templates[id]) out.push({ key: id + '@' + w, tpl: id, date: addDays(ws, i) }); });
     } else if (sc) {
-      const r = roll || rollFrom(sc);
-      let n = 0; // training days between r.from and this week
-      let i = 0;
-      trainingDates(sc, r.from, addDays(ws, 6)).forEach((date) => {
-        if (date < ws) { n += 1; return; }
-        const m = r.pos + n; // places on from the start of the round in progress
-        const idx = r.order && m < sc.rotation.length ? r.order[m] : m % sc.rotation.length;
-        const tpl = sc.rotation[idx];
-        n += 1;
-        out.push({ key: tpl + '@' + i, tpl, date, rolling: true, idx });
-        i += 1;
-      });
+      rollingPlan(sc, addDays(ws, 6)).forEach((p) => { if (p.date >= ws) out.push(p); });
     } else {
       templatesSorted().forEach((t) => {
         const wd = WEEKDAYS.indexOf((t.weekday || '').slice(0, 3));
@@ -8081,10 +8089,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       if (s.template) doneCount[s.template] = (doneCount[s.template] || 0) + 1;
     });
     const wkDoc = S.weeks[ws] || {};
-    const planned0 = plannedFor(ws, activeSchedule());
+    const sc = activeSchedule();
+    const inRoll = (tpl) => !!(sc && sc.mode === 'rotation' && sc.rotation.includes(tpl));
+    const planned0 = plannedFor(ws, sc);
     // a day swapped into a date ("Change today's workout") is a planned entry of its own; it is used up once that day is logged
-    Object.keys(wkDoc.adds || {}).forEach((d) => (wkDoc.adds[d] || []).forEach((tpl) => { if (S.templates[tpl] && byDate[d]) planned0.push({ key: 'add:' + tpl + ':' + d, tpl, date: d }); }));
+    Object.keys(wkDoc.adds || {}).forEach((d) => (wkDoc.adds[d] || []).forEach((tpl) => { if (S.templates[tpl] && byDate[d] && !inRoll(tpl)) planned0.push({ key: 'add:' + tpl + ':' + d, tpl, date: d }); }));
     planned0.forEach((p) => {
+      if (p.placed) { if (byDate[p.date]) byDate[p.date].planned.push(p); return; }
       if (!p.rolling && doneCount[p.tpl]) { doneCount[p.tpl] -= 1; return; }
       const mv = moves[p.key];
       if (mv === 'skip') return;
@@ -8562,6 +8573,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const wk = S.weeks[ws] || {};
     const out = [];
     Object.entries(wk.moves || {}).forEach(([key, to]) => {
+      if (/@\d+$/.test(key)) return; // a move from the old rolling order, which no longer applies
       const t = S.templates[key.split('@')[0]];
       if (!t || to == null || (to !== 'skip' && to < today())) return; // a day that is already over is not news
       out.push(to === 'skip' ? t.name + ' skipped' : t.name + ' moved to ' + isoDow(to) + ' ' + dm(to));

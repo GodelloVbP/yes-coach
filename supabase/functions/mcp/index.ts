@@ -100,7 +100,7 @@ const readSchedule = (root: Json, days: Record<string, Json>): Json => {
   const sc = root && root.schedule;
   if (!sc || !sc.enabled) return { mode: 'none', note: 'No schedule set. Each day falls on its own weekday if it has one.' };
   const name = (id: string) => (days[id] ? days[id].name + ' (' + id + ')' : '(missing day ' + id + ')');
-  if (sc.mode === 'rotation') return { mode: 'rotation', note: sc.per_week && sc.per_week < (sc.days || []).length ? 'The weekdays are the days the person can train. They train ' + sc.per_week + ' times a week, spread over those days, and the days repeat in order.' : 'The days repeat in order on these weekdays.', weekdays: sc.days || [], ...(sc.per_week ? { sessions_per_week: sc.per_week } : {}), rotation: (sc.rotation || []).map(name) };
+  if (sc.mode === 'rotation') return { mode: 'rotation', note: sc.per_week && sc.per_week < (sc.days || []).length ? 'The weekdays are the days the person can train. They train ' + sc.per_week + ' times a week, spread over those days, and the day trained longest ago comes next.' : 'On these weekdays the day trained longest ago comes next.', weekdays: sc.days || [], ...(sc.per_week ? { sessions_per_week: sc.per_week } : {}), rotation: (sc.rotation || []).map(name) };
   return { mode: 'fixed', week: Object.fromEntries(WEEKDAYS.map((w) => [w, sc.week && sc.week[w] ? name(sc.week[w]) : 'rest'])) };
 };
 const inWeek = (root: Json): Set<string> => {
@@ -700,7 +700,7 @@ const TOOLS: Tool[] = [
   {
     name: 'set_schedule', title: 'Set weekly schedule', annotations: WR,
     inputSchema: obj({
-      mode: { type: 'string', enum: ['rotation', 'fixed'], description: 'rotation: the days repeat in order on the chosen weekdays. fixed: each weekday has its own day.' },
+      mode: { type: 'string', enum: ['rotation', 'fixed'], description: 'rotation: on the chosen weekdays the day trained longest ago comes next; day_ids sets the order of days not trained yet. fixed: each weekday has its own day.' },
       weekdays: { type: 'array', items: { type: 'string', enum: WEEKDAYS }, description: 'rotation: the weekdays they can train.' },
       day_ids: { type: 'array', items: { type: 'string' }, description: 'rotation: day ids in the order they repeat.' },
       sessions_per_week: { type: 'integer', description: 'rotation: how many sessions a week, 1 to 7. With fewer than the weekdays given, the sessions are spread over those weekdays. Leave out to train on every weekday given.' },

@@ -6851,5 +6851,33 @@
   "de": "Eine verbundene KI kann ein Gewicht um einen Schritt erhöhen oder senken, ohne zu fragen, welche Gewichte dein Studio hat.",
   "fr": "Une IA connectée peut monter ou baisser un poids d’un palier sans demander quels poids ta salle possède.",
   "it": "Un’IA collegata può alzare o abbassare un peso di un salto senza chiedere quali pesi ha la tua palestra."
+ },
+ "The rolling order runs over your whole log": {
+  "nl": "De doorlopende volgorde loopt over je hele logboek",
+  "es": "El orden rotativo abarca todo tu registro",
+  "de": "Die rollende Reihenfolge läuft über dein ganzes Protokoll",
+  "fr": "L'ordre tournant suit tout ton journal",
+  "it": "L'ordine a rotazione segue tutto il tuo registro"
+ },
+ "In a rolling week, the next workout is the one you trained longest ago. A new round no longer starts from the top of your list, so Legs on Sunday is not followed by Legs on Monday.": {
+  "nl": "In een doorlopende week is de volgende training degene die je het langst geleden deed. Een nieuwe ronde begint niet meer bovenaan je lijst, dus na Benen op zondag komt niet weer Benen op maandag.",
+  "es": "En una semana rotativa, el siguiente entreno es el que hiciste hace más tiempo. Una nueva vuelta ya no empieza desde arriba de tu lista, así que a Piernas el domingo no le sigue Piernas el lunes.",
+  "de": "In einer rollenden Woche ist das nächste Training das, das am längsten her ist. Eine neue Runde beginnt nicht mehr oben in deiner Liste, also folgt auf Beine am Sonntag nicht wieder Beine am Montag.",
+  "fr": "Dans une semaine tournante, la prochaine séance est celle que tu as faite il y a le plus longtemps. Un nouveau tour ne repart plus du haut de ta liste : après Jambes le dimanche, plus de Jambes le lundi.",
+  "it": "In una settimana a rotazione, il prossimo allenamento è quello fatto da più tempo. Un nuovo giro non riparte più dall'inizio della lista, quindi dopo Gambe la domenica non arriva di nuovo Gambe il lunedì."
+ },
+ "Put a workout on another day, or add one on a rest day, and the days after it follow on from it. The same workout is kept off the two days before.": {
+  "nl": "Zet je een training op een andere dag, of voeg je er een toe op een rustdag, dan sluiten de dagen erna daarop aan. Dezelfde training komt niet op de twee dagen ervoor.",
+  "es": "Si pones un entreno en otro día, o añades uno en un día de descanso, los días siguientes continúan a partir de él. El mismo entreno no aparece en los dos días anteriores.",
+  "de": "Legst du ein Training auf einen anderen Tag oder fügst eins an einem Ruhetag hinzu, schließen die Tage danach daran an. Dasselbe Training kommt nicht an den zwei Tagen davor.",
+  "fr": "Place une séance un autre jour, ou ajoute-en une un jour de repos, et les jours suivants s'enchaînent à partir d'elle. La même séance n'est pas prévue les deux jours d'avant.",
+  "it": "Se sposti un allenamento su un altro giorno, o ne aggiungi uno in un giorno di riposo, i giorni dopo proseguono da lì. Lo stesso allenamento non viene messo nei due giorni prima."
+ },
+ "Moves you made earlier this week in a rolling plan are cleared once. Make them again if you still need them.": {
+  "nl": "Verplaatsingen die je eerder deze week in een doorlopend plan maakte, zijn eenmalig gewist. Doe ze opnieuw als je ze nog nodig hebt.",
+  "es": "Los cambios de día que hiciste antes esta semana en un plan rotativo se borran una vez. Vuelve a hacerlos si aún los necesitas.",
+  "de": "Verschiebungen, die du diese Woche in einem rollenden Plan gemacht hast, werden einmalig gelöscht. Mach sie neu, wenn du sie noch brauchst.",
+  "fr": "Les déplacements faits plus tôt cette semaine dans un plan tournant sont effacés une fois. Refais-les si tu en as encore besoin.",
+  "it": "Gli spostamenti fatti prima questa settimana in un piano a rotazione vengono cancellati una volta. Rifalli se ti servono ancora."
  }
 }
