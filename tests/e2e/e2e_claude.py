@@ -72,6 +72,30 @@ try:
             check('finishing an empty day asks nothing', page.locator('#claude-review-go').count() == 0)
         errs = session(pw, be, ALICE, s3, width=390); check('no page errors (setting)', not errs, errs)
 
+        # ---- 3b. Claude proposes by default, or changes the plan itself when that is chosen
+        be = Backend(); be.grants = GRANT; seed(be)
+        def s3b(page):
+            page.wait_for_selector('#today-card .t-head', timeout=8000)
+            until(lambda: page.is_visible('#btn-claude-day'))
+            def sent():
+                page.evaluate(CATCH); page.click('#btn-claude-day'); page.wait_for_timeout(400)
+                return urllib.parse.unquote(page.evaluate('window.__opened[0]') or '')
+            q = sent()
+            check('by default Claude is asked to propose and wait for a yes', 'Do not change my plan yet' in q and 'When I say yes, change my plan: save_training_day' in q and 'suggest changing' in q, q[-700:])
+            page.click('#tab-settings'); page.wait_for_selector('#conn:not([hidden])', timeout=8000)
+            page.locator('#v-settings section.fold').filter(has_text='Connected AI apps').locator('.set-tog').click() if page.is_hidden('#claude-plan') else None
+            until(lambda: page.is_visible('#claude-plan'))
+            check('Settings: Propose is chosen, and says what it does', page.get_attribute('#claude-plan .seg-b >> nth=0', 'aria-checked') == 'true' and 'waits for your yes' in page.inner_text('#claude-plan-note'), page.inner_text('#claude-plan-note'))
+            page.click('#claude-plan .seg-b >> nth=1')
+            check('Change it is saved', until(lambda: (doc(be, 'yc') or {}).get('settings', {}).get('claude_plan') == 'change') and page.get_attribute('#claude-plan .seg-b >> nth=1', 'aria-checked') == 'true' and 'changes the next weights' in page.inner_text('#claude-plan-note'), doc(be, 'yc'))
+            page.click('#tab-train'); page.wait_for_selector('#btn-claude-day', state='visible', timeout=8000)
+            q = sent()
+            check('then Claude is asked to change the plan itself', 'Then change my plan: save_training_day' in q and 'Do not change my plan yet' not in q and 'changed in the plan' in q, q[-700:])
+            page.click('#tab-settings'); page.wait_for_selector('#claude-plan .seg-b >> nth=0', state='visible', timeout=8000)
+            page.click('#claude-plan .seg-b >> nth=0')
+            check('and back to Propose', until(lambda: (doc(be, 'yc') or {}).get('settings', {}).get('claude_plan') == 'propose'), doc(be, 'yc'))
+        errs = session(pw, be, ALICE, s3b, width=390); check('no page errors (plan setting)', not errs, errs)
+
         # ---- 4. an exercise explains itself, one tap away; your own exercise has nothing to explain
         be = Backend(); seed(be, done=False)
         def s4(page):

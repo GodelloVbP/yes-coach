@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-mtf0NEUmRd1CQUgyLaK8INg6GkpHg89Xju0oiMDMOyA=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-q5/SHUsUq0Ch9nDNeV3V/5Nq6R8j57NCwdsZYO/h/5I=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-12 16:31Z">
+<meta name="yc-build" content="2026-11-12 17:34Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -1488,6 +1488,11 @@ body.fin-open { overflow: hidden; }
         <p class="note">AI apps you allowed to read your data, change your plan and log your food. Disconnecting removes access right away.</p>
         <div id="conn-list"></div>
         <div class="settings" id="conn-ask-row" hidden><label><input type="checkbox" id="set-claude-ask"> Ask about sending a workout to Claude when it is finished</label></div>
+        <div id="conn-plan-row" hidden>
+          <h3 class="lab" id="h-claude-plan">Claude and your plan</h3>
+          <div class="seg" role="radiogroup" aria-labelledby="h-claude-plan" id="claude-plan"></div>
+          <p class="note" id="claude-plan-note" role="status"></p>
+        </div>
         <span id="conn-state" class="note" aria-live="polite"></span>
       </section>
       <section aria-labelledby="h-imp" id="imp">
@@ -1974,6 +1979,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['12 Nov 2026', "Claude and your plan", ["Send to Claude now tells Claude what to read, how to judge each exercise and how the weight moves, instead of one sentence.", "In Settings, Connected AI apps, choose Propose (the default: Claude suggests the next weights and waits for your yes) or Change it (Claude changes them itself and tells you)."]],
     ['11 Nov 2026', "Food search that understands English", ["Searching Food by an English word finds the Dutch food: bread, cheese, cola, fries, granola.", "Ask Claude to log a meal: it finds the right food more often, tells raw from cooked and counts drinks in ml."]],
     ['11 Nov 2026', "The rolling order runs over your whole log", ["In a rolling week, the next workout is the one you trained longest ago. A new round no longer starts from the top of your list, so Legs on Sunday is not followed by Legs on Monday.", "Put a workout on another day, or add one on a rest day, and the days after it follow on from it. The same workout is kept off the two days before.", "Moves you made earlier this week in a rolling plan are cleared once. Make them again if you still need them."]],
     ['10 Nov 2026', "Warm-ups you can take away, weights that find their own step", ["Remove warm-ups takes the warm-up sets away and leaves your working sets. Any set that is not ticked can go on its own: tap its number, then Remove this set.", "The second exercise for a body part gets two warm-up sets instead of four.", "The weight step follows your log: the smallest jump between weights you have used. Barbell lifts go up by two of your smallest plate. A step you set yourself still wins.", "Each set shows how much more or less it is than last time.", "A connected AI can move a weight one step up or down without asking which weights your gym has."]],
@@ -2174,8 +2180,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // The whole job for Claude, written out: what to read, how to judge it, how the weight moves, what to change in the plan and what to leave alone.
   // The connector's own instructions only describe the tools, so the person's request carries the rules.
   const REVIEW_LANGS = { nl: 'Dutch', es: 'Spanish', de: 'German', fr: 'French', it: 'Italian' };
+  // Settings, Connected AI apps: Claude proposes plan changes and waits for a yes (the default), or changes the plan itself
+  const claudePlanMode = () => (S.root && S.root.settings && S.root.settings.claude_plan === 'change' ? 'change' : 'propose');
   const reviewPrompt = (day) => {
     const lang = REVIEW_LANGS[window.YC_I18N ? window.YC_I18N.current() : 'en'];
+    const change = claudePlanMode() === 'change';
+    const apply = 'save_training_day for this day with progress up, hold or down on each exercise. Send the whole exercise list back otherwise unchanged: the same exercises, order, sets, reps, rest, notes and supersets. Do not add, remove or reorder exercises, and leave other days and the schedule alone.';
     return [
       'Review my Yes Coach! workout "' + day.name + '" from ' + day.date + '. Use my Yes Coach connector for every number and do not guess.',
       '',
@@ -2192,11 +2202,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       '- down one step after three sessions short of the target at the same weight, or when a note says it hurt.',
       'The app suggests the next weight by the same rules. If you disagree with it, say why.',
       '',
-      'Then change my plan: save_training_day for this day with progress up, hold or down on each exercise. Send the whole exercise list back otherwise unchanged: the same exercises, order, sets, reps, rest, notes and supersets. Do not add, remove or reorder exercises, and leave other days and the schedule alone.',
+      change ? 'Then change my plan: ' + apply : 'Do not change my plan yet. Tell me the weight you suggest for each exercise and ask if I want it applied. When I say yes, change my plan: ' + apply,
       'Answer each unanswered note from that day with answer_note, in one or two short sentences.',
       'Do not add or remove logged sets. If a set looks like a typo, ask me first.',
       '',
-      (lang ? 'Reply in ' + lang + '. ' : '') + 'Keep it short: one line per exercise, what you changed in the plan, and the one thing to focus on next time.',
+      (lang ? 'Reply in ' + lang + '. ' : '') + 'Keep it short: one line per exercise, what you ' + (change ? 'changed in the plan' : 'suggest changing') + ', and the one thing to focus on next time.',
     ].join('\n');
   };
   // "Send to Claude" for a finished day, from the Today card or the day in the week: it stays there after the question was dismissed
@@ -2210,6 +2220,22 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const add = () => { if (!CONN.apps.length || !hostOk() || host.querySelector('.cl-day')) return; const b = claudeDayButton(day, id); b.classList.add('cl-day'); host.append(b); };
     add();
     connInfo().then(add).catch(() => {});
+  };
+  const planModes = [['propose', 'Propose', 'Claude proposes plan changes and waits for my yes', 'After a workout, Claude suggests the next weights and waits for your yes.'], ['change', 'Change it', 'Claude changes my plan itself', 'After a workout, Claude changes the next weights in your plan and tells you what it changed.']];
+  const planBtns = planModes.map(([mode, label, aria]) => {
+    const b = plainBtn('seg-b', label, aria);
+    b.setAttribute('role', 'radio');
+    b.addEventListener('click', () => {
+      saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { claude_plan: mode }) }).catch(() => {});
+      paintClaudePlan();
+    });
+    $('#claude-plan').append(b);
+    return [mode, b];
+  });
+  const paintClaudePlan = () => {
+    const now = claudePlanMode();
+    planBtns.forEach(([mode, b]) => b.setAttribute('aria-checked', String(mode === now)));
+    $('#claude-plan-note').textContent = planModes.find((m) => m[0] === now)[3];
   };
   const askClaudeOn = () => !(S.root && S.root.settings && S.root.settings.claude_ask === false);
   // after a finished day: offer the review in the user's own Claude (only when a Claude is connected)
@@ -9603,7 +9629,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const sb = window.YC_API.sb;
     const box = $('#conn-list');
     $('#conn-ask-row').hidden = !c.apps.length;
+    $('#conn-plan-row').hidden = !c.apps.length;
     $('#set-claude-ask').checked = askClaudeOn();
+    paintClaudePlan();
     if (!c.apps.length) { box.replaceChildren(h('p', 'note', 'None connected.')); return; }
     box.replaceChildren(...c.apps.map((g) => {
       const cl = g.client || {};
