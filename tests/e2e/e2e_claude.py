@@ -33,9 +33,22 @@ try:
             page.evaluate(CATCH); page.click('#btn-claude-day'); page.wait_for_timeout(400)
             u = page.evaluate('window.__opened[0]') or ''
             check('it opens Claude with this workout', u.startswith('https://claude.ai/new?q=') and 'Legs' in urllib.parse.unquote(u) and T in urllib.parse.unquote(u), u)
+            q = urllib.parse.unquote(u.split('q=', 1)[1]) if 'q=' in u else ''
+            check('the request says what to read, how to judge, how the weight moves and what to change', all(x in q for x in ('get_sessions', 'get_plan', 'get_exercise_history', 'get_notes', 'weight_step', 'save_training_day', 'answer_note', 'Do not add or remove logged sets')), q[:300])
+            check('it is not asked in another language when the app is in English', 'Reply in' not in q and len(u) < 6000, len(u))
             page.click('#wk-rows .wk-blk.is-today')
             check('the same button is on that day in the week', until(lambda: page.locator('#wk-sheet .cl-day').count() == 1), page.inner_text('#wk-sheet'))
         errs = session(pw, be, ALICE, s1, width=390); check('no page errors (button)', not errs, errs)
+
+        # ---- 1b. in another language the reply is asked for in it
+        be = Backend(); be.grants = GRANT; seed(be)
+        def s1b(page):
+            page.wait_for_selector('#today-card .t-head', timeout=8000)
+            until(lambda: page.is_visible('#btn-claude-day'))
+            page.evaluate(CATCH); page.click('#btn-claude-day'); page.wait_for_timeout(400)
+            u = page.evaluate('window.__opened[0]') or ''
+            check('Dutch: the reply is asked for in Dutch', 'Reply in Dutch.' in urllib.parse.unquote(u), urllib.parse.unquote(u)[-200:])
+        errs = session(pw, be, ALICE, s1b, width=390, lang='nl'); check('no page errors (Dutch request)', not errs, errs)
 
         # ---- 2. no connected app, no button
         be = Backend(); be.grants = []; seed(be)
