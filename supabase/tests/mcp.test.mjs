@@ -179,6 +179,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   const nt = (await call('tok.anna.x', 'get_notes')).json;
   ok(nt.length === 1 && nt[0].note_id === 'n1', 'waiting notes');
   ok((await call('tok.anna.x', 'get_notes', { only_waiting: false })).json.length === 2, 'all notes');
+  ok((await call('tok.anna.x', 'get_notes', { only_waiting: false, date: '2026-10-08' })).json.length === 1 && (await call('tok.anna.x', 'get_notes', { only_waiting: false, date: '2026-10-08' })).json[0].note_id === 'n1' && (await call('tok.anna.x', 'get_notes', { date: 'soon' })).err, 'notes from one day');
   ok((await call('tok.ben.x', 'get_notes')).json[0].text === 'ben private', 'ben sees his own');
 }
 
@@ -192,6 +193,7 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok((await call('tok.ben.x', 'list_exercises')).json.length === 1, 'ben unaffected');
   r = await call('tok.anna.x', 'save_training_day', { name: 'Shoulders', kind: 'Push', focus: 'Delts', exercises: [{ exercise_id: 'lateral-raise', sets: 99, reps: '12', target_kg: '8', rest_s: 5000, note: 'x'.repeat(300) }, { exercise_id: 'bench', sets: 3, reps: '5' }] });
   ok(!r.err && r.json.day.id === 'day-3' && r.json.created && !r.json.day.in_week, r.text);
+  { const again = await call('tok.anna.x', 'save_training_day', { id: 'day-1', name: 'Push', exercises: [{ exercise_id: 'bench', sets: 3, reps: '8', target_kg: '60', rest_s: 120, note: 'Slow down' }] }); ok(!again.err && again.json.day.id === 'day-1' && again.json.day.in_week === true, 'saving a day that is in the week says so: ' + again.text.slice(0, 160)); }
   const t = rows.find((x) => x.user_id === A && x.path === 'yc/templates/day-3').data;
   ok(t.items[0].sets === 8 && t.items[0].rest_s === 600 && t.items[0].note.length === 140 && t.order === 3 && t.items[1].order === 2, 'clamped like the app');
   ok((await call('tok.anna.x', 'save_training_day', { name: 'X', exercises: [{ exercise_id: 'ghost', sets: 3, reps: '5' }] })).err, 'unknown exercise rejected');
