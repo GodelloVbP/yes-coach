@@ -732,12 +732,13 @@ const TOOLS: Tool[] = [
   },
   {
     name: 'get_notes', title: 'Get notes', annotations: RO,
-    inputSchema: obj({ only_waiting: { type: 'boolean', description: 'Only notes without an answer. Default true.' }, limit: { type: 'integer', description: 'Default 20, most 100.' } }),
+    inputSchema: obj({ only_waiting: { type: 'boolean', description: 'Only notes without an answer. Default true.' }, date: { type: 'string', description: 'Only notes written on this day, YYYY-MM-DD. Optional.' }, limit: { type: 'integer', description: 'Default 20, most 100.' } }),
     description: 'Notes the person wrote to their coach during sessions (about an exercise or the whole session).',
     run: async (db, a) => {
       const rows = await db.list('yc/notes/', { desc: true, limit: 100 });
       const only = a.only_waiting !== false;
-      return rows.filter((r) => !only || (!r.data.reply && (r.data.status || 'new') === 'new')).slice(0, int(a.limit, 1, 100, 20))
+      if (a.date != null && !isDate(a.date)) fail('date must be YYYY-MM-DD.');
+      return rows.filter((r) => !a.date || r.data.date === a.date).filter((r) => !only || (!r.data.reply && (r.data.status || 'new') === 'new')).slice(0, int(a.limit, 1, 100, 20))
         .map((r) => ({ note_id: idOf(r.path), date: r.data.date, about: r.data.about_label || r.data.about, text: r.data.text, status: r.data.status || 'new', reply: r.data.reply || null }));
     },
   },
@@ -764,7 +765,7 @@ const TOOLS: Tool[] = [
       id: { type: 'string', description: 'An existing day id to replace. Leave out to create a new day.' }, name: { type: 'string' }, kind: { type: 'string', enum: KINDS }, focus: { type: 'string', description: 'A few words, e.g. "Chest and triceps".' },
       exercises: { type: 'array', maxItems: 12, description: 'The whole list of exercises for the day, in order. It replaces the old list.', items: obj({
         exercise_id: { type: 'string' }, sets: { type: 'integer' }, reps: { type: 'string', description: 'Text, e.g. "8", "8 to 10", "10 per arm", "max", "30 s".' },
-        progress: { type: 'string', enum: PROGRESS, description: 'How the weight moves from the last working weight, worked out here from the log: auto (the app picks the next weight from the last sessions, the same as an empty target_kg), up (one weight step heavier), hold (the same weight) or down (one step lighter). With up, hold or down no target_kg is needed and the result says which weight was saved.' },
+        progress: { type: 'string', enum: PROGRESS, description: 'How the weight moves from the last working weight, worked out here from the log: auto (the app picks the next weight from the last sessions, the same as an empty target_kg), up (one weight step heavier; for assistance exercises one step less assistance), hold (the same weight) or down (one step lighter; for assistance exercises one step more assistance). With up, hold or down no target_kg is needed and the result says which weight was saved.' },
         target_kg: { type: 'string', description: 'Load in kg as a plain number in text, e.g. "60", or "". Empty lets the app suggest the next weight from the last sessions. A number is moved to the nearest weight the person can load (their last working weight plus or minus whole steps) when the step is known from their setting or their log; the result says what was saved. A load set here replaces the app\'s suggestion until the next session is logged.' }, rest_s: { type: 'integer' }, note: { type: 'string', description: 'One short coaching cue.' },
         superset: { type: 'string', description: 'A short label such as "A". Exercises next to each other with the same label are done as a superset: one set of each in turn, rest after the round. Leave it out for a normal exercise.' },
       }, ['exercise_id', 'sets', 'reps']) },
@@ -818,7 +819,7 @@ const TOOLS: Tool[] = [
       const old = days[id] || { order: Object.values(days).reduce((m: number, d: Json) => (d.adhoc ? m : Math.max(m, d.order || 0)), 0) + 1 };
       const doc = { ...old, name, kind: KINDS.includes(a.kind) ? a.kind : old.kind || 'Other', focus: str(a.focus, 80, old.focus || ''), items };
       await db.put('yc/templates/' + id, doc);
-      return { saved: true, day: dayOut(id, doc, ex, new Set(), w), created: !days[id], ...(weights.length ? { weights } : {}) };
+      return { saved: true, day: dayOut(id, doc, ex, inWeek(root), w), created: !days[id], ...(weights.length ? { weights } : {}) };
     },
   },
   {

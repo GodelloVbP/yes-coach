@@ -2111,7 +2111,34 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     renderTrain();
     window.scrollTo({ top: 0 });
   };
-  const reviewPrompt = (day) => 'Review my Yes Coach! workout "' + day.name + '" from ' + day.date + '. Use my Yes Coach connector to read that session and my plan, tell me how it went, and what to change next time.';
+  // The whole job for Claude, written out: what to read, how to judge it, how the weight moves, what to change in the plan and what to leave alone.
+  // The connector's own instructions only describe the tools, so the person's request carries the rules.
+  const REVIEW_LANGS = { nl: 'Dutch', es: 'Spanish', de: 'German', fr: 'French', it: 'Italian' };
+  const reviewPrompt = (day) => {
+    const lang = REVIEW_LANGS[window.YC_I18N ? window.YC_I18N.current() : 'en'];
+    return [
+      'Review my Yes Coach! workout "' + day.name + '" from ' + day.date + '. Use my Yes Coach connector for every number and do not guess.',
+      '',
+      'Read:',
+      '- that session (get_sessions with from and to set to that date and detail true; if I trained twice that day, take the one named ' + day.name + '),',
+      '- my plan (get_plan) and the last 5 sessions of each exercise in it (get_exercise_history, or get_sessions with detail true when you need every set),',
+      '- my notes from that day (get_notes with that date).',
+      '',
+      'Judge each exercise in one line: sets and reps against the target, the weight, and how that compares with last time. Warm-up sets do not count. Mark new records, missed reps, a weight that has not moved in three sessions, and anything my notes mention, such as pain. Pin is a machine stack number, not kg. For assisted exercises, less assistance is progress.',
+      '',
+      'Decide the next session for each exercise:',
+      '- up when every working set reached the top of the rep target. Go up one weight_step of that exercise: 80 kg with a step of 1 becomes 81, with a step of 2.3 becomes 82.3.',
+      '- hold when a set fell short or the last sets were close to failure.',
+      '- down one step after three sessions short of the target at the same weight, or when a note says it hurt.',
+      'The app suggests the next weight by the same rules. If you disagree with it, say why.',
+      '',
+      'Then change my plan: save_training_day for this day with progress up, hold or down on each exercise. Send the whole exercise list back otherwise unchanged: the same exercises, order, sets, reps, rest, notes and supersets. Do not add, remove or reorder exercises, and leave other days and the schedule alone.',
+      'Answer each unanswered note from that day with answer_note, in one or two short sentences.',
+      'Do not add or remove logged sets. If a set looks like a typo, ask me first.',
+      '',
+      (lang ? 'Reply in ' + lang + '. ' : '') + 'Keep it short: one line per exercise, what you changed in the plan, and the one thing to focus on next time.',
+    ].join('\n');
+  };
   // "Send to Claude" for a finished day, from the Today card or the day in the week: it stays there after the question was dismissed
   const claudeDayButton = (day, id) => {
     const b = btn('skew small', 'Send to Claude');
