@@ -6900,5 +6900,68 @@
   "de": "Lass Claude eine Mahlzeit eintragen: Es findet öfter das richtige Lebensmittel, unterscheidet roh von gekocht und zählt Getränke in ml.",
   "fr": "Demande à Claude d'enregistrer un repas : il trouve plus souvent le bon aliment, distingue cru et cuit et compte les boissons en ml.",
   "it": "Chiedi a Claude di registrare un pasto: trova più spesso l'alimento giusto, distingue crudo da cotto e conta le bevande in ml."
+ },
+ "Claude and your plan": {
+  "nl": "Claude en je schema",
+  "es": "Claude y tu plan",
+  "de": "Claude und dein Plan",
+  "fr": "Claude et ton plan",
+  "it": "Claude e il tuo piano"
+ },
+ "Propose": {
+  "nl": "Voorstellen",
+  "es": "Proponer",
+  "de": "Vorschlagen",
+  "fr": "Proposer",
+  "it": "Proponi"
+ },
+ "Change it": {
+  "nl": "Zelf aanpassen",
+  "es": "Cambiarlo",
+  "de": "Selbst ändern",
+  "fr": "Le modifier",
+  "it": "Modificalo"
+ },
+ "Claude proposes plan changes and waits for my yes": {
+  "nl": "Claude stelt schemawijzigingen voor en wacht op mijn ja",
+  "es": "Claude propone cambios del plan y espera mi sí",
+  "de": "Claude schlägt Planänderungen vor und wartet auf mein Ja",
+  "fr": "Claude propose des changements du plan et attend mon oui",
+  "it": "Claude propone modifiche al piano e aspetta il mio sì"
+ },
+ "Claude changes my plan itself": {
+  "nl": "Claude past mijn schema zelf aan",
+  "es": "Claude cambia mi plan por sí mismo",
+  "de": "Claude ändert meinen Plan selbst",
+  "fr": "Claude modifie mon plan lui-même",
+  "it": "Claude modifica il mio piano da solo"
+ },
+ "After a workout, Claude suggests the next weights and waits for your yes.": {
+  "nl": "Na een training stelt Claude de volgende gewichten voor en wacht op jouw ja.",
+  "es": "Tras un entrenamiento, Claude sugiere los próximos pesos y espera tu sí.",
+  "de": "Nach einem Training schlägt Claude die nächsten Gewichte vor und wartet auf dein Ja.",
+  "fr": "Après une séance, Claude suggère les prochaines charges et attend ton oui.",
+  "it": "Dopo un allenamento, Claude suggerisce i prossimi pesi e aspetta il tuo sì."
+ },
+ "After a workout, Claude changes the next weights in your plan and tells you what it changed.": {
+  "nl": "Na een training past Claude de volgende gewichten in je schema aan en vertelt wat hij heeft veranderd.",
+  "es": "Tras un entrenamiento, Claude cambia los próximos pesos de tu plan y te dice qué cambió.",
+  "de": "Nach einem Training ändert Claude die nächsten Gewichte in deinem Plan und sagt dir, was er geändert hat.",
+  "fr": "Après une séance, Claude change les prochaines charges de ton plan et te dit ce qu'il a modifié.",
+  "it": "Dopo un allenamento, Claude cambia i prossimi pesi nel tuo piano e ti dice cosa ha cambiato."
+ },
+ "Send to Claude now tells Claude what to read, how to judge each exercise and how the weight moves, instead of one sentence.": {
+  "nl": "Naar Claude versturen vertelt Claude nu wat hij moet lezen, hoe hij elke oefening beoordeelt en hoe het gewicht omhoog gaat, in plaats van één zin.",
+  "es": "Enviar a Claude ahora le dice qué leer, cómo juzgar cada ejercicio y cómo sube el peso, en lugar de una sola frase.",
+  "de": "An Claude senden sagt Claude jetzt, was er lesen soll, wie er jede Übung beurteilt und wie das Gewicht steigt, statt nur einen Satz.",
+  "fr": "Envoyer à Claude lui dit maintenant quoi lire, comment juger chaque exercice et comment la charge monte, au lieu d'une seule phrase.",
+  "it": "Invia a Claude ora gli dice cosa leggere, come giudicare ogni esercizio e come sale il peso, invece di una sola frase."
+ },
+ "In Settings, Connected AI apps, choose Propose (the default: Claude suggests the next weights and waits for your yes) or Change it (Claude changes them itself and tells you).": {
+  "nl": "Kies in Instellingen, Gekoppelde AI-apps, Voorstellen (standaard: Claude stelt de volgende gewichten voor en wacht op jouw ja) of Zelf aanpassen (Claude past ze zelf aan en zegt het je).",
+  "es": "En Ajustes, Apps de IA conectadas, elige Proponer (por defecto: Claude sugiere los próximos pesos y espera tu sí) o Cambiarlo (Claude los cambia y te lo dice).",
+  "de": "Wähle unter Einstellungen, Verbundene KI-Apps, Vorschlagen (Standard: Claude schlägt die nächsten Gewichte vor und wartet auf dein Ja) oder Selbst ändern (Claude ändert sie selbst und sagt es dir).",
+  "fr": "Dans Réglages, Applis d’IA connectées, choisis Proposer (par défaut : Claude suggère les prochaines charges et attend ton oui) ou Le modifier (Claude les change lui-même et te le dit).",
+  "it": "In Impostazioni, App AI collegate, scegli Proponi (predefinito: Claude suggerisce i prossimi pesi e aspetta il tuo sì) o Modificalo (Claude li cambia da solo e te lo dice)."
  }
 }
