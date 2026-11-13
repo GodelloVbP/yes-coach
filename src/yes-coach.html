@@ -656,14 +656,12 @@ body.typing .restbar { display: none; }
 .sm-empty { padding-block: 0.75rem; }
 .sm-save { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; }
 
-/* undo toast hangs under the top bar, clear of the keyboard and the rest bar */
-.toast { position: absolute; left: 0; right: 0; top: 100%; z-index: 11; background: var(--ink); color: var(--bg); box-shadow: 0 6px 16px rgba(16, 20, 43, 0.25); }
-/* from tablet width up there is room: the undo bar and the save warning take their own space at the top, so they never cover the page */
-@media (min-width: 40rem) { .stick .toast, .stick .savebar { position: static; } }
-/* taps pass through the message to the page; only Undo (on the left, away from each card's red X) takes them */
-.toast { pointer-events: none; }
-.toast .skew { pointer-events: auto; }
+/* the message bar is part of the top bar: it pushes the page down instead of covering it, also on a phone */
+.toast { position: static; background: var(--ink); color: var(--bg); }
+@media (min-width: 40rem) { .stick .savebar { position: static; } }
 .toast-in { display: flex; align-items: center; justify-content: flex-start; gap: 1rem; min-height: 56px; padding-block: 0.375rem; font-weight: 600; }
+#toast-text { flex: 1; min-width: 0; }
+.toast .icon { color: inherit; font-size: 1.25rem; margin-right: -0.5rem; }
 .toast .skew { background: transparent; color: inherit; border-color: currentColor; }
 @media (min-width: 64rem) { .sess-body .ex { max-width: 40rem; } }
 /* one colour per group, used wherever that group appears: day type (Pull, Push, Legs) and body part */
@@ -1125,7 +1123,7 @@ body.fin-open { overflow: hidden; }
       <button class="textbtn" type="button" id="sb-date-cancel">Cancel</button>
     </div>
   </div>
-  <div class="toast" id="toast" hidden role="status" aria-live="polite"><div class="in toast-in"><button class="skew small" type="button" id="toast-undo"><span>Undo</span></button><span id="toast-text"></span></div></div>
+  <div class="toast" id="toast" hidden role="status" aria-live="polite"><div class="in toast-in"><button class="skew small" type="button" id="toast-undo"><span>Undo</span></button><span id="toast-text"></span><button class="icon" type="button" id="toast-x" aria-label="Close">&#10005;</button></div></div>
 </div>
 <div class="resume in" id="resume" hidden><button type="button" class="resume-btn" id="resume-btn"><span id="resume-text"></span><b>Resume</b></button><button type="button" class="resume-fin" id="resume-fin">Finish workout</button></div>
 
@@ -1921,6 +1919,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const CHANGELOG = [
     ['12 Nov 2026', "Claude and your plan", ["Send to Claude now tells Claude what to read, how to judge each exercise and how the weight moves, instead of one sentence.", "In Settings, Connected AI apps, choose Propose (the default: Claude suggests the next weights and waits for your yes) or Change it (Claude changes them itself and tells you)."]],
     ['11 Nov 2026', "Food search that understands English", ["Searching Food by an English word finds the Dutch food: bread, cheese, cola, fries, granola.", "Ask Claude to log a meal: it finds the right food more often, tells raw from cooked and counts drinks in ml."]],
+    ['13 Nov 2026', "Messages no longer cover the page", ["A message at the top, with or without Undo, is now part of the top bar on a phone too: the page moves down instead of going under it.", "Each message has an X to close it."]],
     ['11 Nov 2026', "The rolling order runs over your whole log", ["In a rolling week, the next workout is the one you trained longest ago. A new round no longer starts from the top of your list, so Legs on Sunday is not followed by Legs on Monday.", "Put a workout on another day, or add one on a rest day, and the days after it follow on from it. The same workout is kept off the two days before.", "Moves you made earlier this week in a rolling plan are cleared once. Make them again if you still need them."]],
     ['10 Nov 2026', "Warm-ups you can take away, weights that find their own step", ["Remove warm-ups takes the warm-up sets away and leaves your working sets. Any set that is not ticked can go on its own: tap its number, then Remove this set.", "The second exercise for a body part gets two warm-up sets instead of four.", "The weight step follows your log: the smallest jump between weights you have used. Barbell lifts go up by two of your smallest plate. A step you set yourself still wins.", "Each set shows how much more or less it is than last time.", "A connected AI can move a weight one step up or down without asking which weights your gym has."]],
     ['9 Nov 2026', "An alert when rest is over", ["With Alert me when rest is over in Settings, your phone shows a notification when the rest timer ends, also when you are in another app.", "On an iPhone, add Yes Coach! to your home screen first and open it from there."]],
@@ -9315,7 +9314,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     .sort((a, b) => (a.date < b.date ? 1 : -1))[0] || null;
 
   // ------------------------------------------------------------------ undo toast
-  // the toast floats just under the top bar and never pushes the page
+  // the toast is a row of the top bar: it pushes the page down, never covers it, and its X closes it
   const stickH = () => document.documentElement.style.setProperty('--stick-h', $('#stick').getBoundingClientRect().bottom + 'px');
   try { new ResizeObserver(stickH).observe($('#stick')); } catch (e) { /* older browsers: default offset */ }
   window.addEventListener('scroll', stickH, { passive: true });
@@ -9326,11 +9325,15 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#toast-text').textContent = msg;
     toastUndo = undo;
     $('#toast-undo').hidden = !undo;
+    const y = window.scrollY, opening = $('#toast').hidden;
     $('#toast').hidden = false;
+    // a scrolled browser keeps the page where it is, so the new bar would cover it: scroll back, the page moves down by the bar
+    if (opening && y > 0) { void $('#toast').offsetHeight; if (window.scrollY !== y) window.scrollTo(window.scrollX, y); }
     clearTimeout(toastTimer);
     toastTimer = setTimeout(hideToast, undo ? 8000 : 4000);
   };
   $('#toast-undo').addEventListener('click', () => { const fn = toastUndo; hideToast(); if (fn) fn(); });
+  $('#toast-x').addEventListener('click', hideToast);
 
   // ------------------------------------------------------------------ restore a backup: adds what is missing, never overwrites
   const KINDS_RESTORE = ['exercises', 'templates', 'notes', 'weeks', 'food', 'meals', 'myfoods'];

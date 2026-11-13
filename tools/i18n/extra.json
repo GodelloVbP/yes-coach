@@ -6963,5 +6963,26 @@
   "de": "Wähle unter Einstellungen, Verbundene KI-Apps, Vorschlagen (Standard: Claude schlägt die nächsten Gewichte vor und wartet auf dein Ja) oder Selbst ändern (Claude ändert sie selbst und sagt es dir).",
   "fr": "Dans Réglages, Applis d’IA connectées, choisis Proposer (par défaut : Claude suggère les prochaines charges et attend ton oui) ou Le modifier (Claude les change lui-même et te le dit).",
   "it": "In Impostazioni, App AI collegate, scegli Proponi (predefinito: Claude suggerisce i prossimi pesi e aspetta il tuo sì) o Modificalo (Claude li cambia da solo e te lo dice)."
+ },
+ "Messages no longer cover the page": {
+  "nl": "Meldingen bedekken de pagina niet meer",
+  "es": "Los avisos ya no tapan la página",
+  "de": "Meldungen verdecken die Seite nicht mehr",
+  "fr": "Les messages ne couvrent plus la page",
+  "it": "I messaggi non coprono più la pagina"
+ },
+ "A message at the top, with or without Undo, is now part of the top bar on a phone too: the page moves down instead of going under it.": {
+  "nl": "Een melding bovenaan, met of zonder Ongedaan maken, hoort nu ook op een telefoon bij de bovenbalk: de pagina schuift omlaag in plaats van eronder te verdwijnen.",
+  "es": "Un aviso arriba, con o sin Deshacer, ahora forma parte de la barra superior también en el móvil: la página baja en lugar de quedar debajo.",
+  "de": "Eine Meldung oben, mit oder ohne Rückgängig, gehört jetzt auch auf dem Handy zur oberen Leiste: Die Seite rutscht nach unten, statt darunter zu verschwinden.",
+  "fr": "Un message en haut, avec ou sans Annuler, fait maintenant partie de la barre du haut, aussi sur téléphone : la page descend au lieu de passer dessous.",
+  "it": "Un messaggio in alto, con o senza Annulla, ora fa parte della barra in alto anche sul telefono: la pagina scende invece di finirci sotto."
+ },
+ "Each message has an X to close it.": {
+  "nl": "Elke melding heeft een X om hem te sluiten.",
+  "es": "Cada aviso tiene una X para cerrarlo.",
+  "de": "Jede Meldung hat ein X zum Schließen.",
+  "fr": "Chaque message a un X pour le fermer.",
+  "it": "Ogni messaggio ha una X per chiuderlo."
  }
 }
