@@ -70,7 +70,7 @@ try:
             return be
         def create(page):
             page.click('#tab-food'); page.wait_for_selector('#fd-body:not([hidden])', timeout=8000)
-            page.click('#fd-own-new'); page.fill('#fd-own-name', 'Brand new'); page.fill('#fd-kcal', '100'); page.fill('#fd-p', '5'); page.fill('#fd-c', '10'); page.fill('#fd-f', '2'); page.click('#fd-add'); page.wait_for_timeout(500)
+            page.click('#fd-ownfoods > summary'); page.click('#fd-own-new'); page.fill('#fd-own-name', 'Brand new'); page.fill('#fd-kcal', '100'); page.fill('#fd-p', '5'); page.fill('#fd-c', '10'); page.fill('#fd-f', '2'); page.click('#fd-add'); page.wait_for_timeout(500)
             return page.inner_text('#fd-msg')
         res = {}
         errs = session(pw, foods(100, 450), ALICE, lambda p: res.update(a=create(p)), width=390)
