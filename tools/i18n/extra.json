@@ -7061,5 +7061,19 @@
   "de": "Eine Übung während des Trainings hinzuzufügen leert die Suche, und die Liste wechselt die Farben, damit Übungen leichter zu unterscheiden sind.",
   "fr": "Ajouter un exercice pendant une séance vide la recherche, et la liste alterne les couleurs pour mieux distinguer les exercices.",
   "it": "Aggiungere un esercizio durante l'allenamento svuota la ricerca, e l'elenco alterna i colori per distinguere meglio gli esercizi."
+ },
+ "Your own foods folds away": {
+  "nl": "Je eigen eten klapt in",
+  "es": "Tus propios alimentos se pliegan",
+  "de": "Deine eigenen Lebensmittel klappen ein",
+  "fr": "Tes propres aliments se replient",
+  "it": "I tuoi alimenti si chiudono"
+ },
+ "On Food, Your own foods is folded by default, with the number of foods in its heading. Tap the heading to open it.": {
+  "nl": "Bij Eten is Je eigen eten standaard ingeklapt, met het aantal in de kop. Tik op de kop om het te openen.",
+  "es": "En Comida, Tus propios alimentos está plegado por defecto, con el número de alimentos en el título. Toca el título para abrirlo.",
+  "de": "Unter Ernährung ist Deine eigenen Lebensmittel standardmäßig eingeklappt, mit der Anzahl in der Überschrift. Tippe auf die Überschrift, um es zu öffnen.",
+  "fr": "Dans Alimentation, Tes propres aliments est replié par défaut, avec le nombre d'aliments dans le titre. Touche le titre pour l'ouvrir.",
+  "it": "In Cibo, I tuoi alimenti è chiuso di default, con il numero di alimenti nel titolo. Tocca il titolo per aprirlo."
  }
 }

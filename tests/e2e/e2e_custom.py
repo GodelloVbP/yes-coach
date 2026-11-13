@@ -162,6 +162,8 @@ try:
         be.docs.append({'path': 'yc/myfoods/own-bad', 'data': {'food': 'own:bad', 'name': 'Broken thing', 'own': 'nope'}})
         def s3(page):
             page.click('#tab-food'); page.wait_for_selector('#fd-body', state='visible', timeout=8000)
+            check('Your own foods starts folded, with only its heading showing', page.is_visible('#h-fd-own') and not page.is_visible('#fd-own-new') and page.get_attribute('#fd-ownfoods', 'open') is None)
+            page.click('#fd-ownfoods > summary')
             check('the Food page has a Your own foods section with a Create button', page.is_visible('#fd-ownfoods') and page.is_visible('#fd-own-new') and 'Nothing saved yet' in page.inner_text('#fd-own-list'))
             check('and no Claude button while Claude is not connected', not page.is_visible('#fd-own-claude'))
             page.click('#fd-own-new')
@@ -229,7 +231,9 @@ try:
         be.docs.append({'path': 'yc/myfoods/own-skyr', 'data': {'food': 'own:skyr', 'name': 'Skyr vanille', 'aka': {}, 'n': 0, 'last': 0, 'portions': {}, 'own': {'kcal': 63, 'p': 11, 'c': 4, 'f': 0.2, 'u': 'g'}, 'source': 'https://www.example.nl/producten/skyr'}})
         be.docs.append({'path': 'yc/myfoods/own-pasta', 'data': {'food': 'own:pasta', 'name': 'Pasta sauce', 'aka': {}, 'n': 0, 'last': 0, 'portions': {}, 'own': {'kcal': 60, 'p': 1.5, 'c': 9, 'f': 2, 'u': 'g'}, 'source': 'javascript:alert(1)'}})
         def s3a(page):
-            page.click('#tab-food'); page.wait_for_selector('#fd-own-list .fd-own-row', timeout=8000)
+            page.click('#tab-food'); page.wait_for_selector('#fd-own-list .fd-own-row', state='attached', timeout=8000)
+            check('the folded heading counts your foods', page.inner_text('#fd-own-count') == '2', page.inner_text('#fd-own-count'))
+            page.click('#fd-ownfoods > summary')
             row = page.locator('#fd-own-list .fd-own-row', has_text='Skyr vanille')
             a = row.locator('a')
             check('the source is a link to the page', a.count() == 1 and a.get_attribute('href') == 'https://www.example.nl/producten/skyr' and a.text_content() == 'example.nl', a.count())
@@ -253,6 +257,7 @@ try:
         def s3b(page):
             page.evaluate("window.__opened = []; window.__oc = HTMLAnchorElement.prototype.click; HTMLAnchorElement.prototype.click = function () { if (/claude\\.ai/.test(this.href)) { window.__opened.push(this.href); return; } return window.__oc.call(this); }; 0")
             page.click('#tab-food'); page.wait_for_selector('#fd-body', state='visible', timeout=8000)
+            page.click('#fd-ownfoods > summary')
             check('Add with Claude shows once Claude is connected', until(lambda: page.is_visible('#fd-own-claude')))
             page.click('#fd-own-claude'); page.wait_for_timeout(400)
             u = page.evaluate('window.__opened[0]') or ''

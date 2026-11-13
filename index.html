@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-0ueoGby2Jw8ji26RF4H/fYK3kXQ8NSRTV+gvxhao/Ok=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-qz+tK6pQGq0xZjxO9a2Xq73Psp9C5xPz7odAYwkjr0Q=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-13 11:44Z">
+<meta name="yc-build" content="2026-11-13 12:50Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -1439,15 +1439,15 @@ body.fin-open { overflow: hidden; }
           <div class="p-head"><h2 id="h-fd-list">Eaten</h2><span class="p-count" id="fd-count"></span></div>
           <div class="fd-list" id="fd-list"></div>
         </section>
-        <section class="p-sec blk" aria-labelledby="h-fd-own" id="fd-ownfoods">
-          <div class="p-head"><h2 id="h-fd-own">Your own foods</h2><span class="p-count" id="fd-own-count"></span></div>
+        <details class="p-sec blk p-log" id="fd-ownfoods">
+          <summary class="p-head"><h2 id="h-fd-own">Your own foods</h2><span class="p-count" id="fd-own-count"></span><span class="p-caret" aria-hidden="true"></span></summary>
           <p class="note">Enter the numbers from its label.</p>
           <div class="foot-row">
             <button class="skew small" type="button" id="fd-own-new"><span>Create a food</span></button>
             <button class="skew small" type="button" id="fd-own-claude" hidden><span>Add with Claude</span></button>
           </div>
           <div class="fd-own-list" id="fd-own-list"></div>
-        </section>
+        </details>
         <section class="p-sec blk" aria-labelledby="h-fd-trend">
           <div class="p-head"><h2 id="h-fd-trend">Trends</h2></div>
           <div class="seg" role="radiogroup" aria-label="Period" id="fd-range"></div>
@@ -1999,6 +1999,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const CHANGELOG = [
     ['12 Nov 2026', "Claude and your plan", ["Send to Claude now tells Claude what to read, how to judge each exercise and how the weight moves, instead of one sentence.", "In Settings, Connected AI apps, choose Propose (the default: Claude suggests the next weights and waits for your yes) or Change it (Claude changes them itself and tells you)."]],
     ['11 Nov 2026', "Food search that understands English", ["Searching Food by an English word finds the Dutch food: bread, cheese, cola, fries, granola.", "Ask Claude to log a meal: it finds the right food more often, tells raw from cooked and counts drinks in ml."]],
+    ['13 Nov 2026', "Your own foods folds away", ["On Food, Your own foods is folded by default, with the number of foods in its heading. Tap the heading to open it."]],
     ['13 Nov 2026', "Logging, clearer", ["Settings, Logging is split into While you log and Barbell, with a line under each option on what it does. Strava has its own section.", "Adding an exercise during a workout clears the search, and the list alternates colours so exercises are easier to tell apart."]],
     ['13 Nov 2026', "Messages no longer cover the page", ["A message at the top, with or without Undo, is now part of the top bar on a phone too: the page moves down instead of going under it.", "Each message has an X to close it."]],
     ['11 Nov 2026', "The rolling order runs over your whole log", ["In a rolling week, the next workout is the one you trained longest ago. A new round no longer starts from the top of your list, so Legs on Sunday is not followed by Legs on Monday.", "Put a workout on another day, or add one on a rest day, and the days after it follow on from it. The same workout is kept off the two days before.", "Moves you made earlier this week in a rolling plan are cleared once. Make them again if you still need them."]],
