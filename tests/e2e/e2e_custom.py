@@ -84,6 +84,10 @@ try:
             page.wait_for_selector('#f-treadmill-run_1-km', state='visible')
             check('last time fills distance and minutes', page.input_value('#f-treadmill-run_1-km') == '5' and page.input_value('#f-treadmill-run_1-minutes') == '30' and page.input_value('#f-treadmill-run_1-elev') == '20', [page.input_value('#f-treadmill-run_1-' + f) for f in ('minutes', 'km', 'elev')])
             check('and the treadmill stays picked', page.get_attribute('.run-where button[data-w="treadmill"]', 'aria-pressed') == 'true')
+            page.click('text=+ Add exercise'); page.wait_for_timeout(200)
+            check('after adding, the search starts empty again with every exercise listed', page.input_value('.pk-search') == '' and page.locator('.pk-item:visible').count() > 20, page.input_value('.pk-search'))
+            check('rows take turns in each group: white, then cream', page.evaluate("(() => { const out = []; let cur = null; [...document.querySelectorAll('.pk-list > *')].forEach((e) => { if (e.classList.contains('pk-gh')) { cur = []; out.push(cur); } else if (cur && e.classList.contains('pk-item') && !e.hidden) cur.push(e.classList.contains('alt')); }); const g = out.find((x) => x.length >= 3); return !!g && g[0] === false && g[1] === true && g[2] === false; })()"))
+            page.click('.pk-top .link')
             page.locator('.set .set-tick').first.click(); page.wait_for_timeout(300)
             page.wait_for_timeout(900); page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click()
             page.wait_for_selector('.fin', timeout=5000)
@@ -317,30 +321,29 @@ try:
                 check('%d: no sideways overflow on any tab' % width, page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth"))
             errs = session(pw, be, ALICE, s6, width=width); check('no page errors (tabs %d)' % width, not errs, errs)
 
-        # ---- 4. the undo bar never covers the page: it takes its own room from tablet width up, floats on a phone
+        # ---- 4. the message bar never covers the page: it is a row of the top bar at every width, and its X closes it
         SHOW = "document.getElementById('toast-text').textContent = 'Saved.'; document.getElementById('toast').hidden = false; 0"
         MEASURE = "(() => { const t = document.getElementById('toast').getBoundingClientRect(); const c = document.querySelector('#today-card').getBoundingClientRect(); return { tb: t.bottom, tl: t.left, ct: c.top, pos: getComputedStyle(document.getElementById('toast')).position }; })()"
-        for width, name in ((1280, 'desktop'), (900, 'tablet')):
+        for width, name in ((1280, 'desktop'), (900, 'tablet'), (390, 'phone')):
             be = Backend(); seed(be)
             def s4(page, name=name):
                 page.goto(BASE); page.wait_for_selector('text=Start Push day', timeout=8000)
                 before = page.evaluate("document.querySelector('#today-card').getBoundingClientRect().top")
                 page.evaluate(SHOW); page.wait_for_timeout(200)
                 r = page.evaluate(MEASURE)
-                check(name + ': the undo bar is part of the page, not over it', r['pos'] == 'static' and r['ct'] >= r['tb'], r)
-                check(name + ': the page moves down by the bar, nothing is covered', abs((r['ct'] - before) - (r['tb'] - 0 if name == 'desktop' else r['tb'] - 53)) < 3, (before, r))
+                h = page.evaluate("document.getElementById('toast').getBoundingClientRect().height")
+                check(name + ': the message bar is part of the page, not over it', r['pos'] == 'static' and r['ct'] >= r['tb'], r)
+                check(name + ': the page moves down by the bar, nothing is covered', abs((r['ct'] - before) - h) < 3, (before, h, r))
                 if name == 'desktop': check('desktop: it starts beside the sidebar, not under it', r['tl'] >= 200, r)
-                page.evaluate("window.scrollTo(0, 400)"); page.wait_for_timeout(200)
-                r2 = page.evaluate(MEASURE)
-                check(name + ': still at the top, with the page below it, when scrolled', r2['tb'] <= 120 and page.evaluate("document.elementFromPoint(" + str(int(r2['tl']) + 300) + ", " + str(int(r2['tb']) + 2) + ").closest('#toast') === null"), r2)
+                page.click('#toast-x'); page.wait_for_timeout(100)
+                check(name + ': the X closes the message', page.is_hidden('#toast'))
+                # a real message while scrolled (a workout taken off the week): the page moves down by the bar instead of going under it
+                page.click('#wk-sheet .wk-remove'); page.wait_for_timeout(150)
+                page.evaluate("document.body.append(Object.assign(document.createElement('div'), { style: 'height: 3000px' })); window.scrollTo(0, 300)"); page.wait_for_timeout(150)
+                page.evaluate("[...document.querySelectorAll('#wk-sheet button')].find((b) => b.textContent.trim() === 'Remove').click()"); page.wait_for_timeout(250)
+                sy = page.evaluate("window.scrollY")
+                check(name + ': a message while scrolled moves the page down by the bar (the scroll does not grow)', page.is_visible('#toast') and sy <= 302, sy)  # without the fix the scroll grows by the bar's height
             errs = session(pw, be, ALICE, s4, width=width); check('no page errors (' + name + ')', not errs, errs)
-        be = Backend(); seed(be)
-        def s4p(page):
-            page.goto(BASE); page.wait_for_selector('text=Start Push day', timeout=8000)
-            page.evaluate(SHOW); page.wait_for_timeout(200)
-            r = page.evaluate(MEASURE)
-            check('phone: the undo bar floats under the top bar', r['pos'] == 'absolute' and r['tb'] > 100, r)
-        errs = session(pw, be, ALICE, s4p, width=390); check('no page errors (phone toast)', not errs, errs)
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
