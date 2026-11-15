@@ -2,6 +2,22 @@
 
 How Yes Coach should build a training plan (with or without an AI), check it, and keep it working. This follows from a review of the current code: the progression engine is sound, but the plan around it has no volume model, no frequency rule, fixed reps that break double progression, and AI plans that are barely checked.
 
+## 0. After review (one reviewer with full context, one cold)
+Both reviews agreed on the big problems; this version follows them.
+
+- **Muscle data first.** The library's muscle fields are free text (about 70 variants, "Front and side delts", "shoulders", "Legs"). A fixed list of muscles and a mapping for every entry comes before any counting; each muscle is credited at most once per exercise. Your own and imported exercises fall back to their body part and are shown as "not counted" instead of raising volume warnings.
+- **Rules in tiers.** Two 45-minute sessions cannot hold 13 patterns and full volume bands. Must-haves every week: a knee-dominant lift, a hinge, a push and a pull. The rest (vertical press, leg curl, arms, delts, calves, core) fills in while the time budget allows. Volume below the band because of time is information, not a warning.
+- **Goal and person.** Bands follow the three experience levels onboarding already asks (new, some, years) and the goal; "new" and the lose-weight goal get a lower band. 1 day a week: one full-body day. 7 days: 6 lifting days and an easy day. Shoulder limits use the library's own flags (skip is an error, careful a warning), not English note text.
+- **Warm-up flag is a bug today.** The app's plan save and the connector drop the warm-up mark, so a day replaced by Claude loses warm-up marks set by hand. Fixed first, on its own.
+- **No surprise changes.** Existing plans are never rewritten automatically. The check shows at most 3 findings (errors first, then "+N more"); "Fix my plan" is offered only for errors or a missing must-have and goes through the existing adjust flow with undo.
+- **Web users paste.** The automatic fix round only exists where the page can call Claude itself. On the website the findings come with a "Copy fix request". Fixes that need no judgement (fixed reps to a range by role, rest clamped, warm-up flag, isolation after compounds) are done by the app before the preview.
+- **Effort tap only when it matters.** Asked per exercise only when every set reached the top of the range (the only case where it changes the next weight), skipped when the per-set RIR box is on, and stored on the last working set relative to the planned effort.
+- **Big jumps** apply to kg and assisted exercises only, need extra reps by the size of the jump (about 1 rep per 3%, at most 4), worked out in the rule with nothing stored.
+- **The connector repeats the check.** The Edge Function cannot import from the app, so the check is written once (`plancheck.js`) and copied into the function by a sync script, with a test that the copy matches. `get_plan` and `save_training_day` return it, so Claude sees it in a chat too.
+- **Cut:** the AI's own set count, a separate Fix with Claude button, "suggest a weighted version" (the engine already says add weight), and a general warm-up item by default.
+- **Calibrate before showing it.** The check card is shown to the owner first (an email list in config, like Strava), and only to everyone once the built-in plans pass it.
+- **Easier week** is a card with a Start button on the week view, never automatic; its sessions are tagged and left out of the next-weight rule. It comes last.
+
 ## 1. What a good plan does
 
 1. **Frequency.** Every major muscle is trained at least twice a week when there are 3 or more sessions a week. Two sessions a week: full body twice.
@@ -151,25 +167,24 @@ Answer with JSON only:
  "weekdays": [...], "weekly_sets": {"chest": 12, "back": 14, ...}, "mapping": {...}}
 ```
 
-## 5. Order of work
+## 5. Order of work (after review)
 
-| # | Work | Why first | Size |
-|---|---|---|---|
-| 1 | `plancheck.js` with tests | Everything else uses it | medium |
-| 2 | Plan check card on the Plan page, and in `get_plan` | Shows the problem in every existing plan, including yours | small |
-| 3 | Starter builder rewrite, 90-plan test | The plan most people get | medium |
-| 4 | AI rules template, check-and-fix loop, preview findings | The plan the rest get | medium |
-| 5 | Progression: ranges, big-jump rule, effort tap, variant switch | Makes the weights move right | medium |
-| 6 | Planned easier week | Needs 5 | small to medium |
-| 7 | Connector: warm-up flag, review request uses the check | Claude can keep plans clean | small |
-| 8 | Blind-agent test: 12 people, AI plans scored by the check | Proof, like the food test | small |
+| # | Work |
+|---|---|
+| 1 | Warm-up flag kept in the app's plan save and in the connector (bug fix) |
+| 2 | Muscle list, mapping for every library entry, body-part fallback; test that every entry maps |
+| 3 | `plancheck.js` (tiers, time budget, bands by experience and goal, rotation by unique days), its copy in the connector with a sync test, `get_plan` and `save_training_day` return the check |
+| 4 | Built-in plans rewritten by role and range for 1 to 7 days; every combination passes |
+| 5 | AI rules template, app-side fixes, check after the answer, one automatic fix round in the page, Copy fix request on the web; blind-agent plans scored before and after |
+| 6 | Plan check card (owner first), Fix my plan for errors only |
+| 7 | Progression: big-jump rule, effort tap, assisted-variant hint |
+| 8 | Easier week card |
 
-## 6. Decisions needed
-
-1. **Experience levels.** Onboarding knows "new" or not. Add a third level (some experience, experienced) so the volume band fits, or derive it from the imported history?
-2. **Existing plans.** Show the check on existing plans only, or also offer "Fix my plan" once to everyone?
-3. **Easier week.** Offer it (a card with a Start button), or start it on its own?
-4. **Effort tap.** After every exercise, or only on the last exercise of a body part?
+## 6. Decisions taken
+1. **Experience:** the three levels onboarding already asks (new, some, years), guessed from imported history; changeable in Settings.
+2. **Existing plans:** the check is shown; Fix my plan is offered only for errors or a missing must-have, with undo.
+3. **Easier week:** a card with a Start button, never automatic.
+4. **Effort tap:** only when every set reached the top of the range, and only when the per-set RIR box is off.
 
 ## 7. Where the numbers come from
 The bands and rules follow the broad agreement of recent reviews on resistance training: more weekly sets help up to roughly 10 to 20 per muscle with diminishing returns; training a muscle twice a week is at least as good as once at the same volume and easier to recover from; sets taken to within about 0 to 3 reps of failure are what counts; rep ranges from about 5 to 30 all build muscle when effort is high, heavier ranges suit strength. They are starting points to tune with the blind-agent test and real logs, not fixed truths.
