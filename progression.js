@@ -17,7 +17,9 @@
     fewer_sets: 'Same weight: last time you did {0} of {1} sets',
     max: 'Beat last time: {0} reps',
     bw_up: 'One more rep on each set',
-    bw_load: 'You reached {0} reps on every set: add some weight'
+    bw_load: 'You reached {0} reps on every set: add some weight',
+    bw_assist: 'Under 5 reps two sessions running: an assisted version (band or machine) lets you build up',
+    big_jump: 'Same weight: the next step (+{0}) is a big one, so {1} reps on every set first'
   };
 
   var INC_DEFAULT = 2.5;
@@ -88,6 +90,12 @@
   function stepFor(inc) { return inc >= 2.5 ? 1.25 : inc >= 2 ? 1 : inc; }
   function snap(x, step) { return round2(Math.round(x / step) * step); }
 
+  // extra reps before a jump that is more than 10% of the load
+  function bigJumpReps(unit, plan, inc, load) {
+    if ((unit !== 'kg' && unit !== 'assist') || plan.mode !== 'range' || !(load > 0) || !(inc > 0)) return 0;
+    var pct = (inc / load) * 100;
+    return pct > 10 ? Math.min(4, Math.max(1, Math.ceil((pct - 10) / 3))) : 0;
+  }
   function daysBetween(a, b) {
     var pa = String(a).slice(0, 10).split('-').map(Number), pb = String(b).slice(0, 10).split('-').map(Number);
     return Math.round((Date.UTC(pb[0], pb[1] - 1, pb[2]) - Date.UTC(pa[0], pa[1] - 1, pa[2])) / 864e5);
@@ -140,9 +148,11 @@
     if (unit === 'bw') {
       var last = s0.sets.slice().sort(function (a, b) { return a.n - b.n; });
       var rs = last.map(function (s) { return Number(s.reps) || 0; });
+      // two sessions running with no set of 5 reps: say an assisted version exists
+      var weak = hist.length >= 2 && hist.slice(0, 2).every(function (s) { return Math.max.apply(null, s.sets.map(function (x) { return Number(x.reps) || 0; })) < 5; });
       if (plan.mode === 'max') {
         var bestBw = Math.max.apply(null, rs);
-        return out({ load: null, reps: bestBw + 1, repsBySet: null, kind: 'up', delta: 0, reason: fill(R.max, [bestBw + 1]) });
+        return out({ load: null, reps: bestBw + 1, repsBySet: null, kind: 'up', delta: 0, reason: weak ? R.bw_assist : fill(R.max, [bestBw + 1]) });
       }
       var topBw = plan.mode === 'range' ? plan.hi : plan.n;
       if (rs.length >= planned && rs.every(function (r) { return r >= topBw; })) {
@@ -153,7 +163,7 @@
         var r0 = i < rs.length ? rs[i] : rs[rs.length - 1];
         per.push(Math.min(topBw, r0 + 1));
       }
-      return out({ load: null, reps: per[0], repsBySet: per, kind: 'up', delta: 0, reason: R.bw_up });
+      return out({ load: null, reps: per[0], repsBySet: per, kind: 'up', delta: 0, reason: weak ? R.bw_assist : R.bw_up });
     }
 
     // ---- loaded: kg, pin or assistance
@@ -199,6 +209,15 @@
 
     if (allTop) {
       if (tooHard) return out({ load: L, reps: repsFor(0), repsBySet: null, kind: 'same', delta: 0, reason: R.at_limit, lastLoad: L });
+      // a big jump (8 to 10 kg dumbbells is 25%): a few more reps first, about 1 for every 3% above 10%, at most 4.
+      // Only for a range on kg or assistance, worked out here each time, nothing stored.
+      var extra = bigJumpReps(unit, plan, inc, L);
+      if (extra && !at.every(function (x) { return x.reps >= top + extra; })) {
+        var ordB = at.slice().sort(function (a, b) { return a.n - b.n; });
+        var perB = [];
+        for (var q = 0; q < Math.max(planned, ordB.length); q += 1) perB.push(Math.min(top + extra, (q < ordB.length ? ordB[q].reps : ordB[ordB.length - 1].reps) + 1));
+        return out({ load: L, reps: perB[0], repsBySet: perB, kind: 'same', delta: 0, reason: fill(R.big_jump, [amt(inc), top + extra]), lastLoad: L });
+      }
       var up = harder(L, inc);
       return out({ load: up, reps: repsFor(0), repsBySet: null, kind: assist ? 'down' : 'up', delta: up - L, reason: fill(assist ? R.less_help : R.up, [amt(inc), at.length, top]), lastLoad: L });
     }
@@ -236,7 +255,7 @@
     return out({ load: L, reps: plan.n, repsBySet: null, kind: 'same', delta: 0, reason: fill(R.short, [plan.n]), lastLoad: L }); // not reached for fixed reps: a miss is already a short set
   }
 
-  var api = { suggest: suggest, parseReps: parseReps, defaultInc: defaultInc, learnInc: learnInc, resolveInc: resolveInc, stepFor: stepFor, REASONS: R };
+  var api = { suggest: suggest, parseReps: parseReps, defaultInc: defaultInc, learnInc: learnInc, resolveInc: resolveInc, stepFor: stepFor, bigJumpReps: bigJumpReps, REASONS: R };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.YC_PROGRESSION = api;
 })(typeof window !== 'undefined' ? window : this);

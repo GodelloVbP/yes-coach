@@ -746,6 +746,17 @@ body.typing .restbar { display: none; }
 .wz-err { color: var(--warn); font-weight: 600; }
 .wz-err:empty { display: none; }
 .wz-items { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.125rem; font-weight: 500; }
+.wz-items li.bad { color: var(--warn); }
+.pc-mus { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 0.25rem 1rem; }
+.pc-mus li { display: flex; justify-content: space-between; gap: 0.5rem; }
+.pc-mus li b { font-variant-numeric: tabular-nums; }
+.pc-mus li.low b, .pc-mus li.high b { color: var(--warn); }
+.pc-mus .note { opacity: 0.7; }
+.ex-effort { display: flex; flex-direction: column; gap: 0.375rem; padding: 0.625rem 0.75rem; background: var(--faint); margin-top: 0.5rem; }
+.ex-effort[hidden] { display: none; }
+.ex-effort .eff-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.ex-effort button.eff { min-height: 2.75rem; padding: 0 1rem; cursor: pointer; }
+.ex-effort button.eff[aria-pressed="true"] { background: var(--pop); color: var(--on-pop, #000); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .hm { padding-block: 0.75rem 3rem; display: flex; flex-direction: column; gap: 1rem; max-width: 64rem; }
 .hm .brand svg { width: min(100%, 20rem); }
@@ -1938,6 +1949,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['15 Nov 2026', "Smaller steps on big jumps", ["When the next weight is a big jump (8 to 10 kg dumbbells is 25% more), the app asks for a few more reps at the same weight first.", "Bodyweight exercises with fewer than 5 reps two sessions running get a hint to try the assisted version."]],
     ['12 Nov 2026', "Claude and your plan", ["Send to Claude now tells Claude what to read, how to judge each exercise and how the weight moves, instead of one sentence.", "In Settings, Connected AI apps, choose Propose (the default: Claude suggests the next weights and waits for your yes) or Change it (Claude changes them itself and tells you)."]],
     ['11 Nov 2026', "Food search that understands English", ["Searching Food by an English word finds the Dutch food: bread, cheese, cola, fries, granola.", "Ask Claude to log a meal: it finds the right food more often, tells raw from cooked and counts drinks in ml."]],
     ['13 Nov 2026', "Your own foods folds away", ["On Food, Your own foods is folded by default, with the number of foods in its heading. Tap the heading to open it."]],
@@ -2879,7 +2891,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const sessionItems = (a = S.active) => {
     const t = S.templates[a.tpl] || { items: [] };
     const doc = ownDoc(a);
-    const items = (t.items || []).map((it) => ({ ex: it.ex, sets: Number(it.sets) || 3, reps: it.reps, target: it.target, target_at: it.target_at || null, rest_s: it.rest_s, note: it.note, kind: it.kind || null, group: it.group || null, planned: true }));
+    const half = inEasy(a.date);
+    const items = (t.items || []).map((it) => ({ ex: it.ex, sets: Number(it.sets) || 3, reps: it.reps, target: it.target, target_at: it.target_at || null, rest_s: it.rest_s, note: it.note, kind: it.kind || null, group: it.group || null, planned: true })).map((x) => (half && x.kind !== 'warmup' ? Object.assign(x, { sets: Math.max(1, Math.ceil(x.sets / 2)) }) : x));
     const seen = new Set(items.map((i) => i.ex));
     const added = doc && doc.added ? Object.keys(doc.added).filter((k) => doc.added[k]) : [];
     added.forEach((ex) => {
@@ -3034,6 +3047,39 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   // The suggested next weight: what the rule in progression.js makes of the last few sessions. Off in Settings, or per exercise today with "Use last time".
   const progOn = () => !(S.root && S.root.settings && S.root.settings.progress_suggest === false);
+  // ---- an easier week (PLAN_MAKER.md 2.5): offered on the week view, started with one tap, never by itself. For 7 days from the start:
+  // the same weights, half the sets, 3 to 4 reps left. Its sessions are left out of the next-weight rule. S.root.easy = { from, to }.
+  const easyWeek = () => { const e = S.root && S.root.easy; return e && e.from && e.to ? e : null; };
+  const inEasy = (date) => { const e = easyWeek(); return !!e && date >= e.from && date <= e.to; };
+  const EASY_REASON = 'Easier week: same weight, half the sets, stop with 3 to 4 reps left';
+  // why to offer one now: { weeks } after 6 weeks of training since the last one (or since the first session), { stalled, of } when
+  // 40% or more of the plan's exercises have not gone up in the last two weeks; null otherwise
+  const easyOffer = () => {
+    if (!planCheckOn() || easyWeek() && easyWeek().to >= today()) return null;
+    const skip = S.root && S.root.easy_skip;
+    if (skip && skip > addDays(today(), -14)) return null;
+    const all = sessionsSorted().filter((x) => x.date <= today() && Object.values(x.sets || {}).some((st) => st && isDone(st) && countsAsWork(st)));
+    if (!all.length) return null;
+    const ref = easyWeek() ? easyWeek().to : addDays(all[all.length - 1].date, -1);
+    const since = all.filter((x) => x.date > ref);
+    const weeks = new Set(since.map((x) => mondayOf(x.date))).size;
+    if (weeks >= 6) return { weeks };
+    if (since.length && since[since.length - 1].date > addDays(today(), -21)) return null; // too soon to call anything stalled
+    const exs = [...new Set(planDayIds().flatMap((id) => ((S.templates[id] || {}).items || []).filter((it) => it.kind !== 'warmup').map((it) => it.ex)))];
+    let of = 0;
+    let stalled = 0;
+    exs.forEach((ex) => {
+      const e = S.exercises[ex] || {};
+      if (!['kg', 'stack', 'bw'].includes(e.unit || 'kg')) return;
+      const score = (x) => Math.max(0, ...workSets(x, ex).map((st) => (e.unit === 'bw' ? Number(st.reps) || 0 : (Number(st.load) || 0) * (1 + Math.min(Number(st.reps) || 0, 15) / 30))));
+      const recent = since.filter((x) => x.date > addDays(today(), -14) && workSets(x, ex).length);
+      const before = since.filter((x) => x.date <= addDays(today(), -14) && x.date > addDays(today(), -42) && workSets(x, ex).length);
+      if (!recent.length || !before.length) return;
+      of += 1;
+      if (Math.max(...recent.map(score)) <= Math.max(...before.map(score))) stalled += 1;
+    });
+    return of >= 3 && stalled / of >= 0.4 ? { stalled, of } : null;
+  };
   const sugKey = (item) => SID() + '|' + item.ex;
   const sugOffFor = (item) => !!(local.get('yc-nosug') || {})[sugKey(item)];
   // The weight step of an exercise and where it comes from: your own setting ('set'), the smallest jump between weights you have
@@ -3064,12 +3110,16 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (e.unit !== 'min') {
       const history = [];
       for (const s of sessionsSorted()) {
-        if (s.date >= S.active.date) continue;
+        if (s.date >= S.active.date || inEasy(s.date)) continue;
         const sets = workSets(s, item.ex).sort((a, b) => a.n - b.n);
         if (sets.length) history.push({ date: s.date, sets: sets.map((st) => ({ n: st.n, load: st.load, reps: st.reps, rir: st.rir, kind: st.kind || 'work' })) });
         if (history.length >= 4) break;
       }
       r = P.suggest({ unit: e.unit || 'kg', reps: item.reps, sets: item.sets, inc: incFor(item.ex), uw: unitWord(e), today: S.active.date, target: item.target, targetAt: item.target_at, history });
+      if (r && inEasy(S.active.date)) {
+        const pr = P.parseReps(item.reps) || {};
+        r = Object.assign({}, r, { load: r.lastLoad != null ? r.lastLoad : r.load, reps: pr.mode === 'range' ? pr.lo : pr.mode === 'fixed' ? pr.n : r.reps, repsBySet: null, kind: 'same', delta: 0, reason: EASY_REASON });
+      }
     }
     if (lastCache) lastCache.set(ck, r);
     return r;
@@ -3657,6 +3707,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (hd) sets.append(hd);
     for (let i = 1; i <= n; i += 1) sets.append(buildSet(item, i, unit));
     wrap.append(sets);
+    const eff = h('div', 'ex-effort');
+    eff.hidden = true;
+    wrap.append(eff);
 
     const acts = h('div', 'ex-actions');
     const more = btn('skew small', '+ Set');
@@ -4303,6 +4356,49 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (!pr && badge) badge.remove();
     return on;
   };
+  // ---- how hard the last set felt, in one tap (PLAN_MAKER.md 2.5). Asked only when every working set reached the top of the
+  // planned reps, the one case where it changes the next weight: Hard (0 in reserve) keeps the weight, Easy (3) and Right (1) let it
+  // go up. Stored as rir on the last working set; not asked when the per-set RIR column is on.
+  const EFFORT = [['Easy', 3], ['Right', 1], ['Hard', 0]];
+  const effortKey = (item, keys) => {
+    const ex = S.exercises[item.ex] || {};
+    if (!planCheckOn() || showRir() || !progOn() || !item.planned || !['kg', 'assist', 'stack'].includes(ex.unit || 'kg') || !window.YC_PROGRESSION) return null;
+    const plan = window.YC_PROGRESSION.parseReps(item.reps);
+    if (!plan || (plan.mode !== 'range' && plan.mode !== 'fixed')) return null;
+    const top = plan.mode === 'range' ? plan.hi : plan.n;
+    const work = keys.filter((k) => kindAt(item, k) !== 'warmup').map((k) => ({ k, st: storedSet(k) }));
+    if (work.length < (Number(item.sets) || 1) || !work.every((x) => isDone(x.st) && Number(x.st.reps) >= top)) return null;
+    return work.reduce((a, x) => (x.st.n > a.st.n ? x : a)).k;
+  };
+  const paintEffort = (box, item, keys) => {
+    const key = effortKey(item, keys);
+    box.hidden = !key;
+    if (!key) return;
+    if (!box.firstChild) {
+      box.append(h('span', 'lab', 'How did the last set feel?'));
+      const row = h('div', 'eff-row');
+      row.setAttribute('role', 'group');
+      row.setAttribute('aria-label', 'How did the last set feel?');
+      EFFORT.forEach(([label, v]) => {
+        const b = plainBtn('chip eff', label, null, () => {
+          const k = box.dataset.key;
+          if (!k) return;
+          const date = SID();
+          const cur = storedSet(k);
+          const rir = cur && cur.rir === v ? null : v;
+          queueWrite(date, { sets: { [k]: { rir, at: Date.now() } } }, [k]);
+          optimistic(date, k, { rir });
+          paintSession();
+        });
+        b.dataset.rir = String(v);
+        row.append(b);
+      });
+      box.append(row, h('p', 'note', 'Hard keeps the weight next time. Easy or Right: it goes up.'));
+    }
+    box.dataset.key = key;
+    const st = storedSet(key);
+    box.querySelectorAll('button.eff').forEach((b) => b.setAttribute('aria-pressed', String(!!st && st.rir != null && Number(b.dataset.rir) === Number(st.rir))));
+  };
   const paintItemState = () => {
     if (!R) return;
     Object.values(R.items).forEach((it) => {
@@ -4311,6 +4407,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       it.el.classList.toggle('is-done', keys.length > 0 && keys.every((k) => isDone(storedSet(k))));
       const wb = it.el.querySelector('.ex-warm');
       if (wb) { const rm = warmRows(it.item).length > 0; wb.hidden = !rm && !warmRamp(it.item).length; (wb.querySelector('span') || wb).textContent = rm ? 'Remove warm-ups' : '+ Warm-up'; wb.classList.toggle('rm', rm); }
+      const eff = it.el.querySelector('.ex-effort');
+      if (eff) paintEffort(eff, it.item, keys);
       const sugRow = it.el.querySelector('.ex-sug');
       if (sugRow) {
         const pg = progFor(it.item, true);
@@ -7564,7 +7662,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (d.plan && d.step !== 'start') { w.plan = d.plan; w.chat = Array.isArray(d.chat) ? d.chat : []; w.local = !!d.local; w.step = d.step; }
     return w;
   };
-  const newWizard = (preset = {}) => (preset.adjust || preset.src ? (x) => x : withDraft)({ adjust: !!preset.adjust, local: false, q: 0, imp: !!preset.src, ask: '', start: 0, step: 'start', src: preset.src && WIZ_SOURCES.some(([k]) => k === preset.src) ? preset.src : 'none', file: preset.file || null, rows: null, plan: null, chat: [], msg: '', profile: Object.assign({}, profile()), notes: exportCtx });
+  const newWizard = (preset = {}) => (preset.adjust || preset.src ? (x) => x : withDraft)({ adjust: !!preset.adjust, local: false, q: 0, imp: !!preset.src, ask: preset.ask ? String(preset.ask).slice(0, 2000) : '', start: 0, step: 'start', src: preset.src && WIZ_SOURCES.some(([k]) => k === preset.src) ? preset.src : 'none', file: preset.file || null, rows: null, plan: null, chat: [], msg: '', profile: Object.assign({}, profile()), notes: exportCtx });
   const openWizard = (preset) => {
     W = newWizard(preset);
     S.wiz = true;
@@ -8348,6 +8446,31 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       }
     }
   };
+  const paintEasyCard = (ws) => {
+    let card = $('#easy-card');
+    if (!card) { card = h('div', 'pw-ai easy-card'); card.id = 'easy-card'; $('#wk-rows').before(card); }
+    card.replaceChildren();
+    const e = easyWeek();
+    const now = e && e.from <= today() && e.to >= today();
+    const offer = !now && ws === mondayOf(today()) ? easyOffer() : null;
+    card.hidden = !now && !offer;
+    if (card.hidden) return;
+    if (now) {
+      card.append(h('span', 'lab', 'Easier week'), h('p', '', 'Until ' + isoDow(e.to) + ' ' + dm(e.to) + ': the same weights, half the sets, and stop with 3 to 4 reps left. These sessions do not count for the next weight.'));
+      card.append(plainBtn('textbtn', 'End the easier week', null, () => { saveRoot({ easy: { from: e.from, to: addDays(today(), -1) < e.from ? e.from : addDays(today(), -1) } }).then(renderTrain).catch(() => showToast('Not saved. Check your connection.', null)); }));
+      return;
+    }
+    card.append(h('span', 'lab', 'Time for an easier week?'), h('p', '', offer.weeks ? offer.weeks + ' weeks of training without an easier week.' : offer.stalled + ' of your ' + offer.of + ' exercises have not gone up in two weeks.'),
+      h('p', 'note', 'For 7 days: the same weights, half the sets, and stop with 3 to 4 reps left. Your body catches up, and the next weights are worked out from the weeks before.'));
+    const row = h('div', 'foot-row');
+    const go = btn('skew pop small', 'Start easier week');
+    go.id = 'easy-start';
+    go.addEventListener('click', () => { saveRoot({ easy: { from: today(), to: addDays(today(), 6) } }).then(() => { showToast('Easier week on until ' + dm(addDays(today(), 6)) + '.', null); renderTrain(); }).catch(() => showToast('Not saved. Check your connection.', null)); });
+    const no = plainBtn('textbtn', 'Not now', null, () => { saveRoot({ easy_skip: today() }).then(renderTrain).catch(() => {}); });
+    no.id = 'easy-skip';
+    row.append(go, no);
+    card.append(row);
+  };
   const renderWeek = () => {
     if (!S.weekStart) S.weekStart = mondayOf(today());
     const ws = S.weekStart;
@@ -8363,6 +8486,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const pairs = spacingWarnings(dates, kinds).filter((p) => !quiet.has(warnKey(p)));
     const warnDays = new Set(pairs.flatMap((p) => [p[0], p[1]]));
     if (!S.wkSel || !dates.includes(S.wkSel)) S.wkSel = dates.includes(today()) ? today() : (dates.find((d) => byDate[d].planned.length || byDate[d].done.length || byDate[d].open.length) || dates[0]);
+    paintEasyCard(ws);
     const box = $('#wk-rows');
     box.replaceChildren();
     dates.forEach((d) => {
@@ -8743,6 +8867,73 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     c.append(acts);
     return c;
   };
+  // ---- the check of the plan as it is now (PLAN_MAKER.md step 6): sets per muscle per week against the range for this person,
+  // minutes a session, and what plancheck.js finds. config.js planCheckOnly names who sees it while it is new.
+  const planCheckOn = () => {
+    const only = (((window.YC_CONFIG || {}).planCheckOnly) || []).map((e) => String(e).toLowerCase());
+    if (!only.length || !window.YC_API) return true;
+    const e = window.YC_API.email ? String(window.YC_API.email() || '').toLowerCase() : '';
+    return only.includes(e);
+  };
+  const planCheckNow = () => {
+    const PC = window.YC_PLANCHECK;
+    if (!PC || !templatesSorted().length) return null;
+    const cur = currentPlanForAI();
+    const days = cur.days.map((d) => ({ name: d.name, items: d.items.map((it) => Object.assign({}, it, it.warmup ? { kind: 'warmup' } : {})) })).filter((d) => d.items.length);
+    if (!days.length) return null;
+    const p = profile();
+    const shoulder = /shoulder|schouder|schulter|épaule|epaule|spalla|hombro/i.test(exportCtx || '');
+    return PC.check({ perWeek: cur.weekdays.length || days.length, days }, { lookup: planLookup, experience: p.experience, goal: p.goal, length: p.session_length, shoulder, legacy: true });
+  };
+  const planCheckCard = () => {
+    if (!planCheckOn()) return null;
+    const r = planCheckNow();
+    if (!r) return null;
+    const PC = window.YC_PLANCHECK;
+    const card = h('div', 'pw-ai pw-check');
+    card.id = 'plan-check';
+    card.append(h('span', 'lab', 'Plan check'));
+    const mins = r.minutes.filter((x) => x > 0);
+    if (mins.length) {
+      const lo = Math.min(...mins);
+      const hi = Math.max(...mins);
+      card.append(h('p', '', lo === hi ? 'A session takes about ' + lo + ' minutes. You have ' + r.minutesAllowed + '.' : 'A session takes ' + lo + ' to ' + hi + ' minutes. You have ' + r.minutesAllowed + '.'));
+    }
+    const order = { error: 0, warn: 1 };
+    const bad = r.findings.filter((f) => f.level !== 'info').sort((a, b) => order[a.level] - order[b.level]);
+    if (!bad.length) card.append(h('p', '', 'Nothing to fix.'));
+    else {
+      const ul = h('ul', 'wz-items');
+      (S.planCheckAll ? bad : bad.slice(0, 3)).forEach((f) => ul.append(h('li', f.level === 'error' ? 'bad' : '', f.text)));
+      card.append(ul);
+      if (bad.length > 3) card.append(plainBtn('textbtn', S.planCheckAll ? 'Show less' : '+' + (bad.length - 3) + ' more', null, () => { S.planCheckAll = !S.planCheckAll; renderEditor(); }));
+    }
+    const mus = plainBtn('textbtn', S.planCheckMus ? 'Hide sets per muscle' : 'Sets per muscle', null, () => { S.planCheckMus = !S.planCheckMus; renderEditor(); });
+    mus.id = 'pc-mus-tog';
+    mus.setAttribute('aria-expanded', String(!!S.planCheckMus));
+    card.append(mus);
+    if (S.planCheckMus) {
+      card.append(h('p', 'note', 'Hard sets a week, and the range that suits you. A set for two muscles counts for both, a helping muscle as half.'));
+      const ul = h('ul', 'pc-mus');
+      PC.MAJOR.concat(PC.SMALL).forEach((m) => {
+        const b = PC.MAJOR.includes(m) ? r.bands.major : r.bands.small;
+        const n = r.weekly[m].sets;
+        const li = h('li', n < b[0] ? 'low' : n > b[1] * 1.25 ? 'high' : '');
+        li.append(h('span', '', PC.MUSCLE_NAME[m]), h('b', '', String(n)), h('span', 'note', b[0] + '–' + b[1]));
+        ul.append(li);
+      });
+      card.append(ul);
+    }
+    // only for what is plainly wrong: a missing movement or days far too long
+    const errs = r.findings.filter((f) => f.level === 'error');
+    if (errs.length) {
+      const fix = btn('skew small', 'Fix my plan');
+      fix.id = 'pc-fix';
+      fix.addEventListener('click', () => openWizard({ adjust: true, ask: fixRequest(bad) }));
+      card.append(fix);
+    }
+    return card;
+  };
   const renderPlanWeek = (box) => {
     const m = schedModel();
     const head = h('div', 'pw-top');
@@ -8883,6 +9074,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     }
     more.append(fr);
     box.append(more);
+    const ck = planCheckCard();
+    if (ck) box.append(ck);
     const prev = S.root && S.root.schedule_before;
     const cur = S.root && S.root.schedule;
     if (prev && !sameSchedule(prev, cur)) {

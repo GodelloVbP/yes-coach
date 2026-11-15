@@ -9,5 +9,6 @@ window.YC_CONFIG = {
   vapidPublicKey: 'BENmNEVipXAXFW4j4FK_MGZZUoidxwnY9nn4NMnz9JRJMIj9-3kUdZ-qZGTUeqpaxbvrTWBa99Nc-6BG7Y7IWps', // rest alerts: the public key from `node tools/vapid.mjs` (the private one lives in Supabase). Empty keeps the feature hidden.
   strava: true, // Strava connection: needs strava.sql, the strava function and its secrets (all in place); false hides it for everyone
   stravaOnly: ['stijesiebelink@gmail.com', 'johanna.mesz@gmail.com'], // a new Strava app lets one athlete connect until Strava reviews it, so only these accounts see it. Empty list: everyone.
+  planCheckOnly: ['stijesiebelink@gmail.com'], // new and being tuned: the plan check on the Plan page, the effort tap after the last set and the easier-week card. Only these accounts see them. Empty list: everyone.
   contactEmail: 'stijesiebelink@gmail.com', // shown on the privacy page
 };

@@ -147,4 +147,37 @@ t('where the step comes from', () => {
   assert.deepEqual(P.resolveInc({ unit: 'stack' }, [5, 5, 6, 6]), { inc: 1, from: 'log' });
   assert.deepEqual(P.resolveInc({ unit: 'bw' }, [5, 5, 6, 6]), { inc: 2.5, from: 'usual' });
 });
+t('big jumps: more reps first, about 1 per 3% above 10%, at most 4; only ranges on kg and assistance', () => {
+  assert.equal(P.bigJumpReps('kg', { mode: 'range', lo: 8, hi: 12 }, 2.5, 60), 0); // 4%: a normal step
+  assert.equal(P.bigJumpReps('kg', { mode: 'range', lo: 8, hi: 12 }, 2.5, 20), 1); // 12.5%
+  assert.equal(P.bigJumpReps('kg', { mode: 'range', lo: 8, hi: 12 }, 2, 10), 4); // 20%
+  assert.equal(P.bigJumpReps('kg', { mode: 'range', lo: 8, hi: 12 }, 2, 8), 4); // 25%, capped
+  assert.equal(P.bigJumpReps('kg', { mode: 'fixed', n: 10 }, 2, 8), 0);
+  assert.equal(P.bigJumpReps('stack', { mode: 'range', lo: 8, hi: 12 }, 1, 3), 0);
+  assert.equal(P.bigJumpReps('bw', { mode: 'range', lo: 8, hi: 12 }, 2.5, 0), 0);
+  // 8 kg dumbbells at the top of 10 to 15: not yet 10 kg, 4 more reps first, one rep more a set at a time
+  const r = S({ reps: '10 to 15', inc: 2, history: [H('2026-11-02', [8, 8, 8], [15, 15, 15])] });
+  assert.equal(r.load, 8); assert.equal(r.kind, 'same'); assert.deepEqual(r.repsBySet, [16, 16, 16]);
+  assert.equal(r.reason, 'Same weight: the next step (+2 kg) is a big one, so 19 reps on every set first');
+  const r2 = S({ reps: '10 to 15', inc: 2, history: [H('2026-11-02', [8, 8, 8], [19, 18, 17])] });
+  assert.deepEqual(r2.repsBySet, [19, 19, 18]);
+  // there: up
+  const r3 = S({ reps: '10 to 15', inc: 2, history: [H('2026-11-02', [8, 8, 8], [19, 19, 19])] });
+  assert.equal(r3.load, 10); assert.equal(r3.kind, 'up');
+  // a normal step goes up at the top of the range as before
+  assert.equal(S({ reps: '8 to 12', history: [H('2026-11-02', [60, 60, 60], 12)] }).load, 62.5);
+  // hard at the top still holds the weight
+  assert.equal(S({ reps: '10 to 15', inc: 2, history: [H('2026-11-02', [8, 8, 8], [15, 15, 15], { rir: 0 })] }).reason, P.REASONS.at_limit);
+  // assistance: 10 kg less help from 20 kg is a big step
+  const a = S({ unit: 'assist', reps: '6 to 10', inc: 10, history: [H('2026-11-02', [20, 20, 20], 10)] });
+  assert.equal(a.load, 20); assert.equal(a.repsBySet[0], 11);
+});
+t('bodyweight under 5 reps twice: the assisted version is named', () => {
+  const two = [H('2026-11-02', [null, null, null], [3, 2, 2]), H('2026-10-30', [null, null, null], [4, 3, 2])];
+  const r = S({ unit: 'bw', reps: '5 to 8', history: two });
+  assert.equal(r.reason, P.REASONS.bw_assist); assert.deepEqual(r.repsBySet, [4, 3, 3]);
+  assert.equal(S({ unit: 'bw', reps: 'Max', history: two }).reason, P.REASONS.bw_assist);
+  assert.equal(S({ unit: 'bw', reps: '5 to 8', history: [two[0]] }).reason, P.REASONS.bw_up); // once is not twice
+  assert.equal(S({ unit: 'bw', reps: '5 to 8', history: [two[0], H('2026-10-30', [null, null], [5, 4])] }).reason, P.REASONS.bw_up);
+});
 console.log('progression ok,', n, 'groups');

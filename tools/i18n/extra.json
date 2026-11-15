@@ -7418,5 +7418,201 @@
   "de": "Ein Plan deiner KI wird geprüft: ein Muskel nur einmal pro Woche, keine Kniebeuge oder Hüftbeuge, mehr Drücken als Ziehen. Mit einem Tippen geht das Ergebnis zurück an deine KI.",
   "fr": "Un plan de ton IA est vérifié : un muscle travaillé une seule fois par semaine, pas de squat ni de charnière, plus de poussée que de tirage. D'un geste, ce qui a été trouvé retourne à ton IA.",
   "it": "Un piano della tua IA viene controllato: un muscolo allenato una sola volta a settimana, niente squat né cerniera, più spinta che trazione. Con un tocco, ciò che ha trovato torna alla tua IA."
+ },
+ "A session takes about {0} minutes. You have {1}.": {
+  "nl": "Een training duurt ongeveer {0} minuten. Je hebt er {1}.",
+  "es": "Una sesión dura unos {0} minutos. Tienes {1}.",
+  "de": "Ein Training dauert etwa {0} Minuten. Du hast {1}.",
+  "fr": "Une séance dure environ {0} minutes. Tu en as {1}.",
+  "it": "Un allenamento dura circa {0} minuti. Ne hai {1}."
+ },
+ "A session takes {0} to {1} minutes. You have {2}.": {
+  "nl": "Een training duurt {0} tot {1} minuten. Je hebt er {2}.",
+  "es": "Una sesión dura de {0} a {1} minutos. Tienes {2}.",
+  "de": "Ein Training dauert {0} bis {1} Minuten. Du hast {2}.",
+  "fr": "Une séance dure de {0} à {1} minutes. Tu en as {2}.",
+  "it": "Un allenamento dura da {0} a {1} minuti. Ne hai {2}."
+ },
+ "Nothing to fix.": {
+  "nl": "Niets om te verbeteren.",
+  "es": "Nada que corregir.",
+  "de": "Nichts zu verbessern.",
+  "fr": "Rien à corriger.",
+  "it": "Niente da correggere."
+ },
+ "Show less": {
+  "nl": "Minder tonen",
+  "es": "Mostrar menos",
+  "de": "Weniger zeigen",
+  "fr": "Afficher moins",
+  "it": "Mostra meno"
+ },
+ "Sets per muscle": {
+  "nl": "Sets per spier",
+  "es": "Series por músculo",
+  "de": "Sätze pro Muskel",
+  "fr": "Séries par muscle",
+  "it": "Serie per muscolo"
+ },
+ "Hide sets per muscle": {
+  "nl": "Sets per spier verbergen",
+  "es": "Ocultar series por músculo",
+  "de": "Sätze pro Muskel ausblenden",
+  "fr": "Masquer les séries par muscle",
+  "it": "Nascondi serie per muscolo"
+ },
+ "Hard sets a week, and the range that suits you. A set for two muscles counts for both, a helping muscle as half.": {
+  "nl": "Zware sets per week, en wat bij jou past. Een set voor twee spieren telt voor allebei, een helpende spier voor de helft.",
+  "es": "Series duras por semana y el rango que te va bien. Una serie para dos músculos cuenta para ambos; un músculo que ayuda, como media.",
+  "de": "Harte Sätze pro Woche und der Bereich, der zu dir passt. Ein Satz für zwei Muskeln zählt für beide, ein helfender Muskel zur Hälfte.",
+  "fr": "Séries difficiles par semaine, et la fourchette qui te convient. Une série pour deux muscles compte pour les deux, un muscle qui aide pour moitié.",
+  "it": "Serie impegnative a settimana e l'intervallo adatto a te. Una serie per due muscoli conta per entrambi, un muscolo di supporto per metà."
+ },
+ "Fix my plan": {
+  "nl": "Verbeter mijn schema",
+  "es": "Corregir mi plan",
+  "de": "Meinen Plan verbessern",
+  "fr": "Corriger mon programme",
+  "it": "Correggi il mio piano"
+ },
+ "Same weight: the next step (+{0}) is a big one, so {1} reps on every set first": {
+  "nl": "Zelfde gewicht: de volgende stap (+{0}) is groot, dus eerst {1} herhalingen op elke set",
+  "es": "Mismo peso: el siguiente paso (+{0}) es grande, así que primero {1} repeticiones en cada serie",
+  "de": "Gleiches Gewicht: der nächste Schritt (+{0}) ist groß, also zuerst {1} Wiederholungen in jedem Satz",
+  "fr": "Même poids : la prochaine étape (+{0}) est grande, donc d’abord {1} répétitions à chaque série",
+  "it": "Stesso peso: il prossimo passo (+{0}) è grande, quindi prima {1} ripetizioni in ogni serie"
+ },
+ "How did the last set feel?": {
+  "nl": "Hoe voelde de laatste set?",
+  "es": "¿Cómo te fue la última serie?",
+  "de": "Wie hat sich der letzte Satz angefühlt?",
+  "fr": "Comment était la dernière série ?",
+  "it": "Com'è andata l'ultima serie?"
+ },
+ "Easy": {
+  "nl": "Makkelijk",
+  "es": "Fácil",
+  "de": "Leicht",
+  "fr": "Facile",
+  "it": "Facile"
+ },
+ "Right": {
+  "nl": "Goed",
+  "es": "Justo",
+  "de": "Passend",
+  "fr": "Juste",
+  "it": "Giusto"
+ },
+ "Hard": {
+  "nl": "Zwaar",
+  "es": "Duro",
+  "de": "Schwer",
+  "fr": "Dur",
+  "it": "Duro"
+ },
+ "Hard keeps the weight next time. Easy or Right: it goes up.": {
+  "nl": "Zwaar: volgende keer hetzelfde gewicht. Makkelijk of Goed: het gaat omhoog.",
+  "es": "Duro: la próxima vez, el mismo peso. Fácil o Justo: sube.",
+  "de": "Schwer: nächstes Mal dasselbe Gewicht. Leicht oder Passend: es geht hoch.",
+  "fr": "Dur : même poids la prochaine fois. Facile ou Juste : il augmente.",
+  "it": "Duro: la prossima volta stesso peso. Facile o Giusto: aumenta."
+ },
+ "Under 5 reps two sessions running: an assisted version (band or machine) lets you build up": {
+  "nl": "Twee keer op rij onder de 5 herhalingen: een versie met hulp (band of machine) laat je opbouwen",
+  "es": "Menos de 5 repeticiones dos sesiones seguidas: una versión asistida (banda o máquina) te deja progresar",
+  "de": "Zwei Trainings in Folge unter 5 Wiederholungen: eine unterstützte Variante (Band oder Maschine) lässt dich aufbauen",
+  "fr": "Moins de 5 répétitions deux séances de suite : une version assistée (élastique ou machine) te permet de progresser",
+  "it": "Meno di 5 ripetizioni per due sessioni di fila: una versione assistita (elastico o macchina) ti fa progredire"
+ },
+ "Easier week": {
+  "nl": "Rustigere week",
+  "es": "Semana más suave",
+  "de": "Leichtere Woche",
+  "fr": "Semaine plus légère",
+  "it": "Settimana più leggera"
+ },
+ "Until {0}: the same weights, half the sets, and stop with 3 to 4 reps left. These sessions do not count for the next weight.": {
+  "nl": "Tot {0}: dezelfde gewichten, de helft van de sets, en stop met nog 3 tot 4 herhalingen over. Deze trainingen tellen niet mee voor het volgende gewicht.",
+  "es": "Hasta {0}: los mismos pesos, la mitad de las series, y para con 3 o 4 repeticiones de reserva. Estas sesiones no cuentan para el próximo peso.",
+  "de": "Bis {0}: dieselben Gewichte, die Hälfte der Sätze, und hör mit 3 bis 4 Wiederholungen Reserve auf. Diese Trainings zählen nicht für das nächste Gewicht.",
+  "fr": "Jusqu’au {0} : les mêmes charges, la moitié des séries, et arrête-toi avec 3 à 4 répétitions en réserve. Ces séances ne comptent pas pour la prochaine charge.",
+  "it": "Fino a {0}: stessi pesi, metà delle serie, e fermati con 3-4 ripetizioni di riserva. Questi allenamenti non contano per il prossimo peso."
+ },
+ "End the easier week": {
+  "nl": "Rustigere week stoppen",
+  "es": "Terminar la semana suave",
+  "de": "Leichtere Woche beenden",
+  "fr": "Arrêter la semaine légère",
+  "it": "Termina la settimana leggera"
+ },
+ "Time for an easier week?": {
+  "nl": "Tijd voor een rustigere week?",
+  "es": "¿Toca una semana más suave?",
+  "de": "Zeit für eine leichtere Woche?",
+  "fr": "C’est le moment d’une semaine plus légère ?",
+  "it": "È ora di una settimana più leggera?"
+ },
+ "{0} weeks of training without an easier week.": {
+  "nl": "{0} weken getraind zonder rustigere week.",
+  "es": "{0} semanas entrenando sin una semana suave.",
+  "de": "{0} Wochen Training ohne leichtere Woche.",
+  "fr": "{0} semaines d’entraînement sans semaine légère.",
+  "it": "{0} settimane di allenamento senza una settimana leggera."
+ },
+ "{0} of your {1} exercises have not gone up in two weeks.": {
+  "nl": "{0} van je {1} oefeningen zijn in twee weken niet vooruitgegaan.",
+  "es": "{0} de tus {1} ejercicios no han subido en dos semanas.",
+  "de": "{0} deiner {1} Übungen sind seit zwei Wochen nicht gestiegen.",
+  "fr": "{0} de tes {1} exercices n’ont pas progressé en deux semaines.",
+  "it": "{0} dei tuoi {1} esercizi non sono saliti in due settimane."
+ },
+ "For 7 days: the same weights, half the sets, and stop with 3 to 4 reps left. Your body catches up, and the next weights are worked out from the weeks before.": {
+  "nl": "7 dagen lang: dezelfde gewichten, de helft van de sets, en stop met nog 3 tot 4 herhalingen over. Je lichaam haalt het in, en de volgende gewichten komen uit de weken ervoor.",
+  "es": "Durante 7 días: los mismos pesos, la mitad de las series, y para con 3 o 4 repeticiones de reserva. Tu cuerpo se recupera, y los siguientes pesos salen de las semanas anteriores.",
+  "de": "7 Tage lang: dieselben Gewichte, die Hälfte der Sätze, und hör mit 3 bis 4 Wiederholungen Reserve auf. Dein Körper holt auf, und die nächsten Gewichte kommen aus den Wochen davor.",
+  "fr": "Pendant 7 jours : les mêmes charges, la moitié des séries, et arrête-toi avec 3 à 4 répétitions en réserve. Ton corps récupère, et les prochaines charges sont calculées sur les semaines d’avant.",
+  "it": "Per 7 giorni: stessi pesi, metà delle serie, e fermati con 3-4 ripetizioni di riserva. Il corpo recupera, e i prossimi pesi si calcolano dalle settimane prima."
+ },
+ "Start easier week": {
+  "nl": "Start rustigere week",
+  "es": "Empezar semana suave",
+  "de": "Leichtere Woche starten",
+  "fr": "Commencer la semaine légère",
+  "it": "Inizia la settimana leggera"
+ },
+ "Easier week on until {0}.": {
+  "nl": "Rustigere week aan tot {0}.",
+  "es": "Semana suave activa hasta el {0}.",
+  "de": "Leichtere Woche bis {0}.",
+  "fr": "Semaine légère jusqu’au {0}.",
+  "it": "Settimana leggera fino al {0}."
+ },
+ "Easier week: same weight, half the sets, stop with 3 to 4 reps left": {
+  "nl": "Rustigere week: zelfde gewicht, de helft van de sets, stop met nog 3 tot 4 herhalingen over",
+  "es": "Semana suave: mismo peso, la mitad de las series, para con 3 o 4 repeticiones de reserva",
+  "de": "Leichtere Woche: gleiches Gewicht, die Hälfte der Sätze, hör mit 3 bis 4 Wiederholungen Reserve auf",
+  "fr": "Semaine légère : même charge, la moitié des séries, arrête-toi avec 3 à 4 répétitions en réserve",
+  "it": "Settimana leggera: stesso peso, metà delle serie, fermati con 3-4 ripetizioni di riserva"
+ },
+ "Smaller steps on big jumps": {
+  "nl": "Kleinere stappen bij grote sprongen",
+  "es": "Pasos más pequeños en saltos grandes",
+  "de": "Kleinere Schritte bei großen Sprüngen",
+  "fr": "Des pas plus petits pour les grands sauts",
+  "it": "Passi più piccoli sui grandi salti"
+ },
+ "When the next weight is a big jump (8 to 10 kg dumbbells is 25% more), the app asks for a few more reps at the same weight first.": {
+  "nl": "Als het volgende gewicht een grote sprong is (van 8 naar 10 kg dumbbells is 25% meer), vraagt de app eerst een paar herhalingen meer op hetzelfde gewicht.",
+  "es": "Cuando el siguiente peso es un salto grande (de mancuernas de 8 a 10 kg es un 25% más), la app pide primero unas repeticiones más con el mismo peso.",
+  "de": "Wenn das nächste Gewicht ein großer Sprung ist (von 8 auf 10 kg Kurzhanteln sind 25% mehr), will die App zuerst ein paar Wiederholungen mehr mit demselben Gewicht.",
+  "fr": "Quand la charge suivante est un grand saut (des haltères de 8 à 10 kg, c’est 25% de plus), l’app demande d’abord quelques répétitions de plus à la même charge.",
+  "it": "Quando il prossimo peso è un grande salto (da manubri da 8 a 10 kg è il 25% in più), l'app chiede prima qualche ripetizione in più con lo stesso peso."
+ },
+ "Bodyweight exercises with fewer than 5 reps two sessions running get a hint to try the assisted version.": {
+  "nl": "Bij oefeningen met lichaamsgewicht met minder dan 5 herhalingen twee keer op rij krijg je de tip om de versie met hulp te proberen.",
+  "es": "Los ejercicios con peso corporal con menos de 5 repeticiones dos sesiones seguidas muestran una pista para probar la versión asistida.",
+  "de": "Übungen mit Körpergewicht mit weniger als 5 Wiederholungen zwei Trainings in Folge bekommen den Hinweis, die unterstützte Variante zu probieren.",
+  "fr": "Les exercices au poids du corps avec moins de 5 répétitions deux séances de suite affichent un conseil pour essayer la version assistée.",
+  "it": "Gli esercizi a corpo libero con meno di 5 ripetizioni per due sessioni di fila mostrano un consiglio per provare la versione assistita."
  }
 }
