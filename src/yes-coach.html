@@ -4824,9 +4824,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const per = {};
     work.forEach((r) => { (per[r.exercise] = per[r.exercise] || new Set()).add(r.date); });
     const sessions = new Set(work.map((r) => r.date)).size;
-    const first = from || (work.length ? work[0].date : today());
-    const weeks = Math.max(1, Math.round((dayNum(today()) - dayNum(first)) / 7));
-    return { sessions, weeks, perWeek: Math.round((sessions / weeks) * 10) / 10, sets: work.length, exercises: Object.keys(per).length, repeated: Object.values(per).filter((s) => s.size > 1).length, first };
+    // from the first logged session when that is later than `from`: 27 sessions in 6 weeks of log is not 2 a week over 13
+    const earliest = work.reduce((a, r) => (r.date < a ? r.date : a), today());
+    const first = work.length && earliest > from ? earliest : from || today();
+    const span = Math.max(1, (dayNum(today()) - dayNum(first)) / 7);
+    const weeks = Math.max(1, Math.round(span));
+    return { sessions, weeks, perWeek: Math.round((sessions / span) * 10) / 10, sets: work.length, exercises: Object.keys(per).length, repeated: Object.values(per).filter((s) => s.size > 1).length, first };
   };
   const sessionRows = (rows) => {
     const by = d3.group(rows, (r) => r.date);
@@ -7334,7 +7337,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const dpw = Number(p.days_per_week) || 3;
     const band = window.YC_PLANCHECK ? window.YC_PLANCHECK.bandsFor(p.experience, p.goal) : { major: [10, 16], small: [6, 10] };
     const len = p.session_length || 'medium';
-    if (fixMode) o.push('- Change only what the list under "What they want changed" names. Every other exercise stays exactly as it is: the same sets, reps, target, rest and note. The days, their names and their order stay. The rules below are for what you change.');
+    if (fixMode) o.push('- Change only what the list under "What they want changed" names. Every other exercise stays exactly as it is: the same sets, reps, target, rest and note. The days, their names and their order stay; to fix how often a muscle is trained or how many sets one session has, move or add exercises between the days. The rules below are for what you change.');
     o.push('- The app checks the plan against these rules and sends back what fails, so build it to pass them.');
     if (!fixMode) o.push('- Split for ' + dpw + ' training days a week: ' + ({ 1: 'one full-body day', 2: 'two full-body days', 3: 'three full-body days (with years of training: upper, lower, full body)', 4: 'upper, lower, upper, lower', 5: 'upper, lower, push, pull, legs', 6: 'push, pull, legs, twice', 7: 'push, pull, legs, twice, and an easy day (walking or cycling)' }[Math.min(7, Math.max(1, dpw))]) + '. Every major muscle at least twice a week when there are 3 or more training days. Never the same muscles heavy on two days that follow each other in the order of the days.');
     o.push('- Weekly volume in hard sets per muscle (a set counts 1 for the muscles an exercise mainly trains, 0.5 for the ones it helps): chest, back, quads and hamstrings ' + band.major[0] + ' to ' + band.major[1] + '; biceps, triceps, side delts, rear delts and calves ' + band.small[0] + ' to ' + band.small[1] + '. At most 10 hard sets for one muscle in one session. At least as many pulling sets (rows, pull-ups, pulldowns, face pulls) as pressing sets.');
@@ -7351,7 +7354,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (W.notes) o.push('- If their notes describe pain in daily life, the summary says in one sentence that a physiotherapist should look at it.');
     if (unmatched.length) o.push('- mapping: for each of these names from their old app, the matching exercise id from the list, or null when nothing matches: ' + unmatched.map((n) => JSON.stringify(n)).join(', '));
     if (answerLang()) o.push('- ' + answerLang());
-    o.push('', 'Answer with JSON only, in this shape:', '{"summary": "2 or 3 sentences on why this plan suits them", "days": [{"name": "Push A", "kind": "Push", "focus": "a few words", "items": [{"ex": "l292", "sets": 1, "reps": "5 min", "target": "", "rest_s": 0, "note": null, "warmup": true}, {"ex": "l04", "sets": 3, "reps": "6 to 8", "target": "60", "rest_s": 150, "note": "short cue"}]}], "weekdays": ["Mon", "Wed", "Fri"]' + (unmatched.length ? ', "mapping": {"old name": "l04"}' : '') + '}');
+    o.push('', 'Answer with JSON only, in this shape:', '{"summary": "2 or 3 sentences on why this plan suits them", "days": [{"name": "Push A", "kind": "Push", "focus": "a few words", "items": [{"ex": "l292", "sets": 1, "reps": "5 min", "target": "", "rest_s": 0, "note": null, "warmup": true}, {"ex": "l04", "sets": 3, "reps": "6 to 10", "target": "60", "rest_s": 150, "note": "short cue"}]}], "weekdays": ["Mon", "Wed", "Fri"]' + (unmatched.length ? ', "mapping": {"old name": "l04"}' : '') + '}');
     return o.filter((x) => x !== '').join('\n');
   };
   // ---- adjusting the current plan: what the coach gets, and what changes
@@ -7376,7 +7379,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const first = done[done.length - 1].date;
     const weeks = Math.min(8, (Date.parse(today() + 'T12:00:00') - Date.parse(first + 'T12:00:00')) / 864e5 / 7);
     if (weeks < 4) return null;
-    return Math.round((done.filter((x) => x.date > addDays(today(), -Math.round(weeks * 7))).length / weeks) * 10) / 10;
+    return Math.round((done.filter((x) => x.date >= addDays(today(), -Math.round(weeks * 7))).length / weeks) * 10) / 10;
   };
   // exercises of their own they log with a weight in 2 or more sessions (shoulder rehab drills, for one): work, not a warm-up
   const trackedPlanIds = () => {
@@ -7409,7 +7412,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const rows = progressRows(addDays(today(), -91));
     const t = totals(flatten(), addDays(today(), -91));
     if (!rows.length) return 'No sessions logged in the last 3 months.';
-    return [t.sessions + ' sessions in 13 weeks, about ' + t.perWeek + ' a week. The trend is a line fitted through every session, so it can differ from first to latest.'].concat(rows.map((r) => '- ' + r.exercise + ' (' + r.group + '): ' + r.firstLabel + ' to ' + r.latestLabel + ', best ' + r.bestLabel + ', ' + r.sessions + ' sessions' + (r.trend ? ', trend ' + r.changeLabel + ' (' + TREND_WORD[r.trend] + ')' : ''))).join('\n');
+    return [t.sessions + ' sessions since ' + dm(t.first) + '. The trend is a line fitted through every session, so it can differ from first to latest.'].concat(rows.map((r) => '- ' + r.exercise + ' (' + r.group + '): ' + r.firstLabel + ' to ' + r.latestLabel + ', best ' + r.bestLabel + ', ' + r.sessions + ' sessions' + (r.trend ? ', trend ' + r.changeLabel + ' (' + TREND_WORD[r.trend] + ')' : ''))).join('\n');
   };
   const ownPlanEx = (v) => { const t = String(v == null ? '' : v).trim(); return t.startsWith('ex:') && S.exercises[t.slice(3)] ? t : null; };
   const planDiff = (base, next) => {
