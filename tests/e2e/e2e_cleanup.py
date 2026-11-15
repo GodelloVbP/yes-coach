@@ -69,7 +69,7 @@ try:
             check('the suggestion above the day is gone', not r['sugTop'])
             order = page.evaluate("[...document.querySelectorAll('#fd-list, #fd-ownfoods')].map((e) => e.id)")
             check('keyboard order follows: Eaten, then Your own foods', order == ['fd-list', 'fd-ownfoods'], order)
-            check('own foods: one short line under the heading', page.inner_text('#fd-ownfoods > .note') == 'Enter the numbers from its label.', page.inner_text('#fd-ownfoods > .note'))
+            check('own foods: one short line under the heading', page.text_content('#fd-ownfoods > .note') == 'Enter the numbers from its label.', page.text_content('#fd-ownfoods > .note'))
             check('Create a food is outlined', 'pop' not in page.get_attribute('#fd-own-new', 'class'))
             check('the suggestion lives inside Daily targets', page.locator('#fd-targets #fd-sug').count() == 1)
             check('Daily targets is not opened for you', page.get_attribute('#fd-targets', 'open') is None)

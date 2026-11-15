@@ -29,6 +29,7 @@ def food_on(be, days_ago, **e):
 TRENDS = "(() => { const v = (s) => { const e = document.querySelector(s); return !!e && !e.hidden && e.getClientRects().length > 0; }; const sec = document.querySelector('#fd-range').closest('section'); return { range: v('#fd-range'), sum: v('#fd-sum'), metric: v('#fd-metric'), note: v('#fd-chart-note'), chart: v('#fd-chart'), take: document.querySelector('#fd-take').hidden ? '' : document.querySelector('#fd-take').textContent, height: Math.round(sec.getBoundingClientRect().height) }; })()"
 
 def add_food(page):
+    if page.get_attribute('#fd-ownfoods', 'open') is None: page.click('#fd-ownfoods > summary')
     page.click('#fd-own-new'); page.fill('#fd-own-name', 'Rice'); page.fill('#fd-kcal', '130'); page.fill('#fd-p', '3'); page.fill('#fd-c', '28'); page.fill('#fd-f', '0.3'); page.click('#fd-add')
     until(lambda: page.is_visible('#fd-g')); page.fill('#fd-g', '200'); page.click('#fd-add')
 

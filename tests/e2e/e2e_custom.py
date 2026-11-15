@@ -84,6 +84,10 @@ try:
             page.wait_for_selector('#f-treadmill-run_1-km', state='visible')
             check('last time fills distance and minutes', page.input_value('#f-treadmill-run_1-km') == '5' and page.input_value('#f-treadmill-run_1-minutes') == '30' and page.input_value('#f-treadmill-run_1-elev') == '20', [page.input_value('#f-treadmill-run_1-' + f) for f in ('minutes', 'km', 'elev')])
             check('and the treadmill stays picked', page.get_attribute('.run-where button[data-w="treadmill"]', 'aria-pressed') == 'true')
+            page.click('text=+ Add exercise'); page.wait_for_timeout(200)
+            check('after adding, the search starts empty again with every exercise listed', page.input_value('.pk-search') == '' and page.locator('.pk-item:visible').count() > 20, page.input_value('.pk-search'))
+            check('rows take turns in each group: white, then cream', page.evaluate("(() => { const out = []; let cur = null; [...document.querySelectorAll('.pk-list > *')].forEach((e) => { if (e.classList.contains('pk-gh')) { cur = []; out.push(cur); } else if (cur && e.classList.contains('pk-item') && !e.hidden) cur.push(e.classList.contains('alt')); }); const g = out.find((x) => x.length >= 3); return !!g && g[0] === false && g[1] === true && g[2] === false; })()"))
+            page.click('.pk-top .link')
             page.locator('.set .set-tick').first.click(); page.wait_for_timeout(300)
             page.wait_for_timeout(900); page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click()
             page.wait_for_selector('.fin', timeout=5000)
@@ -158,6 +162,8 @@ try:
         be.docs.append({'path': 'yc/myfoods/own-bad', 'data': {'food': 'own:bad', 'name': 'Broken thing', 'own': 'nope'}})
         def s3(page):
             page.click('#tab-food'); page.wait_for_selector('#fd-body', state='visible', timeout=8000)
+            check('Your own foods starts folded, with only its heading showing', page.is_visible('#h-fd-own') and not page.is_visible('#fd-own-new') and page.get_attribute('#fd-ownfoods', 'open') is None)
+            page.click('#fd-ownfoods > summary')
             check('the Food page has a Your own foods section with a Create button', page.is_visible('#fd-ownfoods') and page.is_visible('#fd-own-new') and 'Nothing saved yet' in page.inner_text('#fd-own-list'))
             check('and no Claude button while Claude is not connected', not page.is_visible('#fd-own-claude'))
             page.click('#fd-own-new')
@@ -225,7 +231,9 @@ try:
         be.docs.append({'path': 'yc/myfoods/own-skyr', 'data': {'food': 'own:skyr', 'name': 'Skyr vanille', 'aka': {}, 'n': 0, 'last': 0, 'portions': {}, 'own': {'kcal': 63, 'p': 11, 'c': 4, 'f': 0.2, 'u': 'g'}, 'source': 'https://www.example.nl/producten/skyr'}})
         be.docs.append({'path': 'yc/myfoods/own-pasta', 'data': {'food': 'own:pasta', 'name': 'Pasta sauce', 'aka': {}, 'n': 0, 'last': 0, 'portions': {}, 'own': {'kcal': 60, 'p': 1.5, 'c': 9, 'f': 2, 'u': 'g'}, 'source': 'javascript:alert(1)'}})
         def s3a(page):
-            page.click('#tab-food'); page.wait_for_selector('#fd-own-list .fd-own-row', timeout=8000)
+            page.click('#tab-food'); page.wait_for_selector('#fd-own-list .fd-own-row', state='attached', timeout=8000)
+            check('the folded heading counts your foods', page.inner_text('#fd-own-count') == '2', page.inner_text('#fd-own-count'))
+            page.click('#fd-ownfoods > summary')
             row = page.locator('#fd-own-list .fd-own-row', has_text='Skyr vanille')
             a = row.locator('a')
             check('the source is a link to the page', a.count() == 1 and a.get_attribute('href') == 'https://www.example.nl/producten/skyr' and a.text_content() == 'example.nl', a.count())
@@ -249,6 +257,7 @@ try:
         def s3b(page):
             page.evaluate("window.__opened = []; window.__oc = HTMLAnchorElement.prototype.click; HTMLAnchorElement.prototype.click = function () { if (/claude\\.ai/.test(this.href)) { window.__opened.push(this.href); return; } return window.__oc.call(this); }; 0")
             page.click('#tab-food'); page.wait_for_selector('#fd-body', state='visible', timeout=8000)
+            page.click('#fd-ownfoods > summary')
             check('Add with Claude shows once Claude is connected', until(lambda: page.is_visible('#fd-own-claude')))
             page.click('#fd-own-claude'); page.wait_for_timeout(400)
             u = page.evaluate('window.__opened[0]') or ''
@@ -317,30 +326,29 @@ try:
                 check('%d: no sideways overflow on any tab' % width, page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth"))
             errs = session(pw, be, ALICE, s6, width=width); check('no page errors (tabs %d)' % width, not errs, errs)
 
-        # ---- 4. the undo bar never covers the page: it takes its own room from tablet width up, floats on a phone
+        # ---- 4. the message bar never covers the page: it is a row of the top bar at every width, and its X closes it
         SHOW = "document.getElementById('toast-text').textContent = 'Saved.'; document.getElementById('toast').hidden = false; 0"
         MEASURE = "(() => { const t = document.getElementById('toast').getBoundingClientRect(); const c = document.querySelector('#today-card').getBoundingClientRect(); return { tb: t.bottom, tl: t.left, ct: c.top, pos: getComputedStyle(document.getElementById('toast')).position }; })()"
-        for width, name in ((1280, 'desktop'), (900, 'tablet')):
+        for width, name in ((1280, 'desktop'), (900, 'tablet'), (390, 'phone')):
             be = Backend(); seed(be)
             def s4(page, name=name):
                 page.goto(BASE); page.wait_for_selector('text=Start Push day', timeout=8000)
                 before = page.evaluate("document.querySelector('#today-card').getBoundingClientRect().top")
                 page.evaluate(SHOW); page.wait_for_timeout(200)
                 r = page.evaluate(MEASURE)
-                check(name + ': the undo bar is part of the page, not over it', r['pos'] == 'static' and r['ct'] >= r['tb'], r)
-                check(name + ': the page moves down by the bar, nothing is covered', abs((r['ct'] - before) - (r['tb'] - 0 if name == 'desktop' else r['tb'] - 53)) < 3, (before, r))
+                h = page.evaluate("document.getElementById('toast').getBoundingClientRect().height")
+                check(name + ': the message bar is part of the page, not over it', r['pos'] == 'static' and r['ct'] >= r['tb'], r)
+                check(name + ': the page moves down by the bar, nothing is covered', abs((r['ct'] - before) - h) < 3, (before, h, r))
                 if name == 'desktop': check('desktop: it starts beside the sidebar, not under it', r['tl'] >= 200, r)
-                page.evaluate("window.scrollTo(0, 400)"); page.wait_for_timeout(200)
-                r2 = page.evaluate(MEASURE)
-                check(name + ': still at the top, with the page below it, when scrolled', r2['tb'] <= 120 and page.evaluate("document.elementFromPoint(" + str(int(r2['tl']) + 300) + ", " + str(int(r2['tb']) + 2) + ").closest('#toast') === null"), r2)
+                page.click('#toast-x'); page.wait_for_timeout(100)
+                check(name + ': the X closes the message', page.is_hidden('#toast'))
+                # a real message while scrolled (a workout taken off the week): the page moves down by the bar instead of going under it
+                page.click('#wk-sheet .wk-remove'); page.wait_for_timeout(150)
+                page.evaluate("document.body.append(Object.assign(document.createElement('div'), { style: 'height: 3000px' })); window.scrollTo(0, 300)"); page.wait_for_timeout(150)
+                page.evaluate("[...document.querySelectorAll('#wk-sheet button')].find((b) => b.textContent.trim() === 'Remove').click()"); page.wait_for_timeout(250)
+                sy = page.evaluate("window.scrollY")
+                check(name + ': a message while scrolled moves the page down by the bar (the scroll does not grow)', page.is_visible('#toast') and sy <= 302, sy)  # without the fix the scroll grows by the bar's height
             errs = session(pw, be, ALICE, s4, width=width); check('no page errors (' + name + ')', not errs, errs)
-        be = Backend(); seed(be)
-        def s4p(page):
-            page.goto(BASE); page.wait_for_selector('text=Start Push day', timeout=8000)
-            page.evaluate(SHOW); page.wait_for_timeout(200)
-            r = page.evaluate(MEASURE)
-            check('phone: the undo bar floats under the top bar', r['pos'] == 'absolute' and r['tb'] > 100, r)
-        errs = session(pw, be, ALICE, s4p, width=390); check('no page errors (phone toast)', not errs, errs)
         check('no outside requests', not EXTERNAL, EXTERNAL)
 finally:
     server.terminate()
