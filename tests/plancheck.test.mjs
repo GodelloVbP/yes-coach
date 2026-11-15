@@ -94,10 +94,47 @@ r = PC.check(mine, { lookup: lookupOwn, experience: 'some', goal: 'muscle', leng
 const txt = r.findings.map((f) => f.level + ': ' + f.text).join('\n');
 ok(!codes(r, 'error').length, 'the real plan has no errors: ' + txt);
 ok(r.findings.filter((f) => f.code === 'warmup_unmarked').length === 3, 'three warm-up drills are flagged: ' + txt);
-ok(r.findings.filter((f) => f.code === 'note_numbers').length === 2, 'both notes with numbers are flagged (hold until, a date): ' + txt);
+ok(r.findings.filter((f) => f.code === 'note_numbers').length === 1 && /Assisted pull-up, Machine chest fly/.test(r.findings.find((f) => f.code === 'note_numbers').text), 'both notes with numbers are named in one line (hold until, a date): ' + txt);
 ok(/Chest, Back/.test((r.findings.find((f) => f.code === 'freq') || {}).text || ''), 'chest and back are trained once a week: ' + txt);
 ok(r.weekly.quads.sessions === 2 && r.weekly.calves.sets <= 6, 'legs twice a week, calves low: ' + JSON.stringify(r.weekly));
 ok(r.weekly.front_delts.sets < 9, 'the shoulder drills are not counted as shoulder work: ' + r.weekly.front_delts.sets);
+
+// squats and leg presses give no hamstring credit; a hinge and a leg curl do
+ok(!('hamstrings' in PC.describe(LIB.find((l) => l.name === 'Squat')).muscles) && !('hamstrings' in PC.describe(LIB.find((l) => l.name === 'Leg press')).muscles), 'no hamstring credit from squat or leg press');
+ok(PC.describe(LIB.find((l) => l.name === 'Romanian deadlift')).muscles.hamstrings === 1 && PC.describe(LIB.find((l) => l.name === 'Seated leg curl')).muscles.hamstrings === 1, 'a hinge and a leg curl count in full');
+ok(r.weekly.hamstrings.sets === 9, 'hamstrings: back extension and two leg curls, 9 sets: ' + r.weekly.hamstrings.sets);
+
+// the real schedule: 7 slots (Back A, Legs A, Chest, Legs B, Back A, Legs A, Chest) at 5 a week, so Legs B comes round half as often
+const slots = [0, 1, 2, 3, 0, 1, 2];
+const per = 5;
+const weighted = { perWeek: per, order: slots, days: mine.days.map((d, i) => Object.assign({}, d, { perWeek: (slots.filter((x) => x === i).length * per) / slots.length })) };
+const rw = PC.check(weighted, { lookup: lookupOwn, experience: 'some', goal: 'muscle', length: 'medium', legacy: true });
+const close = (a, b) => Math.abs(a - b) < 0.11;
+ok(close(rw.weekly.back.sets, 12 * 10 / 7 + 1.5 * 10 / 7), 'back: Back A twice in 7 slots at 5 a week: ' + rw.weekly.back.sets);
+ok(close(rw.weekly.quads.sessions, 15 / 7), 'quads: Legs A twice and Legs B once in 7 slots: ' + rw.weekly.quads.sessions);
+ok(!rw.findings.some((f) => f.code === 'vol_high' && f.level !== 'info'), 'above the range is information only: ' + rw.findings.map((f) => f.text).join(' | '));
+
+// more sets than the range: information, not a warning
+const big = { name: 'Big', items: [it('Barbell bench press', 8, '6 to 10', 150), it('Incline dumbbell press', 8, '8 to 12'), it('Seated cable row', 8, '8 to 12'), it('Squat', 4, '6 to 10', 150), it('Romanian deadlift', 4, '8 to 12')] };
+const rb = PC.check({ perWeek: 2, days: [big] }, ctx({ length: 600 }));
+ok(rb.findings.some((f) => f.code === 'vol_high' && f.level === 'info') && !rb.findings.some((f) => f.code === 'vol_high' && f.level === 'warn'), 'chest far above the range: info');
+
+// a drill they log with a weight and build up is not called a warm-up
+const rt = PC.check(mine, { lookup: lookupOwn, experience: 'some', goal: 'muscle', length: 'medium', legacy: true, tracked: (id) => id === 'full-shoulder-rotation' || id === 'shoulder-rotation-pulley' });
+ok(rt.findings.filter((f) => f.code === 'warmup_unmarked').length === 1, 'only the warm-up cardio is flagged when the drills are tracked: ' + rt.findings.map((f) => f.text).join(' | '));
+ok(!rt.findings.some((f) => f.code === 'order'), 'and a tracked drill at the start is no order problem: ' + rt.findings.map((f) => f.text).join(' | '));
+
+// training less often than the plan is set for
+ok(PC.check(weighted, { lookup: lookupOwn, legacy: true, actualPerWeek: 2.1 }).findings.some((f) => f.code === 'attendance' && /about 2.1 times a week .* set for 5/.test(f.text)), 'logs 2.1 a week against 5 planned: flagged');
+ok(!PC.check(weighted, { lookup: lookupOwn, legacy: true, actualPerWeek: 4.2 }).findings.some((f) => f.code === 'attendance'), '4.2 against 5: fine');
+ok(!PC.check(weighted, { lookup: lookupOwn, legacy: true }).findings.some((f) => f.code === 'attendance'), 'no log: nothing said');
+
+// two heavy days in a row follow the rotation order, repeats included
+const pushA = { name: 'Push', items: [it('Barbell bench press', 4, '6 to 10', 150), it('Incline dumbbell press', 3, '8 to 12')] };
+const pushB = { name: 'Push 2', items: [it('Machine chest press', 4, '8 to 12'), it('Seated cable row', 3, '8 to 12')] };
+const legs = { name: 'Legs', items: [it('Squat', 4, '6 to 10', 150), it('Romanian deadlift', 3, '8 to 12')] };
+ok(PC.check({ perWeek: 4, days: [pushA, legs, pushB], order: [0, 1, 2, 1] }, ctx()).findings.every((f) => f.code !== 'consecutive'), 'Push, Legs, Push 2, Legs: no chest days in a row');
+ok(PC.check({ perWeek: 4, days: [pushA, legs, pushB], order: [0, 2, 1, 1] }, ctx()).findings.some((f) => f.code === 'consecutive'), 'Push then Push 2: flagged');
 
 // ---- the connector carries the same code
 execFileSync('python3', [new URL('../tools/sync_plancheck.py', import.meta.url).pathname]);

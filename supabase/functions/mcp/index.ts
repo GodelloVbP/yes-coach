@@ -237,6 +237,8 @@ const PLANCHECK: any = (() => { const module: any = { exports: {} };
       for (var i = 0; i < NAME_MUSCLES.length && !byName; i += 1) if (NAME_MUSCLES[i][0].test(low)) byName = NAME_MUSCLES[i][1];
       muscles = byName || PATTERN_MUSCLES[pattern] || GROUP_MUSCLES[String(ex.group || '').toLowerCase()] || {};
     }
+    // squats, leg presses and lunges barely train the hamstrings (they stay about the same length): no credit for them
+    if (pattern === 'knee' && muscles.hamstrings && muscles.hamstrings < 1) { muscles = Object.assign({}, muscles); delete muscles.hamstrings; }
     var cardio = ex.category === 'cardio' || ex.unit === 'min' || (CARDIO.test(low) && !pattern);
     var role = cardio ? 'cardio' : COMPOUND[pattern] ? 'compound' : (muscles.core && Object.keys(muscles).length === 1) ? 'core' : 'isolation';
     return { name: name, pattern: pattern, role: role, muscles: cardio ? {} : muscles, estimated: estimated && !cardio && Object.keys(muscles).length > 0,
@@ -268,16 +270,17 @@ const PLANCHECK: any = (() => { const module: any = { exports: {} };
     over_time: '{0} takes about {1} minutes, more than the {2} you have.',
     missing: 'No {0} in the week.',
     shoulder_skip: '{0} is hard on the shoulders.',
-    freq: 'Trained once a week: {0}. Twice works better.',
+    freq: 'Trained less than twice a week: {0}. Twice works better.',
+    attendance: 'You train about {0} times a week and the plan is set for {1}, so each day comes round less often than planned. Fewer, fuller days fit better.',
     vol_low: '{0}: {1} hard sets a week, the range for you is {2} to {3}.',
     vol_low_time: '{0}: {1} hard sets a week, below {2} to {3}, but your sessions are full.',
-    vol_high: '{0}: {1} hard sets a week, more than the {2} that is useful for you.',
+    vol_high: '{0}: {1} hard sets a week, above {2}. More sets add less from here.',
     session_muscle: '{0}: {1} hard sets for {2} in one session, more than 10.',
     pull_push: 'More pressing ({0} sets) than pulling ({1} sets) a week.',
     order: '{0}: {1} comes before a heavier lift.',
     consecutive: '{0} and {1} come one after the other and both load {2}.',
     fixed_reps: 'A fixed number of reps: {0}. A range such as 8 to 12 lets the weight go up in smaller steps.',
-    note_numbers: 'The note on {0} has numbers or dates that go out of date.',
+    note_numbers: 'Notes with numbers or dates that go out of date: {0}.',
     warmup_unmarked: '{0} looks like a warm-up but counts as working sets.',
     estimated: 'Counted from the name or body part: {0}.',
     extras: 'Not in the week, if there is room: {0}.',
@@ -286,24 +289,30 @@ const PLANCHECK: any = (() => { const module: any = { exports: {} };
 
   /* plan: { days: [{ name, items: [{ ex, sets, reps, rest_s, kind, group, note }] }], perWeek }
      ctx:  { lookup(exId) -> exercise fields (see describe), experience: 'new' | 'some' | 'years', goal, length: 'short' | 'medium' | 'long' or minutes,
-             shoulder: true when the person has a shoulder limit, legacy: true for a plan saved before rep ranges were the rule }
+             shoulder: true when the person has a shoulder limit, legacy: true for a plan saved before rep ranges were the rule,
+             tracked(exId) -> true for an exercise they log with a weight and build up (never called a warm-up),
+             actualPerWeek: sessions a week they log (left out when there is too little to tell) }
+     plan.days[i].perWeek: how often that day comes round in a week, when not every day comes round equally (a rotation with repeats);
+     plan.order: the order the days come in, as indexes into plan.days, for the check on two heavy days in a row
      out:  { weekly: { muscle: { sets, sessions } }, minutes: [per day], findings: [{ level, code, args, text }], bands, perWeek } */
   function check(plan, ctx) {
     ctx = ctx || {};
-    var days = (plan && plan.days || []).filter(function (d) { return d && (d.items || []).length; });
+    var kept = [];
+    var days = (plan && plan.days || []).filter(function (d, i) { var ok = d && (d.items || []).length; if (ok) kept.push(i); return ok; });
     var perWeek = Math.max(1, Number(plan && plan.perWeek) || days.length || 1);
-    var f = days.length ? perWeek / days.length : 0; // how often each day comes round in a week
+    var f = days.length ? perWeek / days.length : 0; // how often each day comes round in a week, unless the day says (d.perWeek: a rotation with repeats)
     var bands = bandsFor(ctx.experience, ctx.goal);
     var minutesAllowed = typeof ctx.length === 'number' ? ctx.length : LENGTH_MIN[ctx.length] || 60;
     var findings = [];
     var add = function (level, code, args) { findings.push({ level: level, code: code, args: args, text: fill(T[code], args) }); };
     var weekly = {};
     MUSCLES.forEach(function (m) { weekly[m] = { sets: 0, sessions: 0 }; });
-    var seen = {}, estimated = [], fixed = [], pushSets = 0, pullSets = 0, minutes = [], daySets = [];
+    var seen = {}, estimated = [], fixed = [], noted = [], pushSets = 0, pullSets = 0, minutes = [], daySets = [];
     var lookup = function (id) { return describe(ctx.lookup ? ctx.lookup(id) : null); };
 
     days.forEach(function (d) {
       var perMuscle = {}, mainSets = {}, compoundSets = {}, total = 0, firstCompound = {}, sawCompound = false, orderFlag = null;
+      var fd = d.perWeek != null && isFinite(Number(d.perWeek)) ? Number(d.perWeek) : f;
       var sec = 5 * 60; // getting started
       var items = d.items;
       for (var i = 0; i < items.length; i += 1) {
@@ -327,17 +336,19 @@ const PLANCHECK: any = (() => { const module: any = { exports: {} };
         }
         if (warm) continue;
         var strengthAfter = items.slice(i + 1).some(function (o) { return o && o.kind !== 'warmup' && lookup(o.ex).role !== 'cardio'; });
+        // a drill they log with a weight and build up (shoulder rehab) is theirs to track: not called a warm-up, not counted as muscle work
+        if (x.warmupName && ctx.tracked && ctx.tracked(it.ex)) continue;
         if (x.warmupName || (x.role === 'cardio' && i === 0 && strengthAfter)) { add('warn', 'warmup_unmarked', [x.name || it.ex]); continue; } // a drill is not a working set: flagged, not counted
         if (x.role === 'cardio') continue;
         if (x.estimated && estimated.indexOf(x.name) < 0) estimated.push(x.name);
         if (x.shoulder === 'skip' && ctx.shoulder) add('error', 'shoulder_skip', [x.name]);
-        if (it.note && NOTE_NUMBERS.test(String(it.note))) add('warn', 'note_numbers', [x.name]);
+        if (it.note && NOTE_NUMBERS.test(String(it.note)) && noted.indexOf(x.name) < 0) noted.push(x.name);
         if (!rp.range && !rp.max && !rp.timed && x.unit !== 'bw' && x.unit !== 'min' && x.role !== 'core' && fixed.indexOf(x.name) < 0) fixed.push(x.name);
         if (x.role === 'compound') { if (orderFlag && !sawCompound) orderFlag.after = true; sawCompound = true; }
         else if (x.role === 'isolation' && !sawCompound && !orderFlag) orderFlag = { name: x.name, after: false };
         if (x.pattern) seen[x.pattern] = true;
-        if (x.pattern === 'hpush' || x.pattern === 'vpush') pushSets += sets * f;
-        if (x.pattern === 'hpull' || x.pattern === 'vpull' || (x.muscles.rear_delts || 0) >= 1) pullSets += sets * f; // rear-delt work (face pulls) counts as pulling
+        if (x.pattern === 'hpush' || x.pattern === 'vpush') pushSets += sets * fd;
+        if (x.pattern === 'hpull' || x.pattern === 'vpull' || (x.muscles.rear_delts || 0) >= 1) pullSets += sets * fd; // rear-delt work (face pulls) counts as pulling
         Object.keys(x.muscles).forEach(function (m) {
           perMuscle[m] = (perMuscle[m] || 0) + sets * x.muscles[m];
           if (x.muscles[m] >= 1) mainSets[m] = (mainSets[m] || 0) + sets;
@@ -347,8 +358,8 @@ const PLANCHECK: any = (() => { const module: any = { exports: {} };
       }
       if (orderFlag && orderFlag.after) add('warn', 'order', [d.name, orderFlag.name]);
       Object.keys(perMuscle).forEach(function (m) {
-        weekly[m].sets += perMuscle[m] * f;
-        if (perMuscle[m] >= 2) weekly[m].sessions += f;
+        weekly[m].sets += perMuscle[m] * fd;
+        if (perMuscle[m] >= 2) weekly[m].sessions += fd;
       });
       Object.keys(mainSets).forEach(function (m) { if (mainSets[m] > 10 && MUSCLE_NAME[m] && m !== 'glutes') add('warn', 'session_muscle', [d.name, mainSets[m], MUSCLE_NAME[m].toLowerCase()]); });
       minutes.push(Math.round(sec / 60));
@@ -369,20 +380,30 @@ const PLANCHECK: any = (() => { const module: any = { exports: {} };
       var b = MAJOR.indexOf(m) >= 0 ? bands.major : bands.small;
       var s = r1(weekly[m].sets);
       if (s < b[0]) add(full ? 'info' : 'warn', full ? 'vol_low_time' : 'vol_low', [MUSCLE_NAME[m], s, b[0], b[1]]);
-      else if (s > b[1] * 1.25 && m !== 'glutes') add('warn', 'vol_high', [MUSCLE_NAME[m], s, b[1]]); // glutes get counted in full from every squat and hinge
+      else if (s > b[1] * 1.25 && m !== 'glutes') add('info', 'vol_high', [MUSCLE_NAME[m], s, b[1]]); // more keeps helping a little; recovery, not growth, is the limit // glutes get counted in full from every squat and hinge
     });
     if (pushSets > pullSets * 1.1 + 1) add('warn', 'pull_push', [r1(pushSets), r1(pullSets)]);
-    // the same muscles heavy on two days that follow each other in the order of the days
-    if (days.length >= 2 && perWeek >= 4) for (var k = 0; k < days.length; k += 1) {
-      var a = daySets[k], b2 = daySets[(k + 1) % days.length];
-      if (k === days.length - 1 && days.length === 2) break;
+    // what they log against what the plan is set for (ctx.actualPerWeek: sessions a week over the last weeks)
+    var actual = Number(ctx.actualPerWeek);
+    if (ctx.actualPerWeek != null && isFinite(actual) && actual < perWeek * 0.7) add('warn', 'attendance', [r1(actual), perWeek]);
+    // the same muscles heavy on two days that follow each other in the order of the days (plan.order: a rotation with repeats, as day indexes)
+    var given = Array.isArray(plan && plan.order) ? plan.order.map(function (i) { return kept.indexOf(i); }).filter(function (i) { return i >= 0; }) : [];
+    var ord = given.length >= 2 ? given : days.map(function (_, i) { return i; });
+    var pairsSeen = {};
+    if (days.length >= 2 && perWeek >= 4) for (var k = 0; k < ord.length; k += 1) {
+      if (k === ord.length - 1 && ord.length === 2) break;
+      var ia = ord[k], ib = ord[(k + 1) % ord.length];
+      if (ia === ib || pairsSeen[ia + '>' + ib]) continue;
+      pairsSeen[ia + '>' + ib] = true;
+      var a = daySets[ia], b2 = daySets[ib];
       var both = MAJOR.filter(function (m) { return (a[m] || 0) >= 3 && (b2[m] || 0) >= 3; });
-      if (both.length) add('warn', 'consecutive', [days[k].name, days[(k + 1) % days.length].name, both.map(function (m) { return MUSCLE_NAME[m].toLowerCase(); }).join(', ')]);
+      if (both.length) add('warn', 'consecutive', [days[ia].name, days[ib].name, both.map(function (m) { return MUSCLE_NAME[m].toLowerCase(); }).join(', ')]);
     }
     var extras = ['vpush', 'legcurl', 'vpull', 'hpull'].filter(function (p) { return !seen[p] && !(ctx.shoulder && p === 'vpush'); }).map(function (p) { return EXTRA_WORD[p]; });
     if (extras.length && !full) add('info', 'extras', [extras.join(', ')]);
     var few = function (list) { return list.slice(0, 3).join(', ') + (list.length > 3 ? ' and ' + (list.length - 3) + ' more' : ''); };
     if (fixed.length) add(ctx.legacy ? 'info' : 'warn', 'fixed_reps', [few(fixed)]);
+    if (noted.length) add('warn', 'note_numbers', [few(noted)]);
     if (estimated.length) add('info', 'estimated', [few(estimated)]);
 
     var rank = { error: 0, warn: 1, info: 2 };
@@ -421,11 +442,13 @@ const planCheckOut = (root: Json, days: Record<string, Json>, ex: Record<string,
   const sc = root && root.schedule;
   let ids: string[] = [];
   let perWeek = 0;
-  if (sc && sc.enabled && sc.mode === 'rotation') { ids = [...new Set((sc.rotation || []) as string[])].filter((id) => days[id]); perWeek = Number(sc.per_week) || (sc.days || []).length || ids.length; }
-  else if (sc && sc.enabled) { const wk = WEEKDAYS.map((w) => sc.week && sc.week[w]).filter((id) => id && days[id]) as string[]; ids = [...new Set(wk)]; perWeek = wk.length; }
+  let slots: string[] = []; // the rotation with its repeats, or the fixed week: how often each day comes round
+  if (sc && sc.enabled && sc.mode === 'rotation') { slots = ((sc.rotation || []) as string[]).filter((id) => days[id]); ids = [...new Set(slots)]; perWeek = Math.min(7, Number(sc.per_week) || (sc.days || []).length || ids.length); }
+  else if (sc && sc.enabled) { slots = WEEKDAYS.map((w) => sc.week && sc.week[w]).filter((id) => id && days[id]) as string[]; ids = [...new Set(slots)]; perWeek = slots.length; }
   if (!ids.length) return null;
   const p = (root && root.profile) || {};
-  const r = PLANCHECK.check({ perWeek, days: ids.map((id) => ({ name: days[id].name, items: days[id].items || [] })) }, {
+  const order = slots.map((id) => ids.indexOf(id));
+  const r = PLANCHECK.check({ perWeek, order, days: ids.map((id, i) => ({ name: days[id].name, items: days[id].items || [], perWeek: (order.filter((x) => x === i).length * perWeek) / order.length })) }, {
     lookup: (id: string) => { const e = ex[id]; if (!e) return null; const l = libFor(lib, e); return { name: e.name, group: e.group, unit: e.unit, category: e.category, ...(l ? { primary: l.primary, secondary: l.secondary, shoulder: l.shoulder } : {}) }; },
     experience: p.experience, goal: p.goal, length: p.session_length, legacy: true,
   });
@@ -1117,7 +1140,7 @@ const TOOLS: Tool[] = [
         }
         const was = ((days[str(a.id, 40)] || {}).items || []).find((o: Json) => o && o.ex === exId);
         const warm = it.warmup === true || (it.warmup !== false && !!was && was.kind === 'warmup'); // a day replaced without the flag keeps the warm-ups the person marked
-        return { ex: exId, order: k + 1, sets: int(it.sets, 1, 8, 3), reps: str(it.reps, 20, '10'), target, target_at: today(), rest_s: int(it.rest_s, 0, 600, 90), note: it.note ? str(it.note, 140) : null, group: it.superset ? str(it.superset, 8) : '', ...(warm ? { kind: 'warmup' } : {}) } as Json;
+        return { ex: exId, order: k + 1, sets: int(it.sets, 1, 8, 3), reps: str(it.reps, 20, '10'), target, target_at: was && was.target_at && String(was.target == null ? '' : was.target) === String(target == null ? '' : target) ? was.target_at : today(), rest_s: int(it.rest_s, 0, 600, 90), note: it.note ? str(it.note, 140) : null, group: it.superset ? str(it.superset, 8) : '', ...(warm ? { kind: 'warmup' } : {}) } as Json;
       });
       // a superset is two or more exercises next to each other; a lone label is dropped, and a label reused further down becomes its own group
       const used = new Set<string>();

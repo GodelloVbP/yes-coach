@@ -203,6 +203,11 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
     ok(!w.err && items()[0].kind === 'warmup' && items()[0].sets === 2, 'replacing the day without the flag keeps the warm-up mark');
     w = await call('tok.anna.x', 'save_training_day', { id: wid, name: 'Warm test', exercises: [{ exercise_id: 'row', sets: 2, reps: '10', warmup: false }, { exercise_id: 'bench', sets: 3, reps: '8 to 10' }] });
     ok(!w.err && items()[0].kind === undefined, 'warmup false takes the mark away');
+    items()[1].target = '60'; items()[1].target_at = '2026-01-05';
+    w = await call('tok.anna.x', 'save_training_day', { id: wid, name: 'Warm test', exercises: [{ exercise_id: 'row', sets: 2, reps: '10' }, { exercise_id: 'bench', sets: 3, reps: '8 to 10', target_kg: 60 }] });
+    ok(!w.err && items()[1].target_at === '2026-01-05', 'an unchanged target keeps its date, so the next weight still comes from the log: ' + JSON.stringify(items()[1]));
+    w = await call('tok.anna.x', 'save_training_day', { id: wid, name: 'Warm test', exercises: [{ exercise_id: 'row', sets: 2, reps: '10' }, { exercise_id: 'bench', sets: 3, reps: '8 to 10', target_kg: 62.5 }] });
+    ok(!w.err && items()[1].target_at !== '2026-01-05' && String(items()[1].target) === '62.5', 'a new target gets a new date');
     ok((await call('tok.anna.x', 'get_plan')).json.days.some((d) => d.id === wid), 'the day is in the plan');
   }
   // the plan comes with a check of the week, also after saving a day
@@ -242,6 +247,13 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   r = await call('tok.anna.x', 'set_schedule', { mode: 'rotation', weekdays: ['Fri', 'Mon', 'Mon', 'Wed'], day_ids: ['day-1', 'day-2', 'day-3'] });
   ok(!r.err && JSON.stringify(rows.find((x) => x.user_id === A && x.path === 'yc').data.schedule.days) === '["Mon","Wed","Fri"]', 'rotation sorted, deduped');
   ok((await call('tok.anna.x', 'set_schedule', { mode: 'rotation', weekdays: ['Mon'], day_ids: ['nope'] })).err, 'unknown day in schedule');
+  {
+    // a day twice in the rotation comes round twice as often, and the check counts it so
+    const chest = async (ids) => { await call('tok.anna.x', 'set_schedule', { mode: 'rotation', weekdays: ['Mon', 'Wed', 'Fri'], day_ids: ids, sessions_per_week: 3 }); return (await call('tok.anna.x', 'get_plan')).json.check.hard_sets_per_week.chest || 0; };
+    const once = await chest(['day-1', 'day-2', 'day-3']);
+    const twice = await chest(['day-1', 'day-2', 'day-1', 'day-3']);
+    ok(rowA('yc').data.schedule.rotation.join() === 'day-1,day-2,day-1,day-3' && twice > once, 'repeats in the rotation are kept and weigh in the check: ' + once + ' then ' + twice);
+  }
   r = await call('tok.anna.x', 'set_schedule', { mode: 'rotation', weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], day_ids: ['day-1', 'day-2', 'day-3'], sessions_per_week: 4 });
   ok(!r.err && r.json.schedule.sessions_per_week === 4 && /4 times a week, spread over those days/.test(r.json.schedule.note) && rowA('yc').data.schedule.per_week === 4, 'sessions a week is saved and read back: ' + r.text.slice(0, 200));
   r = await call('tok.anna.x', 'set_schedule', { mode: 'rotation', weekdays: ['Mon', 'Wed', 'Fri'], day_ids: ['day-1', 'day-2', 'day-3'] });
