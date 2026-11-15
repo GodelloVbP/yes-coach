@@ -205,6 +205,14 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
     ok(!w.err && items()[0].kind === undefined, 'warmup false takes the mark away');
     ok((await call('tok.anna.x', 'get_plan')).json.days.some((d) => d.id === wid), 'the day is in the plan');
   }
+  // the plan comes with a check of the week, also after saving a day
+  {
+    const pl = (await call('tok.anna.x', 'get_plan')).json;
+    ok(pl.check && pl.check.sessions_a_week === 3 && pl.check.hard_sets_per_week.chest > 0 && pl.check.findings.some((x) => /^error: No squat or leg press in the week/.test(x)) && pl.check.findings.some((x) => /^error: No hinge/.test(x)), 'get_plan checks the week: ' + JSON.stringify(pl.check));
+    ok(pl.check.useful_hard_sets_per_week.chest_back_quads_hamstrings_glutes === '10 to 16' && pl.check.minutes_per_day.Push > 0, 'with the useful range and the minutes per day');
+    const sv = await call('tok.anna.x', 'save_training_day', { id: 'day-2', name: 'Pull', exercises: [{ exercise_id: 'row', sets: 3, reps: '10' }, { exercise_id: 'pullup', sets: 3, reps: 'max' }] });
+    ok(!sv.err && sv.json.plan_check && Array.isArray(sv.json.plan_check.findings), 'saving a day returns the check of the whole week');
+  }
   { const again = await call('tok.anna.x', 'save_training_day', { id: 'day-1', name: 'Push', exercises: [{ exercise_id: 'bench', sets: 3, reps: '8', target_kg: '60', rest_s: 120, note: 'Slow down' }] }); ok(!again.err && again.json.day.id === 'day-1' && again.json.day.in_week === true, 'saving a day that is in the week says so: ' + again.text.slice(0, 160)); }
   const t = rows.find((x) => x.user_id === A && x.path === 'yc/templates/day-3').data;
   ok(t.items[0].sets === 8 && t.items[0].rest_s === 600 && t.items[0].note.length === 140 && t.order === 3 && t.items[1].order === 2, 'clamped like the app');
