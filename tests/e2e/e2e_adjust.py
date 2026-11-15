@@ -18,6 +18,10 @@ def seed(be):
     for i, (tid, (nm, items)) in enumerate(DAYS.items()):
         be.docs.append({'path': 'yc/templates/' + tid, 'data': {'name': nm, 'order': i, 'kind': 'Other', 'focus': '', 'items': [
             {'ex': ex, 'order': j + 1, 'sets': 3, 'reps': '8 to 12', 'target': t, 'target_at': OLD, 'rest_s': 120, 'note': None} for j, (ex, t) in enumerate(items)]}})
+    # 9 sessions over the last 34 days: about 1.9 a week, logged for under 5 weeks
+    for d in range(2, 37, 4):
+        date = (TD - datetime.timedelta(days=d)).isoformat()
+        be.docs.append({'path': 'yc/sessions/' + date, 'data': {'date': date, 'template': 'day-a', 'sets': {'bench_1': {'ex': 'bench', 'n': 1, 'kind': 'work', 'reps': 10, 'load': 60, 'done': True, 'at': 1}}}})
 
 ANSWER = {'summary': 'Adds a hinge to Day B.', 'weekdays': ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], 'days': [
     {'name': 'Day A', 'kind': 'Other', 'focus': '', 'items': [{'ex': 'l04', 'sets': 3, 'reps': '8 to 12', 'target': '60', 'rest_s': 120, 'note': None}, {'ex': 'l14', 'sets': 3, 'reps': '8 to 12', 'target': '50', 'rest_s': 120, 'note': None}]},
@@ -49,6 +53,8 @@ try:
             check('request: the rotation with its repeats', 'then start again: Day A, Day B, Day A, Day C. About 3 sessions a week' in req, req[:1500])
             check('request: sessions a week from the schedule, the profile number named', 'Sessions a week: 3 in their schedule (their profile says 4)' in req)
             check('request: only the listed changes, targets kept', 'Change only what the list under' in req and 'copy its current target as it is' in req)
+            check('request: one per-week number, counted from the first logged session', 'about 1.9 sessions a week' in req and '9 sessions since' in req and 'in 13 weeks' not in req, re.findall(r'.*sessions (?:a week|since).*', req))
+            check('request: may move exercises between days to fix frequency', 'move or add exercises between the days' in req)
             check('request: no split rule, no coach line, no mapping', 'Split for' not in req and 'Coach me' not in req and '"mapping"' not in req)
             page.fill('#wz-answer', json.dumps(ANSWER))
             page.locator('#wiz .foot-row .skew').first.click()

@@ -403,7 +403,7 @@ const PLANCHECK: any = (() => { const module: any = { exports: {} };
     if (extras.length && !full) add('info', 'extras', [extras.join(', ')]);
     var few = function (list) { return list.slice(0, 3).join(', ') + (list.length > 3 ? ' and ' + (list.length - 3) + ' more' : ''); };
     if (fixed.length) add(ctx.legacy ? 'info' : 'warn', 'fixed_reps', [few(fixed)]);
-    if (noted.length) add('warn', 'note_numbers', [few(noted)]);
+    if (noted.length) add('warn', 'note_numbers', [noted.join(', ')]); // every name: a fix request may change only what it names
     if (estimated.length) add('info', 'estimated', [few(estimated)]);
 
     var rank = { error: 0, warn: 1, info: 2 };
