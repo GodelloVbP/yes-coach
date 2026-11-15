@@ -10,7 +10,7 @@ pw = sync_playwright().start()
 
 SAT = datetime.datetime(2026, 11, 7, 10, 0)  # a Saturday morning
 PLAN = {"summary": "Three full-body days.", "weekdays": ["Mon", "Wed", "Fri"], "days": [
-    {"name": "Full A", "kind": "Other", "focus": "squat, press", "items": [{"ex": "l42", "sets": 3, "reps": "8", "target": "", "rest_s": 150, "note": None}]},
+    {"name": "Full A", "kind": "Other", "focus": "squat, press", "items": [{"ex": "l290", "sets": 1, "reps": "5 min", "target": "", "rest_s": 0, "note": None, "warmup": True}, {"ex": "l42", "sets": 3, "reps": "8", "target": "", "rest_s": 150, "note": None}]},
     {"name": "Full B", "kind": "Other", "focus": "hinge, pull", "items": [{"ex": "l43", "sets": 3, "reps": "8", "target": "", "rest_s": 150, "note": None}]},
     {"name": "Full C", "kind": "Other", "focus": "lunge, row", "items": [{"ex": "l46", "sets": 3, "reps": "10", "target": "", "rest_s": 120, "note": None}]}]}
 
@@ -56,6 +56,8 @@ def today_run(page):
     check('schedule: Sat, Mon, Wed with 3 sessions a week', sorted(sc['days']) == sorted(['Sat', 'Mon', 'Wed']) and sc['per_week'] == 3, sc)
     check('schedule: days saved in week order', sc['days'] == ['Mon', 'Wed', 'Sat'], sc['days'])
     check('first day keeps today as its weekday', tpl(be, 'day-1')['weekday'] == 'Sat', tpl(be, 'day-1'))
+    its = tpl(be, 'day-1')['items']
+    check('a warm-up item from the AI is saved as a warm-up, the lift is not', its[0].get('kind') == 'warmup' and its[1].get('kind') is None, its)
     page.click('#wk-next'); page.wait_for_timeout(300)
     mon = page.get_attribute('#wk-rows .wk-blk[data-date="2026-11-09"]', 'aria-label') or ''
     wed = page.get_attribute('#wk-rows .wk-blk[data-date="2026-11-11"]', 'aria-label') or ''

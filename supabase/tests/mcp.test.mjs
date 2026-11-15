@@ -193,6 +193,18 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok((await call('tok.ben.x', 'list_exercises')).json.length === 1, 'ben unaffected');
   r = await call('tok.anna.x', 'save_training_day', { name: 'Shoulders', kind: 'Push', focus: 'Delts', exercises: [{ exercise_id: 'lateral-raise', sets: 99, reps: '12', target_kg: '8', rest_s: 5000, note: 'x'.repeat(300) }, { exercise_id: 'bench', sets: 3, reps: '5' }] });
   ok(!r.err && r.json.day.id === 'day-3' && r.json.created && !r.json.day.in_week, r.text);
+  // warm-up exercises: marked with warmup, kept when the day is replaced without the flag, shown in the plan
+  {
+    let w = await call('tok.anna.x', 'save_training_day', { name: 'Warm test', exercises: [{ exercise_id: 'row', sets: 1, reps: '10', warmup: true }, { exercise_id: 'bench', sets: 3, reps: '8 to 10' }] });
+    const wid = w.json.day.id;
+    const items = () => rows.find((x) => x.user_id === A && x.path === 'yc/templates/' + wid).data.items;
+    ok(!w.err && items()[0].kind === 'warmup' && items()[1].kind === undefined && w.json.day.exercises[0].warmup === true && w.json.day.exercises[1].warmup === undefined, 'a warm-up exercise is stored and shown as one: ' + w.text.slice(0, 200));
+    w = await call('tok.anna.x', 'save_training_day', { id: wid, name: 'Warm test', exercises: [{ exercise_id: 'row', sets: 2, reps: '10' }, { exercise_id: 'bench', sets: 3, reps: '8 to 10' }] });
+    ok(!w.err && items()[0].kind === 'warmup' && items()[0].sets === 2, 'replacing the day without the flag keeps the warm-up mark');
+    w = await call('tok.anna.x', 'save_training_day', { id: wid, name: 'Warm test', exercises: [{ exercise_id: 'row', sets: 2, reps: '10', warmup: false }, { exercise_id: 'bench', sets: 3, reps: '8 to 10' }] });
+    ok(!w.err && items()[0].kind === undefined, 'warmup false takes the mark away');
+    ok((await call('tok.anna.x', 'get_plan')).json.days.some((d) => d.id === wid), 'the day is in the plan');
+  }
   { const again = await call('tok.anna.x', 'save_training_day', { id: 'day-1', name: 'Push', exercises: [{ exercise_id: 'bench', sets: 3, reps: '8', target_kg: '60', rest_s: 120, note: 'Slow down' }] }); ok(!again.err && again.json.day.id === 'day-1' && again.json.day.in_week === true, 'saving a day that is in the week says so: ' + again.text.slice(0, 160)); }
   const t = rows.find((x) => x.user_id === A && x.path === 'yc/templates/day-3').data;
   ok(t.items[0].sets === 8 && t.items[0].rest_s === 600 && t.items[0].note.length === 140 && t.order === 3 && t.items[1].order === 2, 'clamped like the app');

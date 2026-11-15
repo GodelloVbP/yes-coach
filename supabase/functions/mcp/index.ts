@@ -112,7 +112,7 @@ const inWeek = (root: Json): Set<string> => {
 };
 const dayOut = (id: string, d: Json, ex: Record<string, Json>, week: Set<string>, w: Weights): Json => ({
   id, name: d.name, kind: d.kind || 'Other', focus: d.focus || '', in_week: week.has(id),
-  exercises: (d.items || []).map((it: Json) => ({ exercise_id: it.ex, exercise: exName(ex, it.ex), ...stepOut(w, it.ex), last_load: w.last(it.ex), sets: it.sets, reps: it.reps, target_kg: it.target || '', rest_s: it.rest_s, note: it.note || null, superset: it.group || null })),
+  exercises: (d.items || []).map((it: Json) => ({ exercise_id: it.ex, exercise: exName(ex, it.ex), ...stepOut(w, it.ex), last_load: w.last(it.ex), sets: it.sets, reps: it.reps, target_kg: it.target || '', rest_s: it.rest_s, note: it.note || null, superset: it.group || null, ...(it.kind === 'warmup' ? { warmup: true } : {}) })),
 });
 
 // ---------------------------------------------------------------- sessions
@@ -768,6 +768,7 @@ const TOOLS: Tool[] = [
         progress: { type: 'string', enum: PROGRESS, description: 'How the weight moves from the last working weight, worked out here from the log: auto (the app picks the next weight from the last sessions, the same as an empty target_kg), up (one weight step heavier; for assistance exercises one step less assistance), hold (the same weight) or down (one step lighter; for assistance exercises one step more assistance). With up, hold or down no target_kg is needed and the result says which weight was saved.' },
         target_kg: { type: 'string', description: 'Load in kg as a plain number in text, e.g. "60", or "". Empty lets the app suggest the next weight from the last sessions. A number is moved to the nearest weight the person can load (their last working weight plus or minus whole steps) when the step is known from their setting or their log; the result says what was saved. A load set here replaces the app\'s suggestion until the next session is logged.' }, rest_s: { type: 'integer' }, note: { type: 'string', description: 'One short coaching cue.' },
         superset: { type: 'string', description: 'A short label such as "A". Exercises next to each other with the same label are done as a superset: one set of each in turn, rest after the round. Leave it out for a normal exercise.' },
+        warmup: { type: 'boolean', description: 'true for a warm-up exercise (a mobility drill, easy cardio): its sets are not working sets and get no next weight. Left out: an exercise that is already in the day keeps what it was.' },
       }, ['exercise_id', 'sets', 'reps']) },
     }, ['name', 'exercises']),
     description: 'Create a training day or replace an existing one (name, kind, focus and the whole exercise list). The exercise list given replaces the old one. A new day is not part of the week until the schedule includes it.',
@@ -797,7 +798,9 @@ const TOOLS: Tool[] = [
           const to = round2(Math.max(0, last + Math.round((asked - last) / step.inc) * step.inc));
           if (to !== asked) { weights.push({ exercise_id: exId, asked_kg: asked, target_kg: String(to), last_load: last, weight_step: step.inc, weight_step_from: step.from, note: 'Moved to the nearest weight the person can load.' }); target = String(to); }
         }
-        return { ex: exId, order: k + 1, sets: int(it.sets, 1, 8, 3), reps: str(it.reps, 20, '10'), target, target_at: today(), rest_s: int(it.rest_s, 0, 600, 90), note: it.note ? str(it.note, 140) : null, group: it.superset ? str(it.superset, 8) : '' } as Json;
+        const was = ((days[str(a.id, 40)] || {}).items || []).find((o: Json) => o && o.ex === exId);
+        const warm = it.warmup === true || (it.warmup !== false && !!was && was.kind === 'warmup'); // a day replaced without the flag keeps the warm-ups the person marked
+        return { ex: exId, order: k + 1, sets: int(it.sets, 1, 8, 3), reps: str(it.reps, 20, '10'), target, target_at: today(), rest_s: int(it.rest_s, 0, 600, 90), note: it.note ? str(it.note, 140) : null, group: it.superset ? str(it.superset, 8) : '', ...(warm ? { kind: 'warmup' } : {}) } as Json;
       });
       // a superset is two or more exercises next to each other; a lone label is dropped, and a label reused further down becomes its own group
       const used = new Set<string>();

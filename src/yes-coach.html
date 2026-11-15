@@ -7243,7 +7243,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const planDayIds = () => { const m = schedModel(); return [...new Set(m.mode === 'fixed' ? WEEKDAYS.map((w) => m.week[w]).filter(Boolean) : m.rotation)]; };
   const currentPlanForAI = () => {
     const m = schedModel();
-    return { weekdays: trainWeekdays(m), days: planDayIds().map((id) => { const t = S.templates[id]; return { name: t.name, kind: t.kind || 'Other', focus: t.focus || '', items: (t.items || []).map((it) => ({ ex: planIdOf(it.ex), sets: it.sets, reps: it.reps, target: it.target || '', rest_s: it.rest_s == null ? 90 : it.rest_s, note: it.note || null })) }; }) };
+    return { weekdays: trainWeekdays(m), days: planDayIds().map((id) => { const t = S.templates[id]; return { name: t.name, kind: t.kind || 'Other', focus: t.focus || '', items: (t.items || []).map((it) => ({ ex: planIdOf(it.ex), sets: it.sets, reps: it.reps, target: it.target || '', rest_s: it.rest_s == null ? 90 : it.rest_s, note: it.note || null, ...(it.kind === 'warmup' ? { warmup: true } : {}) })) }; }) };
   };
   const adjustProgress = () => {
     const rows = progressRows(addDays(today(), -91));
@@ -7304,6 +7304,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       items: (Array.isArray(d && d.items) ? d.items : []).map((it) => (it && typeof it === 'object' ? Object.assign({}, it, { ex: ownPlanEx(it.ex) || libId(it.ex || it.id || it.exercise || it.name) }) : null)).filter((it) => it && it.ex).slice(0, 10).map((it) => ({
         ex: it.ex, sets: intIn(it.sets, 1, 8, 3), reps: String(it.reps || '10').slice(0, 20), target: it.target == null ? '' : String(it.target).slice(0, 20),
         rest_s: intIn(it.rest_s, 0, 600, 90), note: it.note ? String(it.note).slice(0, 140) : null,
+        ...(it.kind === 'warmup' || it.warmup === true ? { kind: 'warmup' } : {}),
       })),
     })).filter((d) => d.items.length);
     if (!days.length) return null;
@@ -7445,7 +7446,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const ids = plan.days.map((d) => { const hit = base.find((id) => !taken.has(id) && S.templates[id].name.trim().toLowerCase() === d.name.trim().toLowerCase()); if (hit) taken.add(hit); return hit || null; });
       ids.forEach((id, i) => { if (!id) { const free = base.find((x) => !taken.has(x)); if (free) { taken.add(free); ids[i] = free; } } });
       for (const [i, d] of plan.days.entries()) {
-        const items = d.items.map((it, k) => ({ ex: libToMine[it.ex], order: k + 1, sets: it.sets, reps: it.reps, target: it.target, target_at: today(), rest_s: it.rest_s, note: it.note }));
+        const items = d.items.map((it, k) => ({ ex: libToMine[it.ex], order: k + 1, sets: it.sets, reps: it.reps, target: it.target, target_at: today(), rest_s: it.rest_s, note: it.note, ...(it.kind === 'warmup' ? { kind: 'warmup' } : {}) }));
         if (!ids[i]) ids[i] = newDay(d.name);
         const doc = Object.assign({}, S.templates[ids[i]], { name: d.name, kind: d.kind, focus: d.focus, items });
         S.templates[ids[i]] = doc;
@@ -7470,7 +7471,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       while (S.templates['day-' + n]) n += 1;
       const id = 'day-' + n;
       order += 1;
-      const doc = { name: d.name, order, weekday: plan.weekdays[i % plan.weekdays.length], kind: d.kind, focus: d.focus, items: d.items.map((it, k) => ({ ex: libToMine[it.ex], order: k + 1, sets: it.sets, reps: it.reps, target: it.target, target_at: today(), rest_s: it.rest_s, note: it.note })) };
+      const doc = { name: d.name, order, weekday: plan.weekdays[i % plan.weekdays.length], kind: d.kind, focus: d.focus, items: d.items.map((it, k) => ({ ex: libToMine[it.ex], order: k + 1, sets: it.sets, reps: it.reps, target: it.target, target_at: today(), rest_s: it.rest_s, note: it.note, ...(it.kind === 'warmup' ? { kind: 'warmup' } : {}) })) };
       S.templates[id] = doc;
       await S.rootRef.collection('templates').doc(id).set(doc);
       ids.push(id);
