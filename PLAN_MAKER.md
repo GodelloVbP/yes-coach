@@ -19,6 +19,14 @@ Both reviews agreed on the big problems; this version follows them.
 - **Easier week** is a card with a Start button on the week view, never automatic; its sessions are tagged and left out of the next-weight rule. It comes last.
 - **As built (steps 6 to 8):** the check card, the effort tap and the easier-week card show only to the accounts in `config.js` `planCheckOnly` until they are tuned. The easier week is stored as a date range (`easy: { from, to }` on the root document) rather than a tag on each session; sessions in that range are left out of the next-weight rule. Offered after 6 weeks with sessions since the last one, or when 40% or more of at least 3 plan exercises have not gone up (best estimated 1RM, or reps for bodyweight) in the last two weeks, not before 3 weeks of training; Not now hides it for 14 days.
 
+## After first use (owner's plan, 15 Nov)
+- **Sessions a week came from the wrong place.** The check took the weekdays someone can train (7) as sessions a week, and counted each distinct day once, so a rotation with repeats (Back A twice in 7 slots at 5 a week) was miscounted: every volume was 1.75 times too high. Now each day counts by its places in the rotation times sessions a week (`d.perWeek`), and two days in a row follow the rotation order (`plan.order`). App and connector both.
+- **Adjust lost the repeats and re-dated every target.** Applying a change saved one slot per day and stamped every target with today, which overrules the next-weight rule. Now the rotation keeps its places and an unchanged target keeps its date (app and connector `save_training_day`).
+- **Fix my plan asks for the listed changes only:** same sets, reps, targets, rest and notes for everything else, no split rewrite. Every adjust request copies current targets instead of re-deriving 90% of the best set.
+- **Counting:** squat, leg press and lunges give no hamstring credit. More sets than the range is information, not a warning (recovery is the limit, not growth). Notes with numbers are one line. A drill they log with a weight in 2 or more sessions (shoulder rehab) is neither a warm-up nor muscle work.
+- **Attendance:** when the log over the last 8 weeks (at least 4) shows under 70% of the planned sessions a week, the check says so, and an adjust request asks for fewer, fuller days.
+- **Prompt:** the schedule in words (rotation with repeats, sessions a week, what they log), no coach line, `mapping` only for imports, a physiotherapist sentence when notes describe pain in daily life, the trend explained as a fitted line.
+
 ## 1. What a good plan does
 
 1. **Frequency.** Every major muscle is trained at least twice a week when there are 3 or more sessions a week. Two sessions a week: full body twice.
