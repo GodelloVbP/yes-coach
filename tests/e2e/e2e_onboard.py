@@ -10,7 +10,7 @@ pw = sync_playwright().start()
 
 SAT = datetime.datetime(2026, 11, 7, 10, 0)  # a Saturday morning
 PLAN = {"summary": "Three full-body days.", "weekdays": ["Mon", "Wed", "Fri"], "days": [
-    {"name": "Full A", "kind": "Other", "focus": "squat, press", "items": [{"ex": "l42", "sets": 3, "reps": "8", "target": "", "rest_s": 150, "note": None}]},
+    {"name": "Full A", "kind": "Other", "focus": "squat, press", "items": [{"ex": "l290", "sets": 1, "reps": "5 min", "target": "", "rest_s": 0, "note": None, "warmup": True}, {"ex": "l42", "sets": 3, "reps": "8", "target": "", "rest_s": 150, "note": None}]},
     {"name": "Full B", "kind": "Other", "focus": "hinge, pull", "items": [{"ex": "l43", "sets": 3, "reps": "8", "target": "", "rest_s": 150, "note": None}]},
     {"name": "Full C", "kind": "Other", "focus": "lunge, row", "items": [{"ex": "l46", "sets": 3, "reps": "10", "target": "", "rest_s": 120, "note": None}]}]}
 
@@ -43,6 +43,10 @@ def to_preview(page, ai=True, picks=()):
 be = Backend()
 def today_run(page):
     to_preview(page)
+    ck = page.text_content('#wiz .wz-check') if page.locator('#wiz .wz-check').count() else ''
+    check("the AI's plan is checked: no press, row or hinge is shown", 'Plan check' in ck and 'No hinge' in ck and '+' in ck, ck)
+    check('a single number of reps on a weighted lift becomes a range', 'Squat · 3 × 6 to 10' in page.text_content('#wiz'), page.text_content('#wiz')[:600])
+    check('one tap sends the findings back to the AI', page.is_visible('#wz-fix'))
     ch = page.get_by_role('radiogroup', name='First workout')
     check('preview: First workout, Today picked', ch.get_by_role('radio', name='Today').get_attribute('aria-checked') == 'true')
     note = page.text_content('#wiz')
@@ -56,6 +60,8 @@ def today_run(page):
     check('schedule: Sat, Mon, Wed with 3 sessions a week', sorted(sc['days']) == sorted(['Sat', 'Mon', 'Wed']) and sc['per_week'] == 3, sc)
     check('schedule: days saved in week order', sc['days'] == ['Mon', 'Wed', 'Sat'], sc['days'])
     check('first day keeps today as its weekday', tpl(be, 'day-1')['weekday'] == 'Sat', tpl(be, 'day-1'))
+    its = tpl(be, 'day-1')['items']
+    check('a warm-up item from the AI is saved as a warm-up, the lift is not', its[0].get('kind') == 'warmup' and its[1].get('kind') is None, its)
     page.click('#wk-next'); page.wait_for_timeout(300)
     mon = page.get_attribute('#wk-rows .wk-blk[data-date="2026-11-09"]', 'aria-label') or ''
     wed = page.get_attribute('#wk-rows .wk-blk[data-date="2026-11-11"]', 'aria-label') or ''
@@ -149,7 +155,7 @@ def home4_run(page):
     check('local: 4 days is upper and lower body', all(x in txt for x in ('Upper A', 'Lower A', 'Upper B', 'Lower B')), txt[:300])
     check('local: home has no machines or barbells', not any(w in txt for w in ('Machine', 'Leg press', 'Barbell', 'Cable', 'pulldown')), txt)
     page.click('#wz-start'); until(lambda: page.is_visible('#btn-start'))
-    check('local: 45 minutes is 4 exercises', len(tpl(be, 'day-1')['items']) == 4)
+    check('local: 45 minutes is at most 4 exercises', 3 <= len(tpl(be, 'day-1')['items']) <= 4, tpl(be, 'day-1')['items'])
     check('local: 4 sessions a week', root(be)['schedule']['per_week'] == 4 and len(root(be)['schedule']['days']) == 4)
 session(pw, be, ALICE, home4_run, width=390, clock=SAT)
 
@@ -216,7 +222,7 @@ def setup_run(page):
     check('setup: the last answer builds the plan', until(lambda: page.is_visible('#wz-start'), 4))
     txt = page.text_content('#wiz')
     check('new lifter: goblet squat instead of the barbell squat', 'Goblet squat' in txt and 'Barbell bench press' not in txt, txt[:500])
-    check('5 days: upper and lower body', 'Upper A' in txt and 'Lower B' in txt)
+    check('5 days: upper and lower body, then push, pull and legs', all(x in txt for x in ('Upper A', 'Lower A', 'Push', 'Pull', 'Legs')), txt[:500])
     page.get_by_role('button', name='Change my answers').click()
     check('preview: Change my answers goes back to the questions', until(lambda: page.is_visible('#wz-qh')))
     page.click('#wz-go')

@@ -7075,5 +7075,348 @@
   "de": "Unter Ernährung ist Deine eigenen Lebensmittel standardmäßig eingeklappt, mit der Anzahl in der Überschrift. Tippe auf die Überschrift, um es zu öffnen.",
   "fr": "Dans Alimentation, Tes propres aliments est replié par défaut, avec le nombre d'aliments dans le titre. Touche le titre pour l'ouvrir.",
   "it": "In Cibo, I tuoi alimenti è chiuso di default, con il numero di alimenti nel titolo. Tocca il titolo per aprirlo."
+ },
+ "Push": {
+  "nl": "Duwen",
+  "es": "Empuje",
+  "de": "Drücken",
+  "fr": "Poussée",
+  "it": "Spinta"
+ },
+ "Pull": {
+  "nl": "Trekken",
+  "es": "Tirón",
+  "de": "Ziehen",
+  "fr": "Tirage",
+  "it": "Trazione"
+ },
+ "Push B": {
+  "nl": "Duwen B",
+  "es": "Empuje B",
+  "de": "Drücken B",
+  "fr": "Poussée B",
+  "it": "Spinta B"
+ },
+ "Pull B": {
+  "nl": "Trekken B",
+  "es": "Tirón B",
+  "de": "Ziehen B",
+  "fr": "Tirage B",
+  "it": "Trazione B"
+ },
+ "Legs B": {
+  "nl": "Benen B",
+  "es": "Pierna B",
+  "de": "Beine B",
+  "fr": "Jambes B",
+  "it": "Gambe B"
+ },
+ "Easy day": {
+  "nl": "Rustige dag",
+  "es": "Día suave",
+  "de": "Lockerer Tag",
+  "fr": "Journée facile",
+  "it": "Giorno leggero"
+ },
+ "chest, shoulders, triceps": {
+  "nl": "borst, schouders, triceps",
+  "es": "pecho, hombros, tríceps",
+  "de": "Brust, Schultern, Trizeps",
+  "fr": "pectoraux, épaules, triceps",
+  "it": "petto, spalle, tricipiti"
+ },
+ "shoulders, chest, triceps": {
+  "nl": "schouders, borst, triceps",
+  "es": "hombros, pecho, tríceps",
+  "de": "Schultern, Brust, Trizeps",
+  "fr": "épaules, pectoraux, triceps",
+  "it": "spalle, petto, tricipiti"
+ },
+ "back, rear delts, biceps": {
+  "nl": "rug, achterste schouders, biceps",
+  "es": "espalda, deltoides posteriores, bíceps",
+  "de": "Rücken, hintere Schultern, Bizeps",
+  "fr": "dos, deltoïdes postérieurs, biceps",
+  "it": "schiena, deltoidi posteriori, bicipiti"
+ },
+ "squat, hinge, calves": {
+  "nl": "squat, heupscharnier, kuiten",
+  "es": "sentadilla, bisagra de cadera, gemelos",
+  "de": "Kniebeuge, Hüftbeuge, Waden",
+  "fr": "squat, charnière de hanche, mollets",
+  "it": "squat, cerniera dell'anca, polpacci"
+ },
+ "hinge, lunge, calves": {
+  "nl": "heupscharnier, lunge, kuiten",
+  "es": "bisagra de cadera, zancada, gemelos",
+  "de": "Hüftbeuge, Ausfallschritt, Waden",
+  "fr": "charnière de hanche, fente, mollets",
+  "it": "cerniera dell'anca, affondo, polpacci"
+ },
+ "walk or cycle": {
+  "nl": "wandelen of fietsen",
+  "es": "caminar o pedalear",
+  "de": "Gehen oder Radfahren",
+  "fr": "marcher ou pédaler",
+  "it": "camminare o pedalare"
+ },
+ "Full body, one day a week.": {
+  "nl": "Hele lichaam, één dag per week.",
+  "es": "Cuerpo completo, un día a la semana.",
+  "de": "Ganzkörper, ein Tag pro Woche.",
+  "fr": "Corps entier, un jour par semaine.",
+  "it": "Total body, un giorno a settimana."
+ },
+ "Upper and lower body, then push, pull and legs: {0} days a week.": {
+  "nl": "Boven- en onderlichaam, daarna duwen, trekken en benen: {0} dagen per week.",
+  "es": "Tren superior e inferior, luego empuje, tirón y pierna: {0} días a la semana.",
+  "de": "Ober- und Unterkörper, dann Drücken, Ziehen und Beine: {0} Tage pro Woche.",
+  "fr": "Haut et bas du corps, puis poussée, tirage et jambes : {0} jours par semaine.",
+  "it": "Parte superiore e inferiore, poi spinta, trazione e gambe: {0} giorni a settimana."
+ },
+ "Push, pull and legs, twice: {0} days a week.": {
+  "nl": "Duwen, trekken en benen, twee keer: {0} dagen per week.",
+  "es": "Empuje, tirón y pierna, dos veces: {0} días a la semana.",
+  "de": "Drücken, Ziehen und Beine, zweimal: {0} Tage pro Woche.",
+  "fr": "Poussée, tirage et jambes, deux fois : {0} jours par semaine.",
+  "it": "Spinta, trazione e gambe, due volte: {0} giorni a settimana."
+ },
+ "Push, pull and legs twice, and an easy day: 7 days a week.": {
+  "nl": "Twee keer duwen, trekken en benen, en een rustige dag: 7 dagen per week.",
+  "es": "Empuje, tirón y pierna dos veces, y un día suave: 7 días a la semana.",
+  "de": "Zweimal Drücken, Ziehen und Beine und ein lockerer Tag: 7 Tage pro Woche.",
+  "fr": "Poussée, tirage et jambes deux fois, et une journée facile : 7 jours par semaine.",
+  "it": "Spinta, trazione e gambe due volte, e un giorno leggero: 7 giorni a settimana."
+ },
+ "Plan check": {
+  "nl": "Schemacheck",
+  "es": "Revisión del plan",
+  "de": "Plan-Check",
+  "fr": "Vérification du plan",
+  "it": "Controllo del piano"
+ },
+ "Fix these with your AI": {
+  "nl": "Laat je AI dit oplossen",
+  "es": "Que tu IA lo corrija",
+  "de": "Von deiner KI beheben lassen",
+  "fr": "Faire corriger par ton IA",
+  "it": "Falli correggere alla tua IA"
+ },
+ "Claude is checking the plan…": {
+  "nl": "Claude controleert het schema…",
+  "es": "Claude está revisando el plan…",
+  "de": "Claude prüft den Plan…",
+  "fr": "Claude vérifie le plan…",
+  "it": "Claude sta controllando il piano…"
+ },
+ "+{0} more": {
+  "nl": "+{0} meer",
+  "es": "+{0} más",
+  "de": "+{0} weitere",
+  "fr": "+{0} de plus",
+  "it": "+{0} altri"
+ },
+ "No {0} in the week.": {
+  "nl": "Geen {0} in de week.",
+  "es": "Ningún {0} en la semana.",
+  "de": "Kein {0} in der Woche.",
+  "fr": "Aucun {0} dans la semaine.",
+  "it": "Nessun {0} nella settimana."
+ },
+ "squat or leg press": {
+  "nl": "squat of leg press",
+  "es": "sentadilla o prensa de piernas",
+  "de": "Kniebeuge oder Beinpresse",
+  "fr": "squat ou presse à cuisses",
+  "it": "squat o leg press"
+ },
+ "hinge (deadlift, hip thrust or back extension)": {
+  "nl": "heupscharnier (deadlift, hip thrust of rugstrekking)",
+  "es": "bisagra de cadera (peso muerto, hip thrust o extensión de espalda)",
+  "de": "Hüftbeuge (Kreuzheben, Hip Thrust oder Rückenstrecker)",
+  "fr": "charnière de hanche (soulevé de terre, hip thrust ou extension du dos)",
+  "it": "cerniera dell'anca (stacco, hip thrust o iperestensione)"
+ },
+ "press for chest or shoulders": {
+  "nl": "drukoefening voor borst of schouders",
+  "es": "press de pecho u hombros",
+  "de": "Drücken für Brust oder Schultern",
+  "fr": "développé pour pectoraux ou épaules",
+  "it": "spinta per petto o spalle"
+ },
+ "row, pull-up or pulldown": {
+  "nl": "roeioefening, optrekken of pulldown",
+  "es": "remo, dominada o jalón",
+  "de": "Rudern, Klimmzug oder Latzug",
+  "fr": "rowing, traction ou tirage vertical",
+  "it": "rematore, trazione o lat machine"
+ },
+ "{0} takes about {1} minutes, more than the {2} you have.": {
+  "nl": "{0} duurt ongeveer {1} minuten, meer dan de {2} die je hebt.",
+  "es": "{0} dura unos {1} minutos, más que los {2} que tienes.",
+  "de": "{0} dauert etwa {1} Minuten, länger als deine {2}.",
+  "fr": "{0} prend environ {1} minutes, plus que les {2} que tu as.",
+  "it": "{0} dura circa {1} minuti, più dei {2} che hai."
+ },
+ "{0} is hard on the shoulders.": {
+  "nl": "{0} is zwaar voor de schouders.",
+  "es": "{0} es duro para los hombros.",
+  "de": "{0} belastet die Schultern stark.",
+  "fr": "{0} est dur pour les épaules.",
+  "it": "{0} è pesante per le spalle."
+ },
+ "Trained once a week: {0}. Twice works better.": {
+  "nl": "Eén keer per week getraind: {0}. Twee keer werkt beter.",
+  "es": "Entrenado una vez a la semana: {0}. Dos veces funciona mejor.",
+  "de": "Einmal pro Woche trainiert: {0}. Zweimal wirkt besser.",
+  "fr": "Entraîné une fois par semaine : {0}. Deux fois marche mieux.",
+  "it": "Allenato una volta a settimana: {0}. Due volte funziona meglio."
+ },
+ "{0}: {1} hard sets a week, the range for you is {2} to {3}.": {
+  "nl": "{0}: {1} zware sets per week, voor jou is {2} tot {3} goed.",
+  "es": "{0}: {1} series duras a la semana; para ti el rango es de {2} a {3}.",
+  "de": "{0}: {1} harte Sätze pro Woche, für dich passen {2} bis {3}.",
+  "fr": "{0} : {1} séries dures par semaine, pour toi la fourchette est de {2} à {3}.",
+  "it": "{0}: {1} serie intense a settimana, per te l'intervallo è da {2} a {3}."
+ },
+ "{0}: {1} hard sets a week, below {2} to {3}, but your sessions are full.": {
+  "nl": "{0}: {1} zware sets per week, onder {2} tot {3}, maar je trainingen zitten vol.",
+  "es": "{0}: {1} series duras a la semana, por debajo de {2} a {3}, pero tus sesiones están llenas.",
+  "de": "{0}: {1} harte Sätze pro Woche, unter {2} bis {3}, aber deine Einheiten sind voll.",
+  "fr": "{0} : {1} séries dures par semaine, sous {2} à {3}, mais tes séances sont pleines.",
+  "it": "{0}: {1} serie intense a settimana, sotto {2}-{3}, ma le tue sedute sono piene."
+ },
+ "{0}: {1} hard sets a week, more than the {2} that is useful for you.": {
+  "nl": "{0}: {1} zware sets per week, meer dan de {2} die voor jou zin hebben.",
+  "es": "{0}: {1} series duras a la semana, más de las {2} que te sirven.",
+  "de": "{0}: {1} harte Sätze pro Woche, mehr als die {2}, die dir etwas bringen.",
+  "fr": "{0} : {1} séries dures par semaine, plus que les {2} utiles pour toi.",
+  "it": "{0}: {1} serie intense a settimana, più delle {2} utili per te."
+ },
+ "{0}: {1} hard sets for {2} in one session, more than 10.": {
+  "nl": "{0}: {1} zware sets voor {2} in één training, meer dan 10.",
+  "es": "{0}: {1} series duras de {2} en una sesión, más de 10.",
+  "de": "{0}: {1} harte Sätze für {2} in einer Einheit, mehr als 10.",
+  "fr": "{0} : {1} séries dures pour {2} en une séance, plus de 10.",
+  "it": "{0}: {1} serie intense per {2} in una seduta, più di 10."
+ },
+ "More pressing ({0} sets) than pulling ({1} sets) a week.": {
+  "nl": "Meer duwen ({0} sets) dan trekken ({1} sets) per week.",
+  "es": "Más empuje ({0} series) que tirón ({1} series) a la semana.",
+  "de": "Mehr Drücken ({0} Sätze) als Ziehen ({1} Sätze) pro Woche.",
+  "fr": "Plus de poussée ({0} séries) que de tirage ({1} séries) par semaine.",
+  "it": "Più spinta ({0} serie) che trazione ({1} serie) a settimana."
+ },
+ "{0}: {1} comes before a heavier lift.": {
+  "nl": "{0}: {1} komt vóór een zwaardere oefening.",
+  "es": "{0}: {1} va antes de un ejercicio más pesado.",
+  "de": "{0}: {1} kommt vor einer schwereren Übung.",
+  "fr": "{0} : {1} vient avant un exercice plus lourd.",
+  "it": "{0}: {1} viene prima di un esercizio più pesante."
+ },
+ "{0} and {1} come one after the other and both load {2}.": {
+  "nl": "{0} en {1} komen na elkaar en belasten allebei {2}.",
+  "es": "{0} y {1} van seguidos y ambos cargan {2}.",
+  "de": "{0} und {1} folgen aufeinander und belasten beide {2}.",
+  "fr": "{0} et {1} se suivent et sollicitent tous deux {2}.",
+  "it": "{0} e {1} sono uno dopo l'altro e caricano entrambi {2}."
+ },
+ "A fixed number of reps: {0}. A range such as 8 to 12 lets the weight go up in smaller steps.": {
+  "nl": "Een vast aantal herhalingen: {0}. Met een bereik zoals 8 tot 12 gaat het gewicht in kleinere stappen omhoog.",
+  "es": "Un número fijo de repeticiones: {0}. Un rango como 8 a 12 hace que el peso suba en pasos más pequeños.",
+  "de": "Eine feste Wiederholungszahl: {0}. Mit einem Bereich wie 8 bis 12 steigt das Gewicht in kleineren Schritten.",
+  "fr": "Un nombre fixe de répétitions : {0}. Une fourchette comme 8 à 12 fait monter la charge par petits pas.",
+  "it": "Un numero fisso di ripetizioni: {0}. Un intervallo come 8-12 fa salire il peso a passi più piccoli."
+ },
+ "The note on {0} has numbers or dates that go out of date.": {
+  "nl": "De notitie bij {0} heeft getallen of datums die verouderen.",
+  "es": "La nota de {0} tiene números o fechas que se quedan anticuados.",
+  "de": "Die Notiz zu {0} enthält Zahlen oder Daten, die veralten.",
+  "fr": "La note de {0} contient des chiffres ou des dates qui se périment.",
+  "it": "La nota di {0} ha numeri o date che invecchiano."
+ },
+ "{0} looks like a warm-up but counts as working sets.": {
+  "nl": "{0} lijkt een warming-up, maar telt als werksets.",
+  "es": "{0} parece un calentamiento pero cuenta como series de trabajo.",
+  "de": "{0} sieht nach Aufwärmen aus, zählt aber als Arbeitssätze.",
+  "fr": "{0} ressemble à un échauffement mais compte comme séries de travail.",
+  "it": "{0} sembra un riscaldamento ma conta come serie di lavoro."
+ },
+ "Counted from the name or body part: {0}.": {
+  "nl": "Geteld op naam of lichaamsdeel: {0}.",
+  "es": "Contado por el nombre o la parte del cuerpo: {0}.",
+  "de": "Nach Name oder Körperteil gezählt: {0}.",
+  "fr": "Compté d'après le nom ou la partie du corps : {0}.",
+  "it": "Contato dal nome o dalla parte del corpo: {0}."
+ },
+ "Not in the week, if there is room: {0}.": {
+  "nl": "Niet in de week, als er ruimte is: {0}.",
+  "es": "No está en la semana, si hay sitio: {0}.",
+  "de": "Nicht in der Woche, wenn Platz ist: {0}.",
+  "fr": "Absent de la semaine, s'il y a de la place : {0}.",
+  "it": "Non nella settimana, se c'è spazio: {0}."
+ },
+ "{0} is not an exercise in the list.": {
+  "nl": "{0} staat niet in de oefeningenlijst.",
+  "es": "{0} no es un ejercicio de la lista.",
+  "de": "{0} ist keine Übung aus der Liste.",
+  "fr": "{0} n'est pas un exercice de la liste.",
+  "it": "{0} non è un esercizio dell'elenco."
+ },
+ "Hamstrings": {
+  "nl": "Hamstrings",
+  "es": "Isquiotibiales",
+  "de": "Beinbeuger",
+  "fr": "Ischio-jambiers",
+  "it": "Femorali"
+ },
+ "Biceps": {
+  "nl": "Biceps",
+  "es": "Bíceps",
+  "de": "Bizeps",
+  "fr": "Biceps",
+  "it": "Bicipiti"
+ },
+ "Triceps": {
+  "nl": "Triceps",
+  "es": "Tríceps",
+  "de": "Trizeps",
+  "fr": "Triceps",
+  "it": "Tricipiti"
+ },
+ "Core": {
+  "nl": "Romp",
+  "es": "Core",
+  "de": "Rumpf",
+  "fr": "Gainage",
+  "it": "Core"
+ },
+ "Plans that are checked": {
+  "nl": "Schema's die gecontroleerd worden",
+  "es": "Planes que se revisan",
+  "de": "Pläne, die geprüft werden",
+  "fr": "Des plans vérifiés",
+  "it": "Piani che vengono controllati"
+ },
+ "Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.": {
+  "nl": "Mijn plan maken kiest een indeling voor je aantal dagen per week: hele lichaam, boven- en onderlichaam, of duwen, trekken en benen, en laat elke dag in je trainingstijd passen.",
+  "es": "Crear mi plan elige una división según tus días: cuerpo completo, tren superior e inferior, o empuje, tirón y pierna, y ajusta cada día a la duración de tu entrenamiento.",
+  "de": "Meinen Plan erstellen wählt eine Aufteilung für deine Tage: Ganzkörper, Ober- und Unterkörper oder Drücken, Ziehen und Beine, und passt jeden Tag an deine Trainingsdauer an.",
+  "fr": "Créer mon programme choisit une répartition selon tes jours : corps entier, haut et bas du corps, ou poussée, tirage et jambes, et ajuste chaque jour à la durée de ta séance.",
+  "it": "Crea il mio piano sceglie una suddivisione per i tuoi giorni: total body, parte superiore e inferiore, o spinta, trazione e gambe, e adatta ogni giorno alla durata dell'allenamento."
+ },
+ "Every weighted exercise gets a rep range: the app adds reps before it adds weight.": {
+  "nl": "Elke oefening met gewicht krijgt een bereik van herhalingen: de app voegt eerst herhalingen toe en daarna gewicht.",
+  "es": "Cada ejercicio con peso tiene un rango de repeticiones: la app suma repeticiones antes de subir el peso.",
+  "de": "Jede Übung mit Gewicht bekommt einen Wiederholungsbereich: Die App erhöht erst die Wiederholungen, dann das Gewicht.",
+  "fr": "Chaque exercice avec charge a une fourchette de répétitions : l'appli ajoute des répétitions avant d'ajouter du poids.",
+  "it": "Ogni esercizio con peso ha un intervallo di ripetizioni: l'app aggiunge ripetizioni prima di aumentare il peso."
+ },
+ "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI.": {
+  "nl": "Een schema van je AI wordt gecontroleerd: een spier maar één keer per week, geen squat of heupscharnier, meer duwen dan trekken. Met één tik gaat wat er gevonden is terug naar je AI.",
+  "es": "Un plan de tu IA se revisa: un músculo entrenado solo una vez a la semana, sin sentadilla ni bisagra, más empuje que tirón. Con un toque, lo que encontró vuelve a tu IA.",
+  "de": "Ein Plan deiner KI wird geprüft: ein Muskel nur einmal pro Woche, keine Kniebeuge oder Hüftbeuge, mehr Drücken als Ziehen. Mit einem Tippen geht das Ergebnis zurück an deine KI.",
+  "fr": "Un plan de ton IA est vérifié : un muscle travaillé une seule fois par semaine, pas de squat ni de charnière, plus de poussée que de tirage. D'un geste, ce qui a été trouvé retourne à ton IA.",
+  "it": "Un piano della tua IA viene controllato: un muscolo allenato una sola volta a settimana, niente squat né cerniera, più spinta che trazione. Con un tocco, ciò che ha trovato torna alla tua IA."
  }
 }

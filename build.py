@@ -5,6 +5,13 @@ HERE = pathlib.Path(__file__).parent
 build = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%MZ')  # sent along with every ticket
 src = (HERE / 'src' / 'yes-coach.html').read_text()
 brand = re.search(r'<h1 class="brand">.*?</h1>', src, re.S).group(0)
+# the exercise library as a file of its own, for the connector's plan check (it cannot read the page)
+import json, sys
+_lib = json.loads(re.search(r'const LIB = (\[.*?\]);\n', src).group(1))
+(HERE / 'exercise-library.json').write_text(json.dumps({'v': 1, 'exercises': [{k: l[k] for k in ('id', 'name', 'group', 'primary', 'secondary', 'equipment', 'shoulder', 'category', 'unit') if l.get(k) is not None} for l in _lib]}, separators=(',', ':'), ensure_ascii=False))
+sys.path.insert(0, str(HERE / 'tools'))
+import sync_plancheck
+sync_plancheck.sync()
 
 head = '''<link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -60,7 +67,7 @@ out = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
        + base_style + '\n<title>Yes Coach!</title>\n<meta name="yc-build" content="' + build + '">\n' + head + '</head><body class="signed-out">' + src[skel.end():])
 out = once(out, '<div class="stick" id="stick">', auth + '<div class="stick" id="stick">')
 out = once(out, '<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>',
-           '<script src="config.js"></script>\n<script src="vendor/supabase.js"></script>\n<script src="captcha.js"></script>\n<script src="plates.js"></script>\n<script src="progression.js"></script>\n<script src="share.js"></script>\n<script src="web.js"></script>\n<script src="tickets.js"></script>\n<script src="push.js"></script>\n<script src="strava.js"></script>\n<script src="vendor/d3.min.js"></script>')
+           '<script src="config.js"></script>\n<script src="vendor/supabase.js"></script>\n<script src="captcha.js"></script>\n<script src="plates.js"></script>\n<script src="progression.js"></script>\n<script src="plancheck.js"></script>\n<script src="starter.js"></script>\n<script src="share.js"></script>\n<script src="web.js"></script>\n<script src="tickets.js"></script>\n<script src="push.js"></script>\n<script src="strava.js"></script>\n<script src="vendor/d3.min.js"></script>')
 # no third party at runtime: the fonts come from this site (the claude.ai version keeps using Google Fonts)
 out, n = re.subn(r'<link rel="preconnect" href="https://fonts\.g[a-z]+\.com"[^>]*>\s*|<link rel="stylesheet" href="https://fonts\.googleapis\.com/[^"]+">\s*', '', out)
 assert n == 3, n
