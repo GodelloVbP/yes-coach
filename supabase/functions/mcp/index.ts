@@ -213,7 +213,7 @@ const PLANCHECK: any = (() => { const module: any = { exports: {} };
   var WARMUP_NAME = /warm-?up|mobility|stretch|rotation|cat-cow|foam roll|activation|dislocat/;
   function patternOf(name) {
     var n = String(name || '').toLowerCase();
-    if (/upright row/.test(n)) return '';
+    if (/upright row|reverse nordic/.test(n)) return '';
     for (var i = 0; i < PATTERNS.length; i += 1) if (PATTERNS[i][1].test(n)) return PATTERNS[i][0];
     return '';
   }
@@ -271,7 +271,7 @@ const PLANCHECK: any = (() => { const module: any = { exports: {} };
     freq: 'Trained once a week: {0}. Twice works better.',
     vol_low: '{0}: {1} hard sets a week, the range for you is {2} to {3}.',
     vol_low_time: '{0}: {1} hard sets a week, below {2} to {3}, but your sessions are full.',
-    vol_high: '{0}: {1} hard sets a week, more than the {3} that is useful for you.',
+    vol_high: '{0}: {1} hard sets a week, more than the {2} that is useful for you.',
     session_muscle: '{0}: {1} hard sets for {2} in one session, more than 10.',
     pull_push: 'More pressing ({0} sets) than pulling ({1} sets) a week.',
     order: '{0}: {1} comes before a heavier lift.',
@@ -303,7 +303,7 @@ const PLANCHECK: any = (() => { const module: any = { exports: {} };
     var lookup = function (id) { return describe(ctx.lookup ? ctx.lookup(id) : null); };
 
     days.forEach(function (d) {
-      var perMuscle = {}, compoundSets = {}, total = 0, firstCompound = {}, sawCompound = false, orderFlag = null;
+      var perMuscle = {}, mainSets = {}, compoundSets = {}, total = 0, firstCompound = {}, sawCompound = false, orderFlag = null;
       var sec = 5 * 60; // getting started
       var items = d.items;
       for (var i = 0; i < items.length; i += 1) {
@@ -326,7 +326,8 @@ const PLANCHECK: any = (() => { const module: any = { exports: {} };
           }
         }
         if (warm) continue;
-        if (x.warmupName || (x.role === 'cardio' && i === 0)) { add('warn', 'warmup_unmarked', [x.name || it.ex]); continue; } // a drill is not a working set: flagged, not counted
+        var strengthAfter = items.slice(i + 1).some(function (o) { return o && o.kind !== 'warmup' && lookup(o.ex).role !== 'cardio'; });
+        if (x.warmupName || (x.role === 'cardio' && i === 0 && strengthAfter)) { add('warn', 'warmup_unmarked', [x.name || it.ex]); continue; } // a drill is not a working set: flagged, not counted
         if (x.role === 'cardio') continue;
         if (x.estimated && estimated.indexOf(x.name) < 0) estimated.push(x.name);
         if (x.shoulder === 'skip' && ctx.shoulder) add('error', 'shoulder_skip', [x.name]);
@@ -336,9 +337,10 @@ const PLANCHECK: any = (() => { const module: any = { exports: {} };
         else if (x.role === 'isolation' && !sawCompound && !orderFlag) orderFlag = { name: x.name, after: false };
         if (x.pattern) seen[x.pattern] = true;
         if (x.pattern === 'hpush' || x.pattern === 'vpush') pushSets += sets * f;
-        if (x.pattern === 'hpull' || x.pattern === 'vpull') pullSets += sets * f;
+        if (x.pattern === 'hpull' || x.pattern === 'vpull' || (x.muscles.rear_delts || 0) >= 1) pullSets += sets * f; // rear-delt work (face pulls) counts as pulling
         Object.keys(x.muscles).forEach(function (m) {
           perMuscle[m] = (perMuscle[m] || 0) + sets * x.muscles[m];
+          if (x.muscles[m] >= 1) mainSets[m] = (mainSets[m] || 0) + sets;
           if (x.role === 'compound' && x.muscles[m] >= 1) compoundSets[m] = (compoundSets[m] || 0) + sets;
         });
         total += sets;
@@ -347,8 +349,8 @@ const PLANCHECK: any = (() => { const module: any = { exports: {} };
       Object.keys(perMuscle).forEach(function (m) {
         weekly[m].sets += perMuscle[m] * f;
         if (perMuscle[m] >= 2) weekly[m].sessions += f;
-        if (perMuscle[m] > 10 && MUSCLE_NAME[m]) add('warn', 'session_muscle', [d.name, r1(perMuscle[m]), MUSCLE_NAME[m].toLowerCase()]);
       });
+      Object.keys(mainSets).forEach(function (m) { if (mainSets[m] > 10 && MUSCLE_NAME[m] && m !== 'glutes') add('warn', 'session_muscle', [d.name, mainSets[m], MUSCLE_NAME[m].toLowerCase()]); });
       minutes.push(Math.round(sec / 60));
       daySets.push(compoundSets);
       if (sec / 60 > minutesAllowed * 1.2) add('error', 'over_time', [d.name, Math.round(sec / 60), minutesAllowed]);
@@ -359,7 +361,7 @@ const PLANCHECK: any = (() => { const module: any = { exports: {} };
       var has = m[0] === 'push' ? seen.hpush || seen.vpush : m[0] === 'pull' ? seen.hpull || seen.vpull : seen[m[0]];
       if (days.length && !has) add('error', 'missing', [m[1]]);
     });
-    var full = minutes.length && minutes.every(function (x) { return x >= minutesAllowed * 0.9; });
+    var full = minutes.length && minutes.every(function (x) { return x >= minutesAllowed * 0.8; });
     var once = [];
     MAJOR.forEach(function (m) { if (perWeek >= 3 && days.length >= 2 && weekly[m].sets > 0 && weekly[m].sessions < 1.5) once.push(MUSCLE_NAME[m]); });
     if (once.length) add('warn', 'freq', [once.join(', ')]);
@@ -367,11 +369,11 @@ const PLANCHECK: any = (() => { const module: any = { exports: {} };
       var b = MAJOR.indexOf(m) >= 0 ? bands.major : bands.small;
       var s = r1(weekly[m].sets);
       if (s < b[0]) add(full ? 'info' : 'warn', full ? 'vol_low_time' : 'vol_low', [MUSCLE_NAME[m], s, b[0], b[1]]);
-      else if (s > b[1] * 1.25) add('warn', 'vol_high', [MUSCLE_NAME[m], s, b[0], b[1]]);
+      else if (s > b[1] * 1.25 && m !== 'glutes') add('warn', 'vol_high', [MUSCLE_NAME[m], s, b[1]]); // glutes get counted in full from every squat and hinge
     });
     if (pushSets > pullSets * 1.1 + 1) add('warn', 'pull_push', [r1(pushSets), r1(pullSets)]);
     // the same muscles heavy on two days that follow each other in the order of the days
-    if (days.length >= 2) for (var k = 0; k < days.length; k += 1) {
+    if (days.length >= 2 && perWeek >= 4) for (var k = 0; k < days.length; k += 1) {
       var a = daySets[k], b2 = daySets[(k + 1) % days.length];
       if (k === days.length - 1 && days.length === 2) break;
       var both = MAJOR.filter(function (m) { return (a[m] || 0) >= 3 && (b2[m] || 0) >= 3; });

@@ -1937,6 +1937,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   [$('#mark'), $('#mark2')].forEach((m) => m.addEventListener('click', () => { setView('home'); window.scrollTo({ top: 0 }); }));
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
+    ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
     ['12 Nov 2026', "Claude and your plan", ["Send to Claude now tells Claude what to read, how to judge each exercise and how the weight moves, instead of one sentence.", "In Settings, Connected AI apps, choose Propose (the default: Claude suggests the next weights and waits for your yes) or Change it (Claude changes them itself and tells you)."]],
     ['11 Nov 2026', "Food search that understands English", ["Searching Food by an English word finds the Dutch food: bread, cheese, cola, fries, granola.", "Ask Claude to log a meal: it finds the right food more often, tells raw from cooked and counts drinks in ml."]],
     ['13 Nov 2026', "Your own foods folds away", ["On Food, Your own foods is folded by default, with the number of foods in its heading. Tap the heading to open it."]],
@@ -7227,14 +7228,24 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     }
     if (W.chat.length) o.push(W.adjust && W.chat.length === 1 ? '## Their current plan' : W.local && W.chat.length === 1 ? '## The starting plan Yes Coach made for them' : '## Your previous plan', JSON.stringify(W.chat[W.chat.length - 1].plan), '', '## What they want changed', W.chat[W.chat.length - 1].ask, '');
     o.push('## Rules');
-    o.push('- One training day per day they train, or a rotation of fewer days that repeats; fit the session length (about 45 min: 4-5 exercises, 60: 5-6, 90: 6-8).');
+    // the rules of PLAN_MAKER.md: the app runs plancheck.js on the answer and shows or sends back what fails
+    const dpw = Number(p.days_per_week) || 3;
+    const band = window.YC_PLANCHECK ? window.YC_PLANCHECK.bandsFor(p.experience, p.goal) : { major: [10, 16], small: [6, 10] };
+    const len = p.session_length || 'medium';
+    o.push('- The app checks the plan against these rules and sends back what fails, so build it to pass them.');
+    o.push('- Split for ' + dpw + ' training days a week: ' + ({ 1: 'one full-body day', 2: 'two full-body days', 3: 'three full-body days (with years of training: upper, lower, full body)', 4: 'upper, lower, upper, lower', 5: 'upper, lower, push, pull, legs', 6: 'push, pull, legs, twice', 7: 'push, pull, legs, twice, and an easy day (walking or cycling)' }[Math.min(7, Math.max(1, dpw))]) + '. Every major muscle at least twice a week when there are 3 or more training days. Never the same muscles heavy on two days that follow each other in the order of the days.');
+    o.push('- Weekly volume in hard sets per muscle (a set counts 1 for the muscles an exercise mainly trains, 0.5 for the ones it helps): chest, back, quads and hamstrings ' + band.major[0] + ' to ' + band.major[1] + '; biceps, triceps, side delts, rear delts and calves ' + band.small[0] + ' to ' + band.small[1] + '. At most 10 hard sets for one muscle in one session. At least as many pulling sets (rows, pull-ups, pulldowns, face pulls) as pressing sets.');
+    o.push('- Every week must have a squat or leg press, a hinge (deadlift, hip thrust or back extension), a press and a row, pull-up or pulldown. Then, while the session length allows: an overhead press (not with a shoulder problem), a leg curl, direct work for biceps, triceps, side delts, rear delts and calves, and core.');
+    o.push('- Each session (' + ({ short: 'about 45 minutes: 4 or 5 exercises, about 12 to 16 hard sets', medium: 'about 60 minutes: 5 or 6 exercises, about 16 to 20 hard sets', long: 'about 90 minutes: 6 to 8 exercises, about 20 to 26 hard sets' }[len] || 'about 60 minutes: 5 or 6 exercises') + ') in this order: main lift, other compound lifts, isolation, core.');
+    o.push('- Reps as a range for every weighted exercise, never one number: the main lift "' + ({ new: '8 to 10', years: '5 to 8' }[p.experience] || '6 to 10') + '" with rest_s 150 to 180, other compound lifts "8 to 12" with rest_s 90 to 120, isolation "10 to 15" ("12 to 20" for calves and side delts) with rest_s 60 to 90, core "10 to 15" or "30 to 45 s". The app adds reps before weight.');
+    o.push('- A warm-up exercise (a mobility drill, easy cardio) gets "warmup": true; it is not counted and gets no next weight. Do not write warm-up sets as working sets: the app adds ramp-up sets itself.');
     o.push('- Only use exercise ids from the list, and only equipment they have. Leave out exercises marked hard on shoulders if their notes mention a shoulder.');
     o.push('- target is the starting load in kg as a plain number in a string ("60"). With history: start each lift at about 90% of the load of its recent best set, at the planned reps, so the first weeks leave 2 to 3 reps in reserve; for a lift they have not done, scale from a similar lift they have done, or leave it "". Without history: never guess loads from age, sex or bodyweight; use "" and make that exercise\'s note a calibration cue such as "First session: find a weight you could lift about 12 times, then do 10". Use "" for bodyweight work and for machines with numbered pins. A load is a weight that exists at their gym: round it to their weight step when they gave one, else to the usual jump (2.5 kg for barbells and cables, 5 kg for barbell leg lifts, 2 kg for dumbbells), and raise a weight by one step at a time.');
-    o.push('- reps is text such as "8", "8 to 10", "10 per arm", "max", "30 s". rest_s is rest in seconds. note is one short coaching cue or null.');
+    o.push('- reps is text such as "8 to 12", "10 to 15 per arm", "max", "30 to 45 s". rest_s is rest in seconds. note is one short cue on how to do the exercise, or null: no weights, reps, dates or "hold until" in a note.');
     o.push('- kind is Push (chest, shoulders, triceps), Pull (back, biceps), Legs, or Other for full-body or mixed days.');
     if (unmatched.length) o.push('- mapping: for each of these names from their old app, the matching exercise id from the list, or null when nothing matches: ' + unmatched.map((n) => JSON.stringify(n)).join(', '));
     if (answerLang()) o.push('- ' + answerLang());
-    o.push('', 'Answer with JSON only, in this shape:', '{"summary": "2 or 3 sentences on why this plan suits them", "days": [{"name": "Push A", "kind": "Push", "focus": "a few words", "items": [{"ex": "l04", "sets": 3, "reps": "6 to 8", "target": "60", "rest_s": 150, "note": "short cue"}]}], "weekdays": ["Mon", "Wed", "Fri"], "mapping": {"old name": "l04"}}');
+    o.push('', 'Answer with JSON only, in this shape:', '{"summary": "2 or 3 sentences on why this plan suits them", "days": [{"name": "Push A", "kind": "Push", "focus": "a few words", "items": [{"ex": "l292", "sets": 1, "reps": "5 min", "target": "", "rest_s": 0, "note": null, "warmup": true}, {"ex": "l04", "sets": 3, "reps": "6 to 8", "target": "60", "rest_s": 150, "note": "short cue"}]}], "weekdays": ["Mon", "Wed", "Fri"], "mapping": {"old name": "l04"}}');
     return o.filter((x) => x !== '').join('\n');
   };
   // ---- adjusting the current plan: what the coach gets, and what changes
@@ -7296,6 +7307,47 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     ix.forEach((d, i) => { const g = (d - ix[(i + ix.length - 1) % ix.length] + 7) % 7 || 7; if (g > gap) { gap = g; base = d; } });
     return wd.map((w) => WEEKDAYS[(WEEKDAYS.indexOf(w) - base + s0 + 7) % 7]).sort((a, b) => ((WEEKDAYS.indexOf(a) - s0 + 7) % 7) - ((WEEKDAYS.indexOf(b) - s0 + 7) % 7));
   };
+  // an exercise of a plan for the plan check: a library id, or "ex:<id>" for one of the person's own
+  const planLookup = (id) => {
+    if (String(id).startsWith('ex:')) {
+      const e = S.exercises[String(id).slice(3)];
+      if (!e) return null;
+      const l = libOfEx(String(id).slice(3));
+      return Object.assign({ name: e.name, group: e.group, unit: e.unit, category: e.category }, l ? { primary: l.primary, secondary: l.secondary, shoulder: l.shoulder } : {});
+    }
+    return LIB_BY_ID.get(id) || null;
+  };
+  // fixes that need no judgement, on any plan an AI wrote: a range for one number of reps on a weighted lift, heavy lifts first
+  // (warm-ups stay on top), rest within what the kind of exercise needs
+  const fixItems = (items) => {
+    const PC = window.YC_PLANCHECK;
+    if (!PC) return items;
+    const info = (it) => PC.describe(planLookup(it.ex));
+    const rank = { cardio: 0, compound: 1, isolation: 2, core: 3 };
+    const warm = items.filter((it) => it.kind === 'warmup');
+    const work = items.filter((it) => it.kind !== 'warmup');
+    work.forEach((it) => {
+      const x = info(it);
+      const m = String(it.reps).match(/^\s*(\d+)\s*(per (arm|leg|side))?\s*$/);
+      if (m && x.unit !== 'bw' && x.role !== 'cardio' && x.role !== 'core') {
+        const n0 = Number(m[1]);
+        it.reps = (x.role === 'compound' ? Math.max(3, n0 - 2) + ' to ' + (n0 + 2) : n0 + ' to ' + (n0 + 5)) + (m[2] ? ' ' + m[2] : '');
+      }
+      if (x.role === 'compound') it.rest_s = Math.min(240, Math.max(90, it.rest_s));
+      else if (x.role === 'isolation') it.rest_s = Math.min(120, Math.max(45, it.rest_s));
+    });
+    const sorted = work.map((it, i) => [it, i]).sort((a, b) => (rank[info(a[0]).role] - rank[info(b[0]).role]) || a[1] - b[1]).map(([it]) => it);
+    return warm.concat(sorted);
+  };
+  // the check of a plan in the start screen; the findings worth showing (errors and warnings)
+  const wizCheck = (plan) => {
+    const PC = window.YC_PLANCHECK;
+    if (!PC || !plan) return [];
+    const p = W.profile || {};
+    const r = PC.check({ perWeek: plan.weekdays.length || plan.days.length, days: plan.days }, { lookup: planLookup, experience: p.experience, goal: p.goal, length: p.session_length, shoulder: /shoulder|schouder|schulter|épaule|epaule|spalla|hombro/i.test(W.notes || '') });
+    return r.findings.filter((f) => f.level !== 'info');
+  };
+  const fixRequest = (bad) => 'Fix what the app\'s check found in this plan, and keep the rest:\n' + bad.map((f) => '- ' + f.text).join('\n');
   const cleanPlan = (p) => {
     const days = (Array.isArray(p && p.days) ? p.days : []).slice(0, 7).map((d, i) => ({
       name: String((d && d.name) || 'Day ' + (i + 1)).slice(0, 40),
@@ -7306,7 +7358,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         rest_s: intIn(it.rest_s, 0, 600, 90), note: it.note ? String(it.note).slice(0, 140) : null,
         ...(it.kind === 'warmup' || it.warmup === true ? { kind: 'warmup' } : {}),
       })),
-    })).filter((d) => d.items.length);
+    })).map((d) => Object.assign(d, { items: fixItems(d.items) })).filter((d) => d.items.length);
     if (!days.length) return null;
     let wd = [...new Set((Array.isArray(p.weekdays) ? p.weekdays : []).map((x) => String(x).slice(0, 3)).filter((x) => WEEKDAYS.includes(x)))];
     if (!wd.length) wd = DAY_PATTERNS[W.profile.days_per_week] || DAY_PATTERNS[Math.min(days.length, 7)] || DAY_PATTERNS[3];
@@ -7317,36 +7369,16 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return { days, weekdays: wd, summary: String(p.summary || '').slice(0, 600), mapping };
   };
 
-  // ---- a first plan made in the app, without an AI: hand-picked days per place, cut to the session length.
-  // Full body for 2 or 3 days a week, upper and lower body on alternating days for 4 or more (no push next to pull).
-  const STARTER = {
-    gym: {
-      full: [['Full body A', 'Other', 'squat, press, row', ['l42', 'l04', 'l14', 'l50', 'l22', 'l36', 'l30']],
-        ['Full body B', 'Other', 'legs, shoulders, pull-down', ['l43', 'l20', 'l10', 'l53', 'l02', 'l34', 'l55']],
-        ['Full body C', 'Other', 'lunge, chest, row', ['l46', 'l01', 'l16', 'l51', 'l25', 'l31', 'l63']]],
-      split: [['Upper A', 'Other', 'chest, back, shoulders', ['l04', 'l10', 'l20', 'l14', 'l22', 'l36', 'l30']],
-        ['Lower A', 'Legs', 'squat, hinge', ['l42', 'l50', 'l45', 'l51', 'l55', 'l60']],
-        ['Upper B', 'Other', 'chest, back, arms', ['l02', 'l16', 'l21', 'l116', 'l25', 'l38', 'l34']],
-        ['Lower B', 'Legs', 'legs, glutes', ['l43', 'l53', 'l46', 'l52', 'l56', 'l58']]],
-    },
-    home: {
-      full: [['Full body A', 'Other', 'squat, press, row', ['l48', 'l087', 'l095', 'l50', 'l22', 'l30', 'l62']],
-        ['Full body B', 'Other', 'lunge, shoulders, push-up', ['l196', 'l20', 'l08', 'l212', 'l24', 'l39', 'l58']],
-        ['Full body C', 'Other', 'lunge, press, row', ['l198', 'l087', 'l095', 'l238', 'l127', 'l31', 'l63']]],
-      split: [['Upper A', 'Other', 'chest, back, shoulders', ['l087', 'l095', 'l20', 'l22', 'l30', 'l39']],
-        ['Lower A', 'Legs', 'squat, hinge', ['l48', 'l50', 'l198', 'l240', 'l62']],
-        ['Upper B', 'Other', 'push-up, back, arms', ['l08', 'l095', 'l127', 'l24', 'l31', 'l176']],
-        ['Lower B', 'Legs', 'legs, glutes', ['l196', 'l212', 'l194', 'l218', 'l58']]],
-    },
-    bodyweight: {
-      full: [['Full body A', 'Other', 'squat, push-up, row', ['l206', 'l08', 'l103', 'l218', 'l145', 'l58']],
-        ['Full body B', 'Other', 'legs, push-up, back', ['l208', 'l082', 'l123', 'l219', 'l165', 'l62']],
-        ['Full body C', 'Other', 'jump, push-up, row', ['l209', 'l08', 'l103', 'l241', 'l266', 'l285']]],
-    },
+  // ---- a first plan made in the app, without an AI: starter.js picks the split and the exercises by role, plancheck.js checks it
+  // (both pure and tested on every combination: tests/starter.test.mjs). The rules are in PLAN_MAKER.md.
+  const planEnv = (p) => {
+    const PC = window.YC_PLANCHECK;
+    const len = p.session_length || 'medium';
+    const lookup = (id) => LIB_BY_ID.get(id);
+    return { lib: LIB_BY_ID, fits: fitsPlace, describe: PC.describe,
+      minutes: (day) => PC.check({ perWeek: 1, days: [day] }, { lookup, length: len }).minutes[0],
+      check: (pl) => PC.check(pl, { lookup, experience: p.experience, goal: p.goal, length: len }) };
   };
-  // new to the gym: machines and dumbbells in place of the heavy barbell lifts
-  const STARTER_NEW = { l42: 'l48', l04: 'l01', l50: 'l212' };
-  const STARTER_LEN = { short: 4, medium: 5, long: 7 };
   const planReps = (r) => { const m = String(r || '').match(/\d+/); return m ? Number(m[0]) : 10; };
   const noLoad = (l) => /^(bodyweight|none|wall|step|bench or box|bar or rings)$/i.test(String(l.equipment || '').trim());
   // From an imported history: per library exercise, how many dates it was trained and the best estimated 1RM of the last 6 weeks.
@@ -7365,42 +7397,37 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return out;
   };
   const localPlan = (p, rows) => {
-    const where = STARTER[p.where] ? p.where : 'gym';
-    const n = Math.min(6, Math.max(2, Number(p.days_per_week) || 3));
-    const kit = STARTER[where];
-    const set = n >= 4 && kit.split ? kit.split : kit.full;
-    const days = set.slice(0, n >= 4 && kit.split ? 4 : Math.min(n, set.length));
-    const len = STARTER_LEN[p.session_length] || STARTER_LEN.medium;
+    const where = ['gym', 'home', 'bodyweight'].includes(p.where) ? p.where : 'gym';
+    const base = window.YC_STARTER.build(Object.assign({}, p, { where }), planEnv(p));
     const stats = historyStats(rows);
     const hist = stats.size > 0;
+    const describe = window.YC_PLANCHECK.describe;
     return {
       summary: [
-        n >= 4 && kit.split ? 'Upper and lower body on alternating days, ' + n + ' days a week.' : 'Full body, ' + n + ' days a week.',
+        base.summary,
         hist ? 'Starting weights are a little below your recent best.' : 'The first week is for finding your weights.',
         where === 'bodyweight' ? 'Inverted rows need a sturdy table or a bar at hip height.' : '',
       ].filter(Boolean).join(' '),
-      weekdays: DAY_PATTERNS[n],
-      days: days.map(([name, kind, focus, ids]) => {
-        const used = new Set();
-        const swapped = new Set(); // history lifts already taken by an earlier pick of this day
-        const items = ids.map((id) => (p.experience === 'new' && STARTER_NEW[id] && fitsPlace(LIB_BY_ID.get(STARTER_NEW[id]), where) ? STARTER_NEW[id] : id)).map((id) => {
-          // a lift from their history for the same muscles takes the place of the picked one, when they trained it often
-          const l = LIB_BY_ID.get(id);
-          if (hist && !stats.has(id)) {
-            const mine = [...stats.entries()].filter(([x, o]) => o.dates.size >= 3 && !swapped.has(x) && !ids.includes(x) && LIB_BY_ID.get(x).group === l.group && fitsPlace(LIB_BY_ID.get(x), where)).sort((a, b) => b[1].dates.size - a[1].dates.size)[0];
-            if (mine) { swapped.add(mine[0]); return mine[0]; }
+      weekdays: DAY_PATTERNS[base.perWeek],
+      days: base.days.map((d) => {
+        const used = new Set(d.items.map((it) => it.ex));
+        const items = d.items.map((it) => {
+          // a lift from their history for the same movement and muscles takes the place of the picked one, when they trained it often
+          let id = it.ex;
+          const l0 = LIB_BY_ID.get(id);
+          if (hist && !stats.has(id) && it.role !== 'cardio') {
+            const pat = describe(l0).pattern;
+            const mine = [...stats.entries()].filter(([x, o]) => o.dates.size >= 3 && !used.has(x) && LIB_BY_ID.get(x).group === l0.group && describe(LIB_BY_ID.get(x)).pattern === pat && fitsPlace(LIB_BY_ID.get(x), where) && LIB_BY_ID.get(x).shoulder !== 'skip').sort((a, b) => b[1].dates.size - a[1].dates.size)[0];
+            if (mine) { used.add(mine[0]); id = mine[0]; }
           }
-          return id;
-        }).filter((id) => { if (used.has(id)) return false; used.add(id); return true; }).slice(0, len).map((id, k) => {
           const l = LIB_BY_ID.get(id);
-          const reps = String(l.reps || '10');
           const st = stats.get(id);
-          // planned reps with about 2 in reserve, from the best estimated 1RM, to the nearest 2.5 kg
-          const target = st && st.best && !noLoad(l) && /^\d/.test(reps) && !/\bs\b/.test(reps) ? String(Math.max(0, Math.round(st.best / (1 + (planReps(reps) + 2) / 30) / 2.5) * 2.5)) : '';
-          return { ex: id, sets: Math.min(l.sets || 3, p.experience === 'new' ? 3 : 4), reps, target, rest_s: where === 'bodyweight' ? 60 : k === 0 ? 150 : k === 1 ? 120 : 90,
-            note: !target && !noLoad(l) ? 'First time: pick a weight that leaves 2 or 3 reps in reserve.' : null };
+          // the low end of the planned reps with about 2 in reserve, from the best estimated 1RM, to the nearest 2.5 kg
+          const target = st && st.best && !noLoad(l) && /^\d/.test(it.reps) && !/\bs\b/.test(it.reps) ? String(Math.max(0, Math.round(st.best / (1 + (planReps(it.reps) + 2) / 30) / 2.5) * 2.5)) : '';
+          return { ex: id, sets: it.sets, reps: it.reps, target, rest_s: it.rest_s,
+            note: it.role !== 'cardio' && !target && !noLoad(l) ? 'First time: pick a weight that leaves 2 or 3 reps in reserve.' : null };
         });
-        return { name, kind, focus, items };
+        return { name: d.name, kind: d.kind, focus: d.focus, items };
       }),
       mapping: {},
     };
@@ -7608,8 +7635,15 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       if (W.src !== 'none' && W.file && !W.rows && !(window.YC_WEB && W.src === 'other')) { wizStep('busy', 'Reading your ' + optName(WIZ_SOURCES, W.src) + ' export…'); W.rows = await parseExport(W.file, W.src); }
       if (!(window.claude && window.claude.use)) { wizStep(window.YC_WEB ? 'manual' : 'error', window.YC_WEB ? '' : COACH_ERRORS.unavailable); return; } // no AI in this page: straight to the copy-and-paste step
       wizStep('busy', W.chat.length ? 'Claude is changing the plan…' : 'Claude is building your plan…');
-      const plan = cleanPlan(await askCoach(planPrompt()));
+      let plan = cleanPlan(await askCoach(planPrompt()));
       if (!plan) throw { code: 'empty_plan' };
+      // one round of fixing what the check finds; the better answer is kept
+      const bad = wizCheck(plan);
+      if (bad.length) {
+        wizStep('busy', 'Claude is checking the plan…');
+        const again = cleanPlan(await askCoach(planPrompt() + '\n\n## Your answer\n' + JSON.stringify({ summary: plan.summary, days: plan.days, weekdays: plan.weekdays }) + '\n\n## ' + fixRequest(bad) + '\nAnswer with the whole plan again, in the same JSON shape.').catch(() => null));
+        if (again && wizCheck(again).length < bad.length) plan = again;
+      }
       W.plan = plan;
       wizStep('preview');
     } catch (e) {
@@ -7828,6 +7862,20 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     // preview
     const plan = W.plan;
     if (plan.summary) box.append(h('p', '', plan.summary));
+    // an AI's plan is checked; up to 3 findings, with one tap to send them back
+    const bad = !W.local || W.chat.length ? wizCheck(plan) : [];
+    if (bad.length) {
+      const ck = h('div', 'pw-ai wz-check');
+      ck.append(h('span', 'lab', 'Plan check'));
+      const ul = h('ul', 'wz-items');
+      bad.slice(0, 3).forEach((f) => ul.append(h('li', f.level === 'error' ? 'bad' : '', f.text)));
+      if (bad.length > 3) ul.append(h('li', 'note', '+' + (bad.length - 3) + ' more'));
+      const fix = btn('skew small', 'Fix these with your AI');
+      fix.id = 'wz-fix';
+      fix.addEventListener('click', () => { W.chat.push({ plan: { summary: plan.summary, days: plan.days, weekdays: plan.weekdays }, ask: fixRequest(bad) }); buildPlan(); });
+      ck.append(ul, fix);
+      box.append(ck);
+    }
     if (W.adjust) {
       const diff = planDiff(W.chat[0].plan, plan);
       const ch = h('div', 'pw-ai');

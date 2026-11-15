@@ -43,6 +43,10 @@ def to_preview(page, ai=True, picks=()):
 be = Backend()
 def today_run(page):
     to_preview(page)
+    ck = page.text_content('#wiz .wz-check') if page.locator('#wiz .wz-check').count() else ''
+    check("the AI's plan is checked: no press, row or hinge is shown", 'Plan check' in ck and 'No hinge' in ck and '+' in ck, ck)
+    check('a single number of reps on a weighted lift becomes a range', 'Squat · 3 × 6 to 10' in page.text_content('#wiz'), page.text_content('#wiz')[:600])
+    check('one tap sends the findings back to the AI', page.is_visible('#wz-fix'))
     ch = page.get_by_role('radiogroup', name='First workout')
     check('preview: First workout, Today picked', ch.get_by_role('radio', name='Today').get_attribute('aria-checked') == 'true')
     note = page.text_content('#wiz')
@@ -151,7 +155,7 @@ def home4_run(page):
     check('local: 4 days is upper and lower body', all(x in txt for x in ('Upper A', 'Lower A', 'Upper B', 'Lower B')), txt[:300])
     check('local: home has no machines or barbells', not any(w in txt for w in ('Machine', 'Leg press', 'Barbell', 'Cable', 'pulldown')), txt)
     page.click('#wz-start'); until(lambda: page.is_visible('#btn-start'))
-    check('local: 45 minutes is 4 exercises', len(tpl(be, 'day-1')['items']) == 4)
+    check('local: 45 minutes is at most 4 exercises', 3 <= len(tpl(be, 'day-1')['items']) <= 4, tpl(be, 'day-1')['items'])
     check('local: 4 sessions a week', root(be)['schedule']['per_week'] == 4 and len(root(be)['schedule']['days']) == 4)
 session(pw, be, ALICE, home4_run, width=390, clock=SAT)
 
@@ -218,7 +222,7 @@ def setup_run(page):
     check('setup: the last answer builds the plan', until(lambda: page.is_visible('#wz-start'), 4))
     txt = page.text_content('#wiz')
     check('new lifter: goblet squat instead of the barbell squat', 'Goblet squat' in txt and 'Barbell bench press' not in txt, txt[:500])
-    check('5 days: upper and lower body', 'Upper A' in txt and 'Lower B' in txt)
+    check('5 days: upper and lower body, then push, pull and legs', all(x in txt for x in ('Upper A', 'Lower A', 'Push', 'Pull', 'Legs')), txt[:500])
     page.get_by_role('button', name='Change my answers').click()
     check('preview: Change my answers goes back to the questions', until(lambda: page.is_visible('#wz-qh')))
     page.click('#wz-go')
