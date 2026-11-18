@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-s2d82R25gWKpCoEpMp0fh34J2MiJzEyjDWmKDHE7qrI=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-JnBe9hNeTZ0fvjHEx1Am92ZYBjHK1TMifP+8wE+ZNjQ=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-15 19:35Z">
+<meta name="yc-build" content="2026-11-18 16:03Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -366,14 +366,14 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .sets { display: flex; flex-direction: column; gap: 0.375rem; max-width: 32rem; }
 .set { position: relative; display: grid; grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) minmax(0, 1.25fr) 3.5rem; gap: 0.375rem; align-items: end; min-height: 56px; }
 .set.one { grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) 3.5rem; }
-.set.rir { grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) minmax(0, 1.25fr) 2.75rem 3.5rem; }
-.set.rir.one { grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) 2.75rem 3.5rem; }
+.set.rir { grid-template-columns: 2.5rem 3.25rem minmax(0, 0.8fr) minmax(0, 1.5fr) 2.25rem 3.5rem; column-gap: 0.25rem; }
+.set.rir.one { grid-template-columns: 2.5rem 3.25rem minmax(0, 1fr) 2.25rem 3.5rem; column-gap: 0.25rem; }
 .set.run { grid-template-columns: 2.75rem repeat(2, minmax(0, 1fr)) 3.5rem; gap: 0.5rem; }
 /* the columns are named once, above the rows; a row keeps only its numbers (the text stays for screen readers, and the dot that marks an edited value) */
 .set-head { display: grid; grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) minmax(0, 1.25fr) 3.5rem; gap: 0.375rem; min-height: 0; align-items: center; font-family: var(--f-head); font-size: var(--t1); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); padding-bottom: 0.125rem; }
 .set-head.one { grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) 3.5rem; }
-.set-head.rir { grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) minmax(0, 1.25fr) 2.75rem 3.5rem; }
-.set-head.rir.one { grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr) 2.75rem 3.5rem; }
+.set-head.rir { grid-template-columns: 2.5rem 3.25rem minmax(0, 0.8fr) minmax(0, 1.5fr) 2.25rem 3.5rem; column-gap: 0.25rem; }
+.set-head.rir.one { grid-template-columns: 2.5rem 3.25rem minmax(0, 1fr) 2.25rem 3.5rem; column-gap: 0.25rem; }
 .set-head span { text-align: center; white-space: nowrap; }
 .set:not(.run) .fld small { font-size: 0; }
 /* your note for the exercise: open under its name, in its own colour, so it reads as yours and not as a field */
@@ -414,6 +414,9 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .fld.sug input { color: var(--ink-soft); font-weight: 600; }
 .fld-d { position: absolute; left: 0; top: -0.375rem; font-family: var(--f-head); font-size: var(--t1); font-weight: 700; line-height: 1; color: var(--ink-soft); white-space: nowrap; pointer-events: none; }
 .fld-d[hidden] { display: none; }
+.set:not(.run) .fld { gap: 0; }
+/* in a set row the "you changed this" dot sits in the corner: it must not take width from the number */
+.set:not(.run) .fld.edited small::after { position: absolute; right: 0; top: 0.125rem; margin: 0; }
 .fld.edited small::after { content: ""; display: inline-block; width: 7px; height: 7px; margin-left: 5px; border-radius: 50%; background: var(--ink); vertical-align: 0.15em; }
 .set-tick { position: relative; width: 3.5rem; height: 3.5rem; display: inline-flex; align-items: center; justify-content: center; border: 2px solid var(--ink); background: var(--paper); color: var(--ink); font-family: var(--f-head); font-size: var(--t4); font-weight: 700; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transform: skewX(-8deg); padding: 0; }
 .set-tick > span { display: inline-block; transform: skewX(8deg); visibility: hidden; }
@@ -2011,6 +2014,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['18 Nov 2026', "Numbers no longer cut off", ["With the RIR column on, a weight like 15,8 or 102,5 now fits in its box. The dot that shows you changed a value moved to the corner and no longer takes room from the number."]],
     ['15 Nov 2026', "Smaller steps on big jumps", ["When the next weight is a big jump (8 to 10 kg dumbbells is 25% more), the app asks for a few more reps at the same weight first.", "Bodyweight exercises with fewer than 5 reps two sessions running get a hint to try the assisted version."]],
     ['12 Nov 2026', "Claude and your plan", ["Send to Claude now tells Claude what to read, how to judge each exercise and how the weight moves, instead of one sentence.", "In Settings, Connected AI apps, choose Propose (the default: Claude suggests the next weights and waits for your yes) or Change it (Claude changes them itself and tells you)."]],
     ['11 Nov 2026', "Food search that understands English", ["Searching Food by an English word finds the Dutch food: bread, cheese, cola, fries, granola.", "Ask Claude to log a meal: it finds the right food more often, tells raw from cooked and counts drinks in ml."]],
@@ -3839,7 +3843,17 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return wrap;
   };
 
-  const setWidth = (inp) => { const len = Math.max(String(inp.value || inp.placeholder || '').length, 1); inp.style.width = (len + 0.5) + 'ch'; };
+  // the box grows with what is typed; when the column is too narrow for it (a 5-character weight on a small phone) the number
+  // gets a smaller size instead of losing its last digit
+  const setWidth = (inp) => {
+    const len = Math.max(String(inp.value || inp.placeholder || '').length, 1);
+    inp.style.width = (len + 0.5) + 'ch';
+    inp.style.fontSize = '';
+    for (const size of ['1.625rem', '1.375rem']) {
+      if (!inp.clientWidth || inp.scrollWidth <= inp.clientWidth + 1) break;
+      inp.style.fontSize = size;
+    }
+  };
 
   // one header for the columns of an exercise, so a row does not repeat "reps" and "kg"
   const buildSetHead = (item, unit, ex) => {

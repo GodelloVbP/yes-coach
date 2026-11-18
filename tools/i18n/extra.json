@@ -7621,5 +7621,19 @@
   "de": "Du trainierst etwa {0}-mal pro Woche und der Plan ist auf {1} ausgelegt, also kommt jeder Tag seltener dran als geplant. Weniger, vollere Tage passen besser.",
   "fr": "Tu t’entraînes environ {0} fois par semaine et le programme est prévu pour {1}, donc chaque jour revient moins souvent que prévu. Moins de jours, plus complets, conviennent mieux.",
   "it": "Ti alleni circa {0} volte a settimana e il piano è impostato su {1}, quindi ogni giorno torna meno spesso del previsto. Meno giorni, più completi, funzionano meglio."
+ },
+ "Numbers no longer cut off": {
+  "nl": "Cijfers worden niet meer afgekapt",
+  "es": "Los números ya no se cortan",
+  "de": "Zahlen werden nicht mehr abgeschnitten",
+  "fr": "Les chiffres ne sont plus coupés",
+  "it": "I numeri non vengono più tagliati"
+ },
+ "With the RIR column on, a weight like 15,8 or 102,5 now fits in its box. The dot that shows you changed a value moved to the corner and no longer takes room from the number.": {
+  "nl": "Met de RIR-kolom aan past een gewicht als 15,8 of 102,5 nu in zijn vakje. De stip die laat zien dat je een waarde hebt aangepast zit nu in de hoek en neemt geen ruimte meer van het getal af.",
+  "es": "Con la columna RIR activada, un peso como 15,8 o 102,5 ya cabe en su casilla. El punto que indica que cambiaste un valor pasó a la esquina y ya no quita espacio al número.",
+  "de": "Mit eingeschalteter RIR-Spalte passt ein Gewicht wie 15,8 oder 102,5 jetzt in sein Feld. Der Punkt, der zeigt, dass du einen Wert geändert hast, sitzt jetzt in der Ecke und nimmt der Zahl keinen Platz mehr weg.",
+  "fr": "Avec la colonne RIR activée, une charge comme 15,8 ou 102,5 tient maintenant dans sa case. Le point qui indique que tu as modifié une valeur est passé dans le coin et ne prend plus de place au chiffre.",
+  "it": "Con la colonna RIR attiva, un peso come 15,8 o 102,5 ora entra nella sua casella. Il punto che indica che hai modificato un valore si è spostato nell'angolo e non toglie più spazio al numero."
  }
 }
