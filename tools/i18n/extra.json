@@ -7635,5 +7635,12 @@
   "de": "Mit eingeschalteter RIR-Spalte passt ein Gewicht wie 15,8 oder 102,5 jetzt in sein Feld. Der Punkt, der zeigt, dass du einen Wert geändert hast, sitzt jetzt in der Ecke und nimmt der Zahl keinen Platz mehr weg.",
   "fr": "Avec la colonne RIR activée, une charge comme 15,8 ou 102,5 tient maintenant dans sa case. Le point qui indique que tu as modifié une valeur est passé dans le coin et ne prend plus de place au chiffre.",
   "it": "Con la colonna RIR attiva, un peso come 15,8 o 102,5 ora entra nella sua casella. Il punto che indica che hai modificato un valore si è spostato nell'angolo e non toglie più spazio al numero."
+ },
+ "Add exercise in a workout: the list now fills the screen down to the bar, so its last results are no longer hidden behind Next exercise.": {
+  "nl": "Oefening toevoegen in een training: de lijst vult nu het scherm tot aan de balk, dus de laatste resultaten zitten niet meer achter Volgende oefening.",
+  "es": "Añadir ejercicio en un entrenamiento: la lista ahora llena la pantalla hasta la barra, así que los últimos resultados ya no quedan detrás de Siguiente ejercicio.",
+  "de": "Übung hinzufügen im Training: Die Liste füllt jetzt den Bildschirm bis zur Leiste, die letzten Ergebnisse liegen nicht mehr hinter Nächste Übung.",
+  "fr": "Ajouter un exercice pendant une séance : la liste remplit maintenant l’écran jusqu’à la barre, les derniers résultats ne sont plus cachés derrière Exercice suivant.",
+  "it": "Aggiungi esercizio in un allenamento: l'elenco ora riempie lo schermo fino alla barra, quindi gli ultimi risultati non sono più nascosti dietro Esercizio successivo."
  }
 }

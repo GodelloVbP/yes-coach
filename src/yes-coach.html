@@ -428,7 +428,7 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .pk-chip { flex: none; min-height: 44px; font-size: var(--t2); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); background: var(--paper); border: 2px solid var(--ctl); padding: 0 0.875rem; transform: skewX(-14deg); cursor: pointer; white-space: nowrap; }
 .pk-chip > span { display: inline-block; transform: skewX(14deg); }
 .pk-chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-.pk-list { max-height: 30rem; overflow-y: auto; overscroll-behavior: contain; border-top: 2px solid var(--ink); }
+.pk-list { max-height: 30rem; overflow-y: auto; scroll-padding-bottom: 0.5rem; overscroll-behavior: contain; border-top: 2px solid var(--ink); }
 .pk-gh { position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; padding: 0.25rem 0.75rem; background: var(--faint); color: var(--ink); font-size: var(--t2); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
 .pk-item.alt { background: var(--blk-b); }
 .pk-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.25rem 1rem; align-items: start; padding: 1rem 0.5rem; border-bottom: 1px solid var(--line); }
@@ -1952,7 +1952,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
-    ['18 Nov 2026', "Numbers no longer cut off", ["With the RIR column on, a weight like 15,8 or 102,5 now fits in its box. The dot that shows you changed a value moved to the corner and no longer takes room from the number."]],
+    ['18 Nov 2026', "Numbers no longer cut off", ["With the RIR column on, a weight like 15,8 or 102,5 now fits in its box. The dot that shows you changed a value moved to the corner and no longer takes room from the number.", "Add exercise in a workout: the list now fills the screen down to the bar, so its last results are no longer hidden behind Next exercise."]],
     ['15 Nov 2026', "Smaller steps on big jumps", ["When the next weight is a big jump (8 to 10 kg dumbbells is 25% more), the app asks for a few more reps at the same weight first.", "Bodyweight exercises with fewer than 5 reps two sessions running get a hint to try the assisted version."]],
     ['12 Nov 2026', "Claude and your plan", ["Send to Claude now tells Claude what to read, how to judge each exercise and how the weight moves, instead of one sentence.", "In Settings, Connected AI apps, choose Propose (the default: Claude suggests the next weights and waits for your yes) or Change it (Claude changes them itself and tells you)."]],
     ['11 Nov 2026', "Food search that understands English", ["Searching Food by an English word finds the Dutch food: bread, cheese, cola, fries, granola.", "Ask Claude to log a meal: it finds the right food more often, tells raw from cooked and counts drinks in ml."]],
@@ -4627,8 +4627,31 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     setOpen(addBtn, pk, true);
     const s = $('.pk-search', pk);
     if (s) s.focus({ preventScroll: true });
-    pk.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    // the search goes up under the header, then the list takes the room down to the bar
+    const under = [...document.querySelectorAll('.stick, .chips-wrap')].filter((e) => e.getClientRects().length && getComputedStyle(e).position === 'sticky').reduce((m, e) => Math.max(m, e.getBoundingClientRect().bottom), 0);
+    window.scrollBy(0, pk.getBoundingClientRect().top - under - 4);
+    fitPicker(pk);
+    requestAnimationFrame(() => fitPicker(pk));
   };
+  // The list gets the room between its top and whatever is fixed at the bottom of the screen (the Next exercise bar, the rest bar,
+  // the tab bar, the keyboard), so its last results are never behind it.
+  const fitPicker = (pk) => {
+    const list = pk && !pk.hidden ? $('.pk-list', pk) : null;
+    if (!list) return;
+    const vv = window.visualViewport;
+    let bottom = vv ? vv.height + vv.offsetTop : window.innerHeight;
+    ['.focusbar', '.restbar', '.mainnav'].forEach((sel) => {
+      const b = document.querySelector(sel);
+      if (!b || !b.getClientRects().length) return;
+      const r = b.getBoundingClientRect();
+      if (r.top > 0 && r.top < bottom) bottom = r.top;
+    });
+    const room = bottom - list.getBoundingClientRect().top - 8;
+    list.style.maxHeight = Math.max(120, Math.min(room, 720)) + 'px';
+  };
+  const fitPickers = () => document.querySelectorAll('.pk:not([hidden])').forEach(fitPicker);
+  window.addEventListener('resize', fitPickers);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', fitPickers);
   const buildPicker = (addBtn, pk, onPick) => {
     const top = h('div', 'pk-top');
     const search = h('input', 'pk-search');
