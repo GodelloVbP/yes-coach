@@ -103,7 +103,7 @@ try:
                 page.fill('#f-legext_%d-load' % i, '25'); page.fill('#f-legext_%d-reps' % i, '10')
                 page.locator('.set:has(#f-legext_%d-load) .set-tick' % i).click(); page.wait_for_timeout(250)
             page.wait_for_timeout(900)
-            page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click()
+            page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click(); page.click('#finish-go')
             check('finishing posts it', until(lambda: len(be.strava_posts) == 1), be.strava_calls)
             p = be.strava_posts[0]
             check('named for the training day', p['name'] == 'Legs', p)

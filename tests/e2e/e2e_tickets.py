@@ -286,7 +286,7 @@ try:
             check('bottom button says Finish workout', page.locator('#session >> text=Finish workout').count() >= 1)
             page.click('#sb-back'); page.wait_for_selector('#resume', state='visible')
             check('resume bar offers Finish workout', page.is_visible('#resume-fin') and 'finish workout' in page.inner_text('#resume-fin').lower())
-            page.click('#resume-fin'); page.wait_for_selector('#resume', state='hidden')
+            page.click('#resume-fin'); page.click('#finish-go'); page.wait_for_selector('#resume', state='hidden')
             check('finishing clears the open day', page.evaluate("localStorage.getItem('yc-active')") in (None, 'null'))
             page.reload(); page.wait_for_timeout(800)
             check('not shown again after a reload', not page.is_visible('#resume'))
@@ -559,16 +559,16 @@ try:
         def fin_claude(page):
             page.evaluate("localStorage.setItem('yc-active', JSON.stringify({date: new Date().toISOString().slice(0, 10), tpl: 'push'}))"); page.reload(); page.wait_for_selector('#resume-fin', state='visible')
             page.evaluate("window.__opened = []; if (!window.__oc) { window.__oc = HTMLAnchorElement.prototype.click; HTMLAnchorElement.prototype.click = function () { if (/claude\\.ai/.test(this.href)) { window.__opened.push(this.href); return; } return window.__oc.call(this); }; } 0")
-            page.click('#resume-fin'); page.wait_for_selector('#claude-review-go')
+            page.click('#resume-fin'); page.click('#finish-go'); page.wait_for_selector('#claude-review-go')
             check('asks: Send to Claude, with what happens next', 'claude reads it through your connector' in page.text_content('.ydlg').lower() and page.text_content('#claude-review-go').strip().lower() == 'send to claude', page.text_content('.ydlg'))
             check('focus is on the Send button', page.evaluate("document.activeElement.id") == 'claude-review-go')
             page.click('.ydlg >> text=Not now'); check('Not now closes it', page.locator('.ydlg').count() == 0)
             page.evaluate("localStorage.setItem('yc-active', JSON.stringify({date: new Date().toISOString().slice(0, 10), tpl: 'push'}))"); page.reload(); page.wait_for_selector('#resume-fin', state='visible')
             page.evaluate("window.__opened = []; if (!window.__oc) { window.__oc = HTMLAnchorElement.prototype.click; HTMLAnchorElement.prototype.click = function () { if (/claude\\.ai/.test(this.href)) { window.__opened.push(this.href); return; } return window.__oc.call(this); }; } 0")
-            page.click('#resume-fin'); page.wait_for_selector('#claude-review-go'); page.keyboard.press('Escape'); check('Escape closes it', page.locator('.ydlg').count() == 0)
+            page.click('#resume-fin'); page.click('#finish-go'); page.wait_for_selector('#claude-review-go'); page.keyboard.press('Escape'); check('Escape closes it', page.locator('.ydlg').count() == 0)
             page.evaluate("localStorage.setItem('yc-active', JSON.stringify({date: new Date().toISOString().slice(0, 10), tpl: 'push'}))"); page.reload(); page.wait_for_selector('#resume-fin', state='visible')
             page.evaluate("window.__opened = []; if (!window.__oc) { window.__oc = HTMLAnchorElement.prototype.click; HTMLAnchorElement.prototype.click = function () { if (/claude\\.ai/.test(this.href)) { window.__opened.push(this.href); return; } return window.__oc.call(this); }; } 0")
-            page.click('#resume-fin'); page.wait_for_selector('#claude-review-go'); page.click('#claude-review-go'); page.wait_for_timeout(300)
+            page.click('#resume-fin'); page.click('#finish-go'); page.wait_for_selector('#claude-review-go'); page.click('#claude-review-go'); page.wait_for_timeout(300)
             u = page.evaluate('window.__opened[0]') or ''
             check('Send opens Claude with the request', u.startswith('https://claude.ai/new?q=') and 'Push day' in urllib.parse.unquote(u) and 'connector' in urllib.parse.unquote(u), u)
             check('after Send the app is back on the Train screen', page.is_visible('#pickday') and page.locator('.ydlg, .fin').count() == 0 and not page.evaluate("document.body.classList.contains('fin-open')"))
@@ -577,7 +577,7 @@ try:
         check('no page errors (finish asks)', not errs, errs)
         def fin_none(page):
             page.evaluate("localStorage.setItem('yc-active', JSON.stringify({date: new Date().toISOString().slice(0, 10), tpl: 'push'}))"); page.reload(); page.wait_for_selector('#resume-fin', state='visible')
-            page.click('#resume-fin'); page.wait_for_timeout(700)
+            page.click('#resume-fin'); page.click('#finish-go'); page.wait_for_timeout(700)
             check('no question without a connected Claude', page.locator('.ydlg').count() == 0)
         errs = session(pw, finish_be([]), ALICE, fin_none, width=390); check('no page errors (finish quiet)', not errs, errs)
 

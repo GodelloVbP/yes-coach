@@ -73,7 +73,7 @@ try:
             log(page, 'pull_1', None, 8)
             b = block(page, 'Pull'); until(lambda: b.is_visible())
             check('reps: 3 more than 5, a big step', ('3 reps more than your previous best (5 reps on %s).' % BACK_TXT) in b.inner_text() and 'big step' in b.inner_text(), b.inner_text())
-            page.wait_for_timeout(900); page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click()
+            page.wait_for_timeout(900); page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click(); page.click('#finish-go')
             page.wait_for_selector('.fin-prs li', timeout=6000)
             fin = page.locator('.fin').inner_text()
             check('the finish screen: two blocks', page.locator('.fin-prs li').count() == 2, fin)

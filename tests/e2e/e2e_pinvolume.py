@@ -19,7 +19,7 @@ def run_day(page):
     page.fill('#f-bench_1-load', '50'); page.fill('#f-bench_1-reps', '10'); page.locator('.set:has(#f-bench_1-load) .set-tick').click(); page.wait_for_timeout(300)
     page.get_by_role('button', name=re.compile('Next exercise', re.I)).first.click(); page.wait_for_selector('#f-fp_1-load', state='visible'); page.wait_for_timeout(300)
     page.fill('#f-fp_1-load', '20'); page.fill('#f-fp_1-reps', '10'); page.locator('.set:has(#f-fp_1-load) .set-tick').click(); page.wait_for_timeout(900)
-    page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click(); page.wait_for_selector('.fin-tiles', timeout=6000)
+    page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click(); page.click('#finish-go'); page.wait_for_selector('.fin-tiles', timeout=6000)
     return page.locator('.fin-tiles').inner_text()
 
 server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
