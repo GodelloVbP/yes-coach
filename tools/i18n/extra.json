@@ -7747,5 +7747,61 @@
   "de": "Sätze an Maschinen, die du per Pin protokollierst, zählen jetzt im Volumen auf dem Abschlussbildschirm und im Teilbild.",
   "fr": "Les séries sur machine que tu notes au cran comptent maintenant dans le volume de l’écran de fin et dans l’image à partager.",
   "it": "Le serie sulle macchine che registri a pin ora contano nel volume nella schermata finale e nell'immagine da condividere."
+ },
+ "Are you sure you are done with your workout?": {
+  "nl": "Weet je zeker dat je klaar bent met je training?",
+  "es": "¿Seguro que has terminado tu entrenamiento?",
+  "de": "Bist du sicher, dass du mit deinem Training fertig bist?",
+  "fr": "Tu es sûr d’avoir fini ta séance ?",
+  "it": "Sei sicuro di aver finito l'allenamento?"
+ },
+ "Yes, finish": {
+  "nl": "Ja, afronden",
+  "es": "Sí, terminar",
+  "de": "Ja, beenden",
+  "fr": "Oui, terminer",
+  "it": "Sì, termina"
+ },
+ "Keep going": {
+  "nl": "Doorgaan",
+  "es": "Seguir",
+  "de": "Weitermachen",
+  "fr": "Continuer",
+  "it": "Continua"
+ },
+ "1 set is not done yet.": {
+  "nl": "1 set is nog niet klaar.",
+  "es": "Falta 1 serie.",
+  "de": "1 Satz ist noch nicht fertig.",
+  "fr": "1 série n’est pas encore faite.",
+  "it": "1 serie non è ancora fatta."
+ },
+ "{0} sets are not done yet.": {
+  "nl": "{0} sets zijn nog niet klaar.",
+  "es": "Faltan {0} series.",
+  "de": "{0} Sätze sind noch nicht fertig.",
+  "fr": "{0} séries ne sont pas encore faites.",
+  "it": "{0} serie non sono ancora fatte."
+ },
+ "Confirm finishing the workout": {
+  "nl": "Bevestig het afronden van de training",
+  "es": "Confirmar que terminas el entrenamiento",
+  "de": "Beenden des Trainings bestätigen",
+  "fr": "Confirmer la fin de la séance",
+  "it": "Conferma la fine dell'allenamento"
+ },
+ "Finish asks first": {
+  "nl": "Afronden vraagt eerst",
+  "es": "Terminar pregunta primero",
+  "de": "Beenden fragt zuerst",
+  "fr": "Terminer demande d’abord",
+  "it": "Termina chiede prima"
+ },
+ "Finish workout now asks \"Are you sure you are done with your workout?\" before it ends the day. It also says how many sets are not done yet. Keep going takes you back.": {
+  "nl": "Training afronden vraagt nu \"Weet je zeker dat je klaar bent met je training?\" voordat de dag eindigt. Het zegt ook hoeveel sets nog niet klaar zijn. Doorgaan brengt je terug.",
+  "es": "Terminar entrenamiento ahora pregunta \"¿Seguro que has terminado tu entrenamiento?\" antes de cerrar el día. También dice cuántas series faltan. Seguir te devuelve al entrenamiento.",
+  "de": "Training beenden fragt jetzt \"Bist du sicher, dass du mit deinem Training fertig bist?\", bevor der Tag endet. Es sagt auch, wie viele Sätze noch nicht fertig sind. Weitermachen bringt dich zurück.",
+  "fr": "Terminer la séance demande maintenant \"Tu es sûr d’avoir fini ta séance ?\" avant de clore la journée. Il dit aussi combien de séries ne sont pas encore faites. Continuer te ramène à la séance.",
+  "it": "Termina allenamento ora chiede \"Sei sicuro di aver finito l'allenamento?\" prima di chiudere la giornata. Dice anche quante serie non sono ancora fatte. Continua ti riporta all'allenamento."
  }
 }

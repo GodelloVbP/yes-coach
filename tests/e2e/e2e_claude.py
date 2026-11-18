@@ -67,7 +67,7 @@ try:
             check('it is saved', until(lambda: (doc(be, 'yc') or {}).get('settings', {}).get('claude_ask') is False), doc(be, 'yc'))
             # finish a workout: no question
             page.evaluate("localStorage.setItem('yc-active', JSON.stringify({date: '%s', tpl: 'legs'}))" % T); page.reload(); page.wait_for_selector('#resume-fin', state='visible')
-            page.click('#resume-fin')
+            page.click('#resume-fin'); page.click('#finish-go')
             page.wait_for_timeout(1200)
             check('finishing an empty day asks nothing', page.locator('#claude-review-go').count() == 0)
         errs = session(pw, be, ALICE, s3, width=390); check('no page errors (setting)', not errs, errs)

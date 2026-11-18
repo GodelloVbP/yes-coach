@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-bwBbH8qskM1lYc4+/iYfg8Hs8RcUizXxALV8LydD6RQ=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-qfD+I3AvpXBnkgSrPBaUFm2NgEUIwo317RikG8XjgqM=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-18 17:50Z">
+<meta name="yc-build" content="2026-11-18 19:11Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -2027,6 +2027,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['19 Nov 2026', "Finish asks first", ["Finish workout now asks \"Are you sure you are done with your workout?\" before it ends the day. It also says how many sets are not done yet. Keep going takes you back."]],
     ['18 Nov 2026', "Machine pins in the volume", ["Sets on machines you log by pin now count in the volume on the finish screen and in the share picture."]],
     ['18 Nov 2026', "Buttons answer when you press them", ["Add exercise, + Set, Next exercise, Finish and the other slanted buttons now darken and shrink a little while pressed, so you see that the tap landed."]],
     ['18 Nov 2026', "Records say more", ["A new personal record now gets its own block, in the workout and on the finish screen: what you beat, by how much, and when your previous best was.", "A line under it says what the step means, from a small step to a big one."]],
@@ -2963,6 +2964,28 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     document.body.append(wrap);
     box.go.focus();
   };
+  // Finish asks first: one tap by mistake would end the workout and open the finish screen
+  const askFinish = () => {
+    if (!S.active || document.querySelector('.fin-ask')) return;
+    const left = R ? Math.max(0, R.total - R.done) : 0;
+    const wrap = h('div', 'ydlg fin-ask');
+    const close = () => { wrap.remove(); document.removeEventListener('keydown', onKey); };
+    const onKey = (e) => { if (e.key === 'Escape') close(); };
+    const box = confirmBox({
+      label: 'Confirm finishing the workout',
+      text: 'Are you sure you are done with your workout?',
+      yes: 'Yes, finish', keep: 'Keep going', yesId: 'finish-go',
+      onYes: () => { close(); finishSession(); },
+      onKeep: close,
+    });
+    if (left) box.insertBefore(h('p', 'note', left === 1 ? '1 set is not done yet.' : left + ' sets are not done yet.'), box.lastChild);
+    box.setAttribute('aria-modal', 'true');
+    wrap.append(box);
+    wrap.addEventListener('pointerdown', (e) => { if (e.target === wrap) close(); });
+    document.addEventListener('keydown', onKey);
+    document.body.append(wrap);
+    box.go.focus();
+  };
   const finishSession = () => {
     const a = S.active;
     if (!a) return;
@@ -3306,7 +3329,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     copyRow.append(cp, cpMsg);
     const finRow = h('div', 'foot-row fin-row');
     const fin = btn('skew', 'Finish workout');
-    fin.addEventListener('click', finishSession);
+    fin.addEventListener('click', askFinish);
     finRow.append(fin, h('span', 'note', 'Ticked sets are already saved.'));
     foot.append(addRow, pk, gen, copyRow, cpBox, finRow);
     // a day opened on another date: a day ahead is a look at your set, a day behind is a look back.
@@ -3418,12 +3441,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       n.addEventListener('click', () => goExercise(nx.ex));
       const f = btn('skew', 'Finish');
       f.id = 'focus-finish';
-      f.addEventListener('click', finishSession);
+      f.addEventListener('click', askFinish);
       bar.append(n, f);
     } else {
       const f = btn('skew pop next', 'Finish workout');
       f.id = 'focus-finish';
-      f.addEventListener('click', finishSession);
+      f.addEventListener('click', askFinish);
       bar.append(f);
     }
   };
@@ -4588,9 +4611,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#sb-date').addEventListener('click', openDateBox);
   $('#m-date').addEventListener('click', openDateBox);
   $('#m-day').addEventListener('click', () => { closeMenus(); closeSession(); });
-  $('#m-finish').addEventListener('click', () => { closeMenus(); finishSession(); });
+  $('#m-finish').addEventListener('click', () => { closeMenus(); askFinish(); });
   $('#m-delete').addEventListener('click', () => { closeMenus(); if (S.active) askDeleteSession(SID(), S.active.tpl); });
-  $('#resume-fin').addEventListener('click', finishSession);
+  $('#resume-fin').addEventListener('click', askFinish);
   $('#sb-date-cancel').addEventListener('click', () => { $('#sb-datebox').hidden = true; $('#sb-date').focus(); });
   $('#sb-date-go').addEventListener('click', () => {
     const v = $('#sess-date').value;

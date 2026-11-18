@@ -89,7 +89,7 @@ try:
             check('rows take turns in each group: white, then cream', page.evaluate("(() => { const out = []; let cur = null; [...document.querySelectorAll('.pk-list > *')].forEach((e) => { if (e.classList.contains('pk-gh')) { cur = []; out.push(cur); } else if (cur && e.classList.contains('pk-item') && !e.hidden) cur.push(e.classList.contains('alt')); }); const g = out.find((x) => x.length >= 3); return !!g && g[0] === false && g[1] === true && g[2] === false; })()"))
             page.click('.pk-top .link')
             page.locator('.set .set-tick').first.click(); page.wait_for_timeout(300)
-            page.wait_for_timeout(900); page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click()
+            page.wait_for_timeout(900); page.locator('button.skew:visible', has_text=re.compile(r'^\s*Finish', re.I)).first.click(); page.click('#finish-go')
             page.wait_for_selector('.fin', timeout=5000)
             page.click('#fin-done')
             check('finishing lands on the Train screen', until(lambda: page.is_visible('#pickday') and page.locator('.fin').count() == 0))
