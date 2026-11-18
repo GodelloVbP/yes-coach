@@ -7712,5 +7712,19 @@
   "de": "Eine Zeile darunter sagt, was der Schritt bedeutet, vom kleinen bis zum großen.",
   "fr": "Une ligne dessous dit ce que représente le pas, du petit au grand.",
   "it": "Una riga sotto dice cosa significa il passo, da piccolo a grande."
+ },
+ "Buttons answer when you press them": {
+  "nl": "Knoppen reageren als je erop drukt",
+  "es": "Los botones responden cuando los pulsas",
+  "de": "Schaltflächen reagieren auf Druck",
+  "fr": "Les boutons répondent quand tu appuies",
+  "it": "I pulsanti rispondono quando li premi"
+ },
+ "Add exercise, + Set, Next exercise, Finish and the other slanted buttons now darken and shrink a little while pressed, so you see that the tap landed.": {
+  "nl": "Oefening toevoegen, + Set, Volgende oefening, Afronden en de andere schuine knoppen worden nu donkerder en iets kleiner terwijl je indrukt, zodat je ziet dat de tik is aangekomen.",
+  "es": "Añadir ejercicio, + Serie, Siguiente ejercicio, Terminar y los demás botones inclinados ahora se oscurecen y se encogen un poco al pulsarlos, para que veas que el toque llegó.",
+  "de": "Übung hinzufügen, + Satz, Nächste Übung, Beenden und die anderen schrägen Schaltflächen werden beim Drücken jetzt dunkler und etwas kleiner, damit du siehst, dass der Tipp angekommen ist.",
+  "fr": "Ajouter un exercice, + Série, Exercice suivant, Terminer et les autres boutons inclinés s’assombrissent et rétrécissent un peu quand tu appuies, pour que tu voies que ton appui a été pris en compte.",
+  "it": "Aggiungi esercizio, + Serie, Esercizio successivo, Termina e gli altri pulsanti inclinati ora si scuriscono e si restringono un po' quando li premi, così vedi che il tocco è arrivato."
  }
 }
