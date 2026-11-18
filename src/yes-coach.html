@@ -1103,6 +1103,11 @@ body.fin-open { overflow: hidden; }
 .set.pr-hit { animation: pr-hit 0.6s ease-out 0.2s; }
 .fin-prs li { animation: pr-slide 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) both; animation-delay: calc(0.35s + var(--i, 0) * 0.15s); }
 .fin-prs .pr { animation: pr-slam 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) both; animation-delay: calc(0.55s + var(--i, 0) * 0.15s); }
+/* the skewed buttons (Add exercise, + Set, Next exercise, Finish, Add in the picker, chips, pills): a tint over any colour and a small
+   press, at once on touch, fading back slowly like the rest. Without motion the tint stays and the press goes (below). */
+.skew, .pk-go, .pk-chip, .pill { transition: box-shadow 0.3s ease-out, transform 0.18s cubic-bezier(0.3, 1.7, 0.5, 1), background-color 0.15s, border-color 0.15s, color 0.15s; }
+.skew:not([disabled]):active, .pk-go:active, .pk-chip:active, .pill:active { box-shadow: inset 0 0 0 100vmax var(--press); transform: skewX(-14deg) scale(0.95); transition-duration: 0s; }
+.pill.warn:active { box-shadow: inset 0 0 0 100vmax var(--press), 0 0 0 2px var(--warn); }
 /* ---- feedback on every control. Press: shows at once, fades out slowly, so even a quick tap is seen. Hover: mouse only. ---- */
 :root { --press: color-mix(in srgb, var(--ink) 16%, transparent); --hover: color-mix(in srgb, var(--ink) 8%, transparent); }
 .set-tog, summary, .prow, .xl-row, .seg-b, .fd-hit, .pw-tap, .swaprow, .kmenu button, .sb-menu button, .mark-btn, .sb-more, .arrow, select { transition: background-color 0.3s ease-out, border-color 0.15s, color 0.15s, transform 0.18s cubic-bezier(0.3, 1.7, 0.5, 1); }
@@ -1127,7 +1132,7 @@ body.fin-open { overflow: hidden; }
   select:hover { border-bottom-color: var(--ink); cursor: pointer; }
   .day-go:hover { stroke: var(--ink); stroke-opacity: 1; stroke-width: 2px; }
 }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } .skew:not([disabled]):active, .pk-go:active, .pk-chip:active, .pill:active { transform: skewX(-14deg); } }
 </style>
 
 <div class="stick" id="stick">
