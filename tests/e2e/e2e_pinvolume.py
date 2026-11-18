@@ -1,5 +1,4 @@
-"""Machine pins in the volume of the finish screen: left out by default (a pin is a place in a weight stack, not kg), counted as kg when
-the setting is on."""
+"""Machine pins count in the volume of the finish screen like kg: the weight on the stack. A workout of machines only still gets a Volume tile."""
 import re, subprocess, time, datetime
 from playwright.sync_api import sync_playwright
 from harness import *
@@ -7,8 +6,8 @@ from harness import *
 TD = datetime.date.today()
 WD = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][TD.weekday()]
 
-def seed(be, settings=None):
-    be.docs.append({'path': 'yc', 'data': {'app': 'yes-coach', 'schema': 1, 'intro_seen': True, 'settings': settings or {}}})
+def seed(be, pin_only=False):
+    be.docs.append({'path': 'yc', 'data': {'app': 'yes-coach', 'schema': 1, 'intro_seen': True, 'settings': {}}})
     be.docs.append({'path': 'yc/exercises/bench', 'data': {'name': 'Bench press', 'group': 'Chest', 'category': 'strength', 'unit': 'kg', 'better': 'higher'}})
     be.docs.append({'path': 'yc/exercises/fp', 'data': {'name': 'Face pull', 'group': 'Shoulders', 'category': 'strength', 'unit': 'stack', 'better': 'higher'}})
     it = lambda ex, o: {'ex': ex, 'order': o, 'sets': 1, 'reps': '10', 'target': '', 'target_at': '2026-01-01', 'rest_s': 60, 'note': None}
@@ -30,26 +29,15 @@ try:
         be = Backend(); seed(be)
         def s1(page):
             tx = run_day(page)
-            check('default: only the kg set counts (50 x 10 = 500 kg)', '500 kg' in tx and '700' not in tx, tx)
-        errs = session(pw, be, ALICE, s1, width=390); check('no page errors (default)', not errs, errs)
-
-        be = Backend(); seed(be, {'pin_volume': True})
-        def s2(page):
-            tx = run_day(page)
-            check('on: the pin set counts as kg too (500 + 20 x 10 = 700 kg)', '700 kg' in tx, tx)
-        errs = session(pw, be, ALICE, s2, width=390); check('no page errors (on)', not errs, errs)
-
+            check('kg and pin both count (50 x 10 + 20 x 10 = 700 kg)', '700 kg' in tx, tx)
+            check('the share picture gets the same number', page.evaluate("() => !!document.querySelector('.fin-img canvas')"))
+        errs = session(pw, be, ALICE, s1, width=390); check('no page errors', not errs, errs)
         be = Backend(); seed(be)
-        def s3(page):
+        def s2(page):
             page.goto(BASE); page.wait_for_selector('#btn-start', timeout=8000)
             page.click('#tab-settings'); page.wait_for_selector('#v-settings .set-tog', state='visible')
-            page.locator('#v-settings section.fold').filter(has=page.locator('#set-pinvol')).locator('.set-tog').click() if page.locator('#set-pinvol').is_hidden() else None
-            page.wait_for_selector('#set-pinvol', state='visible')
-            check('the switch is off to begin with', not page.is_checked('#set-pinvol'))
-            page.check('#set-pinvol'); page.wait_for_timeout(500)
-            root = next(d['data'] for d in reversed(be.docs) if d['path'] == 'yc')
-            check('and saves in the settings', (root.get('settings') or {}).get('pin_volume') is True, root)
-        errs = session(pw, be, ALICE, s3, width=390); check('no page errors (switch)', not errs, errs)
+            check('no switch for it in Settings', page.locator('#set-pinvol').count() == 0)
+        errs = session(pw, be, ALICE, s2, width=390); check('no page errors (settings)', not errs, errs)
 finally:
     server.terminate()
 done()
