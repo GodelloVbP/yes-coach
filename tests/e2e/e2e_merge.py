@@ -113,7 +113,7 @@ try:
         def s5(page):
             page.evaluate("document.querySelector('#tab-exercises').click()"); page.wait_for_selector('#xl-new', timeout=8000)
             page.click('#xl-new'); page.select_option('#xl-f-unit', 'stack')
-            check('choosing pin says what pin is', 'not kg' in page.inner_text('#xl-unit-note') and page.is_visible('#xl-unit-note'), page.inner_text('#xl-unit-note'))
+            check('choosing pin says what pin is', 'weight stack' in page.inner_text('#xl-unit-note') and 'like kg' in page.inner_text('#xl-unit-note') and page.is_visible('#xl-unit-note'), page.inner_text('#xl-unit-note'))
             page.select_option('#xl-f-unit', 'kg')
             check('and the note goes away for kg', not page.is_visible('#xl-unit-note'))
             page.fill('#xl-search', 'row'); page.wait_for_timeout(200)

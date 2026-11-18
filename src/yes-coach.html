@@ -1650,7 +1650,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const UNIT_LABEL = { kg: 'kg', stack: 'pin', assist: 'assist', bw: '', min: 'min' };
   const loadLabel = (ex) => (!ex || !ex.unit ? 'kg total' : ex.unit === 'kg' ? (ex.load_basis === 'per_side' ? 'kg per side' : 'kg total') : ex.unit === 'stack' ? 'pin' : ex.unit === 'assist' ? 'kg of assistance' : '');
   const MEASURES = [['kg:total', 'kg total (both dumbbells, bar counted)'], ['kg:per_side', 'kg per side or per arm'], ['stack:', 'Pin (numbered machine stack)'], ['bw:', 'Bodyweight reps'], ['assist:', 'Assistance in kg (lower is better)'], ['min:', 'Minutes']];
-  const PIN_NOTE = 'Pin is the pin position in a machine\'s weight stack, not kg. Pin sets are left out of the kg volume.';
+  const PIN_NOTE = 'Pin is the weight shown on a machine\'s weight stack. Pin sets count in the volume like kg.';
   const measureName = (v) => (MEASURES.find((m) => m[0] === v) || [v, v])[1];
   const measureOf = (e) => (e.unit || 'kg') + ':' + (!e.unit || e.unit === 'kg' ? (e.load_basis === 'per_side' ? 'per_side' : 'total') : '');
   // change how an exercise is measured, for every day that uses it; logged sets keep their numbers and Progress starts a new trend
@@ -1965,6 +1965,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['18 Nov 2026', "Machine pins in the volume", ["Sets on machines you log by pin now count in the volume on the finish screen and in the share picture."]],
     ['18 Nov 2026', "Buttons answer when you press them", ["Add exercise, + Set, Next exercise, Finish and the other slanted buttons now darken and shrink a little while pressed, so you see that the tap landed."]],
     ['18 Nov 2026', "Records say more", ["A new personal record now gets its own block, in the workout and on the finish screen: what you beat, by how much, and when your previous best was.", "A line under it says what the step means, from a small step to a big one."]],
     ['18 Nov 2026', "Numbers no longer cut off", ["With the RIR column on, a weight like 15,8 or 102,5 now fits in its box. The dot that shows you changed a value moved to the corner and no longer takes room from the number.", "Add exercise in a workout: the list now fills the screen down to the bar, so its last results are no longer hidden behind Next exercise."]],
@@ -2273,7 +2274,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const e = S.exercises[ex] || {};
       const sets = work.filter((st) => st.ex === ex);
       const unit = e.unit || 'kg';
-      sets.forEach((st) => { if (unit === 'kg' && st.load != null && st.reps != null) { volume += st.load * st.reps * (e.load_basis === 'per_side' ? 2 : 1); hasVol = true; } });
+      sets.forEach((st) => { if ((unit === 'kg' || unit === 'stack') && st.load != null && st.reps != null) { volume += st.load * st.reps * (e.load_basis === 'per_side' ? 2 : 1); hasVol = true; } });
       const score = (st) => (unit === 'assist' ? -(st.load == null ? 1e9 : st.load) * 1000 + (st.reps || 0) : unit === 'bw' || st.load == null || st.load <= 0 ? (st.reps || 0) : epley(st.load, Math.min(st.reps || 0, 15)));
       const best = unit === 'min' ? null : sets.reduce((x, y) => (score(y) > score(x) ? y : x));
       const prSets = sets.filter((st) => isPR(ex, st));
