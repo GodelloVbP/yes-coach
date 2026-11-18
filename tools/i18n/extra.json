@@ -7642,5 +7642,75 @@
   "de": "Übung hinzufügen im Training: Die Liste füllt jetzt den Bildschirm bis zur Leiste, die letzten Ergebnisse liegen nicht mehr hinter Nächste Übung.",
   "fr": "Ajouter un exercice pendant une séance : la liste remplit maintenant l’écran jusqu’à la barre, les derniers résultats ne sont plus cachés derrière Exercice suivant.",
   "it": "Aggiungi esercizio in un allenamento: l'elenco ora riempie lo schermo fino alla barra, quindi gli ultimi risultati non sono più nascosti dietro Esercizio successivo."
+ },
+ "{0} more than your previous best ({1} on {2}).": {
+  "nl": "{0} meer dan je vorige beste ({1} op {2}).",
+  "es": "{0} más que tu mejor marca anterior ({1} el {2}).",
+  "de": "{0} mehr als deine bisherige Bestleistung ({1} am {2}).",
+  "fr": "{0} de plus que ton meilleur précédent ({1} le {2}).",
+  "it": "{0} in più del tuo migliore precedente ({1} il {2})."
+ },
+ "{0} less assistance than your previous best ({1} on {2}).": {
+  "nl": "{0} minder hulp dan je vorige beste ({1} op {2}).",
+  "es": "{0} menos de asistencia que tu mejor marca anterior ({1} el {2}).",
+  "de": "{0} weniger Unterstützung als deine bisherige Bestleistung ({1} am {2}).",
+  "fr": "{0} d’assistance en moins que ton meilleur précédent ({1} le {2}).",
+  "it": "{0} di assistenza in meno del tuo migliore precedente ({1} il {2})."
+ },
+ "A higher estimated max than ever: {0} kg, up from {1} kg ({2}).": {
+  "nl": "Een hoger geschat maximum dan ooit: {0} kg, van {1} kg ({2}).",
+  "es": "Un máximo estimado más alto que nunca: {0} kg, antes {1} kg ({2}).",
+  "de": "Ein höheres geschätztes Maximum als je: {0} kg, vorher {1} kg ({2}).",
+  "fr": "Un max estimé plus haut que jamais : {0} kg, contre {1} kg ({2}).",
+  "it": "Un massimale stimato più alto di sempre: {0} kg, da {1} kg ({2})."
+ },
+ "A big step up on this lift. Well earned.": {
+  "nl": "Een grote stap vooruit bij deze oefening. Verdiend.",
+  "es": "Un gran salto en este ejercicio. Bien merecido.",
+  "de": "Ein großer Schritt bei dieser Übung. Verdient.",
+  "fr": "Un grand pas sur cet exercice. Bien mérité.",
+  "it": "Un grande passo avanti in questo esercizio. Meritato."
+ },
+ "Stronger than you have ever been on this lift.": {
+  "nl": "Sterker dan je ooit was bij deze oefening.",
+  "es": "Más fuerte que nunca en este ejercicio.",
+  "de": "Stärker als je zuvor bei dieser Übung.",
+  "fr": "Plus fort que jamais sur cet exercice.",
+  "it": "Più forte che mai in questo esercizio."
+ },
+ "A small step, and it counts: you are ahead of every earlier session.": {
+  "nl": "Een kleine stap, en die telt: je loopt voor op elke eerdere training.",
+  "es": "Un paso pequeño, y cuenta: vas por delante de todas las sesiones anteriores.",
+  "de": "Ein kleiner Schritt, und er zählt: du liegst vor jedem früheren Training.",
+  "fr": "Un petit pas, et il compte : tu es devant toutes les séances précédentes.",
+  "it": "Un piccolo passo, e conta: sei avanti rispetto a tutti gli allenamenti precedenti."
+ },
+ "{0} lifts beat their previous best today. A strong session.": {
+  "nl": "{0} oefeningen beter dan je vorige beste vandaag. Een sterke training.",
+  "es": "{0} ejercicios superaron tu mejor marca anterior hoy. Una sesión fuerte.",
+  "de": "{0} Übungen übertrafen heute ihre bisherige Bestleistung. Ein starkes Training.",
+  "fr": "{0} exercices ont dépassé leur meilleur précédent aujourd’hui. Une séance solide.",
+  "it": "{0} esercizi hanno battuto il loro migliore precedente oggi. Un allenamento forte."
+ },
+ "Records say more": {
+  "nl": "Records zeggen meer",
+  "es": "Los récords dicen más",
+  "de": "Rekorde sagen mehr",
+  "fr": "Les records en disent plus",
+  "it": "I record dicono di più"
+ },
+ "A new personal record now gets its own block, in the workout and on the finish screen: what you beat, by how much, and when your previous best was.": {
+  "nl": "Een nieuw persoonlijk record krijgt nu een eigen blok, in de training en op het eindscherm: wat je versloeg, met hoeveel, en wanneer je vorige beste was.",
+  "es": "Un nuevo récord personal ahora tiene su propio bloque, en el entrenamiento y en la pantalla final: qué superaste, por cuánto y cuándo fue tu marca anterior.",
+  "de": "Ein neuer persönlicher Rekord bekommt jetzt einen eigenen Block, im Training und auf dem Abschlussbildschirm: was du übertroffen hast, um wie viel und wann deine bisherige Bestleistung war.",
+  "fr": "Un nouveau record personnel a maintenant son propre bloc, pendant la séance et sur l’écran de fin : ce que tu as battu, de combien, et quand était ton précédent meilleur.",
+  "it": "Un nuovo record personale ha ora un suo blocco, nell'allenamento e nella schermata finale: cosa hai battuto, di quanto e quando era il tuo migliore precedente."
+ },
+ "A line under it says what the step means, from a small step to a big one.": {
+  "nl": "Een regel eronder zegt wat de stap betekent, van een kleine stap tot een grote.",
+  "es": "Una línea debajo dice qué significa el paso, de uno pequeño a uno grande.",
+  "de": "Eine Zeile darunter sagt, was der Schritt bedeutet, vom kleinen bis zum großen.",
+  "fr": "Une ligne dessous dit ce que représente le pas, du petit au grand.",
+  "it": "Una riga sotto dice cosa significa il passo, da piccolo a grande."
  }
 }

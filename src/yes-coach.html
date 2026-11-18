@@ -826,9 +826,17 @@ body:not(.signed-out) .hm-bar { display: none; }
 .fin-t span { font-size: var(--t1); font-weight: 600; color: var(--ink-soft); }
 .fin-sub { margin: 0.5rem 0 0; font-family: var(--f-head); font-weight: 800; text-transform: uppercase; font-size: 1.5rem; }
 .fin-prs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
-.fin-prs li { display: flex; align-items: center; gap: 0.625rem; min-height: 44px; }
-.fin-prs .pr { position: static; flex: none; }
-.fin-prs .fin-d { margin-left: auto; color: var(--ink-soft); font-weight: 600; }
+.fin-prs li { display: flex; flex-direction: column; gap: 0.25rem; padding: 0.75rem 0.875rem; background: var(--faint); border-left: 4px solid var(--pop); }
+.fin-pr-sum { margin: 0; font-weight: 700; }
+.pr-top { display: flex; align-items: center; gap: 0.625rem; min-height: 36px; }
+.pr-top b { min-width: 0; }
+.pr-top .pr { position: static; flex: none; }
+.pr-top .fin-d { margin-left: auto; color: var(--ink-soft); font-weight: 600; white-space: nowrap; }
+.pr-beat { margin: 0; color: var(--ink-soft); font-weight: 500; line-height: 1.35; }
+.pr-praise { margin: 0; font-weight: 700; line-height: 1.35; }
+.ex-pr { display: flex; flex-direction: column; gap: 0.25rem; padding: 0.75rem 0.875rem; margin-top: 0.5rem; background: var(--faint); border-left: 4px solid var(--pop); }
+.ex-pr[hidden] { display: none; }
+.ex-pr.slam-in { animation: pr-slide 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
 .fin-img canvas { display: block; width: 100%; max-width: min(22rem, 62vw); height: auto; margin: 0 auto; border: 2px solid var(--line); }
 .fin-acts { display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 0.75rem 0.375rem calc(0.75rem + env(safe-area-inset-bottom)); position: sticky; bottom: 0; background: var(--bg); border-top: 1px solid var(--line); }
 .fin-acts .skew { flex: 1 1 8rem; }
@@ -1952,6 +1960,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['18 Nov 2026', "Records say more", ["A new personal record now gets its own block, in the workout and on the finish screen: what you beat, by how much, and when your previous best was.", "A line under it says what the step means, from a small step to a big one."]],
     ['18 Nov 2026', "Numbers no longer cut off", ["With the RIR column on, a weight like 15,8 or 102,5 now fits in its box. The dot that shows you changed a value moved to the corner and no longer takes room from the number.", "Add exercise in a workout: the list now fills the screen down to the bar, so its last results are no longer hidden behind Next exercise."]],
     ['15 Nov 2026', "Smaller steps on big jumps", ["When the next weight is a big jump (8 to 10 kg dumbbells is 25% more), the app asks for a few more reps at the same weight first.", "Bodyweight exercises with fewer than 5 reps two sessions running get a hint to try the assisted version."]],
     ['12 Nov 2026', "Claude and your plan", ["Send to Claude now tells Claude what to read, how to judge each exercise and how the weight moves, instead of one sentence.", "In Settings, Connected AI apps, choose Propose (the default: Claude suggests the next weights and waits for your yes) or Change it (Claude changes them itself and tells you)."]],
@@ -2266,7 +2275,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const mins = sets.reduce((t, st) => t + (Number(st.minutes) || 0), 0);
       const kms = sets.reduce((t, st) => t + (Number(st.km) || 0), 0);
       const minDetail = [kms > 0 ? num(Math.round(kms * 100) / 100) + ' km' : '', num(mins) + ' min', kms > 0 ? fmtPace(mins, kms) : ''].filter(Boolean).join(' · ');
-      return { ex, name: e.name || exName(ex), n: sets.length, pr: prSets.length > 0, detail: unit === 'min' ? minDetail : perfLabel(shown, e), kgDetail: unit !== 'min' && shown.load != null && unit !== 'bw' };
+      return { ex, name: e.name || exName(ex), n: sets.length, pr: prSets.length > 0, info: prSets.length ? prInfo(ex, shown) : null, detail: unit === 'min' ? minDetail : perfLabel(shown, e), kgDetail: unit !== 'min' && shown.load != null && unit !== 'bw' };
     });
     // the working window: from the first tick to the last one
     const ticks = done.map((st) => st.ticked_at || st.at).filter((t) => t > 1e12);
@@ -2307,8 +2316,17 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const prs = sum.lines.filter((l) => l.pr);
     if (prs.length) {
       inn.append(h('h3', 'fin-sub', prs.length === 1 ? 'New personal record' : 'New personal records'));
+      if (prs.length > 1) inn.append(h('p', 'fin-pr-sum', prs.length + ' lifts beat their previous best today. A strong session.'));
       const ul = h('ul', 'fin-prs');
-      prs.forEach((l, i) => { const li = h('li'); li.style.setProperty('--i', Math.min(i, 6)); li.append(h('span', 'pr', 'PR'), h('b', '', l.name), h('span', 'fin-d', l.detail)); ul.append(li); });
+      prs.forEach((l, i) => {
+        const li = h('li');
+        li.style.setProperty('--i', Math.min(i, 6));
+        const top = h('div', 'pr-top');
+        top.append(h('span', 'pr', 'PR'), h('b', '', l.name), h('span', 'fin-d', l.detail));
+        li.append(top);
+        if (l.info) li.append(h('p', 'pr-beat', l.info.beat), h('p', 'pr-praise', l.info.praise));
+        ul.append(li);
+      });
       inn.append(ul);
     }
     // the picture
@@ -3711,6 +3729,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (hd) sets.append(hd);
     for (let i = 1; i <= n; i += 1) sets.append(buildSet(item, i, unit));
     wrap.append(sets);
+    const prb = h('div', 'ex-pr');
+    prb.hidden = true;
+    wrap.append(prb);
     const eff = h('div', 'ex-effort');
     eff.hidden = true;
     wrap.append(eff);
@@ -4421,6 +4442,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       it.el.classList.toggle('is-done', keys.length > 0 && keys.every((k) => isDone(storedSet(k))));
       const wb = it.el.querySelector('.ex-warm');
       if (wb) { const rm = warmRows(it.item).length > 0; wb.hidden = !rm && !warmRamp(it.item).length; (wb.querySelector('span') || wb).textContent = rm ? 'Remove warm-ups' : '+ Warm-up'; wb.classList.toggle('rm', rm); }
+      const prb = it.el.querySelector('.ex-pr');
+      if (prb) paintPr(prb, it.item, keys);
       const eff = it.el.querySelector('.ex-effort');
       if (eff) paintEffort(eff, it.item, keys);
       const sugRow = it.el.querySelector('.ex-sug');
@@ -8186,6 +8209,70 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return false;
   };
 
+
+  // What a record beat, in words: how far past the previous best, where that was, and one line on what it means. The praise is
+  // tied to the size of the step, so a small one is called small.
+  const prInfo = (ex, st) => {
+    const e = S.exercises[ex] || {};
+    const prev = [];
+    Object.values(S.sessions).forEach((x) => {
+      if (S.active && x.date >= S.active.date) return;
+      workSets(x, ex).forEach((p) => prev.push({ date: x.date, load: p.load, reps: p.reps }));
+    });
+    if (!prev.length) return null;
+    const best = (key, low) => prev.filter((p) => p[key] != null).reduce((a, p) => (!a || (low ? p[key] < a[key] : p[key] > a[key]) ? p : a), null);
+    const uw = e.unit === 'assist' ? 'kg' : unitWord(e) || 'kg';
+    let beat = '';
+    let size = 'small';
+    const grade = (pct) => (pct >= 0.1 ? 'big' : pct >= 0.04 ? 'mid' : 'small');
+    if (e.unit === 'bw') {
+      const b = best('reps');
+      if (!b || st.reps == null) return null;
+      const gain = st.reps - b.reps;
+      beat = plural(gain, 'rep') + ' more than your previous best (' + plural(b.reps, 'rep') + ' on ' + dm(b.date) + ').';
+      size = gain >= 3 ? 'big' : gain >= 2 ? 'mid' : 'small';
+    } else if (e.unit === 'assist') {
+      const b = best('load', true);
+      if (!b || st.load == null) return null;
+      const gain = b.load - st.load;
+      beat = num(gain) + ' ' + uw + ' less assistance than your previous best (' + num(b.load) + ' ' + uw + ' on ' + dm(b.date) + ').';
+      size = grade(gain / Math.max(1, b.load));
+    } else {
+      const b = best('load');
+      if (b && st.load != null && st.load > b.load) {
+        beat = num(Math.round((st.load - b.load) * 100) / 100) + ' ' + uw + ' more than your previous best (' + num(b.load) + ' ' + uw + (b.reps != null ? ' × ' + num(b.reps) : '') + ' on ' + dm(b.date) + ').';
+        size = grade((st.load - b.load) / Math.max(1, b.load));
+      } else {
+        const es = prev.filter((p) => p.load != null && p.reps != null && p.reps <= 10).map((p) => ({ v: epley(p.load, p.reps), date: p.date }));
+        if (!es.length || st.load == null || st.reps == null) return null;
+        const old = es.reduce((a, p) => (p.v > a.v ? p : a));
+        const now = epley(st.load, st.reps);
+        beat = 'A higher estimated max than ever: ' + num(now) + ' kg, up from ' + num(old.v) + ' kg (' + dm(old.date) + ').';
+        size = grade((now - old.v) / Math.max(1, old.v));
+      }
+    }
+    const praise = size === 'big' ? 'A big step up on this lift. Well earned.' : size === 'mid' ? 'Stronger than you have ever been on this lift.' : 'A small step, and it counts: you are ahead of every earlier session.';
+    return { beat, praise };
+  };
+  // the block under an exercise whose set just beat the previous best; replays its slide-in only when the record changes
+  const paintPr = (box, item, keys) => {
+    const e = S.exercises[item.ex] || {};
+    const prs = keys.map((k) => storedSet(k)).filter((st) => st && isDone(st) && isPR(item.ex, st));
+    box.hidden = !prs.length;
+    if (!prs.length) { delete box.dataset.sig; return; }
+    const score = (st) => (e.unit === 'assist' ? -(st.load == null ? 1e9 : st.load) : e.unit === 'bw' || st.load == null ? st.reps || 0 : epley(st.load, Math.min(st.reps || 0, 15)));
+    const top = prs.reduce((a, st) => (score(st) > score(a) ? st : a));
+    const sig = [top.load, top.reps].join('|');
+    if (box.dataset.sig === sig) return;
+    box.dataset.sig = sig;
+    box.replaceChildren();
+    const info = prInfo(item.ex, top);
+    const row = h('div', 'pr-top');
+    row.append(h('span', 'pr', 'PR'), h('b', '', 'New personal record'), h('span', 'fin-d', perfLabel(top, e)));
+    box.append(row);
+    if (info) box.append(h('p', 'pr-beat', info.beat), h('p', 'pr-praise', info.praise));
+    box.classList.remove('slam-in'); void box.offsetWidth; box.classList.add('slam-in');
+  };
 
   // ------------------------------------------------------------------ rest timer
   const REST = { ends: 0, label: '', ex: null, timer: 0, rang: false, audio: null };
