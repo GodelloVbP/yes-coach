@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-vHerIXhVWpoLXMcz1IJ8vWQJqeJuzfHHPqY4CF5C/AA=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-QmJLG8y8BXh+ghQ0qLMDoWyKAQCfi/LgKaFJB2JmkAw=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-18 16:37Z">
+<meta name="yc-build" content="2026-11-18 17:44Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -1584,6 +1584,7 @@ body.fin-open { overflow: hidden; }
         <h3 class="lab set-sub">While you log</h3>
         <div class="set-opts">
           <label class="set-opt"><input type="checkbox" id="set-rir"><span><b>Reps in reserve (RIR)</b><span class="note">A box on each set for how many more reps you could have done.</span></span></label>
+          <label class="set-opt"><input type="checkbox" id="set-pinvol"><span><b>Count machine pins as kg</b><span class="note">Adds machine sets to the volume on the finish screen. Only right when the pin numbers on your machines are kg.</span></span></label>
           <label class="set-opt"><input type="checkbox" id="set-prog"><span><b>Weight suggestions</b><span class="note">The next weight is filled in from your last workouts.</span></span></label>
           <label class="set-opt" id="push-row" hidden><input type="checkbox" id="set-push"><span><b>Rest alert</b><span class="note">A notification when rest is over, also when you are in another app.</span></span></label>
         </div>
@@ -1712,7 +1713,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const UNIT_LABEL = { kg: 'kg', stack: 'pin', assist: 'assist', bw: '', min: 'min' };
   const loadLabel = (ex) => (!ex || !ex.unit ? 'kg total' : ex.unit === 'kg' ? (ex.load_basis === 'per_side' ? 'kg per side' : 'kg total') : ex.unit === 'stack' ? 'pin' : ex.unit === 'assist' ? 'kg of assistance' : '');
   const MEASURES = [['kg:total', 'kg total (both dumbbells, bar counted)'], ['kg:per_side', 'kg per side or per arm'], ['stack:', 'Pin (numbered machine stack)'], ['bw:', 'Bodyweight reps'], ['assist:', 'Assistance in kg (lower is better)'], ['min:', 'Minutes']];
-  const PIN_NOTE = 'Pin is the pin position in a machine\'s weight stack, not kg. Pin sets are left out of the kg volume.';
+  const PIN_NOTE = 'Pin is the pin position in a machine\'s weight stack, not kg. Pin sets are left out of the kg volume, unless you count them in Settings.';
   const measureName = (v) => (MEASURES.find((m) => m[0] === v) || [v, v])[1];
   const measureOf = (e) => (e.unit || 'kg') + ':' + (!e.unit || e.unit === 'kg' ? (e.load_basis === 'per_side' ? 'per_side' : 'total') : '');
   // change how an exercise is measured, for every day that uses it; logged sets keep their numbers and Progress starts a new trend
@@ -1923,6 +1924,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const isDone = (st) => st && st.done !== false;
   const hasDone = (s) => Object.values((s && s.sets) || {}).some(isDone);
   const showRir = () => !!(S.root && S.root.settings && S.root.settings.show_rir);
+  // a pin is a place in a weight stack, not kg: left out of the kg volume unless the person says their pins are kg
+  const pinVol = () => !!(S.root && S.root.settings && S.root.settings.pin_volume);
   // calories and nutrients in Food are off until someone switches them on (on the start screen or in Settings)
   // Accounts that already logged calories or set a target before this switch existed keep seeing them, until they switch it off.
   const showCal = () => {
@@ -2027,6 +2030,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['18 Nov 2026', "Machine pins in the volume", ["Settings, Logging: Count machine pins as kg adds your machine sets to the volume on the finish screen. Use it when the pin numbers on your machines are kg. It is off by default, because a pin is a place in the weight stack."]],
     ['18 Nov 2026', "Buttons answer when you press them", ["Add exercise, + Set, Next exercise, Finish and the other slanted buttons now darken and shrink a little while pressed, so you see that the tap landed."]],
     ['18 Nov 2026', "Records say more", ["A new personal record now gets its own block, in the workout and on the finish screen: what you beat, by how much, and when your previous best was.", "A line under it says what the step means, from a small step to a big one."]],
     ['18 Nov 2026', "Numbers no longer cut off", ["With the RIR column on, a weight like 15,8 or 102,5 now fits in its box. The dot that shows you changed a value moved to the corner and no longer takes room from the number.", "Add exercise in a workout: the list now fills the screen down to the bar, so its last results are no longer hidden behind Next exercise."]],
@@ -2335,7 +2339,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const e = S.exercises[ex] || {};
       const sets = work.filter((st) => st.ex === ex);
       const unit = e.unit || 'kg';
-      sets.forEach((st) => { if (unit === 'kg' && st.load != null && st.reps != null) { volume += st.load * st.reps * (e.load_basis === 'per_side' ? 2 : 1); hasVol = true; } });
+      sets.forEach((st) => { if ((unit === 'kg' || (unit === 'stack' && pinVol())) && st.load != null && st.reps != null) { volume += st.load * st.reps * (e.load_basis === 'per_side' ? 2 : 1); hasVol = true; } });
       const score = (st) => (unit === 'assist' ? -(st.load == null ? 1e9 : st.load) * 1000 + (st.reps || 0) : unit === 'bw' || st.load == null || st.load <= 0 ? (st.reps || 0) : epley(st.load, Math.min(st.reps || 0, 15)));
       const best = unit === 'min' ? null : sets.reduce((x, y) => (score(y) > score(x) ? y : x));
       const prSets = sets.filter((st) => isPR(ex, st));
@@ -9829,7 +9833,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (!r.ok) { note.hidden = false; note.textContent = r.reason === 'blocked' ? 'Notifications are blocked for Yes Coach!. Allow them in your phone settings, then switch this on.' : r.reason === 'dismissed' ? 'Not switched on, because notifications were not allowed.' : 'Could not switch this on. Try again.'; }
   });
   let pushSynced = false;
-  const paintSettings = () => { if (S.view === 'settings') paintPush(); if (!pushSynced && window.YC_PUSH) { pushSynced = true; window.YC_PUSH.sync(); } const cb = $('#set-rir'); cb.checked = showRir(); $('#set-prog').checked = progOn(); $('#set-cal').checked = showCal(); if (S.view === 'settings') { paintMe(); if (!$('#set-plates').contains(document.activeElement)) buildPlateSettings(); } };
+  const paintSettings = () => { if (S.view === 'settings') paintPush(); if (!pushSynced && window.YC_PUSH) { pushSynced = true; window.YC_PUSH.sync(); } const cb = $('#set-rir'); cb.checked = showRir(); $('#set-pinvol').checked = pinVol(); $('#set-prog').checked = progOn(); $('#set-cal').checked = showCal(); if (S.view === 'settings') { paintMe(); if (!$('#set-plates').contains(document.activeElement)) buildPlateSettings(); } };
   $('#set-cal').addEventListener('change', () => { setShowCal($('#set-cal').checked); });
   $('#set-claude-ask').addEventListener('change', () => {
     saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { claude_ask: $('#set-claude-ask').checked }) }).catch(() => {});
@@ -9837,6 +9841,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#set-prog').addEventListener('change', () => {
     saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { progress_suggest: $('#set-prog').checked }) }).catch(() => {});
     if (R) paintSession();
+  });
+  $('#set-pinvol').addEventListener('change', () => {
+    saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { pin_volume: $('#set-pinvol').checked }) }).catch(() => {});
   });
   $('#set-rir').addEventListener('change', () => {
     saveRoot({ settings: Object.assign({}, (S.root && S.root.settings) || {}, { show_rir: $('#set-rir').checked }) }).catch(() => {});

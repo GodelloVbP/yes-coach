@@ -7726,5 +7726,40 @@
   "de": "Übung hinzufügen, + Satz, Nächste Übung, Beenden und die anderen schrägen Schaltflächen werden beim Drücken jetzt dunkler und etwas kleiner, damit du siehst, dass der Tipp angekommen ist.",
   "fr": "Ajouter un exercice, + Série, Exercice suivant, Terminer et les autres boutons inclinés s’assombrissent et rétrécissent un peu quand tu appuies, pour que tu voies que ton appui a été pris en compte.",
   "it": "Aggiungi esercizio, + Serie, Esercizio successivo, Termina e gli altri pulsanti inclinati ora si scuriscono e si restringono un po' quando li premi, così vedi che il tocco è arrivato."
+ },
+ "Count machine pins as kg": {
+  "nl": "Pennen van machines als kg tellen",
+  "es": "Contar los pines de las máquinas como kg",
+  "de": "Maschinen-Pins als kg zählen",
+  "fr": "Compter les crans des machines comme des kg",
+  "it": "Conta i pin delle macchine come kg"
+ },
+ "Adds machine sets to the volume on the finish screen. Only right when the pin numbers on your machines are kg.": {
+  "nl": "Telt machinesets mee in het volume op het eindscherm. Alleen goed als de pinnummers op je machines kg zijn.",
+  "es": "Suma las series de máquinas al volumen de la pantalla final. Solo es correcto si los números de pin de tus máquinas son kg.",
+  "de": "Zählt Maschinensätze zum Volumen auf dem Abschlussbildschirm. Nur richtig, wenn die Pin-Zahlen an deinen Maschinen kg sind.",
+  "fr": "Ajoute les séries sur machine au volume de l’écran de fin. Juste seulement si les numéros de cran de tes machines sont en kg.",
+  "it": "Aggiunge le serie alle macchine al volume nella schermata finale. Giusto solo se i numeri di pin delle tue macchine sono kg."
+ },
+ "Pin is the pin position in a machine's weight stack, not kg. Pin sets are left out of the kg volume, unless you count them in Settings.": {
+  "nl": "Pin is de pinstand in het gewichtsblok van een machine, geen kg. Pin-sets tellen niet mee in het kg-volume, tenzij je ze meetelt bij Instellingen.",
+  "es": "Pin es la posición del pasador en la pila de pesas de una máquina, no kg. Las series por pin se dejan fuera del volumen en kg, salvo que las cuentes en Ajustes.",
+  "de": "Pin ist die Stiftposition im Gewichtsblock einer Maschine, nicht kg. Pin-Sätze zählen nicht zum kg-Volumen, außer du zählst sie in den Einstellungen mit.",
+  "fr": "Le cran est la position de la goupille dans le bloc de poids d’une machine, pas des kg. Les séries au cran sont exclues du volume en kg, sauf si tu les comptes dans les Réglages.",
+  "it": "Pin è la posizione del perno nel blocco pesi di una macchina, non kg. Le serie a pin restano fuori dal volume in kg, a meno che tu non le conti nelle Impostazioni."
+ },
+ "Machine pins in the volume": {
+  "nl": "Machinepennen in het volume",
+  "es": "Pines de máquinas en el volumen",
+  "de": "Maschinen-Pins im Volumen",
+  "fr": "Crans des machines dans le volume",
+  "it": "Pin delle macchine nel volume"
+ },
+ "Settings, Logging: Count machine pins as kg adds your machine sets to the volume on the finish screen. Use it when the pin numbers on your machines are kg. It is off by default, because a pin is a place in the weight stack.": {
+  "nl": "Instellingen, Loggen: Pennen van machines als kg tellen telt je machinesets mee in het volume op het eindscherm. Gebruik het als de pinnummers op je machines kg zijn. Standaard uit, omdat een pin een plek in het gewichtsblok is.",
+  "es": "Ajustes, Registro: Contar los pines de las máquinas como kg suma tus series de máquinas al volumen de la pantalla final. Úsalo cuando los números de pin de tus máquinas sean kg. Está desactivado por defecto, porque un pin es un lugar en la pila de pesas.",
+  "de": "Einstellungen, Protokoll: Maschinen-Pins als kg zählen rechnet deine Maschinensätze ins Volumen auf dem Abschlussbildschirm ein. Nutze es, wenn die Pin-Zahlen an deinen Maschinen kg sind. Standardmäßig aus, weil ein Pin eine Stelle im Gewichtsblock ist.",
+  "fr": "Réglages, Saisie : Compter les crans des machines comme des kg ajoute tes séries sur machine au volume de l’écran de fin. À utiliser quand les numéros de cran de tes machines sont en kg. Désactivé par défaut, car un cran est une position dans le bloc de poids.",
+  "it": "Impostazioni, Registro: Conta i pin delle macchine come kg aggiunge le tue serie alle macchine al volume nella schermata finale. Usalo quando i numeri di pin delle tue macchine sono kg. È disattivato di default, perché un pin è una posizione nel blocco pesi."
  }
 }
