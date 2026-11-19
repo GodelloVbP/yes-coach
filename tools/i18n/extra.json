@@ -7824,5 +7824,26 @@
   "de": "Der Text des Pausentimers sitzt jetzt mittig in der Leiste.",
   "fr": "Le texte du minuteur de repos est centré dans sa barre.",
   "it": "Il testo del timer di recupero è centrato nella sua barra."
+ },
+ "Last time ({0})": {
+  "nl": "Vorige keer ({0})",
+  "es": "Última vez ({0})",
+  "de": "Letztes Mal ({0})",
+  "fr": "Dernière fois ({0})",
+  "it": "Ultima volta ({0})"
+ },
+ "Target and last time, in one line": {
+  "nl": "Doel en vorige keer, in één regel",
+  "es": "Objetivo y última vez, en una línea",
+  "de": "Ziel und letztes Mal in einer Zeile",
+  "fr": "Objectif et dernière fois, sur une ligne",
+  "it": "Obiettivo e ultima volta, in una riga"
+ },
+ "The line above the sets now says what the sets are set up for, with the weight the first set starts with, and how the last session went, with its date. The separate Next number and the target date are gone; why the weight moved is in the line under it.": {
+  "nl": "De regel boven de sets zegt nu waarvoor de sets zijn ingesteld, met het gewicht waarmee de eerste set begint, en hoe de vorige training ging, met de datum. Het aparte Volgende-getal en de doeldatum zijn weg; waarom het gewicht verschoof staat in de regel eronder.",
+  "es": "La línea sobre las series ahora dice para qué están preparadas, con el peso con el que empieza la primera, y cómo fue la última sesión, con su fecha. El número Siguiente aparte y la fecha del objetivo desaparecen; por qué cambió el peso está en la línea de debajo.",
+  "de": "Die Zeile über den Sätzen sagt jetzt, wofür die Sätze eingestellt sind, mit dem Gewicht, mit dem der erste Satz beginnt, und wie das letzte Training lief, mit Datum. Die getrennte Nächstes-Zahl und das Zieldatum entfallen; warum sich das Gewicht geändert hat, steht in der Zeile darunter.",
+  "fr": "La ligne au-dessus des séries dit maintenant à quoi elles sont réglées, avec la charge de départ de la première, et comment s’est passée la dernière séance, avec sa date. Le chiffre Suivant séparé et la date de l’objectif disparaissent ; pourquoi la charge a bougé est dans la ligne dessous.",
+  "it": "La riga sopra le serie ora dice per cosa sono impostate, con il peso da cui parte la prima, e come è andato l'ultimo allenamento, con la data. Il numero Prossimo separato e la data dell'obiettivo spariscono; perché il peso è cambiato è nella riga sotto."
  }
 }

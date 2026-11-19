@@ -67,7 +67,7 @@ try:
             check('a bodyweight exercise has no weight column', heads[1] == ['Set', 'Last', 'Reps'], heads)
             check('last time is in the row without opening anything', '10 @ 25' in page.locator('.set:has(#f-legext_1-load) .set-last').inner_text() and page.locator('.set:has(#f-legext_1-load) .set-last').is_visible())
             check('the rows no longer repeat the unit next to every field', page.evaluate("getComputedStyle(document.querySelector('.set:not(.set-head) .fld small')).fontSize") == '0px')
-            check('the old Last line is gone from the caption', 'Last' not in page.inner_text('.ex-cap').replace('Last none yet', ''), page.inner_text('.ex-cap'))
+            check('the caption says how the last session went', 'Last time' in page.inner_text('.ex-cap') and '@ 25' in page.inner_text('.ex-cap'), page.inner_text('.ex-cap'))
             check('nothing scrolls sideways', not page.evaluate("document.documentElement.scrollWidth > document.documentElement.clientWidth"))
         errs = session(pw, be, ALICE, s3, width=360); check('no page errors (headers)', not errs, errs)
 

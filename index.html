@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-yDm1we4a0x7NOMbxskIT8+F/j2XpPKr/4ZXxo0jKQZ0=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-QW+y7pSSXmt23WQFDJD8RRJbGEyxdLjnXiGjwcRopEI=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-19 20:43Z">
+<meta name="yc-build" content="2026-11-19 21:08Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -2023,6 +2023,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['19 Nov 2026', "Target and last time, in one line", ["The line above the sets now says what the sets are set up for, with the weight the first set starts with, and how the last session went, with its date. The separate Next number and the target date are gone; why the weight moved is in the line under it."]],
     ['19 Nov 2026', "One look for buttons", ["Orange with blue letters confirms: Save, Add, Yes. White with blue letters goes back or keeps things as they are: Back, Cancel, Keep going. Every button follows it now, also on the rest bar and the message bar.", "The rest timer's text is centred in its bar."]],
     ['19 Nov 2026', "Finish asks first", ["Finish workout now asks \"Are you sure you are done with your workout?\" before it ends the day. It also says how many sets are not done yet. Keep going takes you back."]],
     ['18 Nov 2026', "Machine pins in the volume", ["Sets on machines you log by pin now count in the volume on the finish screen and in the share picture."]],
@@ -3777,13 +3778,17 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const last = lastSetsFor(item.ex, S.active.date);
     // your own note for this exercise (seat, grip, position): it stays with the exercise, open, every time you do it
     wrap.append(buildStick(item.ex, ex));
-    // what the plan wants and what comes next; last time is in the Previous column of the sets
+    // what the sets below are set up for (the plan's sets and reps, at the weight the first set starts with: the same number the row shows),
+    // and how the last session went. Why the weight moved is in the line under it.
     const cap = h('div', 'ex-cap');
     const bits = [];
-    if (item.planned) bits.push(['Target' + (item.target_at ? ' (' + dm(item.target_at) + ')' : ''), item.sets + ' × ' + (item.reps || '?') + (item.target ? ' @ ' + withUnit(item.target, uw) : '')]);
-    const pg = progFor(item, true);
-    if (pg && pg.load != null) bits.push(['Next', num(pg.load) + (uw ? ' ' + uw : '') + (pg.delta ? ' (' + (pg.delta > 0 ? '+' : '−') + num(Math.abs(pg.delta)) + ')' : '')]);
-    if (!last) bits.push(['Last', 'none yet']);
+    if (item.planned) {
+      const p = prefill(item, 1);
+      const at = p.load != null ? num(p.load) + (uw ? ' ' + uw : '') : item.target ? withUnit(item.target, uw) : '';
+      bits.push(['Target', item.sets + ' × ' + (item.reps || '?') + (at ? ' @ ' + at : '')]);
+    }
+    if (last) bits.push(['Last time (' + dm(last.date) + ')', fmtSets(last.sets, ex.unit || 'kg', uw)]);
+    else bits.push(['Last time', 'none yet']);
     bits.forEach(([k, v], i) => { if (i) cap.append(' · '); cap.append(k + ' '); cap.append(h('b', '', v)); });
     if (bits.length) wrap.append(cap);
     if (item.note) wrap.append(h('div', 'ex-tip', item.note));
