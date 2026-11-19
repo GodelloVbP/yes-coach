@@ -7803,5 +7803,26 @@
   "de": "Training beenden fragt jetzt \"Bist du sicher, dass du mit deinem Training fertig bist?\", bevor der Tag endet. Es sagt auch, wie viele Sätze noch nicht fertig sind. Weitermachen bringt dich zurück.",
   "fr": "Terminer la séance demande maintenant \"Tu es sûr d’avoir fini ta séance ?\" avant de clore la journée. Il dit aussi combien de séries ne sont pas encore faites. Continuer te ramène à la séance.",
   "it": "Termina allenamento ora chiede \"Sei sicuro di aver finito l'allenamento?\" prima di chiudere la giornata. Dice anche quante serie non sono ancora fatte. Continua ti riporta all'allenamento."
+ },
+ "One look for buttons": {
+  "nl": "Eén uiterlijk voor knoppen",
+  "es": "Un solo aspecto para los botones",
+  "de": "Ein Look für Schaltflächen",
+  "fr": "Un seul style pour les boutons",
+  "it": "Un solo aspetto per i pulsanti"
+ },
+ "Orange with blue letters confirms: Save, Add, Yes. White with blue letters goes back or keeps things as they are: Back, Cancel, Keep going. Every button follows it now, also on the rest bar and the message bar.": {
+  "nl": "Oranje met blauwe letters bevestigt: Opslaan, Toevoegen, Ja. Wit met blauwe letters gaat terug of laat alles zoals het is: Terug, Annuleren, Doorgaan. Elke knop volgt dit nu, ook op de rustbalk en de berichtbalk.",
+  "es": "Naranja con letras azules confirma: Guardar, Añadir, Sí. Blanco con letras azules vuelve o deja todo como está: Atrás, Cancelar, Seguir. Todos los botones lo siguen ahora, también en la barra de descanso y la de mensajes.",
+  "de": "Orange mit blauen Buchstaben bestätigt: Speichern, Hinzufügen, Ja. Weiß mit blauen Buchstaben geht zurück oder lässt alles, wie es ist: Zurück, Abbrechen, Weitermachen. Jede Schaltfläche folgt dem jetzt, auch in der Pausenleiste und der Meldungsleiste.",
+  "fr": "Orange avec lettres bleues confirme : Enregistrer, Ajouter, Oui. Blanc avec lettres bleues revient en arrière ou laisse les choses telles quelles : Retour, Annuler, Continuer. Tous les boutons suivent cette règle, y compris la barre de repos et la barre de messages.",
+  "it": "Arancione con lettere blu conferma: Salva, Aggiungi, Sì. Bianco con lettere blu torna indietro o lascia tutto com'è: Indietro, Annulla, Continua. Ogni pulsante lo segue ora, anche nella barra di recupero e in quella dei messaggi."
+ },
+ "The rest timer's text is centred in its bar.": {
+  "nl": "De tekst van de rusttimer staat gecentreerd in de balk.",
+  "es": "El texto del temporizador de descanso está centrado en su barra.",
+  "de": "Der Text des Pausentimers sitzt jetzt mittig in der Leiste.",
+  "fr": "Le texte du minuteur de repos est centré dans sa barre.",
+  "it": "Il testo del timer di recupero è centrato nella sua barra."
  }
 }
