@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-/F3uQ51q7TLcYgAziD9NWeTdVnZyWQO38kTuSCgH0DU=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-Q8TTx6rTeHcJ3Iai8zR1TBoqSzs28dS/goCQ8EA9OgI=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-19 21:15Z">
+<meta name="yc-build" content="2026-11-19 21:18Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -2042,6 +2042,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['19 Nov 2026', "+ Set no longer resets the card", ["+ Set and − now add or take away one row and leave everything else alone. How to do it and Plates stay open. + Warm-up and the other changes that redraw the exercises put the open panels back."]],
     ['19 Nov 2026', "Notes say what they belong to", ["Every note now has a label: Exercise note (orange: it stays with the exercise in every workout), This workout (outlined: about one exercise, today only) and Whole workout (solid blue, with the day and date). A note from an earlier workout says when you wrote it.", "Every button now shows a ripple where you tap it, also + Set and the note icon, which used to change the screen before you could see the press."]],
     ['19 Nov 2026', "Target and last time, in one line", ["The line above the sets now says what the sets are set up for, with the weight the first set starts with, and how the last session went, with its date. The separate Next number and the target date are gone; why the weight moved is in the line under it."]],
     ['19 Nov 2026', "One look for buttons", ["Orange with blue letters confirms: Save, Add, Yes. White with blue letters goes back or keeps things as they are: Back, Cancel, Keep going. Every button follows it now, also on the rest bar and the message bar.", "The rest timer's text is centred in its bar."]],
@@ -3493,14 +3494,32 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
 
   const itemsSig = () => sessionItems().map((i) => i.ex + ':' + rowCount(i)).join('|') + '|' + showRir();
 
+  // A rebuild of the exercise cards keeps what was open (How to do it, Plates) and the field the cursor was in. + Set and − do not rebuild
+  // at all: they add or remove one row.
   const renderItems = () => {
     closeMenus();
+    const kept = { how: [], plates: [], focus: null };
+    Object.entries(R.items || {}).forEach(([ex, it]) => {
+      if (!it || !it.el) return;
+      const how = it.el.querySelector('.ex-how');
+      if (how && how.open) kept.how.push(ex);
+      const pb = it.el.querySelector('.ex-plates');
+      if (pb && pb.getAttribute('aria-expanded') === 'true') kept.plates.push(ex);
+    });
+    const a = document.activeElement;
+    if (a && a.id && R.body.contains(a) && /^f-/.test(a.id)) kept.focus = { id: a.id, from: a.selectionStart, to: a.selectionEnd };
     const items = sessionItems();
     R.sig = itemsSig();
     R.body.replaceChildren();
     R.sets = {};
     R.items = {};
     items.forEach((item, i) => R.body.append(buildItem(item, i, items.length)));
+    kept.how.forEach((ex) => { const it = R.items[ex]; const how = it && it.el.querySelector('.ex-how'); if (how) how.open = true; });
+    kept.plates.forEach((ex) => { const it = R.items[ex]; const pb = it && it.el.querySelector('.ex-plates'); if (pb) pb.click(); });
+    if (kept.focus) {
+      const el = document.getElementById(kept.focus.id);
+      if (el) { el.focus({ preventScroll: true }); try { el.setSelectionRange(kept.focus.from, kept.focus.to); } catch (e) { /* number fields have no selection */ } }
+    }
   };
 
   const unitWord = (ex) => {
@@ -3882,7 +3901,15 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
 
     const acts = h('div', 'ex-actions');
     const more = btn('skew small', '+ Set');
-    more.addEventListener('click', () => { const n = rowCount(item) + 1; setRows(item, n); renderItems(); paintSession(); enter(R.sets[item.ex + '_' + n] && R.sets[item.ex + '_' + n].row); });
+    more.addEventListener('click', () => {
+      const n = rowCount(item) + 1;
+      setRows(item, n);
+      const row = buildSet(item, n, unit); // one more row; the other cards, panels and fields stay as they are
+      sets.append(row);
+      R.sig = itemsSig();
+      paintSession();
+      enter(row);
+    });
     const less = plainBtn('icon boxed', '−', 'Remove the last set of ' + ex.name, () => removeLastSet(item));
     const noteBtn = plainBtn('icon boxed', '✎', 'Note about ' + ex.name);
     noteBtn.title = 'Note about ' + ex.name + ', this workout only';
@@ -4395,7 +4422,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       optimistic(date, key, { done: false, removed: true });
     }
     setRows(item, cur - 1);
-    renderItems();
+    const gone = R.sets[key];
+    if (gone && gone.row && gone.row.isConnected) { gone.row.remove(); delete R.sets[key]; R.sig = itemsSig(); } else renderItems();
     paintSession();
     if (hasValues(hadDraft) || hadStored) {
       showToast('Removed set ' + cur + ' of ' + exName(item.ex) + '.', () => {

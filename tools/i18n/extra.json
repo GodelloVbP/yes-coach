@@ -7929,5 +7929,19 @@
   "de": "Jede Schaltfläche zeigt jetzt eine Welle dort, wo du tippst, auch + Satz und das Notiz-Symbol, die den Bildschirm veränderten, bevor man den Druck sah.",
   "fr": "Chaque bouton affiche maintenant une onde là où tu touches, y compris + Série et l’icône de note, qui changeaient l’écran avant qu’on voie l’appui.",
   "it": "Ogni pulsante mostra ora un'onda dove tocchi, anche + Serie e l'icona della nota, che cambiavano la schermata prima che si vedesse la pressione."
+ },
+ "+ Set no longer resets the card": {
+  "nl": "+ Set zet de kaart niet meer terug",
+  "es": "+ Serie ya no reinicia la tarjeta",
+  "de": "+ Satz setzt die Karte nicht mehr zurück",
+  "fr": "+ Série ne réinitialise plus la carte",
+  "it": "+ Serie non reimposta più la scheda"
+ },
+ "+ Set and − now add or take away one row and leave everything else alone. How to do it and Plates stay open. + Warm-up and the other changes that redraw the exercises put the open panels back.": {
+  "nl": "+ Set en − voegen nu één rij toe of halen er één weg en laten de rest met rust. Zo doe je het en Schijven blijven open. + Warming-up en andere wijzigingen die de oefeningen opnieuw tekenen zetten de open vakken terug.",
+  "es": "+ Serie y − ahora añaden o quitan una fila y dejan todo lo demás como está. Cómo hacerlo y Discos siguen abiertos. + Calentamiento y los demás cambios que redibujan los ejercicios devuelven los paneles abiertos.",
+  "de": "+ Satz und − fügen jetzt eine Zeile hinzu oder entfernen eine und lassen alles andere in Ruhe. So geht's und Scheiben bleiben offen. + Aufwärmen und andere Änderungen, die die Übungen neu zeichnen, stellen die offenen Bereiche wieder her.",
+  "fr": "+ Série et − ajoutent ou retirent maintenant une ligne et ne touchent à rien d’autre. Comment faire et Disques restent ouverts. + Échauffement et les autres changements qui redessinent les exercices remettent les panneaux ouverts.",
+  "it": "+ Serie e − ora aggiungono o tolgono una riga e lasciano stare tutto il resto. Come si fa e Dischi restano aperti. + Riscaldamento e le altre modifiche che ridisegnano gli esercizi riaprono i pannelli aperti."
  }
 }
