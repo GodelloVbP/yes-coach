@@ -1993,6 +1993,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['20 Nov 2026', "The rest bar makes room", ["An open exercise list now ends above the rest bar, also when the bar comes up after you opened the list, and it gets its room back when the bar goes. When the bar comes up while you are at the end of the page, the page moves up with it."]],
     ['19 Nov 2026', "A clearer top of each exercise", ["Under the exercise name, one panel now holds the facts in the same order every time: Target (the largest line), Last time, Why the weight moved, and the plan's Cue, with the key numbers in bold. The spacing between these parts is equal."]],
     ['19 Nov 2026', "+ Set no longer resets the card", ["+ Set and − now add or take away one row and leave everything else alone. How to do it and Plates stay open. + Warm-up and the other changes that redraw the exercises put the open panels back."]],
     ['19 Nov 2026', "Notes say what they belong to", ["Every note now has a label: Exercise note (orange: it stays with the exercise in every workout), This workout (outlined: about one exercise, today only) and Whole workout (solid blue, with the day and date). A note from an earlier workout says when you wrote it.", "Every button now shows a ripple where you tap it, also + Set and the note icon, which used to change the screen before you could see the press."]],
@@ -4680,13 +4681,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   document.addEventListener('pointerdown', () => { fingerDown = true; }, true);
   document.addEventListener('pointerup', () => { fingerDown = false; }, true);
   document.addEventListener('pointercancel', () => { fingerDown = false; }, true);
-  document.addEventListener('focusin', () => { if (fieldFocused() && !document.body.classList.contains('typing')) { clearTimeout(typingOff); document.body.classList.add('typing'); paintBar(); } });
+  document.addEventListener('focusin', () => { if (fieldFocused() && !document.body.classList.contains('typing')) { clearTimeout(typingOff); document.body.classList.add('typing'); paintBar(); fitPickers(); } });
   const settleTyping = () => {
     clearTimeout(typingOff);
     typingOff = setTimeout(() => {
       if (fingerDown) { settleTyping(); return; }
       const t = fieldFocused();
-      if (t !== document.body.classList.contains('typing')) { document.body.classList.toggle('typing', t); paintBar(); }
+      if (t !== document.body.classList.contains('typing')) { document.body.classList.toggle('typing', t); paintBar(); fitPickers(); }
     }, 450);
   };
   document.addEventListener('focusout', settleTyping);
@@ -8441,11 +8442,17 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   const paintRest = () => {
     const bar = $('#restbar');
-    if (!REST.ends) { bar.hidden = true; document.body.classList.remove('resting'); if (document.body.classList.contains('typing')) paintBar(); return; }
+    if (!REST.ends) { bar.hidden = true; document.body.classList.remove('resting'); fitPickers(); if (document.body.classList.contains('typing')) paintBar(); return; }
     const rem = REST.ends - Date.now();
     if (rem < -5 * 60000) { stopRest(); return; }
+    // the bar takes room at the bottom of the page. When it comes up while you are at the bottom (after the last set), the page moves up
+    // with it, so the end of the page is not left under the bar.
+    const comes = !document.body.classList.contains('resting');
+    const nearEnd = comes && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 96;
     bar.hidden = false;
     document.body.classList.add('resting');
+    if (nearEnd) window.scrollTo({ top: document.documentElement.scrollHeight, behavior: motion() });
+    fitPickers(); // an open exercise list takes the room above the bar, also when the bar comes up after the list was opened
     bar.classList.toggle('over', rem <= 0);
     $('#rest-lab').textContent = rem > 0 ? 'Rest · ' + REST.label : 'Rest over · ' + REST.label;
     $('#rest-t').textContent = rem > 0 ? fmtClock(rem) : '+' + fmtClock(rem);
