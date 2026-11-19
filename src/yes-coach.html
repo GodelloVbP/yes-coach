@@ -68,15 +68,18 @@ h2 { font-size: var(--t3); font-weight: 700; text-transform: uppercase; letter-s
 .lab .note { font-family: var(--f-body); font-size: var(--t1); text-transform: none; letter-spacing: 0; }
 .ex-warm[hidden] { display: none; }
 .chip.ss { background: var(--pop); border-color: var(--pop); color: var(--on-pop); }
-.ex-sug { display: flex; flex-wrap: wrap; align-items: center; gap: 0 0.5rem; margin: 0.15rem 0 0.35rem; font-size: 0.9rem; color: var(--ink); }
+.ex-sug { display: flex; flex-wrap: wrap; align-items: center; gap: 0 1rem; margin: 0; font-size: var(--t2); color: var(--ink); }
+.ex-sug-why { flex: 1 1 100%; font-weight: 500; line-height: 1.35; }
+.ex-sug-why b { font-weight: 800; }
+.eb-colon { color: var(--ink-soft); }
 .ex-sug[hidden] { display: none; }
 .ex-sug-why { font-weight: 600; }
-.ex-sug-undo, .ex-sug-step { min-height: 44px; font-size: 0.9rem; }
-.ex-how { margin: 0 0 0.5rem; }
+.ex-sug-undo, .ex-sug-step { min-height: 40px; font-size: var(--t2); padding-left: 0; }
+.ex-how { margin: 0; }
 .ex-how summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; font-size: var(--t2); font-weight: 600; color: var(--ink-soft); }
 .ex-how summary:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .ex-how p { margin: 0 0 0.5rem; font-size: var(--t2); line-height: 1.45; }
-.ex-stepbox { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; margin: 0 0 0.5rem; }
+.ex-stepbox { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.75rem; margin: 0; }
 .ex-stepbox[hidden] { display: none; }
 .ex-stepbox input { width: 5rem; min-height: 44px; font: inherit; font-weight: 700; color: var(--ink); background: transparent; border: 0; border-bottom: 2px solid var(--ctl); }
 .ex-stepbox .note { flex-basis: 100%; margin: 0; }
@@ -313,7 +316,7 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 
 /* session */
 .sess-body { padding-top: 0.25rem; }
-.ex { position: relative; padding-block: 1.25rem; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.5rem; }
+.ex { position: relative; padding-block: 1.25rem; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.75rem; }
 .ex .ex-head { padding-right: 132px; }
 .ex-ctl { position: absolute; top: 0.5rem; right: 0; display: flex; }
 .ex-ctl .icon { min-width: 40px; padding: 0 0.25rem; }
@@ -325,15 +328,25 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .ex-name { font-size: var(--t4); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; line-height: 1; }
 .ex.is-done .ex-name { color: var(--ink-soft); }
 .ex.is-done .ex-name::after { content: " ✓"; }
-.ex-cap { font-size: var(--t2); font-weight: 500; color: var(--ink-soft); }
+/* the brief: label column and value column, one rhythm. What to do is the largest line; last time, why and the cue follow. */
+.ex-brief { display: flex; flex-direction: column; gap: 0.75rem; padding: 0.875rem 1rem; background: var(--faint); }
+.ex-cap { display: flex; flex-direction: column; gap: 0.75rem; }
+.eb-row { display: grid; grid-template-columns: 5.25rem minmax(0, 1fr); gap: 0 0.75rem; align-items: baseline; }
+.eb-row[hidden] { display: none; }
+.eb-k { font-family: var(--f-head); font-size: var(--t1); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
+.eb-v { min-width: 0; font-size: var(--t2); font-weight: 500; line-height: 1.35; color: var(--ink); }
+.eb-v b { font-weight: 800; }
+.eb-v.soft { color: var(--ink-soft); }
+.eb-target { font-size: var(--t3); line-height: 1.2; }
+.eb-target b { font-family: var(--f-head); font-weight: 800; letter-spacing: 0.02em; }
 .ex-dtog { display: flex; align-items: center; gap: 0.625rem; width: 100%; min-height: 44px; padding: 0.25rem 0; background: none; border: 0; border-bottom: 1px solid var(--line); color: var(--ink-soft); font: inherit; font-size: var(--t1); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; text-align: left; cursor: pointer; }
 .ex-dtog:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .ex-dtog .p-caret { width: 0.5rem; height: 0.5rem; border-color: var(--ink-soft); border-width: 0 2px 2px 0; }
 .ex-dtog[aria-expanded="true"] .p-caret { transform: rotate(-135deg); }
 .ex-det { display: flex; flex-direction: column; gap: 0.5rem; }
 .ex-det[hidden] { display: none; }
-.ex-cap b { color: var(--ink); font-weight: 600; }
-.ex-tip { font-size: var(--t2); color: var(--ink); font-weight: 500; border-left: 3px solid var(--ctl); padding-left: 0.625rem; }
+
+.ex-tip { font-size: var(--t2); color: var(--ink); font-weight: 500; }
 .ex-lastnote { font-size: var(--t1); color: var(--ink-soft); font-weight: 500; line-height: 1.4; }
 .fill-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; }
 .sets { display: flex; flex-direction: column; gap: 0.375rem; max-width: 32rem; }
@@ -350,7 +363,7 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .set-head span { text-align: center; white-space: nowrap; }
 .set:not(.run) .fld small { font-size: 0; }
 /* your note for the exercise: open under its name, in its own colour, so it reads as yours and not as a field */
-.ex-stick { margin: 0.25rem 0 0.5rem; }
+.ex-stick { margin: 0; }
 .ex-stick.on { background: color-mix(in srgb, var(--pop) 14%, var(--bg)); border-left: 4px solid var(--pop); }
 .ex-stick-t { display: none; width: 100%; box-sizing: border-box; min-height: 5.5rem; max-height: 50vh; resize: vertical; font: inherit; font-size: var(--t3); line-height: 1.45; color: var(--ink); background: transparent; border: 0; padding: 0.75rem; }
 .ex-stick.on .ex-stick-t { display: block; }
@@ -1980,6 +1993,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['19 Nov 2026', "A clearer top of each exercise", ["Under the exercise name, one panel now holds the facts in the same order every time: Target (the largest line), Last time, Why the weight moved, and the plan's Cue, with the key numbers in bold. The spacing between these parts is equal."]],
     ['19 Nov 2026', "+ Set no longer resets the card", ["+ Set and − now add or take away one row and leave everything else alone. How to do it and Plates stay open. + Warm-up and the other changes that redraw the exercises put the open panels back."]],
     ['19 Nov 2026', "Notes say what they belong to", ["Every note now has a label: Exercise note (orange: it stays with the exercise in every workout), This workout (outlined: about one exercise, today only) and Whole workout (solid blue, with the day and date). A note from an earlier workout says when you wrote it.", "Every button now shows a ripple where you tap it, also + Set and the note icon, which used to change the screen before you could see the press."]],
     ['19 Nov 2026', "Target and last time, in one line", ["The line above the sets now says what the sets are set up for, with the weight the first set starts with, and how the last session went, with its date. The separate Next number and the target date are gone; why the weight moved is in the line under it."]],
@@ -3751,7 +3765,30 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       local.set('yc-nosug', keys.length > 40 ? Object.fromEntries(keys.slice(-40).map((k) => [k, 1])) : m);
       paintSession();
     }));
-    wrap.append(sugRow, stepBox);
+    // the facts about this exercise today, as one panel: what to do, what happened last time, why the weight moved and the plan's cue
+    const last = lastSetsFor(item.ex, S.active.date);
+    const brief = h('div', 'ex-brief');
+    const ebRow = (label, body) => { const r = h('div', 'eb-row'); r.append(h('span', 'eb-k', label), body); return r; };
+    const cap = h('div', 'ex-cap');
+    if (item.planned) {
+      const p = prefill(item, 1);
+      const at = p.load != null ? num(p.load) + (uw ? ' ' + uw : '') : item.target ? withUnit(item.target, uw) : '';
+      const tv = h('div', 'eb-v eb-target');
+      tv.append(h('b', '', item.sets + ' × ' + (item.reps || '?')));
+      if (at) tv.append(' @ ', h('b', '', at));
+      cap.append(ebRow('Target', tv));
+    }
+    const lv = h('div', 'eb-v');
+    if (last) lv.append(h('b', '', fmtSets(last.sets, ex.unit || 'kg', uw)), ' · ' + dm(last.date));
+    else { lv.classList.add('soft'); lv.textContent = 'none yet'; }
+    cap.append(ebRow('Last time', lv));
+    brief.append(cap);
+    sugRow.classList.add('eb-v');
+    const whyRow = ebRow('Why', sugRow);
+    whyRow.hidden = true;
+    brief.append(whyRow);
+    if (item.note) brief.append(ebRow('Cue', h('div', 'eb-v ex-tip', item.note)));
+    wrap.append(brief, stepBox);
     // red X, top right: remove this exercise from today only, after a confirm
     const ctl = h('div', 'ex-ctl');
     [['ex-up', '↑', -1, 'up'], ['ex-down', '↓', 1, 'down']].forEach(([cls, glyph, dir, word]) => {
@@ -3780,23 +3817,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     });
     ctl.append(xb);
     wrap.append(ctl, rmBox);
-    const last = lastSetsFor(item.ex, S.active.date);
     // your own note for this exercise (seat, grip, position): it stays with the exercise, open, every time you do it
     wrap.append(buildStick(item.ex, ex));
-    // what the sets below are set up for (the plan's sets and reps, at the weight the first set starts with: the same number the row shows),
-    // and how the last session went. Why the weight moved is in the line under it.
-    const cap = h('div', 'ex-cap');
-    const bits = [];
-    if (item.planned) {
-      const p = prefill(item, 1);
-      const at = p.load != null ? num(p.load) + (uw ? ' ' + uw : '') : item.target ? withUnit(item.target, uw) : '';
-      bits.push(['Target', item.sets + ' × ' + (item.reps || '?') + (at ? ' @ ' + at : '')]);
-    }
-    if (last) bits.push(['Last time (' + dm(last.date) + ')', fmtSets(last.sets, ex.unit || 'kg', uw)]);
-    else bits.push(['Last time', 'none yet']);
-    bits.forEach(([k, v], i) => { if (i) cap.append(' · '); cap.append(k + ' '); cap.append(h('b', '', v)); });
-    if (bits.length) wrap.append(cap);
-    if (item.note) wrap.append(h('div', 'ex-tip', item.note));
     const ln = lastNoteFor(item.ex);
     if (ln) {
       const t = String(ln.text).replace(/\s+/g, ' ').trim();
@@ -4545,6 +4567,14 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const st = storedSet(key);
     box.querySelectorAll('button.eff').forEach((b) => b.setAttribute('aria-pressed', String(!!st && st.rir != null && Number(b.dataset.rir) === Number(st.rir))));
   };
+  // "+2.5 kg: all 3 sets reached 8 last time" with the lead in bold. The whole sentence is translated first, then split at the colon.
+  const fillWhy = (el, text) => {
+    el.replaceChildren();
+    const t = String(window.YC_I18N && window.YC_I18N.t ? window.YC_I18N.t(text) || text : text);
+    const m = t.match(/^([^:]{1,48}):\s*(.+)$/);
+    if (!m) { el.textContent = t; return; }
+    el.append(h('b', '', m[1]), h('span', 'eb-colon', ':'), ' ' + m[2]);
+  };
   const paintItemState = () => {
     if (!R) return;
     Object.values(R.items).forEach((it) => {
@@ -4563,10 +4593,11 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         const off = sugOffFor(it.item);
         const done = keys.length > 0 && keys.every((k) => isDone(storedSet(k)));
         sugRow.hidden = !pg || done;
+        if (sugRow.parentElement && sugRow.parentElement.classList.contains('eb-row')) sugRow.parentElement.hidden = sugRow.hidden;
         if (pg) {
           const sb = sugRow.querySelector('.ex-sug-step');
           if (sb) { const ex = S.exercises[it.item.ex] || {}; const info = incInfo(it.item.ex); const inc = info.inc; const sf = it.el.querySelector('.ex-step-from'); if (sf) sf.hidden = info.from !== 'log'; sb.textContent = 'Step ' + num(inc) + (unitWord(ex) ? ' ' + unitWord(ex) : ''); const si = it.el.querySelector('.ex-stepbox input'); if (si && document.activeElement !== si) si.value = ex.inc != null ? ex.inc : ''; if (si) si.placeholder = num(inc); }
-          sugRow.firstChild.textContent = off ? '' : pg.reason;
+          fillWhy(sugRow.firstChild, off ? 'Showing last time’s numbers.' : pg.reason);
           sugRow.lastChild.textContent = off ? 'Use the suggestion' : 'Use last time';
         }
       }

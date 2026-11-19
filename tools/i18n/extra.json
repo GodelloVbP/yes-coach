@@ -7943,5 +7943,40 @@
   "de": "+ Satz und − fügen jetzt eine Zeile hinzu oder entfernen eine und lassen alles andere in Ruhe. So geht's und Scheiben bleiben offen. + Aufwärmen und andere Änderungen, die die Übungen neu zeichnen, stellen die offenen Bereiche wieder her.",
   "fr": "+ Série et − ajoutent ou retirent maintenant une ligne et ne touchent à rien d’autre. Comment faire et Disques restent ouverts. + Échauffement et les autres changements qui redessinent les exercices remettent les panneaux ouverts.",
   "it": "+ Serie e − ora aggiungono o tolgono una riga e lasciano stare tutto il resto. Come si fa e Dischi restano aperti. + Riscaldamento e le altre modifiche che ridisegnano gli esercizi riaprono i pannelli aperti."
+ },
+ "Why": {
+  "nl": "Waarom",
+  "es": "Por qué",
+  "de": "Warum",
+  "fr": "Pourquoi",
+  "it": "Perché"
+ },
+ "Cue": {
+  "nl": "Tip",
+  "es": "Pista",
+  "de": "Hinweis",
+  "fr": "Conseil",
+  "it": "Suggerimento"
+ },
+ "Showing last time’s numbers.": {
+  "nl": "Je ziet de cijfers van de vorige keer.",
+  "es": "Se muestran los números de la última vez.",
+  "de": "Die Zahlen vom letzten Mal werden gezeigt.",
+  "fr": "Les chiffres de la dernière fois sont affichés.",
+  "it": "Si vedono i numeri dell'ultima volta."
+ },
+ "A clearer top of each exercise": {
+  "nl": "Een duidelijkere bovenkant van elke oefening",
+  "es": "Una parte superior más clara en cada ejercicio",
+  "de": "Ein klarerer Kopf für jede Übung",
+  "fr": "Un haut d’exercice plus clair",
+  "it": "Una parte alta più chiara per ogni esercizio"
+ },
+ "Under the exercise name, one panel now holds the facts in the same order every time: Target (the largest line), Last time, Why the weight moved, and the plan's Cue, with the key numbers in bold. The spacing between these parts is equal.": {
+  "nl": "Onder de naam van de oefening staat nu één vlak met de feiten, elke keer in dezelfde volgorde: Doel (de grootste regel), Vorige keer, Waarom het gewicht verschoof en de Tip uit het plan, met de belangrijkste getallen vet. De ruimte tussen die delen is gelijk.",
+  "es": "Bajo el nombre del ejercicio, un solo panel recoge ahora los datos siempre en el mismo orden: Objetivo (la línea más grande), Última vez, Por qué cambió el peso y la Pista del plan, con los números clave en negrita. El espaciado entre las partes es igual.",
+  "de": "Unter dem Übungsnamen steht jetzt ein Feld mit den Fakten, immer in derselben Reihenfolge: Ziel (die größte Zeile), Letztes Mal, Warum sich das Gewicht geändert hat und der Hinweis aus dem Plan, die wichtigsten Zahlen fett. Die Abstände dazwischen sind gleich.",
+  "fr": "Sous le nom de l’exercice, un seul panneau réunit maintenant les infos dans le même ordre à chaque fois : Objectif (la plus grande ligne), Dernière fois, Pourquoi la charge a bougé et le Conseil du programme, avec les chiffres clés en gras. L’espacement entre ces parties est égal.",
+  "it": "Sotto il nome dell'esercizio, un solo pannello contiene ora i dati sempre nello stesso ordine: Obiettivo (la riga più grande), Ultima volta, Perché il peso è cambiato e il Suggerimento del piano, con i numeri chiave in grassetto. La spaziatura tra le parti è uguale."
  }
 }

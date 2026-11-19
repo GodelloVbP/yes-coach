@@ -1,4 +1,4 @@
-"""The line above the sets says what the sets are set up for (sets x reps at the weight the first set starts with) and how the last session
+"""The panel above the sets (Target, Last time, Why, Cue) says what the sets are set up for (sets x reps at the weight the first set starts with) and how the last session
 went, with its date; no stale target date and no separate Next number that differs from the rows."""
 import datetime, subprocess, time
 from playwright.sync_api import sync_playwright
@@ -29,33 +29,36 @@ try:
         be = Backend(); seed(be)
         def s1(page):
             open_day(page)
-            cap = page.inner_text('.ex-cap')
+            cap = ' '.join(page.inner_text('.ex-cap').lower().split())
             row = page.input_value('#f-row_1-load')
-            check('Target: sets x reps at the weight the first row starts with', ('Target 3 × 10 per arm @ %s kg' % row) in cap, (cap, row))
+            check('Target: sets x reps at the weight the first row starts with', ('target 3 × 10 per arm @ %s kg' % row) in cap, (cap, row))
             check('the row starts one step up: 12 kg', row == '12', row)
-            check('Last time: the date and how it went', ('Last time (%s) 3 × 10 @ 10 kg' % BACK_TXT) in cap, cap)
+            check('Last time: how it went, then the date', ('last time 3 × 10 @ 10 kg · %s' % BACK_TXT.lower()) in cap, cap)
             check('no target date and no separate Next', '(1 Jan)' not in cap and 'Next' not in cap, cap)
         errs = session(pw, be, ALICE, s1, width=390); check('no page errors', not errs, errs)
 
         be = Backend(); seed(be, history=False)
         def s2(page):
             open_day(page)
-            cap = page.inner_text('.ex-cap')
-            check('first time: Target without a weight, Last time none yet', 'Target 3 × 10 per arm' in cap and '@' not in cap and 'Last time none yet' in cap, cap)
+            cap = ' '.join(page.inner_text('.ex-cap').lower().split())
+            check('first time: Target without a weight, Last time none yet', 'target 3 × 10 per arm' in cap and '@' not in cap and 'last time none yet' in cap, cap)
         errs = session(pw, be, ALICE, s2, width=390); check('no page errors (first time)', not errs, errs)
 
         be = Backend(); seed(be, history=False, target='14')
         def s3(page):
             open_day(page)
-            cap = page.inner_text('.ex-cap')
-            check('a plan target shows as the weight', 'Target 3 × 10 per arm @ 14 kg' in cap and page.input_value('#f-row_1-load') == '14', (cap, page.input_value('#f-row_1-load')))
+            cap = ' '.join(page.inner_text('.ex-cap').lower().split())
+            check('a plan target shows as the weight', 'target 3 × 10 per arm @ 14 kg' in cap and page.input_value('#f-row_1-load') == '14', (cap, page.input_value('#f-row_1-load')))
         errs = session(pw, be, ALICE, s3, width=390); check('no page errors (target)', not errs, errs)
 
         be = Backend(); seed(be)
         def s4(page):
             open_day(page)
-            cap = page.inner_text('.ex-cap')
-            check('Dutch: Doel and Vorige keer', 'Doel' in cap and 'Vorige keer' in cap, cap)
+            cap = ' '.join(page.inner_text('.ex-cap').lower().split())
+            check('Dutch: Doel and Vorige keer', 'doel' in cap and 'vorige keer' in cap, cap)
+            why = page.inner_text('.ex-sug-why')
+            check('Dutch: the why line is translated, with its lead in bold', 'reached' not in why and 'last time' not in why and page.locator('.ex-sug-why b').count() == 1 and ':' in why, why)
+            check('Dutch: the Why label', 'waarom' in page.inner_text('.ex-brief').lower(), page.inner_text('.ex-brief'))
         errs = session(pw, be, ALICE, s4, width=390, lang='nl'); check('no page errors (nl)', not errs, errs)
 finally:
     server.terminate()
