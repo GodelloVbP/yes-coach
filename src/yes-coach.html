@@ -356,6 +356,17 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .ex-stick.on .ex-stick-t { display: block; }
 .ex-stick-t:focus { outline: 2px solid var(--ink); outline-offset: -2px; }
 .ex-stick-add { min-height: 44px; padding: 0; font-size: var(--t2); }
+/* which note belongs to what: orange = the exercise, every workout; outlined = the exercise, this workout only; solid blue = the whole workout */
+.nt-tag { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.375rem; font-size: var(--t1); font-weight: 600; color: var(--ink-soft); line-height: 1.3; }
+.nt-tag .chip { flex: none; }
+.nt-every .chip { background: var(--pop); border-color: var(--pop); color: var(--on-pop); }
+.nt-today .chip { border-color: var(--ink); }
+.nt-day .chip { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.ex-stick .nt-tag { display: none; padding: 0.5rem 0.75rem 0; margin: 0; }
+.ex-stick.on .nt-tag { display: flex; }
+.notebox.nt-in-ex { border-left: 4px solid var(--ctl); padding-left: 0.75rem; margin-top: 0.5rem; }
+.notebox.nt-in-day { background: var(--faint); border-left: 4px solid var(--ink); padding: 0.75rem; }
+.ex-lastnote .chip { margin-right: 0.25rem; border-color: var(--line); color: var(--ink-soft); }
 .set.run { grid-template-columns: 2.75rem repeat(2, minmax(0, 1fr)) 3.5rem; }
 #session.focus .set.run { grid-template-columns: 2.5rem 3rem repeat(2, minmax(0, 1fr)) 3.5rem; }
 .run-extra { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.25rem 1rem; padding-left: 3.25rem; }
@@ -1099,9 +1110,17 @@ body.fin-open { overflow: hidden; }
 .set.pr-hit { animation: pr-hit 0.6s ease-out 0.2s; }
 .fin-prs li { animation: pr-slide 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) both; animation-delay: calc(0.35s + var(--i, 0) * 0.15s); }
 .fin-prs .pr { animation: pr-slam 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) both; animation-delay: calc(0.55s + var(--i, 0) * 0.15s); }
+/* every button, pressed: darker at once, and the skewed and icon ones shrink a little. The class comes from the script below and stays a
+   moment after the finger leaves, so even a quick tap is seen (:active alone can be too short on a phone). */
+button.is-pressed, summary.is-pressed, [role="button"].is-pressed, label.skew.is-pressed { filter: brightness(0.86); transition-duration: 0s; }
+.skew.is-pressed, .pk-go.is-pressed, .pk-chip.is-pressed, .pill.is-pressed { transform: skewX(-14deg) scale(0.94); }
+.icon.is-pressed, .arrow.is-pressed, .sb-more.is-pressed, .sb-back.is-pressed, .mark-btn.is-pressed { transform: scale(0.88); }
+.textbtn.is-pressed, .link.is-pressed { filter: none; opacity: 0.5; }
+.press-ripple { position: fixed; z-index: 1000; width: 3.5rem; height: 3.5rem; margin: -1.75rem 0 0 -1.75rem; border-radius: 50%; background: var(--ink); opacity: 0; pointer-events: none; animation: press-ripple 0.45s ease-out; }
+@keyframes press-ripple { 0% { transform: scale(0.3); opacity: 0.28; } 100% { transform: scale(1.5); opacity: 0; } }
 /* the skewed buttons (Add exercise, + Set, Next exercise, Finish, Add in the picker, chips, pills): a tint over any colour and a small
    press, at once on touch, fading back slowly like the rest. Without motion the tint stays and the press goes (below). */
-.skew, .pk-go, .pk-chip, .pill { transition: box-shadow 0.3s ease-out, transform 0.18s cubic-bezier(0.3, 1.7, 0.5, 1), background-color 0.15s, border-color 0.15s, color 0.15s; }
+.skew, .pk-go, .pk-chip, .pill { transition: box-shadow 0.3s ease-out, filter 0.25s ease-out, transform 0.18s cubic-bezier(0.3, 1.7, 0.5, 1), background-color 0.15s, border-color 0.15s, color 0.15s; }
 .skew:not([disabled]):active, .pk-go:active, .pk-chip:active, .pill:active { box-shadow: inset 0 0 0 100vmax var(--press); transform: skewX(-14deg) scale(0.95); transition-duration: 0s; }
 .pill.warn:active { box-shadow: inset 0 0 0 100vmax var(--press), 0 0 0 2px var(--warn); }
 /* ---- feedback on every control. Press: shows at once, fades out slowly, so even a quick tap is seen. Hover: mouse only. ---- */
@@ -1126,7 +1145,7 @@ body.fin-open { overflow: hidden; }
   select:hover { border-bottom-color: var(--ink); cursor: pointer; }
   .day-go:hover { stroke: var(--ink); stroke-opacity: 1; stroke-width: 2px; }
 }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } .skew:not([disabled]):active, .pk-go:active, .pk-chip:active, .pill:active { transform: skewX(-14deg); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } .skew:not([disabled]):active, .pk-go:active, .pk-chip:active, .pill:active, .skew.is-pressed, .pk-go.is-pressed, .pk-chip.is-pressed, .pill.is-pressed { transform: skewX(-14deg); } .icon.is-pressed, .arrow.is-pressed, .sb-more.is-pressed, .sb-back.is-pressed, .mark-btn.is-pressed { transform: none; } }
 </style>
 
 <div class="stick" id="stick">
@@ -1961,6 +1980,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['19 Nov 2026', "Notes say what they belong to", ["Every note now has a label: Exercise note (orange: it stays with the exercise in every workout), This workout (outlined: about one exercise, today only) and Whole workout (solid blue, with the day and date). A note from an earlier workout says when you wrote it.", "Every button now shows a ripple where you tap it, also + Set and the note icon, which used to change the screen before you could see the press."]],
     ['19 Nov 2026', "Target and last time, in one line", ["The line above the sets now says what the sets are set up for, with the weight the first set starts with, and how the last session went, with its date. The separate Next number and the target date are gone; why the weight moved is in the line under it."]],
     ['19 Nov 2026', "One look for buttons", ["Orange with blue letters confirms: Save, Add, Yes. White with blue letters goes back or keeps things as they are: Back, Cancel, Keep going. Every button follows it now, also on the rest bar and the message bar.", "The rest timer's text is centred in its bar."]],
     ['19 Nov 2026', "Finish asks first", ["Finish workout now asks \"Are you sure you are done with your workout?\" before it ends the day. It also says how many sets are not done yet. Keep going takes you back."]],
@@ -2497,6 +2517,27 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   $('#news-back').addEventListener('click', () => { setView('settings'); window.scrollTo({ top: 0 }); });
   $('#hm-train').addEventListener('click', () => { setView('train'); window.scrollTo({ top: 0 }); });
   document.addEventListener('touchstart', () => {}, { passive: true }); // lets iOS show the :active press states
+  // the pressed look of every button stays at least 160 ms, so a quick tap shows it too
+  const pressedAt = new Map();
+  document.addEventListener('pointerdown', (e) => {
+    const b = e.target && e.target.closest ? e.target.closest('button, summary, [role="button"], label.skew') : null;
+    if (!b || b.disabled || b.getAttribute('aria-disabled') === 'true') return;
+    b.classList.add('is-pressed');
+    pressedAt.set(b, Date.now());
+    // a ripple where the finger touched: it does not belong to the button, so it shows also when the tap rebuilds the screen (+ Set)
+    // or hides the button (the note icon)
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const r = document.createElement('span');
+      r.className = 'press-ripple';
+      r.style.left = e.clientX + 'px';
+      r.style.top = e.clientY + 'px';
+      document.body.append(r);
+      setTimeout(() => r.remove(), 450);
+    }
+  }, true);
+  const unpress = () => pressedAt.forEach((t, b) => { pressedAt.delete(b); setTimeout(() => b.classList.remove('is-pressed'), Math.max(0, 160 - (Date.now() - t))); });
+  ['pointerup', 'pointercancel', 'dragend'].forEach((ev) => document.addEventListener(ev, unpress, true));
+  window.addEventListener('blur', unpress);
 
   // ------------------------------------------------------------------ values kept on this device
   // Edited sets (typed but not ticked) live only here until you tick them, per date and set.
@@ -3610,6 +3651,13 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
   // the note that belongs to the exercise itself: shown open under its name, saved as you type, kept for every workout
   const growBox = (ta) => { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight + 2, Math.round(window.innerHeight * 0.5)) + 'px'; };
+  // every note says what it belongs to and how long it lives: an exercise note (every workout), a note about an exercise in this workout,
+  // or the note of the whole workout
+  const noteTag = (chip, text, scope) => {
+    const t = h('div', 'nt-tag nt-' + scope);
+    t.append(h('span', 'chip', chip), h('span', '', text));
+    return t;
+  };
   const stickTimers = {};
   const buildStick = (exId, ex) => {
     const box = h('div', 'ex-stick');
@@ -3619,7 +3667,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     ta.id = 'stick-' + exId;
     ta.value = ex.my_note || '';
     ta.placeholder = 'Seat, grip, position: it stays here every time.';
-    ta.setAttribute('aria-label', 'Your note for ' + (ex.name || exId));
+    ta.setAttribute('aria-label', 'Exercise note for ' + (ex.name || exId) + ', shown in every workout');
     const add = plainBtn('textbtn ex-stick-add', '+ Note for ' + (ex.name || exId), null, () => { box.classList.add('on'); ta.focus(); });
     add.id = 'stick-add-' + exId;
     const sync = () => { box.classList.toggle('on', !!ta.value.trim() || document.activeElement === ta); add.hidden = box.classList.contains('on'); };
@@ -3632,7 +3680,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     ta.addEventListener('input', () => { growBox(ta); clearTimeout(stickTimers[exId]); stickTimers[exId] = setTimeout(save, 700); });
     ta.addEventListener('focus', sync);
     ta.addEventListener('blur', () => { if (stickTimers[exId]) { clearTimeout(stickTimers[exId]); save(); } sync(); });
-    box.append(ta, add);
+    box.append(noteTag('Exercise note', 'Stays with ' + (ex.name || exId) + ', shown in every workout', 'every'), ta, add);
     sync();
     requestAnimationFrame(() => { if (ta.value) growBox(ta); });
     return box;
@@ -3733,7 +3781,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const ln = lastNoteFor(item.ex);
     if (ln) {
       const t = String(ln.text).replace(/\s+/g, ' ').trim();
-      wrap.append(h('div', 'ex-lastnote', 'Your note, ' + dm(ln.date) + ': ' + (t.length > 160 ? t.slice(0, 157) + '…' : t)));
+      const lnEl = h('div', 'ex-lastnote');
+      lnEl.append(h('span', 'chip', 'Note from ' + dm(ln.date)), ' ', t.length > 160 ? t.slice(0, 157) + '…' : t);
+      wrap.append(lnEl);
     }
     let fill = null;
     let why = null;
@@ -3773,6 +3823,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     more.addEventListener('click', () => { const n = rowCount(item) + 1; setRows(item, n); renderItems(); paintSession(); enter(R.sets[item.ex + '_' + n] && R.sets[item.ex + '_' + n].row); });
     const less = plainBtn('icon boxed', '−', 'Remove the last set of ' + ex.name, () => removeLastSet(item));
     const noteBtn = plainBtn('icon boxed', '✎', 'Note about ' + ex.name);
+    noteBtn.title = 'Note about ' + ex.name + ', this workout only';
     const warm = btn('skew small ex-warm', '+ Warm-up');
     warm.addEventListener('click', () => { if (warmRows(item).length) removeWarmups(item); else if (addWarmups(item)) { renderItems(); paintSession(); } });
     acts.append(more, warm, less, noteBtn);
@@ -4588,19 +4639,20 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const noteDirty = () => Object.keys(noteTimers).some((k) => noteTimers[k]) || Object.values(noteBusy).some(Boolean);
   const noteId = (key) => S.active.date + '_' + key;
   const buildNote = (key, label, open) => {
-    const el = h('div', 'notebox');
+    const el = h('div', 'notebox ' + (key === 'general' ? 'nt-in-day' : 'nt-in-ex'));
     const ta = h('textarea', 'nt-text');
     ta.rows = 4;
     ta.maxLength = 1500;
     ta.id = 'note-' + key;
     ta.placeholder = key === 'general' ? 'How the workout went, sleep, energy, anything else.' : 'Weights, technique, how it felt.';
-    ta.setAttribute('aria-label', key === 'general' ? 'Workout note' : 'Note about ' + label);
+    ta.setAttribute('aria-label', key === 'general' ? 'Workout note, about the whole workout' : 'Note about ' + label + ', this workout only');
     const meta = h('div', 'nt-meta');
     const reply = h('div', 'nt-reply');
     reply.hidden = true;
     const replyBody = h('div', 'nt-body');
     reply.append(h('div', 'lab', 'Claude'), replyBody);
-    el.append(ta, meta, reply);
+    const dayName = (S.templates[S.active.tpl] || {}).name || 'Workout';
+    el.append(key === 'general' ? noteTag('Whole workout', dayName + ' · ' + dm(S.active.date), 'day') : noteTag('This workout', 'About ' + label + ', today only', 'today'), ta, meta, reply);
     const box = { el, ta, meta, reply, replyBody, open: !!open, key, label };
     const old = noteBoxes[key];
     if (old && old.ta.value && (noteTimers[key] || noteBusy[key] || document.activeElement === old.ta)) { ta.value = old.ta.value; box.open = true; }
