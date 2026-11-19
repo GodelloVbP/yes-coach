@@ -32,7 +32,7 @@ try:
             check('it asks the question', 'Are you sure you are done with your workout?' in tx, tx)
             check('and says what is left: 2 sets', '2 sets are not done yet.' in tx, tx)
             check('the finish screen has not opened', page.locator('.fin').count() == 0)
-            page.click('.fin-ask .textbtn')
+            page.click('.fin-ask .confirm-keep')
             check('Keep going closes it and stays in the workout', until(lambda: page.locator('.fin-ask').count() == 0) and page.locator('.fin').count() == 0 and page.is_visible('#f-bench_1-load'))
             fin.click(); page.wait_for_selector('.fin-ask'); page.keyboard.press('Escape')
             check('Escape closes it too', until(lambda: page.locator('.fin-ask').count() == 0) and page.locator('.fin').count() == 0)

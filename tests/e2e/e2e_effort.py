@@ -85,7 +85,7 @@ try:
             page.click('#easy-start')
             root = lambda: next(d['data'] for d in be.docs if d['path'] == 'yc')
             check('the week is stored, 7 days from today', until(lambda: (root().get('easy') or {}).get('from') == TODAY and root()['easy'].get('to') == ago(-6)), root().get('easy'))
-            check('the card now says it is on', until(lambda: 'End the easier week' in page.locator('#easy-card').inner_text()))
+            check('the card now says it is on', until(lambda: 'end the easier week' in page.locator('#easy-card').inner_text().lower()))
             page.click('text=Start Push day'); page.wait_for_selector('#f-bench_1-load', state='visible'); page.wait_for_timeout(300)
             check('half the sets: 2 of 4', page.locator('[id^="f-bench_"][id$="-load"]').count() == 2, page.locator('[id^="f-bench_"][id$="-load"]').count())
             check('same weight as last time', page.input_value('#f-bench_1-load') == '60', page.input_value('#f-bench_1-load'))
