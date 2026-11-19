@@ -81,6 +81,8 @@ try:
                 page.evaluate(CATCH); page.click('#btn-claude-day'); page.wait_for_timeout(400)
                 return urllib.parse.unquote(page.evaluate('window.__opened[0]') or '')
             q = sent()
+            check('my own requests for the plan or schedule are allowed and count as a yes', 'If I ask for more in my plan or schedule, do that too' in q and 'set_schedule' in q and 'counts as my yes, in either mode' in q, q[-1200:])
+            check('the old blanket ban on the schedule is gone', 'leave other days and the schedule alone' not in q and 'Do not add, remove or reorder exercises' not in q, q[-1200:])
             check('by default Claude is asked to propose and wait for a yes', 'Do not change my plan yet' in q and 'When I say yes, change my plan: save_training_day' in q and 'suggest changing' in q, q[-700:])
             page.click('#tab-settings'); page.wait_for_selector('#conn:not([hidden])', timeout=8000)
             page.locator('#v-settings section.fold').filter(has_text='Connected AI apps').locator('.set-tog').click() if page.is_hidden('#claude-plan') else None
@@ -90,6 +92,7 @@ try:
             check('Change it is saved', until(lambda: (doc(be, 'yc') or {}).get('settings', {}).get('claude_plan') == 'change') and page.get_attribute('#claude-plan .seg-b >> nth=1', 'aria-checked') == 'true' and 'changes the next weights' in page.inner_text('#claude-plan-note'), doc(be, 'yc'))
             page.click('#tab-train'); page.wait_for_selector('#btn-claude-day', state='visible', timeout=8000)
             q = sent()
+            check('also when Claude changes the plan itself, my requests count', 'counts as my yes, in either mode' in q and 'set_schedule' in q)
             check('then Claude is asked to change the plan itself', 'Then change my plan: save_training_day' in q and 'Do not change my plan yet' not in q and 'changed in the plan' in q, q[-700:])
             page.click('#tab-settings'); page.wait_for_selector('#claude-plan .seg-b >> nth=0', state='visible', timeout=8000)
             page.click('#claude-plan .seg-b >> nth=0')

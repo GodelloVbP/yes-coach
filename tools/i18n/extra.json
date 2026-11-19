@@ -7992,5 +7992,19 @@
   "de": "Eine offene Übungsliste endet jetzt über der Pausenleiste, auch wenn die Leiste erscheint, nachdem du die Liste geöffnet hast, und bekommt ihren Platz zurück, wenn die Leiste verschwindet. Erscheint die Leiste, während du am Ende der Seite bist, rückt die Seite mit nach oben.",
   "fr": "Une liste d’exercices ouverte se termine maintenant au-dessus de la barre de repos, même quand la barre apparaît après l’ouverture de la liste, et retrouve sa place quand la barre disparaît. Quand la barre apparaît alors que tu es en bas de la page, la page remonte avec elle.",
   "it": "Un elenco di esercizi aperto ora finisce sopra la barra di recupero, anche quando la barra compare dopo l'apertura dell'elenco, e riprende il suo spazio quando la barra sparisce. Quando la barra compare mentre sei in fondo alla pagina, la pagina sale con lei."
+ },
+ "Send to Claude follows your requests": {
+  "nl": "Naar Claude sturen volgt je verzoeken",
+  "es": "Enviar a Claude sigue tus peticiones",
+  "de": "An Claude senden folgt deinen Wünschen",
+  "fr": "Envoyer à Claude suit tes demandes",
+  "it": "Invia a Claude segue le tue richieste"
+ },
+ "After a workout, Send to Claude no longer tells Claude to leave the schedule and the exercises alone. That rule only keeps the automatic weight update small. If you ask Claude to add, remove or reorder exercises or to change the schedule, it does it, in both modes.": {
+  "nl": "Na een training zegt Naar Claude sturen niet meer dat Claude het schema en de oefeningen met rust moet laten. Die regel houdt alleen de automatische gewichtsaanpassing klein. Als je Claude vraagt oefeningen toe te voegen, te verwijderen of te verplaatsen of het schema te wijzigen, doet Claude dat, in beide standen.",
+  "es": "Tras un entrenamiento, Enviar a Claude ya no le dice a Claude que deje en paz el calendario y los ejercicios. Esa regla solo mantiene pequeña la actualización automática del peso. Si le pides a Claude que añada, quite o reordene ejercicios o que cambie el calendario, lo hace, en ambos modos.",
+  "de": "Nach einem Training sagt An Claude senden Claude nicht mehr, den Plan und die Übungen in Ruhe zu lassen. Diese Regel hält nur die automatische Gewichtsanpassung klein. Wenn du Claude bittest, Übungen hinzuzufügen, zu entfernen oder umzusortieren oder den Zeitplan zu ändern, tut Claude das, in beiden Modi.",
+  "fr": "Après une séance, Envoyer à Claude ne dit plus à Claude de laisser le calendrier et les exercices tranquilles. Cette règle ne sert qu’à garder petite la mise à jour automatique des charges. Si tu demandes à Claude d’ajouter, retirer ou réordonner des exercices ou de changer le calendrier, il le fait, dans les deux modes.",
+  "it": "Dopo un allenamento, Invia a Claude non dice più a Claude di lasciare stare il calendario e gli esercizi. Quella regola serve solo a tenere piccolo l'aggiornamento automatico dei pesi. Se chiedi a Claude di aggiungere, togliere o riordinare esercizi o di cambiare il calendario, lo fa, in entrambe le modalità."
  }
 }

@@ -1993,6 +1993,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['20 Nov 2026', "Send to Claude follows your requests", ["After a workout, Send to Claude no longer tells Claude to leave the schedule and the exercises alone. That rule only keeps the automatic weight update small. If you ask Claude to add, remove or reorder exercises or to change the schedule, it does it, in both modes."]],
     ['20 Nov 2026', "The rest bar makes room", ["An open exercise list now ends above the rest bar, also when the bar comes up after you opened the list, and it gets its room back when the bar goes. When the bar comes up while you are at the end of the page, the page moves up with it."]],
     ['19 Nov 2026', "A clearer top of each exercise", ["Under the exercise name, one panel now holds the facts in the same order every time: Target (the largest line), Last time, Why the weight moved, and the plan's Cue, with the key numbers in bold. The spacing between these parts is equal."]],
     ['19 Nov 2026', "+ Set no longer resets the card", ["+ Set and − now add or take away one row and leave everything else alone. How to do it and Plates stay open. + Warm-up and the other changes that redraw the exercises put the open panels back."]],
@@ -2214,7 +2215,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const reviewPrompt = (day) => {
     const lang = REVIEW_LANGS[window.YC_I18N ? window.YC_I18N.current() : 'en'];
     const change = claudePlanMode() === 'change';
-    const apply = 'save_training_day for this day with progress up, hold or down on each exercise. Send the whole exercise list back otherwise unchanged: the same exercises, order, sets, reps, rest, notes and supersets. Do not add, remove or reorder exercises, and leave other days and the schedule alone.';
+    const apply = 'save_training_day for this day with progress up, hold or down on each exercise. Send the whole exercise list back otherwise unchanged: the same exercises, order, sets, reps, rest, notes and supersets. That keeps this automatic update small; it does not limit what I ask you for.';
     return [
       'Review my Yes Coach! workout "' + day.name + '" from ' + day.date + '. Use my Yes Coach connector for every number and do not guess.',
       '',
@@ -2232,6 +2233,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       'The app picks the next weight by the same rules when no weight is set, so progress up, hold or down gives the weight you would expect.',
       '',
       change ? 'Then change my plan: ' + apply : 'Do not change my plan yet. Tell me the weight you suggest for each exercise and ask if I want it applied. When I say yes, change my plan: ' + apply,
+      'If I ask for more in my plan or schedule, do that too, based on my request: add, remove, replace or reorder exercises (save_training_day), or change the schedule (set_schedule: the weekdays, the sessions a week, which days are in the week and in what order). What I ask for counts as my yes, in either mode. Without such a request, leave the exercises, the other days and the schedule as they are.',
       'Answer each unanswered note from that day with answer_note, in one or two short sentences.',
       'Do not add or remove logged sets. If a set looks like a typo, ask me first.',
       '',
