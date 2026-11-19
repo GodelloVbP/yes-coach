@@ -7824,5 +7824,159 @@
   "de": "Der Text des Pausentimers sitzt jetzt mittig in der Leiste.",
   "fr": "Le texte du minuteur de repos est centré dans sa barre.",
   "it": "Il testo del timer di recupero è centrato nella sua barra."
+ },
+ "Last time ({0})": {
+  "nl": "Vorige keer ({0})",
+  "es": "Última vez ({0})",
+  "de": "Letztes Mal ({0})",
+  "fr": "Dernière fois ({0})",
+  "it": "Ultima volta ({0})"
+ },
+ "Target and last time, in one line": {
+  "nl": "Doel en vorige keer, in één regel",
+  "es": "Objetivo y última vez, en una línea",
+  "de": "Ziel und letztes Mal in einer Zeile",
+  "fr": "Objectif et dernière fois, sur une ligne",
+  "it": "Obiettivo e ultima volta, in una riga"
+ },
+ "The line above the sets now says what the sets are set up for, with the weight the first set starts with, and how the last session went, with its date. The separate Next number and the target date are gone; why the weight moved is in the line under it.": {
+  "nl": "De regel boven de sets zegt nu waarvoor de sets zijn ingesteld, met het gewicht waarmee de eerste set begint, en hoe de vorige training ging, met de datum. Het aparte Volgende-getal en de doeldatum zijn weg; waarom het gewicht verschoof staat in de regel eronder.",
+  "es": "La línea sobre las series ahora dice para qué están preparadas, con el peso con el que empieza la primera, y cómo fue la última sesión, con su fecha. El número Siguiente aparte y la fecha del objetivo desaparecen; por qué cambió el peso está en la línea de debajo.",
+  "de": "Die Zeile über den Sätzen sagt jetzt, wofür die Sätze eingestellt sind, mit dem Gewicht, mit dem der erste Satz beginnt, und wie das letzte Training lief, mit Datum. Die getrennte Nächstes-Zahl und das Zieldatum entfallen; warum sich das Gewicht geändert hat, steht in der Zeile darunter.",
+  "fr": "La ligne au-dessus des séries dit maintenant à quoi elles sont réglées, avec la charge de départ de la première, et comment s’est passée la dernière séance, avec sa date. Le chiffre Suivant séparé et la date de l’objectif disparaissent ; pourquoi la charge a bougé est dans la ligne dessous.",
+  "it": "La riga sopra le serie ora dice per cosa sono impostate, con il peso da cui parte la prima, e come è andato l'ultimo allenamento, con la data. Il numero Prossimo separato e la data dell'obiettivo spariscono; perché il peso è cambiato è nella riga sotto."
+ },
+ "Exercise note": {
+  "nl": "Oefeningnotitie",
+  "es": "Nota del ejercicio",
+  "de": "Übungsnotiz",
+  "fr": "Note de l’exercice",
+  "it": "Nota dell'esercizio"
+ },
+ "Stays with {0}, shown in every workout": {
+  "nl": "Blijft bij {0}, bij elke training zichtbaar",
+  "es": "Se queda con {0}, visible en cada entrenamiento",
+  "de": "Bleibt bei {0}, in jedem Training sichtbar",
+  "fr": "Reste avec {0}, visible à chaque séance",
+  "it": "Resta con {0}, visibile in ogni allenamento"
+ },
+ "Whole workout": {
+  "nl": "Hele training",
+  "es": "Todo el entrenamiento",
+  "de": "Ganzes Training",
+  "fr": "Toute la séance",
+  "it": "Intero allenamento"
+ },
+ "This workout": {
+  "nl": "Deze training",
+  "es": "Este entrenamiento",
+  "de": "Dieses Training",
+  "fr": "Cette séance",
+  "it": "Questo allenamento"
+ },
+ "About {0}, today only": {
+  "nl": "Over {0}, alleen vandaag",
+  "es": "Sobre {0}, solo hoy",
+  "de": "Über {0}, nur heute",
+  "fr": "À propos de {0}, aujourd’hui seulement",
+  "it": "Su {0}, solo oggi"
+ },
+ "Note from {0}": {
+  "nl": "Notitie van {0}",
+  "es": "Nota del {0}",
+  "de": "Notiz vom {0}",
+  "fr": "Note du {0}",
+  "it": "Nota del {0}"
+ },
+ "Note about {0}, this workout only": {
+  "nl": "Notitie over {0}, alleen deze training",
+  "es": "Nota sobre {0}, solo este entrenamiento",
+  "de": "Notiz zu {0}, nur dieses Training",
+  "fr": "Note sur {0}, cette séance seulement",
+  "it": "Nota su {0}, solo questo allenamento"
+ },
+ "Exercise note for {0}, shown in every workout": {
+  "nl": "Oefeningnotitie voor {0}, bij elke training zichtbaar",
+  "es": "Nota del ejercicio para {0}, visible en cada entrenamiento",
+  "de": "Übungsnotiz für {0}, in jedem Training sichtbar",
+  "fr": "Note de l’exercice pour {0}, visible à chaque séance",
+  "it": "Nota dell'esercizio per {0}, visibile in ogni allenamento"
+ },
+ "Workout note, about the whole workout": {
+  "nl": "Trainingsnotitie, over de hele training",
+  "es": "Nota del entrenamiento, sobre todo el entrenamiento",
+  "de": "Trainingsnotiz, zum ganzen Training",
+  "fr": "Note de séance, sur toute la séance",
+  "it": "Nota dell'allenamento, sull'intero allenamento"
+ },
+ "Notes say what they belong to": {
+  "nl": "Notities zeggen waar ze bij horen",
+  "es": "Las notas dicen a qué pertenecen",
+  "de": "Notizen sagen, wozu sie gehören",
+  "fr": "Les notes disent à quoi elles appartiennent",
+  "it": "Le note dicono a cosa appartengono"
+ },
+ "Every note now has a label: Exercise note (orange: it stays with the exercise in every workout), This workout (outlined: about one exercise, today only) and Whole workout (solid blue, with the day and date). A note from an earlier workout says when you wrote it.": {
+  "nl": "Elke notitie heeft nu een label: Oefeningnotitie (oranje: blijft bij de oefening in elke training), Deze training (omlijnd: over één oefening, alleen vandaag) en Hele training (effen blauw, met dag en datum). Een notitie van een eerdere training zegt wanneer je hem schreef.",
+  "es": "Cada nota tiene ahora una etiqueta: Nota del ejercicio (naranja: se queda con el ejercicio en cada entrenamiento), Este entrenamiento (con borde: sobre un ejercicio, solo hoy) y Todo el entrenamiento (azul sólido, con el día y la fecha). Una nota de un entrenamiento anterior dice cuándo la escribiste.",
+  "de": "Jede Notiz hat jetzt ein Etikett: Übungsnotiz (orange: bleibt in jedem Training bei der Übung), Dieses Training (Umriss: zu einer Übung, nur heute) und Ganzes Training (vollblau, mit Tag und Datum). Eine Notiz aus einem früheren Training sagt, wann du sie geschrieben hast.",
+  "fr": "Chaque note a maintenant une étiquette : Note de l’exercice (orange : elle reste avec l’exercice à chaque séance), Cette séance (contour : sur un exercice, aujourd’hui seulement) et Toute la séance (bleu plein, avec le jour et la date). Une note d’une séance précédente dit quand tu l’as écrite.",
+  "it": "Ogni nota ha ora un'etichetta: Nota dell'esercizio (arancione: resta con l'esercizio in ogni allenamento), Questo allenamento (con bordo: su un esercizio, solo oggi) e Intero allenamento (blu pieno, con giorno e data). Una nota di un allenamento precedente dice quando l'hai scritta."
+ },
+ "Every button now shows a ripple where you tap it, also + Set and the note icon, which used to change the screen before you could see the press.": {
+  "nl": "Elke knop toont nu een rimpel waar je tikt, ook + Set en het notitie-icoon, die het scherm veranderden voordat je de druk kon zien.",
+  "es": "Cada botón muestra ahora una onda donde tocas, también + Serie y el icono de nota, que cambiaban la pantalla antes de que vieras la pulsación.",
+  "de": "Jede Schaltfläche zeigt jetzt eine Welle dort, wo du tippst, auch + Satz und das Notiz-Symbol, die den Bildschirm veränderten, bevor man den Druck sah.",
+  "fr": "Chaque bouton affiche maintenant une onde là où tu touches, y compris + Série et l’icône de note, qui changeaient l’écran avant qu’on voie l’appui.",
+  "it": "Ogni pulsante mostra ora un'onda dove tocchi, anche + Serie e l'icona della nota, che cambiavano la schermata prima che si vedesse la pressione."
+ },
+ "+ Set no longer resets the card": {
+  "nl": "+ Set zet de kaart niet meer terug",
+  "es": "+ Serie ya no reinicia la tarjeta",
+  "de": "+ Satz setzt die Karte nicht mehr zurück",
+  "fr": "+ Série ne réinitialise plus la carte",
+  "it": "+ Serie non reimposta più la scheda"
+ },
+ "+ Set and − now add or take away one row and leave everything else alone. How to do it and Plates stay open. + Warm-up and the other changes that redraw the exercises put the open panels back.": {
+  "nl": "+ Set en − voegen nu één rij toe of halen er één weg en laten de rest met rust. Zo doe je het en Schijven blijven open. + Warming-up en andere wijzigingen die de oefeningen opnieuw tekenen zetten de open vakken terug.",
+  "es": "+ Serie y − ahora añaden o quitan una fila y dejan todo lo demás como está. Cómo hacerlo y Discos siguen abiertos. + Calentamiento y los demás cambios que redibujan los ejercicios devuelven los paneles abiertos.",
+  "de": "+ Satz und − fügen jetzt eine Zeile hinzu oder entfernen eine und lassen alles andere in Ruhe. So geht's und Scheiben bleiben offen. + Aufwärmen und andere Änderungen, die die Übungen neu zeichnen, stellen die offenen Bereiche wieder her.",
+  "fr": "+ Série et − ajoutent ou retirent maintenant une ligne et ne touchent à rien d’autre. Comment faire et Disques restent ouverts. + Échauffement et les autres changements qui redessinent les exercices remettent les panneaux ouverts.",
+  "it": "+ Serie e − ora aggiungono o tolgono una riga e lasciano stare tutto il resto. Come si fa e Dischi restano aperti. + Riscaldamento e le altre modifiche che ridisegnano gli esercizi riaprono i pannelli aperti."
+ },
+ "Why": {
+  "nl": "Waarom",
+  "es": "Por qué",
+  "de": "Warum",
+  "fr": "Pourquoi",
+  "it": "Perché"
+ },
+ "Cue": {
+  "nl": "Tip",
+  "es": "Pista",
+  "de": "Hinweis",
+  "fr": "Conseil",
+  "it": "Suggerimento"
+ },
+ "Showing last time’s numbers.": {
+  "nl": "Je ziet de cijfers van de vorige keer.",
+  "es": "Se muestran los números de la última vez.",
+  "de": "Die Zahlen vom letzten Mal werden gezeigt.",
+  "fr": "Les chiffres de la dernière fois sont affichés.",
+  "it": "Si vedono i numeri dell'ultima volta."
+ },
+ "A clearer top of each exercise": {
+  "nl": "Een duidelijkere bovenkant van elke oefening",
+  "es": "Una parte superior más clara en cada ejercicio",
+  "de": "Ein klarerer Kopf für jede Übung",
+  "fr": "Un haut d’exercice plus clair",
+  "it": "Una parte alta più chiara per ogni esercizio"
+ },
+ "Under the exercise name, one panel now holds the facts in the same order every time: Target (the largest line), Last time, Why the weight moved, and the plan's Cue, with the key numbers in bold. The spacing between these parts is equal.": {
+  "nl": "Onder de naam van de oefening staat nu één vlak met de feiten, elke keer in dezelfde volgorde: Doel (de grootste regel), Vorige keer, Waarom het gewicht verschoof en de Tip uit het plan, met de belangrijkste getallen vet. De ruimte tussen die delen is gelijk.",
+  "es": "Bajo el nombre del ejercicio, un solo panel recoge ahora los datos siempre en el mismo orden: Objetivo (la línea más grande), Última vez, Por qué cambió el peso y la Pista del plan, con los números clave en negrita. El espaciado entre las partes es igual.",
+  "de": "Unter dem Übungsnamen steht jetzt ein Feld mit den Fakten, immer in derselben Reihenfolge: Ziel (die größte Zeile), Letztes Mal, Warum sich das Gewicht geändert hat und der Hinweis aus dem Plan, die wichtigsten Zahlen fett. Die Abstände dazwischen sind gleich.",
+  "fr": "Sous le nom de l’exercice, un seul panneau réunit maintenant les infos dans le même ordre à chaque fois : Objectif (la plus grande ligne), Dernière fois, Pourquoi la charge a bougé et le Conseil du programme, avec les chiffres clés en gras. L’espacement entre ces parties est égal.",
+  "it": "Sotto il nome dell'esercizio, un solo pannello contiene ora i dati sempre nello stesso ordine: Obiettivo (la riga più grande), Ultima volta, Perché il peso è cambiato e il Suggerimento del piano, con i numeri chiave in grassetto. La spaziatura tra le parti è uguale."
  }
 }

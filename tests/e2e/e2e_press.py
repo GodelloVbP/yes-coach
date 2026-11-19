@@ -26,6 +26,16 @@ def pressed(page, loc, name):
     off = el.evaluate(LOOK)
     check('%s: back to normal after' % name, off['shadow'] == 'none' and abs(off['d'] - 1) < 0.01, off)
 
+
+def quick_tap(page, loc, name):
+    """A tap that is over in a few milliseconds still shows: a ripple where the finger went (it survives a screen that is rebuilt or a button that
+    hides), and the pressed look on a button that stays."""
+    el = loc.first; el.scroll_into_view_if_needed(); b = el.bounding_box()
+    page.mouse.move(b['x'] + b['width'] / 2, b['y'] + b['height'] / 2); page.mouse.down(); page.mouse.up(); page.wait_for_timeout(60)
+    check('%s: a quick tap shows a ripple' % name, page.locator('.press-ripple').count() >= 1)
+    page.wait_for_timeout(600)
+    check('%s: and it goes again' % name, page.locator('.press-ripple').count() == 0)
+
 server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)
 try:
@@ -36,6 +46,9 @@ try:
             page.wait_for_selector('#f-a_1-load', state='visible'); page.wait_for_timeout(400)
             pressed(page, page.locator('.ex:visible .ex-actions .skew', has_text='+ Set'), '+ Set')
             pressed(page, page.get_by_role('button', name='+ Add exercise'), 'Add exercise')
+            quick_tap(page, page.locator('.ex:visible .ex-actions .skew', has_text='+ Set'), '+ Set')
+            quick_tap(page, page.get_by_role('button', name='Note about Bench press'), '✎ note icon')
+            quick_tap(page, page.locator('#sb-more'), '⋯ menu'); page.keyboard.press('Escape')
             pressed(page, page.locator('.focusbar .skew.next'), 'Next exercise')
             page.get_by_role('button', name='+ Add exercise').first.click(); page.wait_for_timeout(400)
             pressed(page, page.locator('.pk-go').first, 'Add (picker)')
