@@ -7978,5 +7978,33 @@
   "de": "Unter dem Übungsnamen steht jetzt ein Feld mit den Fakten, immer in derselben Reihenfolge: Ziel (die größte Zeile), Letztes Mal, Warum sich das Gewicht geändert hat und der Hinweis aus dem Plan, die wichtigsten Zahlen fett. Die Abstände dazwischen sind gleich.",
   "fr": "Sous le nom de l’exercice, un seul panneau réunit maintenant les infos dans le même ordre à chaque fois : Objectif (la plus grande ligne), Dernière fois, Pourquoi la charge a bougé et le Conseil du programme, avec les chiffres clés en gras. L’espacement entre ces parties est égal.",
   "it": "Sotto il nome dell'esercizio, un solo pannello contiene ora i dati sempre nello stesso ordine: Obiettivo (la riga più grande), Ultima volta, Perché il peso è cambiato e il Suggerimento del piano, con i numeri chiave in grassetto. La spaziatura tra le parti è uguale."
+ },
+ "The rest bar makes room": {
+  "nl": "De rustbalk maakt ruimte",
+  "es": "La barra de descanso deja sitio",
+  "de": "Die Pausenleiste macht Platz",
+  "fr": "La barre de repos laisse de la place",
+  "it": "La barra di recupero lascia spazio"
+ },
+ "An open exercise list now ends above the rest bar, also when the bar comes up after you opened the list, and it gets its room back when the bar goes. When the bar comes up while you are at the end of the page, the page moves up with it.": {
+  "nl": "Een open oefeninglijst eindigt nu boven de rustbalk, ook als de balk verschijnt nadat je de lijst opende, en krijgt zijn ruimte terug als de balk weggaat. Als de balk verschijnt terwijl je onderaan de pagina bent, schuift de pagina mee omhoog.",
+  "es": "Una lista de ejercicios abierta ahora termina sobre la barra de descanso, también cuando la barra aparece después de abrir la lista, y recupera su espacio cuando la barra desaparece. Si la barra aparece estando al final de la página, la página sube con ella.",
+  "de": "Eine offene Übungsliste endet jetzt über der Pausenleiste, auch wenn die Leiste erscheint, nachdem du die Liste geöffnet hast, und bekommt ihren Platz zurück, wenn die Leiste verschwindet. Erscheint die Leiste, während du am Ende der Seite bist, rückt die Seite mit nach oben.",
+  "fr": "Une liste d’exercices ouverte se termine maintenant au-dessus de la barre de repos, même quand la barre apparaît après l’ouverture de la liste, et retrouve sa place quand la barre disparaît. Quand la barre apparaît alors que tu es en bas de la page, la page remonte avec elle.",
+  "it": "Un elenco di esercizi aperto ora finisce sopra la barra di recupero, anche quando la barra compare dopo l'apertura dell'elenco, e riprende il suo spazio quando la barra sparisce. Quando la barra compare mentre sei in fondo alla pagina, la pagina sale con lei."
+ },
+ "Send to Claude follows your requests": {
+  "nl": "Naar Claude sturen volgt je verzoeken",
+  "es": "Enviar a Claude sigue tus peticiones",
+  "de": "An Claude senden folgt deinen Wünschen",
+  "fr": "Envoyer à Claude suit tes demandes",
+  "it": "Invia a Claude segue le tue richieste"
+ },
+ "After a workout, Send to Claude no longer tells Claude to leave the schedule and the exercises alone. That rule only keeps the automatic weight update small. If you ask Claude to add, remove or reorder exercises or to change the schedule, it does it, in both modes.": {
+  "nl": "Na een training zegt Naar Claude sturen niet meer dat Claude het schema en de oefeningen met rust moet laten. Die regel houdt alleen de automatische gewichtsaanpassing klein. Als je Claude vraagt oefeningen toe te voegen, te verwijderen of te verplaatsen of het schema te wijzigen, doet Claude dat, in beide standen.",
+  "es": "Tras un entrenamiento, Enviar a Claude ya no le dice a Claude que deje en paz el calendario y los ejercicios. Esa regla solo mantiene pequeña la actualización automática del peso. Si le pides a Claude que añada, quite o reordene ejercicios o que cambie el calendario, lo hace, en ambos modos.",
+  "de": "Nach einem Training sagt An Claude senden Claude nicht mehr, den Plan und die Übungen in Ruhe zu lassen. Diese Regel hält nur die automatische Gewichtsanpassung klein. Wenn du Claude bittest, Übungen hinzuzufügen, zu entfernen oder umzusortieren oder den Zeitplan zu ändern, tut Claude das, in beiden Modi.",
+  "fr": "Après une séance, Envoyer à Claude ne dit plus à Claude de laisser le calendrier et les exercices tranquilles. Cette règle ne sert qu’à garder petite la mise à jour automatique des charges. Si tu demandes à Claude d’ajouter, retirer ou réordonner des exercices ou de changer le calendrier, il le fait, dans les deux modes.",
+  "it": "Dopo un allenamento, Invia a Claude non dice più a Claude di lasciare stare il calendario e gli esercizi. Quella regola serve solo a tenere piccolo l'aggiornamento automatico dei pesi. Se chiedi a Claude di aggiungere, togliere o riordinare esercizi o di cambiare il calendario, lo fa, in entrambe le modalità."
  }
 }
