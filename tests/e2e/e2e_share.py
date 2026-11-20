@@ -38,15 +38,18 @@ try:
                 overlap = [(a, b) for a in L['tiles'] for b in L['tiles'] if a is not b and a['x'] < b['x'] + b['w'] and b['x'] < a['x'] + a['w'] and a['y'] < b['y'] + b['h'] and b['y'] < a['y'] + a['h']]
                 check('%d: two columns and no tile overlaps another' % n, not overlap and len({t['x'] for t in L['tiles']}) == 2, (len(overlap), L['tiles'][:2]))
             r = run(14, weights=False); check('without weights it still draws all 14', r['layout']['shown'] == 14 and all(k > 40 for k in r['ink']), r['ink'])
+            r = run(14); L = r['layout']
+            check('the header is compact with tiles: the first tile starts at 404', L['tiles'][0]['y'] == 404, L['tiles'][0])
             r = run(16); L = r['layout']
             check('16 exercises: 13 tiles and one that says 3 more', L['shown'] == 13 and L['more'] == 3 and len(L['tiles']) == 14 and L['tiles'][-1]['more'], L)
             # with a note
             r = run(4, note=True); check('4 exercises with a note: still the list', r['layout']['mode'] == 'list' and r['layout']['shown'] == 4, r['layout'])
             r = run(5, note=True); check('5 exercises with a note: tiles', r['layout']['mode'] == 'tiles' and r['layout']['shown'] == 5, r['layout'])
-            r = run(10, note=True); L = r['layout']
-            check('10 exercises with a note: all shown, the note fits under them', L['shown'] == 10 and L['bottom'] + 40 + 2 * 48 <= 1262, (L['shown'], L['bottom']))
             r = run(12, note=True); L = r['layout']
-            check('12 exercises with a note: 9 tiles and 3 more', L['shown'] == 9 and L['more'] == 3, L)
+            check('12 exercises with a note: all shown, the note fits under them', L['shown'] == 12 and L['more'] == 0 and L['bottom'] + 40 + 2 * 48 <= 1262, (L['shown'], L['bottom']))
+            check('12 with a note: every tile has its name drawn', all(k > 40 for k in r['ink']), r['ink'])
+            r = run(14, note=True); L = r['layout']
+            check('14 exercises with a note: 11 tiles and 3 more', L['shown'] == 11 and L['more'] == 3, L)
         errs = session(pw, be, ALICE, sc, width=390); check('no page errors', not errs, errs)
 finally:
     server.terminate()
