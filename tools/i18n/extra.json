@@ -8006,5 +8006,19 @@
   "de": "Nach einem Training sagt An Claude senden Claude nicht mehr, den Plan und die Übungen in Ruhe zu lassen. Diese Regel hält nur die automatische Gewichtsanpassung klein. Wenn du Claude bittest, Übungen hinzuzufügen, zu entfernen oder umzusortieren oder den Zeitplan zu ändern, tut Claude das, in beiden Modi.",
   "fr": "Après une séance, Envoyer à Claude ne dit plus à Claude de laisser le calendrier et les exercices tranquilles. Cette règle ne sert qu’à garder petite la mise à jour automatique des charges. Si tu demandes à Claude d’ajouter, retirer ou réordonner des exercices ou de changer le calendrier, il le fait, dans les deux modes.",
   "it": "Dopo un allenamento, Invia a Claude non dice più a Claude di lasciare stare il calendario e gli esercizi. Quella regola serve solo a tenere piccolo l'aggiornamento automatico dei pesi. Se chiedi a Claude di aggiungere, togliere o riordinare esercizi o di cambiare il calendario, lo fa, in entrambe le modalità."
+ },
+ "The share picture shows every exercise": {
+  "nl": "De deelafbeelding toont elke oefening",
+  "es": "La imagen para compartir muestra todos los ejercicios",
+  "de": "Das Teilbild zeigt jede Übung",
+  "fr": "L’image à partager montre chaque exercice",
+  "it": "L'immagine da condividere mostra ogni esercizio"
+ },
+ "With more than 6 exercises the share picture switches to two columns of tiles with the best set and the number of sets, so up to 14 exercises fit. It used to stop after 5 with \"+ 9 more\". With a note under it, 10 fit. Fewer exercises keep the large list.": {
+  "nl": "Bij meer dan 6 oefeningen schakelt de deelafbeelding over op twee kolommen met tegels met de beste set en het aantal sets, zodat tot 14 oefeningen passen. Eerst stopte hij na 5 met \"+ 9 meer\". Met een notitie eronder passen er 10. Minder oefeningen houden de grote lijst.",
+  "es": "Con más de 6 ejercicios, la imagen para compartir pasa a dos columnas de fichas con la mejor serie y el número de series, así caben hasta 14 ejercicios. Antes se detenía en 5 con \"+ 9 más\". Con una nota debajo caben 10. Con menos ejercicios se mantiene la lista grande.",
+  "de": "Bei mehr als 6 Übungen wechselt das Teilbild auf zwei Spalten mit Kacheln mit dem besten Satz und der Anzahl der Sätze, so passen bis zu 14 Übungen hinein. Früher hörte es nach 5 mit \"+ 9 weitere\" auf. Mit einer Notiz darunter passen 10. Bei weniger Übungen bleibt die große Liste.",
+  "fr": "Au-delà de 6 exercices, l’image à partager passe à deux colonnes de tuiles avec la meilleure série et le nombre de séries, ce qui permet jusqu’à 14 exercices. Avant, elle s’arrêtait à 5 avec \"+ 9 de plus\". Avec une note dessous, 10 tiennent. Avec moins d’exercices, la grande liste reste.",
+  "it": "Con più di 6 esercizi, l'immagine da condividere passa a due colonne di riquadri con la serie migliore e il numero di serie, così entrano fino a 14 esercizi. Prima si fermava a 5 con \"+ 9 altri\". Con una nota sotto ne entrano 10. Con meno esercizi resta l'elenco grande."
  }
 }
