@@ -50,7 +50,9 @@
 
   /* data: { title, date (already formatted), minutes (number or null), sets, volume (kg or null),
              lines: [{ name, detail, sets, pr }], note, words: { time, sets, volume, pr, more, tagline } }
-     opts: { weights: bool, note: bool } */
+     opts: { weights: bool, note: bool }
+     Up to 6 exercises (4 with a note) are a list with large type. More are two columns of tiles, each with the best set and the number of
+     sets: up to 14 (10 with a note); beyond that the last tile says how many more. The canvas carries `layout` (what was drawn) for tests. */
   function render(data, opts) {
     opts = opts || {};
     return loadFonts().then(function () {
@@ -58,6 +60,12 @@
       cv.width = W; cv.height = H;
       var ctx = cv.getContext('2d');
       var wd = data.words || {};
+      var note = opts.note && data.note ? String(data.note) : '';
+      var lines = data.lines || [];
+      var tiles = lines.length > (note ? 4 : 6);
+      // the header is a little smaller when there are tiles: the exercises need the room
+      var c = tiles ? { brand: 52, date: 196, dateSize: 36, title: 318, titleSize: 140, statsY: 352, statsH: 124, statsFs: 72, statsLab: 26, top: 512 }
+                    : { brand: 60, date: 232, dateSize: 38, title: 372, titleSize: 150, statsY: 430, statsH: 150, statsFs: 84, statsLab: 30, top: 650 };
       ctx.fillStyle = INK; ctx.fillRect(0, 0, W, H);
       // a few slanted bars in the corner, the mark of the app
       skewRect(ctx, 780, -40, 70, 330, 'rgba(255,255,255,0.06)');
@@ -66,16 +74,16 @@
 
       // mark and name
       var bars = [[0, 12, 7, 16, WHITE], [9, 2, 9, 36, WHITE], [20, 12, 7, 16, POP], [29, 2, 9, 36, WHITE]];
-      bars.forEach(function (b) { skewRect(ctx, PAD + b[0] * 1.6, 60 + b[1] * 1.6, b[2] * 1.6, b[3] * 1.6, b[4]); });
+      bars.forEach(function (b) { skewRect(ctx, PAD + b[0] * 1.6, c.brand + b[1] * 1.6, b[2] * 1.6, b[3] * 1.6, b[4]); });
       ctx.fillStyle = WHITE; ctx.textBaseline = 'alphabetic';
-      ctx.font = 'italic 800 48px ' + HEAD; ctx.fillText('YES COACH!', PAD + 110, 112);
+      ctx.font = 'italic 800 48px ' + HEAD; ctx.fillText('YES COACH!', PAD + 110, c.brand + 52);
 
       // date and title
-      ctx.fillStyle = SOFT; ctx.font = '700 38px ' + HEAD;
-      ctx.fillText(String(data.date || '').toUpperCase(), PAD, 232);
+      ctx.fillStyle = SOFT; ctx.font = '700 ' + c.dateSize + 'px ' + HEAD;
+      ctx.fillText(String(data.date || '').toUpperCase(), PAD, c.date);
       ctx.fillStyle = WHITE;
-      fit(ctx, String(data.title || '').toUpperCase(), '800', W - 2 * PAD, 150, 70, HEAD);
-      ctx.fillText(String(data.title || '').toUpperCase(), PAD, 372);
+      fit(ctx, String(data.title || '').toUpperCase(), '800', W - 2 * PAD, c.titleSize, 70, HEAD);
+      ctx.fillText(String(data.title || '').toUpperCase(), PAD, c.title);
 
       // numbers
       var stats = [];
@@ -83,43 +91,89 @@
       stats.push([String(data.sets), wd.sets || 'Sets']);
       if (opts.weights !== false && data.volume != null) stats.push([Math.round(data.volume).toLocaleString('en').replace(/,/g, ' ') + ' kg', wd.volume || 'Volume']);
       var gap = 24, sw = (W - 2 * PAD - gap * (stats.length - 1)) / stats.length;
-      stats.forEach(function (s, i) {
+      stats.forEach(function (st, i) {
         var x = PAD + i * (sw + gap);
-        skewRect(ctx, x, 430, sw, 150, 'rgba(255,255,255,0.10)');
+        skewRect(ctx, x, c.statsY, sw, c.statsH, 'rgba(255,255,255,0.10)');
         ctx.fillStyle = WHITE;
-        fit(ctx, s[0], '800', sw - 60, 84, 40, HEAD);
-        ctx.fillText(s[0], x + 28, 518);
-        ctx.fillStyle = SOFT; ctx.font = '700 30px ' + HEAD;
-        ctx.fillText(String(s[1]).toUpperCase(), x + 28, 562);
+        fit(ctx, st[0], '800', sw - 60, c.statsFs, 40, HEAD);
+        ctx.fillText(st[0], x + 28, c.statsY + Math.round(c.statsH * 0.587));
+        ctx.fillStyle = SOFT; ctx.font = '700 ' + c.statsLab + 'px ' + HEAD;
+        ctx.fillText(String(st[1]).toUpperCase(), x + 28, c.statsY + c.statsH - 18);
       });
 
-      // exercises
-      var note = opts.note && data.note ? String(data.note) : '';
-      var rowH = 96, top = 650, maxRows = note ? 4 : 6;
-      var lines = data.lines || [];
-      var shown = lines.length > maxRows ? lines.slice(0, maxRows - 1) : lines.slice(0, maxRows);
-      shown.forEach(function (l, i) {
-        var y = top + i * rowH;
-        ctx.fillStyle = 'rgba(255,255,255,0.18)'; ctx.fillRect(PAD, y + rowH - 10, W - 2 * PAD, 2);
-        var x = PAD;
-        if (l.pr) {
-          skewRect(ctx, x, y + 14, 78, 54, POP);
-          ctx.fillStyle = INK; ctx.font = '800 38px ' + HEAD; ctx.fillText(wd.pr || 'PR', x + 18, y + 54);
-          x += 104;
+      var layout = { mode: tiles ? 'tiles' : 'list', total: lines.length, shown: 0, more: 0, tiles: [], bottom: 0 };
+      var next;
+      if (!tiles) {
+        // exercises as a list
+        var rowH = 96, top = c.top;
+        var shown = lines.slice(0, note ? 4 : 6);
+        shown.forEach(function (l, i) {
+          var y = top + i * rowH;
+          ctx.fillStyle = 'rgba(255,255,255,0.18)'; ctx.fillRect(PAD, y + rowH - 10, W - 2 * PAD, 2);
+          var x = PAD;
+          if (l.pr) {
+            skewRect(ctx, x, y + 14, 78, 54, POP);
+            ctx.fillStyle = INK; ctx.font = '800 38px ' + HEAD; ctx.fillText(wd.pr || 'PR', x + 18, y + 54);
+            x += 104;
+          }
+          var detail = opts.weights !== false ? l.detail : l.sets;
+          ctx.font = '700 46px ' + HEAD;
+          var dw = detail ? ctx.measureText(detail).width : 0;
+          ctx.fillStyle = WHITE;
+          fit(ctx, String(l.name).toUpperCase(), '800', W - PAD - x - dw - 40, 52, 30, HEAD);
+          ctx.fillText(String(l.name).toUpperCase(), x, y + 58);
+          if (detail) { ctx.font = '700 46px ' + HEAD; ctx.fillStyle = l.pr ? POP : SOFT; ctx.textAlign = 'right'; ctx.fillText(detail, W - PAD, y + 58); ctx.textAlign = 'left'; }
+        });
+        layout.shown = shown.length;
+        next = top + shown.length * rowH;
+      } else {
+        // exercises as two columns of tiles, the first column filled first
+        var slots = note ? 10 : 14;
+        var over = lines.length > slots;
+        var show = over ? lines.slice(0, slots - 1) : lines;
+        var count = show.length + (over ? 1 : 0);
+        var rows = Math.ceil(count / 2);
+        var tgap = 14, cw = (W - 2 * PAD - tgap) / 2;
+        var room = (note ? 1066 : 1228) - c.top;                                  // down to the footer, or to the room the note needs
+        var th = Math.max(76, Math.min(150, Math.floor((room - tgap * (rows - 1)) / rows)));
+        var nameSize = th >= 130 ? 48 : th >= 108 ? 42 : 36, subSize = th >= 130 ? 36 : th >= 108 ? 34 : 30;
+        for (var i = 0; i < count; i += 1) {
+          var col = i < rows ? 0 : 1, r = i % rows;
+          var tx = PAD + col * (cw + tgap), ty = c.top + r * (th + tgap);
+          var l = show[i];
+          layout.tiles.push({ x: tx, y: ty, w: cw, h: th, more: !l });
+          if (!l) {
+            // the last tile says how many are not shown
+            skewRect(ctx, tx, ty, cw, th, 'rgba(255,255,255,0.05)');
+            ctx.fillStyle = SOFT; ctx.font = '800 ' + nameSize + 'px ' + HEAD;
+            ctx.fillText((wd.more || '+ {0} more').replace('{0}', lines.length - show.length).toUpperCase(), tx + 66, ty + th / 2 + nameSize * 0.34);
+            continue;
+          }
+          skewRect(ctx, tx, ty, cw, th, l.pr ? 'rgba(255,138,101,0.22)' : 'rgba(255,255,255,0.09)');
+          skewRect(ctx, tx, ty, 8, th, l.pr ? POP : 'rgba(255,255,255,0.25)');
+          ctx.fillStyle = l.pr ? POP : SOFT; ctx.font = '800 ' + Math.round(nameSize * 0.84) + 'px ' + HEAD;
+          ctx.fillText(String(i + 1), tx + 26, ty + th * 0.4);
+          var reserve = l.pr ? 130 : 100;
+          ctx.fillStyle = WHITE;
+          fit(ctx, String(l.name).toUpperCase(), '800', cw - reserve - 36, nameSize, 22, HEAD);
+          ctx.fillText(String(l.name).toUpperCase(), tx + 66, ty + th * 0.43);
+          var sub = opts.weights !== false ? [l.detail, l.sets].filter(Boolean).join('  ·  ') : String(l.sets || '');
+          ctx.fillStyle = l.pr ? POP : SOFT; ctx.font = '700 ' + subSize + 'px ' + HEAD;
+          ctx.fillText(String(sub).toUpperCase(), tx + 66, ty + th * 0.82);
+          if (l.pr) {
+            skewRect(ctx, tx + cw - 62, ty + 10, 50, 32, POP);
+            ctx.fillStyle = INK; ctx.font = '800 24px ' + HEAD; ctx.fillText(wd.pr || 'PR', tx + cw - 52, ty + 34);
+          }
         }
-        var detail = opts.weights !== false ? l.detail : l.sets;
-        ctx.font = '700 46px ' + HEAD;
-        var dw = detail ? ctx.measureText(detail).width : 0;
-        ctx.fillStyle = WHITE;
-        fit(ctx, String(l.name).toUpperCase(), '800', W - PAD - x - dw - 40, 52, 30, HEAD);
-        ctx.fillText(String(l.name).toUpperCase(), x, y + 58);
-        if (detail) { ctx.font = '700 46px ' + HEAD; ctx.fillStyle = l.pr ? POP : SOFT; ctx.textAlign = 'right'; ctx.fillText(detail, W - PAD, y + 58); ctx.textAlign = 'left'; }
-      });
-      var next = top + shown.length * rowH;
-      if (lines.length > shown.length) {
+        layout.shown = show.length; layout.more = over ? lines.length - show.length : 0;
+        next = c.top + rows * (th + tgap) - tgap + 40;
+      }
+      layout.bottom = next;
+      if (!tiles && lines.length > layout.shown) {
         ctx.fillStyle = SOFT; ctx.font = '700 38px ' + HEAD;
-        ctx.fillText((wd.more || '+ {0} more').replace('{0}', lines.length - shown.length), PAD, next + 48);
-        next += rowH;
+        layout.more = lines.length - layout.shown;
+        ctx.fillText((wd.more || '+ {0} more').replace('{0}', layout.more), PAD, next + 48);
+        next += 96;
       }
       if (note) {
         ctx.fillStyle = WHITE; ctx.font = 'italic 600 36px ' + BODY;
@@ -128,6 +182,7 @@
       // footer
       ctx.fillStyle = SOFT; ctx.font = '700 34px ' + HEAD;
       ctx.fillText(String(wd.tagline || 'Free forever. No tracking, no ads.').toUpperCase(), PAD, H - 64);
+      cv.layout = layout;
       return cv;
     });
   }
