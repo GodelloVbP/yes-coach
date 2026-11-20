@@ -52,7 +52,7 @@
              lines: [{ name, detail, sets, pr }], note, words: { time, sets, volume, pr, more, tagline } }
      opts: { weights: bool, note: bool }
      Up to 6 exercises (4 with a note) are a list with large type. More are two columns of tiles, each with the best set and the number of
-     sets: up to 14 (10 with a note); beyond that the last tile says how many more. The canvas carries `layout` (what was drawn) for tests. */
+     sets: up to 14 (12 with a note); beyond that the last tile says how many more. The canvas carries `layout` (what was drawn) for tests. */
   function render(data, opts) {
     opts = opts || {};
     return loadFonts().then(function () {
@@ -63,8 +63,8 @@
       var note = opts.note && data.note ? String(data.note) : '';
       var lines = data.lines || [];
       var tiles = lines.length > (note ? 4 : 6);
-      // the header is a little smaller when there are tiles: the exercises need the room
-      var c = tiles ? { brand: 52, date: 196, dateSize: 36, title: 318, titleSize: 140, statsY: 352, statsH: 124, statsFs: 72, statsLab: 26, top: 512 }
+      // With tiles the app's name goes to the top right and the date and title move up beside it: the exercises need the room
+      var c = tiles ? { brand: 40, date: 92, dateSize: 36, title: 214, titleSize: 130, statsY: 250, statsH: 120, statsFs: 70, statsLab: 26, top: 404 }
                     : { brand: 60, date: 232, dateSize: 38, title: 372, titleSize: 150, statsY: 430, statsH: 150, statsFs: 84, statsLab: 30, top: 650 };
       ctx.fillStyle = INK; ctx.fillRect(0, 0, W, H);
       // a few slanted bars in the corner, the mark of the app
@@ -74,9 +74,13 @@
 
       // mark and name
       var bars = [[0, 12, 7, 16, WHITE], [9, 2, 9, 36, WHITE], [20, 12, 7, 16, POP], [29, 2, 9, 36, WHITE]];
-      bars.forEach(function (b) { skewRect(ctx, PAD + b[0] * 1.6, c.brand + b[1] * 1.6, b[2] * 1.6, b[3] * 1.6, b[4]); });
-      ctx.fillStyle = WHITE; ctx.textBaseline = 'alphabetic';
-      ctx.font = 'italic 800 48px ' + HEAD; ctx.fillText('YES COACH!', PAD + 110, c.brand + 52);
+      ctx.textBaseline = 'alphabetic';
+      ctx.font = 'italic 800 48px ' + HEAD;
+      var nameW = ctx.measureText('YES COACH!').width;
+      var bx = tiles ? W - PAD - nameW - 110 : PAD;                               // left edge of the mark
+      bars.forEach(function (b) { skewRect(ctx, bx + b[0] * 1.6, c.brand + b[1] * 1.6, b[2] * 1.6, b[3] * 1.6, b[4]); });
+      ctx.fillStyle = WHITE;
+      ctx.fillText('YES COACH!', bx + 110, c.brand + 52);
 
       // date and title
       ctx.fillStyle = SOFT; ctx.font = '700 ' + c.dateSize + 'px ' + HEAD;
@@ -128,7 +132,7 @@
         next = top + shown.length * rowH;
       } else {
         // exercises as two columns of tiles, the first column filled first
-        var slots = note ? 10 : 14;
+        var slots = note ? 12 : 14;
         var over = lines.length > slots;
         var show = over ? lines.slice(0, slots - 1) : lines;
         var count = show.length + (over ? 1 : 0);
