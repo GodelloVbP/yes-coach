@@ -8223,5 +8223,201 @@
   "de": "Auf einem iPhone bleiben der Timer und die unteren Knöpfe nach dem Schließen der Tastatur jetzt am unteren Bildschirmrand, statt in der Mitte zu schweben.",
   "fr": "Sur un iPhone, le minuteur et les boutons du bas restent maintenant en bas de l’écran après la fermeture du clavier, au lieu de flotter au milieu.",
   "it": "Su iPhone il timer e i pulsanti in basso ora restano in fondo allo schermo dopo la chiusura della tastiera, invece di restare a mezz'aria."
+ },
+ "Add to my calendar": {
+  "nl": "Aan mijn agenda toevoegen",
+  "es": "Añadir a mi calendario",
+  "de": "Zu meinem Kalender hinzufügen",
+  "fr": "Ajouter à mon calendrier",
+  "it": "Aggiungi al mio calendario"
+ },
+ "Your workouts show up in your calendar and move along when you change your plan. Works with Apple, Google and Outlook.": {
+  "nl": "Je trainingen verschijnen in je agenda en schuiven mee als je je schema wijzigt. Werkt met Apple, Google en Outlook.",
+  "es": "Tus entrenamientos aparecen en tu calendario y se mueven cuando cambias tu plan. Funciona con Apple, Google y Outlook.",
+  "de": "Deine Trainings erscheinen in deinem Kalender und ziehen mit, wenn du deinen Plan änderst. Funktioniert mit Apple, Google und Outlook.",
+  "fr": "Tes séances apparaissent dans ton calendrier et suivent quand tu changes ton programme. Fonctionne avec Apple, Google et Outlook.",
+  "it": "I tuoi allenamenti compaiono nel tuo calendario e si spostano quando cambi il piano. Funziona con Apple, Google e Outlook."
+ },
+ "Add to Apple Calendar": {
+  "nl": "Aan Apple Agenda toevoegen",
+  "es": "Añadir a Calendario de Apple",
+  "de": "Zu Apple Kalender hinzufügen",
+  "fr": "Ajouter à Calendrier Apple",
+  "it": "Aggiungi a Calendario Apple"
+ },
+ "Add to Google Calendar": {
+  "nl": "Aan Google Agenda toevoegen",
+  "es": "Añadir a Google Calendar",
+  "de": "Zu Google Kalender hinzufügen",
+  "fr": "Ajouter à Google Agenda",
+  "it": "Aggiungi a Google Calendar"
+ },
+ "Copy link": {
+  "nl": "Link kopiëren",
+  "es": "Copiar enlace",
+  "de": "Link kopieren",
+  "fr": "Copier le lien",
+  "it": "Copia link"
+ },
+ "Calendar link": {
+  "nl": "Agendalink",
+  "es": "Enlace del calendario",
+  "de": "Kalenderlink",
+  "fr": "Lien du calendrier",
+  "it": "Link del calendario"
+ },
+ "Your calendar link is on": {
+  "nl": "Je agendalink staat aan",
+  "es": "Tu enlace de calendario está activado",
+  "de": "Dein Kalenderlink ist an",
+  "fr": "Ton lien de calendrier est activé",
+  "it": "Il tuo link del calendario è attivo"
+ },
+ "It updates when you change your plan; your calendar app checks every few hours. Anyone with the link can see your planned workouts.": {
+  "nl": "Hij wordt bijgewerkt als je je schema wijzigt; je agenda-app kijkt om de paar uur. Iedereen met de link kan je geplande trainingen zien.",
+  "es": "Se actualiza cuando cambias tu plan; tu app de calendario lo comprueba cada pocas horas. Cualquiera con el enlace puede ver tus entrenamientos planificados.",
+  "de": "Er wird aktualisiert, wenn du deinen Plan änderst; deine Kalender-App prüft alle paar Stunden. Jeder mit dem Link kann deine geplanten Trainings sehen.",
+  "fr": "Il se met à jour quand tu changes ton programme ; ton appli calendrier vérifie toutes les quelques heures. Toute personne ayant le lien peut voir tes séances prévues.",
+  "it": "Si aggiorna quando cambi il piano; la tua app calendario controlla ogni poche ore. Chiunque abbia il link può vedere i tuoi allenamenti previsti."
+ },
+ "Make a new link": {
+  "nl": "Nieuwe link maken",
+  "es": "Crear un enlace nuevo",
+  "de": "Neuen Link erstellen",
+  "fr": "Créer un nouveau lien",
+  "it": "Crea un nuovo link"
+ },
+ "Stop sharing": {
+  "nl": "Stoppen met delen",
+  "es": "Dejar de compartir",
+  "de": "Nicht mehr teilen",
+  "fr": "Arrêter de partager",
+  "it": "Smetti di condividere"
+ },
+ "Keep it": {
+  "nl": "Laten staan",
+  "es": "Mantenerlo",
+  "de": "Behalten",
+  "fr": "Le garder",
+  "it": "Tienilo"
+ },
+ "Keep the old one": {
+  "nl": "Oude houden",
+  "es": "Mantener el anterior",
+  "de": "Den alten behalten",
+  "fr": "Garder l’ancien",
+  "it": "Tieni il vecchio"
+ },
+ "Stop sharing your calendar": {
+  "nl": "Stoppen met het delen van je agenda",
+  "es": "Dejar de compartir tu calendario",
+  "de": "Das Teilen deines Kalenders beenden",
+  "fr": "Arrêter de partager ton calendrier",
+  "it": "Smetti di condividere il tuo calendario"
+ },
+ "The link stops working. Your calendar app keeps the old events until you remove the calendar there.": {
+  "nl": "De link werkt dan niet meer. Je agenda-app houdt de oude afspraken tot je de agenda daar verwijdert.",
+  "es": "El enlace deja de funcionar. Tu app de calendario conserva los eventos antiguos hasta que quites el calendario allí.",
+  "de": "Der Link funktioniert dann nicht mehr. Deine Kalender-App behält die alten Termine, bis du den Kalender dort entfernst.",
+  "fr": "Le lien ne fonctionne plus. Ton appli calendrier garde les anciens événements jusqu’à ce que tu y retires le calendrier.",
+  "it": "Il link smette di funzionare. La tua app calendario tiene i vecchi eventi finché non rimuovi lì il calendario."
+ },
+ "The old link stops working. Add the calendar again with the new one.": {
+  "nl": "De oude link werkt dan niet meer. Voeg de agenda opnieuw toe met de nieuwe.",
+  "es": "El enlace anterior deja de funcionar. Añade el calendario de nuevo con el nuevo.",
+  "de": "Der alte Link funktioniert dann nicht mehr. Füge den Kalender mit dem neuen erneut hinzu.",
+  "fr": "L’ancien lien ne fonctionne plus. Ajoute à nouveau le calendrier avec le nouveau.",
+  "it": "Il vecchio link smette di funzionare. Aggiungi di nuovo il calendario con quello nuovo."
+ },
+ "Link copied. In Outlook, add a calendar from the internet and paste it.": {
+  "nl": "Link gekopieerd. Voeg in Outlook een agenda van internet toe en plak hem.",
+  "es": "Enlace copiado. En Outlook, añade un calendario de internet y pégalo.",
+  "de": "Link kopiert. Füge in Outlook einen Kalender aus dem Internet hinzu und füge ihn ein.",
+  "fr": "Lien copié. Dans Outlook, ajoute un calendrier depuis Internet et colle-le.",
+  "it": "Link copiato. In Outlook aggiungi un calendario da Internet e incollalo."
+ },
+ "Select the link and copy it.": {
+  "nl": "Selecteer de link en kopieer hem.",
+  "es": "Selecciona el enlace y cópialo.",
+  "de": "Markiere den Link und kopiere ihn.",
+  "fr": "Sélectionne le lien et copie-le.",
+  "it": "Seleziona il link e copialo."
+ },
+ "Saved. Your calendar picks it up within a few hours.": {
+  "nl": "Opgeslagen. Je agenda pakt het binnen een paar uur op.",
+  "es": "Guardado. Tu calendario lo recoge en unas horas.",
+  "de": "Gespeichert. Dein Kalender übernimmt es in wenigen Stunden.",
+  "fr": "Enregistré. Ton calendrier le récupère d’ici quelques heures.",
+  "it": "Salvato. Il tuo calendario lo recepisce entro qualche ora."
+ },
+ "No planned days left in the next weeks.": {
+  "nl": "Geen geplande dagen meer in de komende weken.",
+  "es": "No quedan días planificados en las próximas semanas.",
+  "de": "Keine geplanten Tage mehr in den nächsten Wochen.",
+  "fr": "Plus aucun jour prévu dans les prochaines semaines.",
+  "it": "Nessun giorno previsto nelle prossime settimane."
+ },
+ "Not stopped. Check your connection.": {
+  "nl": "Niet gestopt. Controleer je verbinding.",
+  "es": "No se detuvo. Revisa tu conexión.",
+  "de": "Nicht beendet. Prüfe deine Verbindung.",
+  "fr": "Pas arrêté. Vérifie ta connexion.",
+  "it": "Non interrotto. Controlla la connessione."
+ },
+ "Stopped. The link no longer works.": {
+  "nl": "Gestopt. De link werkt niet meer.",
+  "es": "Detenido. El enlace ya no funciona.",
+  "de": "Beendet. Der Link funktioniert nicht mehr.",
+  "fr": "Arrêté. Le lien ne fonctionne plus.",
+  "it": "Interrotto. Il link non funziona più."
+ },
+ "New link made. Add the calendar again.": {
+  "nl": "Nieuwe link gemaakt. Voeg de agenda opnieuw toe.",
+  "es": "Enlace nuevo creado. Añade el calendario de nuevo.",
+  "de": "Neuer Link erstellt. Füge den Kalender erneut hinzu.",
+  "fr": "Nouveau lien créé. Ajoute à nouveau le calendrier.",
+  "it": "Nuovo link creato. Aggiungi di nuovo il calendario."
+ },
+ "Or a file, once": {
+  "nl": "Of eenmalig een bestand",
+  "es": "O un archivo, una vez",
+  "de": "Oder einmalig eine Datei",
+  "fr": "Ou un fichier, une fois",
+  "it": "Oppure un file, una volta"
+ },
+ "The calendar link is not available right now. You can still download a file.": {
+  "nl": "De agendalink is nu niet beschikbaar. Je kunt nog wel een bestand downloaden.",
+  "es": "El enlace del calendario no está disponible ahora. Aún puedes descargar un archivo.",
+  "de": "Der Kalenderlink ist gerade nicht verfügbar. Du kannst weiterhin eine Datei herunterladen.",
+  "fr": "Le lien du calendrier n’est pas disponible pour le moment. Tu peux quand même télécharger un fichier.",
+  "it": "Il link del calendario non è disponibile ora. Puoi comunque scaricare un file."
+ },
+ "Loading…": {
+  "nl": "Laden…",
+  "es": "Cargando…",
+  "de": "Wird geladen…",
+  "fr": "Chargement…",
+  "it": "Caricamento…"
+ },
+ "A calendar link": {
+  "nl": "Een agendalink",
+  "es": "Un enlace de calendario",
+  "de": "Ein Kalenderlink",
+  "fr": "Un lien de calendrier",
+  "it": "Un link del calendario"
+ },
+ "Train, Add to calendar: Add to my calendar puts your planned workouts in Apple Calendar, Google Calendar or Outlook, and they move along when you change your plan. No file to open.": {
+  "nl": "Train, Aan agenda toevoegen: Aan mijn agenda toevoegen zet je geplande trainingen in Apple Agenda, Google Agenda of Outlook, en ze schuiven mee als je je schema wijzigt. Geen bestand om te openen.",
+  "es": "Train, Añadir al calendario: Añadir a mi calendario pone tus entrenamientos planificados en Calendario de Apple, Google Calendar u Outlook, y se mueven cuando cambias tu plan. Sin archivo que abrir.",
+  "de": "Train, Zum Kalender hinzufügen: Zu meinem Kalender hinzufügen legt deine geplanten Trainings in Apple Kalender, Google Kalender oder Outlook ab, und sie ziehen mit, wenn du deinen Plan änderst. Keine Datei zum Öffnen.",
+  "fr": "Train, Ajouter au calendrier : Ajouter à mon calendrier met tes séances prévues dans Calendrier Apple, Google Agenda ou Outlook, et elles suivent quand tu changes ton programme. Aucun fichier à ouvrir.",
+  "it": "Train, Aggiungi al calendario: Aggiungi al mio calendario mette i tuoi allenamenti previsti in Calendario Apple, Google Calendar o Outlook, e si spostano quando cambi il piano. Nessun file da aprire."
+ },
+ "Anyone who has the link can see your planned workouts. Make a new link or Stop sharing at any time.": {
+  "nl": "Iedereen die de link heeft kan je geplande trainingen zien. Maak een nieuwe link of stop met delen wanneer je wilt.",
+  "es": "Cualquiera que tenga el enlace puede ver tus entrenamientos planificados. Crea un enlace nuevo o deja de compartir cuando quieras.",
+  "de": "Jeder, der den Link hat, kann deine geplanten Trainings sehen. Erstelle jederzeit einen neuen Link oder beende das Teilen.",
+  "fr": "Toute personne qui a le lien peut voir tes séances prévues. Crée un nouveau lien ou arrête de partager à tout moment.",
+  "it": "Chiunque abbia il link può vedere i tuoi allenamenti previsti. Crea un nuovo link o smetti di condividere in qualsiasi momento."
  }
 }
