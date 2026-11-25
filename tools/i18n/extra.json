@@ -8202,5 +8202,19 @@
   "de": "Kommt ein Training dann zweimal hintereinander vor, setzt Verteilen das nächste andere dazwischen. Du kannst es rückgängig machen.",
   "fr": "Si une séance revient alors deux fois de suite, Les espacer place la suivante différente entre les deux. Tu peux annuler.",
   "it": "Se un allenamento compare poi due volte di fila, Distanziali mette in mezzo il successivo diverso. Puoi annullare."
+ },
+ "The page stays where you are": {
+  "nl": "De pagina blijft waar je bent",
+  "es": "La página se queda donde estás",
+  "de": "Die Seite bleibt, wo du bist",
+  "fr": "La page reste où tu es",
+  "it": "La pagina resta dove sei"
+ },
+ "Ticking a set no longer throws the page to the bottom when the rest timer comes up. The page only moves with the timer when you are already at the very end.": {
+  "nl": "Een set afvinken gooit de pagina niet meer naar beneden als de rusttimer opkomt. De pagina beweegt alleen mee met de timer als je al helemaal onderaan bent.",
+  "es": "Marcar una serie ya no lanza la página al final cuando aparece el temporizador de descanso. La página solo se mueve con el temporizador si ya estás al final del todo.",
+  "de": "Einen Satz abzuhaken wirft die Seite nicht mehr ans Ende, wenn der Pausentimer erscheint. Die Seite bewegt sich nur mit dem Timer, wenn du schon ganz unten bist.",
+  "fr": "Cocher une série ne jette plus la page tout en bas quand le minuteur de repos apparaît. La page ne bouge avec le minuteur que si tu es déjà tout en bas.",
+  "it": "Spuntare una serie non sbatte più la pagina in fondo quando compare il timer di recupero. La pagina si muove con il timer solo se sei già proprio in fondo."
  }
 }

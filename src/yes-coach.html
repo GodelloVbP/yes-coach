@@ -1999,6 +1999,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['26 Nov 2026', "The page stays where you are", ["Ticking a set no longer throws the page to the bottom when the rest timer comes up. The page only moves with the timer when you are already at the very end."]],
     ['25 Nov 2026', "Change a place in your order", ["Each workout in your order has a Change to… menu, so Legs, Upper, Legs can become Upper, Upper, Legs in one step.", "When a workout then comes twice in a row, Spread them out puts the next different one between them. You can undo it."]],
     ['25 Nov 2026', "One number for training days", ["About you used to say 4 days a week while your plan said 5. With a plan, About you now shows the plan's number and follows it when you change it under Plan.", "Claude reads the same number."]],
     ['25 Nov 2026', "Connected apps, tidied", ["An app you connected five times is now one row with its number of connections. Remove 4 old keeps the newest, Disconnect removes them all.", "Under Claude and your plan, both choices are the same width and each says what it does."]],
@@ -3480,10 +3481,15 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (a && a.id && R.body.contains(a) && /^f-/.test(a.id)) kept.focus = { id: a.id, from: a.selectionStart, to: a.selectionEnd };
     const items = sessionItems();
     R.sig = itemsSig();
+    // the page keeps its place: while the cards are rebuilt the list holds its height, so the browser does not clamp the scroll to a shorter page
+    const y = window.scrollY;
+    R.body.style.minHeight = R.body.offsetHeight + 'px';
     R.body.replaceChildren();
     R.sets = {};
     R.items = {};
     items.forEach((item, i) => R.body.append(buildItem(item, i, items.length)));
+    R.body.style.minHeight = '';
+    if (window.scrollY !== y) window.scrollTo(window.scrollX, y);
     kept.how.forEach((ex) => { const it = R.items[ex]; const how = it && it.el.querySelector('.ex-how'); if (how) how.open = true; });
     kept.plates.forEach((ex) => { const it = R.items[ex]; const pb = it && it.el.querySelector('.ex-plates'); if (pb) pb.click(); });
     if (kept.focus) {
@@ -8465,10 +8471,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     // the bar takes room at the bottom of the page. When it comes up while you are at the bottom (after the last set), the page moves up
     // with it, so the end of the page is not left under the bar.
     const comes = !document.body.classList.contains('resting');
-    const nearEnd = comes && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 96;
+    const nearEnd = comes && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 8;
     bar.hidden = false;
     document.body.classList.add('resting');
-    if (nearEnd) window.scrollTo({ top: document.documentElement.scrollHeight, behavior: motion() });
+    if (nearEnd) window.scrollTo({ top: document.documentElement.scrollHeight });
     fitPickers(); // an open exercise list takes the room above the bar, also when the bar comes up after the list was opened
     bar.classList.toggle('over', rem <= 0);
     $('#rest-lab').textContent = rem > 0 ? 'Rest · ' + REST.label : 'Rest over · ' + REST.label;
