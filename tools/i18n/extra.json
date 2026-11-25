@@ -8216,5 +8216,12 @@
   "de": "Einen Satz abzuhaken wirft die Seite nicht mehr ans Ende, wenn der Pausentimer erscheint. Die Seite bewegt sich nur mit dem Timer, wenn du schon ganz unten bist.",
   "fr": "Cocher une série ne jette plus la page tout en bas quand le minuteur de repos apparaît. La page ne bouge avec le minuteur que si tu es déjà tout en bas.",
   "it": "Spuntare una serie non sbatte più la pagina in fondo quando compare il timer di recupero. La pagina si muove con il timer solo se sei già proprio in fondo."
+ },
+ "On an iPhone the timer and the bottom buttons now stay at the bottom of the screen after the keyboard closes, instead of floating in the middle.": {
+  "nl": "Op een iPhone blijven de timer en de knoppen onderaan nu onderaan het scherm nadat het toetsenbord dicht is, in plaats van midden in beeld te zweven.",
+  "es": "En un iPhone, el temporizador y los botones de abajo se quedan ahora al fondo de la pantalla cuando se cierra el teclado, en lugar de flotar en el medio.",
+  "de": "Auf einem iPhone bleiben der Timer und die unteren Knöpfe nach dem Schließen der Tastatur jetzt am unteren Bildschirmrand, statt in der Mitte zu schweben.",
+  "fr": "Sur un iPhone, le minuteur et les boutons du bas restent maintenant en bas de l’écran après la fermeture du clavier, au lieu de flotter au milieu.",
+  "it": "Su iPhone il timer e i pulsanti in basso ora restano in fondo allo schermo dopo la chiusura della tastiera, invece di restare a mezz'aria."
  }
 }

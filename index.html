@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-1Ak419J58CyPKVwFGXzcLC5x9pi1xJIZeIy2QwjUupY=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-Stl9VVCbthcpeUeomC8ye1rGjc/VYYk/4wy29mX6/aw=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-25 18:45Z">
+<meta name="yc-build" content="2026-11-25 18:50Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -688,6 +688,9 @@ td.nowrap { white-space: nowrap; }
 }
 
 /* rest timer: 64 px, owns the bottom; hidden while the keyboard is open */
+/* iPhone: after the keyboard closes the visible screen can stay shifted down inside the page. Fixed bars keep to the page's own bottom edge and
+   would float in the middle of the screen, so they are moved down by the shift (--vv-shift, set from visualViewport) to the bottom of what you see. */
+@media (max-width: 63.99rem) { html.vv-off .restbar, html.vv-off .focusbar, html.vv-off .mainnav { transform: translateY(var(--vv-shift, 0px)); } }
 .restbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 8; background: var(--ink); color: var(--bg); padding-bottom: env(safe-area-inset-bottom, 0px); }
 .rest-in { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: var(--rest-h); }
 .rest-l { display: flex; align-items: center; gap: 0.75rem; min-width: 0; flex: 1; align-self: stretch; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
@@ -2061,7 +2064,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
-    ['26 Nov 2026', "The page stays where you are", ["Ticking a set no longer throws the page to the bottom when the rest timer comes up. The page only moves with the timer when you are already at the very end."]],
+    ['26 Nov 2026', "The page stays where you are", ["Ticking a set no longer throws the page to the bottom when the rest timer comes up. The page only moves with the timer when you are already at the very end.", "On an iPhone the timer and the bottom buttons now stay at the bottom of the screen after the keyboard closes, instead of floating in the middle."]],
     ['25 Nov 2026', "Change a place in your order", ["Each workout in your order has a Change to… menu, so Legs, Upper, Legs can become Upper, Upper, Legs in one step.", "When a workout then comes twice in a row, Spread them out puts the next different one between them. You can undo it."]],
     ['25 Nov 2026', "One number for training days", ["About you used to say 4 days a week while your plan said 5. With a plan, About you now shows the plan's number and follows it when you change it under Plan.", "Claude reads the same number."]],
     ['25 Nov 2026', "Connected apps, tidied", ["An app you connected five times is now one row with its number of connections. Remove 4 old keeps the newest, Disconnect removes them all.", "Under Claude and your plan, both choices are the same width and each says what it does."]],
@@ -4767,12 +4770,28 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   document.addEventListener('pointerup', () => { fingerDown = false; }, true);
   document.addEventListener('pointercancel', () => { fingerDown = false; }, true);
   document.addEventListener('focusin', () => { if (fieldFocused() && !document.body.classList.contains('typing')) { clearTimeout(typingOff); document.body.classList.add('typing'); paintBar(); fitPickers(); } });
+  // where the visible screen sits against the page's bottom edge: more than 0 when it hangs below it (iOS after the keyboard), and then
+  // the bars follow it down. A nudge of the scroll lets iOS put the screen back.
+  const vvShift = () => { const v = window.visualViewport; return v ? Math.max(0, Math.round(v.offsetTop + v.height - window.innerHeight)) : 0; };
+  let vvNudge = 0;
+  const syncVV = () => {
+    const sh = vvShift();
+    const root = document.documentElement;
+    root.classList.toggle('vv-off', sh > 1);
+    root.style.setProperty('--vv-shift', sh > 1 ? sh + 'px' : '0px');
+    clearTimeout(vvNudge);
+    if (sh > 1 && !document.body.classList.contains('typing')) vvNudge = setTimeout(() => { if (vvShift() > 1 && !fieldFocused()) { window.scrollBy(0, 1); window.scrollBy(0, -1); } }, 400);
+  };
+  if (window.visualViewport) { window.visualViewport.addEventListener('resize', syncVV); window.visualViewport.addEventListener('scroll', syncVV); }
+  window.addEventListener('scroll', syncVV, { passive: true });
+  window.addEventListener('resize', syncVV);
   const settleTyping = () => {
     clearTimeout(typingOff);
     typingOff = setTimeout(() => {
       if (fingerDown) { settleTyping(); return; }
       const t = fieldFocused();
       if (t !== document.body.classList.contains('typing')) { document.body.classList.toggle('typing', t); paintBar(); fitPickers(); }
+      syncVV();
     }, 450);
   };
   document.addEventListener('focusout', settleTyping);
