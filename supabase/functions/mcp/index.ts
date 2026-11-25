@@ -106,6 +106,19 @@ const readSchedule = (root: Json, days: Record<string, Json>): Json => {
   if (sc.mode === 'rotation') return { mode: 'rotation', note: sc.per_week && sc.per_week < (sc.days || []).length ? 'The weekdays are the days the person can train. They train ' + sc.per_week + ' times a week, spread over those days, and the day trained longest ago comes next.' : 'On these weekdays the day trained longest ago comes next.', weekdays: sc.days || [], ...(sc.per_week ? { sessions_per_week: sc.per_week } : {}), rotation: (sc.rotation || []).map(name) };
   return { mode: 'fixed', week: Object.fromEntries(WEEKDAYS.map((w) => [w, sc.week && sc.week[w] ? name(sc.week[w]) : 'rest'])) };
 };
+// Training days a week as the schedule has them (0 without a schedule). While there is a schedule this is the number the person
+// sees in About you, so the profile Claude reads says the same.
+const scheduleDays = (sc: Json): number => {
+  if (!sc || !sc.enabled) return 0;
+  if (sc.mode === 'fixed') return WEEKDAYS.filter((w) => sc.week && sc.week[w]).length;
+  const per = Math.round(Number(sc.per_week) || 0);
+  return per >= 1 && per <= 7 ? per : Math.min(7, (sc.days || []).length);
+};
+const profileOut = (root: Json): Json => {
+  const p = (root && root.profile) || {};
+  const n = scheduleDays(root && root.schedule);
+  return n ? { ...p, days_per_week: n } : p;
+};
 const inWeek = (root: Json): Set<string> => {
   const sc = root && root.schedule;
   if (!sc || !sc.enabled) return new Set();
@@ -1011,7 +1024,7 @@ const TOOLS: Tool[] = [
       const [root, ex, days, recent, notes] = await Promise.all([db.get('yc'), loadExercises(db), loadDays(db), db.list('yc/sessions/', { desc: true, limit: 5 }), db.list('yc/notes/', { desc: true, limit: 100 })]);
       const week = inWeek(root);
       return {
-        profile: (root && root.profile) || {}, schedule: readSchedule(root, days),
+        profile: profileOut(root), schedule: readSchedule(root, days),
         training_days: byOrder(days).map((id) => ({ id, name: days[id].name, kind: days[id].kind || 'Other', exercises: (days[id].items || []).length, in_week: week.has(id) })),
         recent_sessions: recent.map((r) => { const s = sessionOut(r.path, r.data, ex, days, true); return { date: s.date, label: s.label, day: s.day, exercises: s.exercises.length, sets: s.exercises.reduce((n: number, e: Json) => n + e.sets.length, 0) }; }),
         notes_waiting: notes.filter((n) => (n.data.status || 'new') === 'new' && !n.data.reply).length,
@@ -1193,7 +1206,8 @@ const TOOLS: Tool[] = [
         sc = { enabled: true, mode: 'fixed', week };
       } else fail('mode must be "rotation" or "fixed".');
       const before = root && root.schedule && root.schedule.enabled ? root.schedule : null;
-      await db.put('yc', { ...(root || { app: 'yes-coach', schema: 1, created_at: Date.now() }), schedule: sc, ...(before ? { schedule_before: before } : {}) });
+      const n = scheduleDays(sc);
+      await db.put('yc', { ...(root || { app: 'yes-coach', schema: 1, created_at: Date.now() }), schedule: sc, ...(before ? { schedule_before: before } : {}), ...(n ? { profile: { ...((root && root.profile) || {}), days_per_week: n } } : {}) });
       return { saved: true, schedule: readSchedule({ schedule: sc }, days) };
     },
   },

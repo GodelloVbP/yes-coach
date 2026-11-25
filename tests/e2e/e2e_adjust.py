@@ -51,7 +51,7 @@ try:
             page.locator('#wiz .ex-acts .skew').first.click(); page.wait_for_timeout(300)
             req = page.evaluate('navigator.clipboard.readText()')
             check('request: the rotation with its repeats', 'then start again: Day A, Day B, Day A, Day C. About 3 sessions a week' in req, req[:1500])
-            check('request: sessions a week from the schedule, the profile number named', 'Sessions a week: 3 in their schedule (their profile says 4)' in req)
+            check('request: sessions a week from the schedule, and no second number from the profile', 'Sessions a week: 3 in their schedule' in req and 'their profile says' not in req)
             check('request: only the listed changes, targets kept', 'Change only what the list under' in req and 'copy its current target as it is' in req)
             check('request: one per-week number, counted from the first logged session', 'about 1.9 sessions a week' in req and '9 sessions since' in req and 'in 13 weeks' not in req, re.findall(r'.*sessions (?:a week|since).*', req))
             check('request: may move exercises between days to fix frequency', 'move or add exercises between the days' in req)
