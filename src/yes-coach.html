@@ -9218,6 +9218,33 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return [e.name, it.sets + ' × ' + (it.reps || '?') + (tgt ? ' · ' + tgt : '')];
   };
   // one training day as a card: name, its exercises, and what you can do with it here
+  // The same workout twice in a row in the order (the wrap from the last back to the first does not count: the days you train
+  // decide what follows). Spreading moves the next different workout up and leaves everything else where it is.
+  const spreadRepeats = (list) => {
+    const a = list.slice();
+    for (let i = 1; i < a.length; i += 1) {
+      if (a[i] !== a[i - 1]) continue;
+      const j = a.findIndex((x, k) => k > i && x !== a[i]);
+      if (j > -1) a.splice(i, 0, a.splice(j, 1)[0]);
+    }
+    return a;
+  };
+  const repeatNote = (m) => {
+    const fixed = spreadRepeats(m.rotation);
+    if (m.mode !== 'rotation' || fixed.join() === m.rotation.join()) return null;
+    const twice = [...new Set(m.rotation.filter((id, i) => i && id === m.rotation[i - 1]))].map((id) => S.templates[id] && S.templates[id].name).filter(Boolean);
+    const n = h('div', 'pw-note');
+    n.id = 'pw-repeat';
+    n.append(h('span', '', (twice.length ? twice.join(' and ') : 'A workout') + ' comes twice in a row in your order. '),
+      plainBtn('textbtn', 'Spread them out', null, () => {
+        const mm = schedModel();
+        const before = mm.rotation.slice();
+        mm.rotation = spreadRepeats(mm.rotation);
+        saveSched(mm);
+        showToast('Order is now ' + mm.rotation.map((id) => S.templates[id].name).join(', ') + '.', () => { const back = schedModel(); back.rotation = before; saveSched(back); });
+      }));
+    return n;
+  };
   const dayCard = (id, label, extra) => {
     const t = S.templates[id];
     const c = h('div', 'pw-card');
@@ -9393,12 +9420,19 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         const next = ahead.find((p) => p.idx === i);
         board.append(dayCard(id, String(i + 1) + (next ? ' · next ' + isoDow(next.date) + ' ' + dm(next.date) : ''), (acts) => {
           const move = (j) => { const mm = schedModel(); const x = mm.rotation.splice(i, 1)[0]; mm.rotation.splice(j, 0, x); saveSched(mm); };
-          acts.append(arrowBtn('↑', 'Move earlier', i === 0, () => move(i - 1)), arrowBtn('↓', 'Move later', i === m.rotation.length - 1, () => move(i + 1)),
+          const swap = h('select', 'sel');
+          swap.setAttribute('aria-label', 'Change number ' + (i + 1) + ' in your order to another day');
+          swap.append(new Option('Change to…', ''));
+          ts.filter((t) => t.id !== id).forEach((t) => swap.append(new Option(t.name, t.id)));
+          swap.addEventListener('change', () => { if (!swap.value) return; const mm = schedModel(); mm.rotation[i] = swap.value; saveSched(mm); });
+          acts.append(swap, arrowBtn('↑', 'Move earlier', i === 0, () => move(i - 1)), arrowBtn('↓', 'Move later', i === m.rotation.length - 1, () => move(i + 1)),
             armedRemove(S.templates[id].name + ' from your week', () => { const mm = schedModel(); mm.rotation.splice(i, 1); saveSched(mm); }));
         }));
       });
       if (!m.rotation.length) board.append(h('p', 'note', 'No training days in your week yet. Add one below.'));
     }
+    const rn = repeatNote(m);
+    if (rn) box.append(rn);
     box.append(board);
     // days that are not in the week, and making a new one
     const used = inWeek(m);
