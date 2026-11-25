@@ -8111,5 +8111,33 @@
   "de": "Unter Claude und dein Plan sind beide Optionen gleich breit und jede sagt, was sie tut.",
   "fr": "Sous Claude et ton programme, les deux choix ont la même largeur et chacun dit ce qu’il fait.",
   "it": "In Claude e il tuo piano, le due scelte hanno la stessa larghezza e ognuna dice cosa fa."
+ },
+ "Follows your plan. Change it under Plan.": {
+  "nl": "Volgt je schema. Wijzig het onder Plan.",
+  "es": "Sigue tu plan. Cámbialo en Plan.",
+  "de": "Folgt deinem Plan. Ändere es unter Plan.",
+  "fr": "Suit ton programme. Change-le dans Plan.",
+  "it": "Segue il tuo piano. Cambialo in Plan."
+ },
+ "One number for training days": {
+  "nl": "Eén getal voor trainingsdagen",
+  "es": "Un solo número de días de entrenamiento",
+  "de": "Eine Zahl für Trainingstage",
+  "fr": "Un seul nombre de jours d’entraînement",
+  "it": "Un solo numero di giorni di allenamento"
+ },
+ "About you used to say 4 days a week while your plan said 5. With a plan, About you now shows the plan's number and follows it when you change it under Plan.": {
+  "nl": "Over jou zei 4 dagen per week terwijl je schema 5 zei. Met een schema toont Over jou nu het getal van het schema en volgt het als je dat onder Plan wijzigt.",
+  "es": "Sobre ti decía 4 días a la semana mientras tu plan decía 5. Con un plan, Sobre ti muestra ahora el número del plan y lo sigue cuando lo cambias en Plan.",
+  "de": "Über dich sagte 4 Tage pro Woche, während dein Plan 5 sagte. Mit einem Plan zeigt Über dich jetzt die Zahl des Plans und folgt ihr, wenn du sie unter Plan änderst.",
+  "fr": "À propos de toi disait 4 jours par semaine alors que ton programme disait 5. Avec un programme, À propos de toi affiche maintenant son nombre et le suit quand tu le changes dans Plan.",
+  "it": "Su di te diceva 4 giorni a settimana mentre il tuo piano diceva 5. Con un piano, Su di te mostra ora il numero del piano e lo segue quando lo cambi in Plan."
+ },
+ "Claude reads the same number.": {
+  "nl": "Claude leest hetzelfde getal.",
+  "es": "Claude lee el mismo número.",
+  "de": "Claude liest dieselbe Zahl.",
+  "fr": "Claude lit le même nombre.",
+  "it": "Claude legge lo stesso numero."
  }
 }

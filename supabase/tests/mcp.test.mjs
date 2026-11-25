@@ -244,8 +244,21 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
   ok(!r.err && root.schedule.mode === 'fixed' && root.schedule.week.Thu === 'day-2' && root.schedule.week.Tue === '', 'fixed schedule');
   ok(JSON.stringify(root.schedule_before) === JSON.stringify(rootBefore.schedule) && root.profile.goal === 'strength' && root.intro_seen, 'undo copy kept, rest of root kept');
   ok(r.json.schedule.week.Tue === 'rest' && r.json.schedule.week.Mon === 'Push A (day-1)', 'schedule echo');
+  ok(root.profile.days_per_week === 3, 'a fixed week of 3 days: About you says 3 days a week too');
+  {
+    const ov = await call('tok.anna.x', 'get_overview', {});
+    ok(ov.json.profile.days_per_week === 3, 'overview: days a week follow the schedule');
+    const stale = rows.find((x) => x.user_id === A && x.path === 'yc').data;
+    stale.profile.days_per_week = 4;
+    ok((await call('tok.anna.x', 'get_overview', {})).json.profile.days_per_week === 3, 'overview: an old profile number does not win over the schedule');
+    stale.profile.days_per_week = 3;
+  }
   r = await call('tok.anna.x', 'set_schedule', { mode: 'rotation', weekdays: ['Fri', 'Mon', 'Mon', 'Wed'], day_ids: ['day-1', 'day-2', 'day-3'] });
   ok(!r.err && JSON.stringify(rows.find((x) => x.user_id === A && x.path === 'yc').data.schedule.days) === '["Mon","Wed","Fri"]', 'rotation sorted, deduped');
+  ok(rows.find((x) => x.user_id === A && x.path === 'yc').data.profile.days_per_week === 3, 'a rotation on 3 weekdays: 3 days a week');
+  r = await call('tok.anna.x', 'set_schedule', { mode: 'rotation', weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], day_ids: ['day-1', 'day-2', 'day-3'], sessions_per_week: 4 });
+  ok(rows.find((x) => x.user_id === A && x.path === 'yc').data.profile.days_per_week === 4, 'sessions_per_week 4 on 5 weekdays: 4 days a week, not 5');
+  r = await call('tok.anna.x', 'set_schedule', { mode: 'rotation', weekdays: ['Fri', 'Mon', 'Mon', 'Wed'], day_ids: ['day-1', 'day-2', 'day-3'] });
   ok((await call('tok.anna.x', 'set_schedule', { mode: 'rotation', weekdays: ['Mon'], day_ids: ['nope'] })).err, 'unknown day in schedule');
   {
     // a day twice in the rotation comes round twice as often, and the check counts it so
