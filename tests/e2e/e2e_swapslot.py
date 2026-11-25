@@ -61,6 +61,13 @@ try:
             check('deleting a workout takes it out of the order', until(lambda: sched(be)['rotation'] == ['legs', 'legs']), sched(be))
         errs = session(pw, be, ALICE, s4, width=390); check('no page errors (delete)', not errs, errs)
 
+        be = Backend(); seed(be)
+        next(d['data'] for d in be.docs if d['path'] == 'yc')['schedule'] = {'enabled': True, 'mode': 'fixed', 'week': {'Mon': 'legs', 'Wed': 'upper', 'Fri': 'legs', 'Tue': '', 'Thu': '', 'Sat': '', 'Sun': ''}}
+        def s6(page):
+            plan(page)
+            check('a fixed week has no order to spread: no note and no page error', page.locator('#pw-repeat').count() == 0)
+        errs = session(pw, be, ALICE, s6, width=390); check('no page errors (fixed week)', not errs, errs)
+
         be = Backend(); seed(be, order=('upper', 'upper', 'legs'))
         def s5(page):
             plan(page)

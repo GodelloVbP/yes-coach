@@ -9231,8 +9231,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return a;
   };
   const repeatNote = (m) => {
-    const fixed = spreadRepeats(m.rotation);
-    if (m.mode !== 'rotation' || fixed.join() === m.rotation.join()) return null;
+    if (m.mode !== 'rotation') return null;
+    if (spreadRepeats(m.rotation).join() === m.rotation.join()) return null;
     const twice = [...new Set(m.rotation.filter((id, i) => i && id === m.rotation[i - 1]))].map((id) => S.templates[id] && S.templates[id].name).filter(Boolean);
     const n = h('div', 'pw-note');
     n.id = 'pw-repeat';
