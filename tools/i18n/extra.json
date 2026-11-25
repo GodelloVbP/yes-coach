@@ -8139,5 +8139,68 @@
   "de": "Claude liest dieselbe Zahl.",
   "fr": "Claude lit le même nombre.",
   "it": "Claude legge lo stesso numero."
+ },
+ "Change to…": {
+  "nl": "Wijzig naar…",
+  "es": "Cambiar a…",
+  "de": "Ändern in…",
+  "fr": "Changer pour…",
+  "it": "Cambia in…"
+ },
+ "Spread them out": {
+  "nl": "Spreid ze",
+  "es": "Separarlos",
+  "de": "Verteilen",
+  "fr": "Les espacer",
+  "it": "Distanziali"
+ },
+ "Change number {0} in your order to another day": {
+  "nl": "Wijzig nummer {0} in je volgorde naar een andere dag",
+  "es": "Cambiar el número {0} de tu orden a otro día",
+  "de": "Nummer {0} in deiner Reihenfolge auf einen anderen Tag ändern",
+  "fr": "Changer le numéro {0} de ton ordre pour un autre jour",
+  "it": "Cambia il numero {0} nel tuo ordine con un altro giorno"
+ },
+ "{0} comes twice in a row in your order. ": {
+  "nl": "{0} komt twee keer achter elkaar in je volgorde. ",
+  "es": "{0} aparece dos veces seguidas en tu orden. ",
+  "de": "{0} kommt in deiner Reihenfolge zweimal hintereinander vor. ",
+  "fr": "{0} revient deux fois de suite dans ton ordre. ",
+  "it": "{0} compare due volte di fila nel tuo ordine. "
+ },
+ "Order is now {0}.": {
+  "nl": "De volgorde is nu {0}.",
+  "es": "El orden ahora es {0}.",
+  "de": "Die Reihenfolge ist jetzt {0}.",
+  "fr": "L’ordre est maintenant {0}.",
+  "it": "L'ordine ora è {0}."
+ },
+ "{0} come twice in a row in your order. ": {
+  "nl": "{0} komen twee keer achter elkaar in je volgorde. ",
+  "es": "{0} aparecen dos veces seguidas en tu orden. ",
+  "de": "{0} kommen in deiner Reihenfolge zweimal hintereinander vor. ",
+  "fr": "{0} reviennent deux fois de suite dans ton ordre. ",
+  "it": "{0} compaiono due volte di fila nel tuo ordine. "
+ },
+ "Change a place in your order": {
+  "nl": "Wijzig een plek in je volgorde",
+  "es": "Cambia un lugar en tu orden",
+  "de": "Einen Platz in deiner Reihenfolge ändern",
+  "fr": "Change une place dans ton ordre",
+  "it": "Cambia un posto nel tuo ordine"
+ },
+ "Each workout in your order has a Change to… menu, so Legs, Upper, Legs can become Upper, Upper, Legs in one step.": {
+  "nl": "Elke training in je volgorde heeft een menu Wijzig naar…, zodat Benen, Bovenlichaam, Benen in één keer Bovenlichaam, Bovenlichaam, Benen kan worden.",
+  "es": "Cada entrenamiento de tu orden tiene un menú Cambiar a…, así Piernas, Torso, Piernas puede pasar a Torso, Torso, Piernas de una vez.",
+  "de": "Jedes Training in deiner Reihenfolge hat ein Menü Ändern in…, sodass aus Beine, Oberkörper, Beine mit einem Schritt Oberkörper, Oberkörper, Beine werden kann.",
+  "fr": "Chaque séance de ton ordre a un menu Changer pour…, donc Jambes, Haut du corps, Jambes peut devenir Haut du corps, Haut du corps, Jambes d’un coup.",
+  "it": "Ogni allenamento nel tuo ordine ha un menu Cambia in…, così Gambe, Parte alta, Gambe può diventare Parte alta, Parte alta, Gambe in un colpo."
+ },
+ "When a workout then comes twice in a row, Spread them out puts the next different one between them. You can undo it.": {
+  "nl": "Komt een training dan twee keer achter elkaar, dan zet Spreid ze de eerstvolgende andere ertussen. Je kunt het ongedaan maken.",
+  "es": "Si un entrenamiento aparece entonces dos veces seguidas, Separarlos pone entre ellos el siguiente distinto. Puedes deshacerlo.",
+  "de": "Kommt ein Training dann zweimal hintereinander vor, setzt Verteilen das nächste andere dazwischen. Du kannst es rückgängig machen.",
+  "fr": "Si une séance revient alors deux fois de suite, Les espacer place la suivante différente entre les deux. Tu peux annuler.",
+  "it": "Se un allenamento compare poi due volte di fila, Distanziali mette in mezzo il successivo diverso. Puoi annullare."
  }
 }

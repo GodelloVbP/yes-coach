@@ -1999,6 +1999,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['25 Nov 2026', "Change a place in your order", ["Each workout in your order has a Change to… menu, so Legs, Upper, Legs can become Upper, Upper, Legs in one step.", "When a workout then comes twice in a row, Spread them out puts the next different one between them. You can undo it."]],
     ['25 Nov 2026', "One number for training days", ["About you used to say 4 days a week while your plan said 5. With a plan, About you now shows the plan's number and follows it when you change it under Plan.", "Claude reads the same number."]],
     ['25 Nov 2026', "Connected apps, tidied", ["An app you connected five times is now one row with its number of connections. Remove 4 old keeps the newest, Disconnect removes them all.", "Under Claude and your plan, both choices are the same width and each says what it does."]],
     ['20 Nov 2026', "The share picture shows every exercise", ["With more than 6 exercises the share picture switches to two columns of tiles with the best set and the number of sets, so up to 14 exercises fit. The app name moves to the top right to make room. It used to stop after 5 with \"+ 9 more\". With a note under it, 12 fit. Fewer exercises keep the large list."]],
@@ -9235,7 +9236,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const twice = [...new Set(m.rotation.filter((id, i) => i && id === m.rotation[i - 1]))].map((id) => S.templates[id] && S.templates[id].name).filter(Boolean);
     const n = h('div', 'pw-note');
     n.id = 'pw-repeat';
-    n.append(h('span', '', (twice.length ? twice.join(' and ') : 'A workout') + ' comes twice in a row in your order. '),
+    const who = twice.length ? twice.join(' and ') : 'A workout';
+    n.append(h('span', '', who + (twice.length > 1 ? ' come' : ' comes') + ' twice in a row in your order. '),
       plainBtn('textbtn', 'Spread them out', null, () => {
         const mm = schedModel();
         const before = mm.rotation.slice();
@@ -9425,8 +9427,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
           swap.append(new Option('Change to…', ''));
           ts.filter((t) => t.id !== id).forEach((t) => swap.append(new Option(t.name, t.id)));
           swap.addEventListener('change', () => { if (!swap.value) return; const mm = schedModel(); mm.rotation[i] = swap.value; saveSched(mm); });
-          acts.append(swap, arrowBtn('↑', 'Move earlier', i === 0, () => move(i - 1)), arrowBtn('↓', 'Move later', i === m.rotation.length - 1, () => move(i + 1)),
-            armedRemove(S.templates[id].name + ' from your week', () => { const mm = schedModel(); mm.rotation.splice(i, 1); saveSched(mm); }));
+          swap.style.flex = '1 1 100%';
+          acts.append(arrowBtn('↑', 'Move earlier', i === 0, () => move(i - 1)), arrowBtn('↓', 'Move later', i === m.rotation.length - 1, () => move(i + 1)),
+            armedRemove(S.templates[id].name + ' from your week', () => { const mm = schedModel(); mm.rotation.splice(i, 1); saveSched(mm); }), swap);
         }));
       });
       if (!m.rotation.length) board.append(h('p', 'note', 'No training days in your week yet. Add one below.'));

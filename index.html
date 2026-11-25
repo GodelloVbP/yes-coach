@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-9wXydk/o18UJK8rn6afKE5oA725WvepN4P4c3h1YtsA=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-B7IYSaJowqizIo08MaK2VTvy/Uk9d0+FASujnT8IcTk=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-25 08:29Z">
+<meta name="yc-build" content="2026-11-25 08:43Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -2061,6 +2061,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['25 Nov 2026', "Change a place in your order", ["Each workout in your order has a Change to… menu, so Legs, Upper, Legs can become Upper, Upper, Legs in one step.", "When a workout then comes twice in a row, Spread them out puts the next different one between them. You can undo it."]],
     ['25 Nov 2026', "One number for training days", ["About you used to say 4 days a week while your plan said 5. With a plan, About you now shows the plan's number and follows it when you change it under Plan.", "Claude reads the same number."]],
     ['25 Nov 2026', "Connected apps, tidied", ["An app you connected five times is now one row with its number of connections. Remove 4 old keeps the newest, Disconnect removes them all.", "Under Claude and your plan, both choices are the same width and each says what it does."]],
     ['20 Nov 2026', "The share picture shows every exercise", ["With more than 6 exercises the share picture switches to two columns of tiles with the best set and the number of sets, so up to 14 exercises fit. The app name moves to the top right to make room. It used to stop after 5 with \"+ 9 more\". With a note under it, 12 fit. Fewer exercises keep the large list."]],
@@ -9280,6 +9281,34 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return [e.name, it.sets + ' × ' + (it.reps || '?') + (tgt ? ' · ' + tgt : '')];
   };
   // one training day as a card: name, its exercises, and what you can do with it here
+  // The same workout twice in a row in the order (the wrap from the last back to the first does not count: the days you train
+  // decide what follows). Spreading moves the next different workout up and leaves everything else where it is.
+  const spreadRepeats = (list) => {
+    const a = list.slice();
+    for (let i = 1; i < a.length; i += 1) {
+      if (a[i] !== a[i - 1]) continue;
+      const j = a.findIndex((x, k) => k > i && x !== a[i]);
+      if (j > -1) a.splice(i, 0, a.splice(j, 1)[0]);
+    }
+    return a;
+  };
+  const repeatNote = (m) => {
+    const fixed = spreadRepeats(m.rotation);
+    if (m.mode !== 'rotation' || fixed.join() === m.rotation.join()) return null;
+    const twice = [...new Set(m.rotation.filter((id, i) => i && id === m.rotation[i - 1]))].map((id) => S.templates[id] && S.templates[id].name).filter(Boolean);
+    const n = h('div', 'pw-note');
+    n.id = 'pw-repeat';
+    const who = twice.length ? twice.join(' and ') : 'A workout';
+    n.append(h('span', '', who + (twice.length > 1 ? ' come' : ' comes') + ' twice in a row in your order. '),
+      plainBtn('textbtn', 'Spread them out', null, () => {
+        const mm = schedModel();
+        const before = mm.rotation.slice();
+        mm.rotation = spreadRepeats(mm.rotation);
+        saveSched(mm);
+        showToast('Order is now ' + mm.rotation.map((id) => S.templates[id].name).join(', ') + '.', () => { const back = schedModel(); back.rotation = before; saveSched(back); });
+      }));
+    return n;
+  };
   const dayCard = (id, label, extra) => {
     const t = S.templates[id];
     const c = h('div', 'pw-card');
@@ -9455,12 +9484,20 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         const next = ahead.find((p) => p.idx === i);
         board.append(dayCard(id, String(i + 1) + (next ? ' · next ' + isoDow(next.date) + ' ' + dm(next.date) : ''), (acts) => {
           const move = (j) => { const mm = schedModel(); const x = mm.rotation.splice(i, 1)[0]; mm.rotation.splice(j, 0, x); saveSched(mm); };
+          const swap = h('select', 'sel');
+          swap.setAttribute('aria-label', 'Change number ' + (i + 1) + ' in your order to another day');
+          swap.append(new Option('Change to…', ''));
+          ts.filter((t) => t.id !== id).forEach((t) => swap.append(new Option(t.name, t.id)));
+          swap.addEventListener('change', () => { if (!swap.value) return; const mm = schedModel(); mm.rotation[i] = swap.value; saveSched(mm); });
+          swap.style.flex = '1 1 100%';
           acts.append(arrowBtn('↑', 'Move earlier', i === 0, () => move(i - 1)), arrowBtn('↓', 'Move later', i === m.rotation.length - 1, () => move(i + 1)),
-            armedRemove(S.templates[id].name + ' from your week', () => { const mm = schedModel(); mm.rotation.splice(i, 1); saveSched(mm); }));
+            armedRemove(S.templates[id].name + ' from your week', () => { const mm = schedModel(); mm.rotation.splice(i, 1); saveSched(mm); }), swap);
         }));
       });
       if (!m.rotation.length) board.append(h('p', 'note', 'No training days in your week yet. Add one below.'));
     }
+    const rn = repeatNote(m);
+    if (rn) box.append(rn);
     box.append(board);
     // days that are not in the week, and making a new one
     const used = inWeek(m);
