@@ -466,9 +466,14 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .p-total:empty { display: none; }
 /* filters: the period as one segmented bar, body parts as tabs under it */
 .p-filters { display: flex; flex-direction: column; gap: 0.25rem; padding-bottom: 0.25rem; border-bottom: 1px solid var(--line); }
-.seg { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border: 2px solid var(--ink); max-width: 26rem; }
-.seg-b { min-height: 44px; border: 0; border-left: 2px solid var(--ink); background: var(--paper); color: var(--ink); font-family: var(--f-head); font-size: var(--t2); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; transition: background-color 0.15s, color 0.15s; }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); border: 2px solid var(--ink); max-width: 26rem; }
+.seg-b { min-height: 44px; padding: 0.25rem 0.5rem; border: 0; border-left: 2px solid var(--ink); background: var(--paper); color: var(--ink); font-family: var(--f-head); font-size: var(--t2); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; transition: background-color 0.15s, color 0.15s; }
 .seg-b:first-child { border-left: 0; }
+.plan-modes { display: flex; flex-direction: column; gap: 0.375rem; margin-top: 0.5rem; }
+.plan-modes .pm { margin: 0; font-size: var(--t2); line-height: 1.4; color: var(--ink-soft); }
+.plan-modes .pm b { margin-right: 0.25rem; text-transform: none; }
+.plan-modes .pm.on { color: var(--ink); }
+.conn-name { flex: 1 1 100%; font-weight: 700; color: var(--ink); }
 .seg-b:hover { background: var(--faint); }
 .seg-b[aria-checked="true"] { background: var(--ink); color: var(--bg); }
 .ptabs { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0 0.625rem; }
@@ -1505,8 +1510,9 @@ button.is-pressed, summary.is-pressed, [role="button"].is-pressed, label.skew.is
         <div class="settings" id="conn-ask-row" hidden><label><input type="checkbox" id="set-claude-ask"> Ask about sending a workout to Claude when it is finished</label></div>
         <div id="conn-plan-row" hidden>
           <h3 class="lab" id="h-claude-plan">Claude and your plan</h3>
+          <p class="note">What Claude does with your plan after you send it a finished workout.</p>
           <div class="seg" role="radiogroup" aria-labelledby="h-claude-plan" id="claude-plan"></div>
-          <p class="note" id="claude-plan-note" role="status"></p>
+          <div class="plan-modes" id="claude-plan-note" role="status"></div>
         </div>
         <span id="conn-state" class="note" aria-live="polite"></span>
       </section>
@@ -1993,6 +1999,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['25 Nov 2026', "Connected apps, tidied", ["An app you connected five times is now one row with its number of connections. Remove 4 old keeps the newest, Disconnect removes them all.", "Under Claude and your plan, both choices are the same width and each says what it does."]],
     ['20 Nov 2026', "The share picture shows every exercise", ["With more than 6 exercises the share picture switches to two columns of tiles with the best set and the number of sets, so up to 14 exercises fit. The app name moves to the top right to make room. It used to stop after 5 with \"+ 9 more\". With a note under it, 12 fit. Fewer exercises keep the large list."]],
     ['20 Nov 2026', "Send to Claude follows your requests", ["After a workout, Send to Claude no longer tells Claude to leave the schedule and the exercises alone. That rule only keeps the automatic weight update small. If you ask Claude to add, remove or reorder exercises or to change the schedule, it does it, in both modes."]],
     ['20 Nov 2026', "The rest bar makes room", ["An open exercise list now ends above the rest bar, also when the bar comes up after you opened the list, and it gets its room back when the bar goes. When the bar comes up while you are at the end of the page, the page moves up with it."]],
@@ -2253,7 +2260,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     add();
     connInfo().then(add).catch(() => {});
   };
-  const planModes = [['propose', 'Propose', 'Claude proposes plan changes and waits for my yes', 'After a workout, Claude suggests the next weights and waits for your yes.'], ['change', 'Change it', 'Claude changes my plan itself', 'After a workout, Claude changes the next weights in your plan and tells you what it changed.']];
+  const planModes = [['propose', 'Ask first', 'Claude proposes plan changes and waits for my yes', 'Claude suggests the next weights and waits for your yes.'], ['change', 'Change it', 'Claude changes my plan itself', 'Claude changes the next weights in your plan and tells you what it changed.']];
   const planBtns = planModes.map(([mode, label, aria]) => {
     const b = plainBtn('seg-b', label, aria);
     b.setAttribute('role', 'radio');
@@ -2267,7 +2274,12 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const paintClaudePlan = () => {
     const now = claudePlanMode();
     planBtns.forEach(([mode, b]) => b.setAttribute('aria-checked', String(mode === now)));
-    $('#claude-plan-note').textContent = planModes.find((m) => m[0] === now)[3];
+    // both options are explained, the chosen one stands out
+    $('#claude-plan-note').replaceChildren(...planModes.map(([mode, label, , what]) => {
+      const p = h('p', 'pm' + (mode === now ? ' on' : ''));
+      p.append(h('b', '', label), ' ' + what);
+      return p;
+    }));
   };
   const askClaudeOn = () => !(S.root && S.root.settings && S.root.settings.claude_ask === false);
   // after a finished day: offer the review in the user's own Claude (only when a Claude is connected)
@@ -10196,19 +10208,51 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     $('#set-claude-ask').checked = askClaudeOn();
     paintClaudePlan();
     if (!c.apps.length) { box.replaceChildren(h('p', 'note', 'None connected.')); return; }
-    box.replaceChildren(...c.apps.map((g) => {
+    // The same app connected again adds another connection each time, so the list groups them: one row per app, Disconnect for all of them,
+    // and Remove old ones to keep only the newest.
+    const groups = new Map();
+    c.apps.forEach((g) => {
       const cl = g.client || {};
+      const key = (cl.name || 'An app') + '|' + (cl.uri || '');
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(g);
+    });
+    const revoke = async (list) => {
+      let ok = true;
+      for (const g of list) {
+        let d;
+        try { d = await sb.auth.oauth.revokeGrant({ clientId: (g.client || {}).id }); } catch (e) { d = { error: e }; }
+        if (d && d.error) ok = false;
+      }
+      return ok;
+    };
+    const rows = [...groups.values()].map((list) => {
+      list.sort((x, y) => String(y.granted_at || '').localeCompare(String(x.granted_at || ''))); // the newest first
+      const name = (list[0].client || {}).name || 'An app';
+      const many = list.length > 1;
       const row = h('div', 'foot-row');
-      const b = h('button', 'skew small', null); b.type = 'button'; b.append(h('span', '', 'Disconnect'));
-      b.setAttribute('aria-label', 'Disconnect ' + (cl.name || 'this app'));
-      b.onclick = async () => {
-        b.disabled = true; $('#conn-state').textContent = '';
-        let d; try { d = await sb.auth.oauth.revokeGrant({ clientId: cl.id }); } catch (e) { d = { error: e }; }
-        if (d && d.error) { b.disabled = false; $('#conn-state').textContent = 'That did not go through. Try again.'; } else { paintConn(); paintHomeConn(); }
+      const dis = h('button', 'skew small', null); dis.type = 'button'; dis.append(h('span', '', 'Disconnect'));
+      dis.setAttribute('aria-label', 'Disconnect ' + name);
+      const done = (msg) => { $('#conn-state').textContent = msg; paintConn(); paintHomeConn(); };
+      dis.onclick = async () => {
+        dis.disabled = true; $('#conn-state').textContent = '';
+        if (await revoke(list)) done(''); else { dis.disabled = false; $('#conn-state').textContent = 'That did not go through. Try again.'; }
       };
-      row.append(h('span', 'note', cl.name || 'An app'), b);
+      row.append(h('span', 'note conn-name', name + (many ? ' · ' + plural(list.length, 'connection') : '')));
+      if (many) {
+        const old = btn('skew small pop', 'Remove ' + (list.length - 1) + ' old');
+        old.setAttribute('aria-label', 'Remove the ' + (list.length - 1) + ' older connections of ' + name + ' and keep the newest');
+        old.onclick = async () => {
+          old.disabled = true; dis.disabled = true; $('#conn-state').textContent = '';
+          if (await revoke(list.slice(1))) done(plural(list.length - 1, 'old connection') + ' removed. The newest stays.'); else { old.disabled = false; dis.disabled = false; $('#conn-state').textContent = 'That did not go through. Try again.'; }
+        };
+        row.append(old);
+      }
+      row.append(dis);
       return row;
-    }));
+    });
+    if ([...groups.values()].some((l) => l.length > 1)) rows.push(h('p', 'note', 'Each time you connect an app again it adds another connection. The newest is the one in use; remove the old ones.'));
+    box.replaceChildren(...rows);
   };
   // light, dark, or auto (no attribute: the page follows the device); saved on this device
   const THEMES = [['auto', 'Auto'], ['light', 'Light'], ['dark', 'Dark']];
