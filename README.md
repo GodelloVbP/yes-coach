@@ -13,6 +13,7 @@ A free, ad-free workout tracker. Static site on GitHub Pages, accounts and data 
 | `tickets.sql` | Feedback & Requests tab: tickets, thread, owner functions and their row-level security. Run after `schema.sql`. |
 | `connector.sql` | Run last. Keeps a connected AI app inside its bounds in the database itself. |
 | `push.sql`, `push.js`, `sw.js` | Rest alerts (optional): the tables, the web app's side, and the service worker that shows the notification. `supabase/functions/rest-push/` sends it; `tools/vapid.mjs` makes the keys. |
+| `calendar.sql`, `supabase/functions/calendar/` | Calendar link (optional): the table that holds the calendar text per person, and the function that serves it to a calendar app. |
 | `strava.sql`, `strava.js`, `supabase/functions/strava/` | Strava (optional): connect once, finished workouts are posted as a Weight Training activity with the sets in the description. The tokens live in a table only the function can read. |
 | `connect.html` | Public setup and usage page for the connector (the directory listing links to it). |
 | `consent.html` | The screen where a person allows or denies an AI app (the connector's sign-in step). |
@@ -93,6 +94,13 @@ A notification when the rest timer ends while the app is in the background. Unti
 2. **Keys.** On your computer: `node tools/vapid.mjs you@example.com`. Put the public key it prints into `config.js` (`vapidPublicKey`), and run the `supabase secrets set` line it prints (that stores the private key in Supabase; do not commit or share it).
 3. **Function.** `supabase functions deploy rest-push --project-ref <project> --no-verify-jwt`.
 4. Merge the `config.js` change. In the app: Settings, "Alert me when rest is over". On an iPhone the app has to be on the home screen first. Tests: `node --experimental-strip-types --no-warnings supabase/tests/rest-push.test.mjs`. Tests: `node --experimental-strip-types --no-warnings supabase/tests/mcp.test.mjs`.
+
+### Calendar link (optional)
+A link that Apple Calendar, Google Calendar and Outlook subscribe to: the planned workouts of the next 8 weeks, kept up to date by the app. Train, Add to calendar. While `calendarFeed` is true in `config.js` it shows only to the `planCheckOnly` accounts; put `calendarFeedOnly: []` in `config.js` to show it to everyone.
+1. **Database.** Run `calendar.sql` in the SQL editor (safe to repeat). One row per person (a random 48-character token and the calendar text); the function `calendar_feed(token)` hands the text to whoever holds the token, with the public key only. No admin key is stored.
+2. **Function.** Paste `supabase/functions/calendar/index.ts` as the Edge Function `calendar`, Verify JWT off (a calendar app sends no sign-in), or `supabase functions deploy calendar --project-ref <project> --no-verify-jwt`.
+3. Check it: `https://<project>.supabase.co/functions/v1/calendar/<token>.ics` shows the calendar text; Stop sharing in the app makes it 404.
+Anyone who has the link can read the planned workouts (names, sets, reps); the app says so, and Make a new link replaces the token. Tests: `node --experimental-strip-types --no-warnings supabase/tests/calendar.test.mjs`.
 
 ## Later
 

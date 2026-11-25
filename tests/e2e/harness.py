@@ -31,6 +31,7 @@ class Backend:
         self.grants = None  # None: the OAuth server is off (404)
         self.push_subs = []  # rest alerts: devices that allowed them
         self.rest_calls = []  # and what the app asked the rest-push function
+        self.feeds = []  # calendar link: one row per person, {token, ics, prefs}
         self.strava_connected, self.strava_post, self.strava_calls, self.strava_posts = False, 'ok', [], []  # the Strava function
     def ticket(self, user, **kw):
         t = dict(id=str(uuid.uuid4()), user_id=user, first_name='Alice', user_email=EMAILS.get(user, 'u@example.com'), type='feature', title='Dark mode', body='please add dark mode', status='open', outcome=None,
@@ -70,6 +71,15 @@ class Backend:
             rows = body or []
             for r in (rows if isinstance(rows, list) else [rows]):
                 self.push_subs = [x for x in self.push_subs if x['endpoint'] != r['endpoint']] + [dict(r, user_id=me)]
+            return empty(201)
+        if path == '/rest/v1/calendar_feeds':  # the calendar link: the person's own row
+            if req.method == 'GET': return ok([dict(x) for x in self.feeds if x.get('user_id') == me])
+            if req.method == 'DELETE':
+                tok = (q.get('token', [''])[0] or '').replace('eq.', '', 1)
+                self.feeds = [x for x in self.feeds if x['token'] != tok]; return empty()
+            rows = body or []
+            for r in (rows if isinstance(rows, list) else [rows]):
+                self.feeds = [x for x in self.feeds if x.get('user_id') != me] + [dict(r, user_id=me)]
             return empty(201)
         if path == '/functions/v1/strava':  # the Strava function: it answers from what the test sets up
             call = body or {}

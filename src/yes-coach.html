@@ -2002,6 +2002,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['26 Nov 2026', "A calendar link", ["Train, Add to calendar: Add to my calendar puts your planned workouts in Apple Calendar, Google Calendar or Outlook, and they move along when you change your plan. No file to open.", "Anyone who has the link can see your planned workouts. Make a new link or Stop sharing at any time."]],
     ['26 Nov 2026', "The page stays where you are", ["Ticking a set no longer throws the page to the bottom when the rest timer comes up. The page only moves with the timer when you are already at the very end.", "On an iPhone the timer and the bottom buttons now stay at the bottom of the screen after the keyboard closes, instead of floating in the middle."]],
     ['25 Nov 2026', "Change a place in your order", ["Each workout in your order has a Change to… menu, so Legs, Upper, Legs can become Upper, Upper, Legs in one step.", "When a workout then comes twice in a row, Spread them out puts the next different one between them. You can undo it."]],
     ['25 Nov 2026', "One number for training days", ["About you used to say 4 days a week while your plan said 5. With a plan, About you now shows the plan's number and follows it when you change it under Plan.", "Claude reads the same number."]],
@@ -9064,13 +9065,17 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ------------------------------------------------------------------ schedule maker
   // ------------------------------------------------------------------ calendar file (.ics): works with Apple, Google and Outlook calendars
   const icsStamp = (d) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-  const icsEsc = (t) => String(t).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
-  const buildIcs = (weeks, time, minutes) => {
+  const icsEsc = (t) => String(t).replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+  // the planned workouts of the next weeks as calendar text. The link keeps one stamp for the whole day, so the text only changes when
+  // the plan does (and then the app stores it again).
+  const buildIcs = (weeks, time, minutes, opt = {}) => {
     const [hh, mm] = time.split(':').map(Number);
     const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Yes Coach//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
+    if (opt.feed) lines.push('X-WR-CALNAME:Yes Coach!', 'REFRESH-INTERVAL;VALUE=DURATION:PT6H', 'X-PUBLISHED-TTL:PT6H');
+    const stamp = icsStamp(opt.feed ? new Date(today() + 'T00:00:00') : new Date());
     let n = 0;
     for (let k = 0; k < weeks; k += 1) {
-      const ws = addDays(S.weekStart || mondayOf(today()), 7 * k);
+      const ws = addDays(opt.start || S.weekStart || mondayOf(today()), 7 * k);
       const { byDate } = weekModel(ws);
       Object.keys(byDate).sort().forEach((d) => {
         if (d < today()) return;
@@ -9079,7 +9084,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
           const start = new Date(d + 'T' + pad2(hh) + ':' + pad2(mm) + ':00');
           const end = new Date(start.getTime() + minutes * 60000);
           const exs = (t.items || []).map((it) => '- ' + exName(it.ex) + ': ' + it.sets + ' x ' + it.reps + (it.target ? ' @ ' + it.target : '')).join('\n');
-          lines.push('BEGIN:VEVENT', 'UID:yes-coach-' + d + '-' + p.tpl + '@yescoach', 'DTSTAMP:' + icsStamp(new Date()), 'DTSTART:' + icsStamp(start), 'DTEND:' + icsStamp(end),
+          lines.push('BEGIN:VEVENT', 'UID:yes-coach-' + d + '-' + p.tpl + '@yescoach', 'DTSTAMP:' + stamp, 'DTSTART:' + icsStamp(start), 'DTEND:' + icsStamp(end),
             'SUMMARY:' + icsEsc('Yes Coach: ' + t.name), 'DESCRIPTION:' + icsEsc((t.focus ? t.focus + '\n' : '') + exs), 'END:VEVENT');
           n += 1;
         });
@@ -9088,28 +9093,143 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     lines.push('END:VCALENDAR');
     return { text: lines.join('\r\n') + '\r\n', n };
   };
+
+  // ---- the calendar link: the app keeps the next 8 weeks as calendar text in the database (calendar.sql), the calendar function serves it
+  // at a long random address, and a calendar app subscribes to that address. Changing the plan updates it; stopping deletes it.
+  const CAL_WEEKS = 8;
+  let calFeed = { loaded: false, p: null, row: null, err: false };
+  let calTimer = 0;
+  const calOn = () => {
+    const c = window.YC_CONFIG || {};
+    if (!c.calendarFeed || !window.YC_API || !window.YC_API.sb) return false;
+    const only = (c.calendarFeedOnly || c.planCheckOnly || []).map((e) => String(e).toLowerCase()); // new: the same accounts as the plan check, until it is in place for everyone
+    if (!only.length) return true;
+    const e = window.YC_API.email ? String(window.YC_API.email() || '').toLowerCase() : '';
+    return only.includes(e);
+  };
+  const calUrl = (tok) => ((window.YC_CONFIG || {}).supabaseUrl || '') + '/functions/v1/calendar/' + tok + '.ics';
+  const calWebcal = (tok) => calUrl(tok).replace(/^https?:/, 'webcal:');
+  const calGoogle = (tok) => 'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent(calWebcal(tok));
+  const calToken = () => Array.from(crypto.getRandomValues(new Uint8Array(24)), (b) => b.toString(16).padStart(2, '0')).join('');
+  const calPrefs = () => Object.assign({ time: '18:00', min: 75 }, calFeed.row && calFeed.row.prefs);
+  const calBuild = () => { const pr = calPrefs(); return buildIcs(CAL_WEEKS, pr.time, Number(pr.min) || 75, { feed: true, start: mondayOf(today()) }); };
+  const calStore = async (row) => {
+    const r = await window.YC_API.sb.from('calendar_feeds').upsert({ token: row.token, ics: row.ics, prefs: row.prefs, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
+    if (r && r.error) throw r.error;
+    calFeed.row = row;
+  };
+  const calLoad = () => {
+    if (!calFeed.p) {
+      calFeed.p = (async () => {
+        try {
+          const r = await window.YC_API.sb.from('calendar_feeds').select('token,ics,prefs');
+          if (r && r.error) throw r.error;
+          calFeed.row = (r.data && r.data[0]) || null;
+          calFeed.err = false;
+        } catch (e) { calFeed.err = true; }
+        calFeed.loaded = true;
+      })();
+    }
+    return calFeed.p;
+  };
+  // after any change of the plan: store the new text, a moment later and only when it differs
+  const syncCalFeed = () => {
+    if (!calOn()) return;
+    if (!calFeed.loaded) { calLoad().then(syncCalFeed); return; }
+    if (!calFeed.row || !S.ready) return;
+    clearTimeout(calTimer);
+    calTimer = setTimeout(() => {
+      if (!calFeed.row) return;
+      const text = calBuild().text;
+      if (text !== calFeed.row.ics) calStore(Object.assign({}, calFeed.row, { ics: text })).catch(() => {});
+    }, 2500);
+  };
   const calPanel = () => {
     const box = $('#cal-panel');
     if (!box.hidden) { box.hidden = true; $('#btn-cal').setAttribute('aria-expanded', 'false'); return; }
     box.hidden = false;
     $('#btn-cal').setAttribute('aria-expanded', 'true');
-    box.replaceChildren();
-    const wk = h('select'); wk.id = 'cal-weeks';
-    [['1', 'The week shown'], ['4', 'The week shown and the next 3']].forEach(([v, l]) => wk.append(new Option(l, v)));
-    const tm = h('input'); tm.type = 'time'; tm.id = 'cal-time'; tm.value = '18:00';
-    const du = h('select'); du.id = 'cal-dur';
-    [['60', '1 h'], ['75', '1 h 15'], ['90', '1 h 30']].forEach(([v, l]) => du.append(new Option(l, v)));
-    du.value = '75';
-    const grid = h('div', 'ed-fields');
-    grid.append(edField('Weeks', wk), edField('Start time', tm), edField('Length', du));
-    const msg = h('p', 'note');
-    const go = btn('skew pop small', 'Download calendar file');
-    go.addEventListener('click', async () => {
-      const { text, n } = buildIcs(Number(wk.value), tm.value || '18:00', Number(du.value));
-      if (!n) { msg.textContent = 'No planned days left in that range.'; return; }
-      msg.textContent = await download('yes-coach-schedule.ics', text, plural(n, 'training day') + ' in the file. Open it to add them to Apple Calendar, Google Calendar or Outlook.');
-    });
-    box.append(grid, h('p', 'note', 'Past dates and days you already trained are left out. After changing your days, delete the old events first: some calendars add duplicates.'), go, msg);
+    const paint = () => {
+      box.replaceChildren();
+      const msg = h('p', 'note');
+      msg.id = 'cal-msg';
+      msg.setAttribute('aria-live', 'polite');
+      const feed = calOn();
+      if (feed && !calFeed.loaded) { box.append(h('p', 'note', 'Loading…')); calLoad().then(() => { if (!box.hidden) paint(); }); return; }
+      const tm = h('input'); tm.type = 'time'; tm.id = 'cal-time'; tm.value = calPrefs().time;
+      const du = h('select'); du.id = 'cal-dur';
+      [['60', '1 h'], ['75', '1 h 15'], ['90', '1 h 30']].forEach(([v, l]) => du.append(new Option(l, v)));
+      du.value = String(calPrefs().min);
+      const grid = h('div', 'ed-fields');
+      grid.append(edField('Start time', tm), edField('Length', du));
+      box.append(grid);
+      const savePrefs = () => {
+        if (!calFeed.row) return;
+        const row = Object.assign({}, calFeed.row, { prefs: { time: tm.value || '18:00', min: Number(du.value) } });
+        calFeed.row = row;
+        calStore(Object.assign({}, row, { ics: calBuild().text })).then(() => { msg.textContent = 'Saved. Your calendar picks it up within a few hours.'; }).catch(() => { msg.textContent = 'Not saved. Check your connection.'; });
+      };
+      if (feed && calFeed.err) box.append(h('p', 'note', 'The calendar link is not available right now. You can still download a file.'));
+      else if (feed && !calFeed.row) {
+        const on = btn('skew pop', 'Add to my calendar');
+        on.id = 'cal-sub';
+        on.addEventListener('click', async () => {
+          if (!calBuild().n) { msg.textContent = 'No planned days left in the next weeks.'; return; }
+          on.disabled = true;
+          const prefs = { time: tm.value || '18:00', min: Number(du.value) };
+          calFeed.row = { token: calToken(), ics: '', prefs };
+          try { await calStore({ token: calFeed.row.token, ics: calBuild().text, prefs }); paint(); } catch (e) { calFeed.row = null; on.disabled = false; msg.textContent = 'Not saved. Check your connection.'; }
+        });
+        box.append(h('p', 'note', 'Your workouts show up in your calendar and move along when you change your plan. Works with Apple, Google and Outlook.'), on);
+      } else if (feed) {
+        const tok = calFeed.row.token;
+        const apple = /iP(hone|ad|od)|Macintosh/.test(navigator.userAgent);
+        const bApple = btn((apple ? 'skew pop' : 'skew') + ' small', 'Add to Apple Calendar');
+        bApple.id = 'cal-apple';
+        bApple.addEventListener('click', () => { window.location.href = calWebcal(tok); });
+        const bGoogle = btn((apple ? 'skew' : 'skew pop') + ' small', 'Add to Google Calendar');
+        bGoogle.id = 'cal-google';
+        bGoogle.addEventListener('click', () => { window.open(calGoogle(tok), '_blank', 'noopener'); });
+        const link = h('input'); link.id = 'cal-link'; link.readOnly = true; link.value = calUrl(tok); link.setAttribute('aria-label', 'Calendar link');
+        link.addEventListener('focus', () => link.select());
+        const bCopy = btn('skew small', 'Copy link');
+        bCopy.id = 'cal-copy';
+        bCopy.addEventListener('click', async () => { msg.textContent = (await copyText(link.value, link)) ? 'Link copied. In Outlook, add a calendar from the internet and paste it.' : 'Select the link and copy it.'; });
+        const row = h('div', 'foot-row');
+        row.append(apple ? bApple : bGoogle, apple ? bGoogle : bApple, bCopy);
+        const ask = h('div');
+        const stopB = plainBtn('textbtn', 'Stop sharing', null, () => {
+          ask.replaceChildren(confirmBox({ label: 'Stop sharing your calendar', text: 'The link stops working. Your calendar app keeps the old events until you remove the calendar there.', yes: 'Stop sharing', keep: 'Keep it', danger: true, yesId: 'cal-stop-yes',
+            onKeep: () => ask.replaceChildren(),
+            onYes: async () => { const r = await window.YC_API.sb.from('calendar_feeds').delete().eq('token', tok); if (r && r.error) { msg.textContent = 'Not stopped. Check your connection.'; return; } calFeed.row = null; paint(); $('#cal-msg').textContent = 'Stopped. The link no longer works.'; } }));
+        });
+        stopB.id = 'cal-stop';
+        const newB = plainBtn('textbtn', 'Make a new link', null, () => {
+          ask.replaceChildren(confirmBox({ label: 'Make a new link', text: 'The old link stops working. Add the calendar again with the new one.', yes: 'Make a new link', keep: 'Keep the old one', danger: true, yesId: 'cal-new-yes',
+            onKeep: () => ask.replaceChildren(),
+            onYes: async () => { const row2 = Object.assign({}, calFeed.row, { token: calToken(), ics: calBuild().text }); try { await calStore(row2); paint(); $('#cal-msg').textContent = 'New link made. Add the calendar again.'; } catch (e) { msg.textContent = 'Not saved. Check your connection.'; } } }));
+        });
+        newB.id = 'cal-new';
+        const more = h('div', 'foot-row');
+        more.append(newB, stopB);
+        box.append(h('span', 'lab', 'Your calendar link is on'), row, link, h('p', 'note', 'It updates when you change your plan; your calendar app checks every few hours. Anyone with the link can see your planned workouts.'), more, ask);
+        tm.addEventListener('change', savePrefs);
+        du.addEventListener('change', savePrefs);
+      }
+      // a file, once: kept for calendars that cannot subscribe
+      const wk = h('select'); wk.id = 'cal-weeks';
+      [['1', 'The week shown'], ['4', 'The week shown and the next 3']].forEach(([v, l]) => wk.append(new Option(l, v)));
+      const go = btn('skew small', 'Download calendar file');
+      go.id = 'cal-file';
+      go.addEventListener('click', async () => {
+        const { text, n } = buildIcs(Number(wk.value), tm.value || '18:00', Number(du.value));
+        if (!n) { msg.textContent = 'No planned days left in that range.'; return; }
+        msg.textContent = await download('yes-coach-schedule.ics', text, plural(n, 'training day') + ' in the file. Open it to add them to Apple Calendar, Google Calendar or Outlook.');
+      });
+      if (feed) box.append(h('span', 'lab', 'Or a file, once'));
+      box.append(edField('Weeks', wk), h('p', 'note', 'Past dates and days you already trained are left out. After changing your days, delete the old events first: some calendars add duplicates.'), go, msg);
+    };
+    paint();
   };
   $('#btn-cal').addEventListener('click', calPanel);
 
@@ -10257,6 +10377,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     if (!S.ready) return;
     if (!resumed) { resumed = true; resumeQueue(); }
     syncTz();
+    syncCalFeed();
     renderTrain();
     if (S.view === 'progress') renderProgress();
     if (S.view === 'food') renderFood();

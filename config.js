@@ -10,5 +10,6 @@ window.YC_CONFIG = {
   strava: true, // Strava connection: needs strava.sql, the strava function and its secrets (all in place); false hides it for everyone
   stravaOnly: ['stijesiebelink@gmail.com', 'johanna.mesz@gmail.com'], // a new Strava app lets one athlete connect until Strava reviews it, so only these accounts see it. Empty list: everyone.
   planCheckOnly: ['stijesiebelink@gmail.com'], // new and being tuned: the plan check on the Plan page, the effort tap after the last set and the easier-week card. Only these accounts see them. Empty list: everyone.
+  calendarFeed: true, // the calendar link on Train: needs calendar.sql and the calendar function (README, Calendar link). While it is new it shows to the planCheckOnly accounts; add calendarFeedOnly: [] to show it to everyone.
   contactEmail: 'stijesiebelink@gmail.com', // shown on the privacy page
 };
