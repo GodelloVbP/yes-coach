@@ -8020,5 +8020,96 @@
   "de": "Bei mehr als 6 Übungen wechselt das Teilbild auf zwei Spalten mit Kacheln mit dem besten Satz und der Anzahl der Sätze, so passen bis zu 14 Übungen hinein. Der App-Name rückt nach oben rechts, um Platz zu schaffen. Früher hörte es nach 5 mit \"+ 9 weitere\" auf. Mit einer Notiz darunter passen 12. Bei weniger Übungen bleibt die große Liste.",
   "fr": "Au-delà de 6 exercices, l’image à partager passe à deux colonnes de tuiles avec la meilleure série et le nombre de séries, ce qui permet jusqu’à 14 exercices. Le nom de l’app passe en haut à droite pour faire de la place. Avant, elle s’arrêtait à 5 avec \"+ 9 de plus\". Avec une note dessous, 12 tiennent. Avec moins d’exercices, la grande liste reste.",
   "it": "Con più di 6 esercizi, l'immagine da condividere passa a due colonne di riquadri con la serie migliore e il numero di serie, così entrano fino a 14 esercizi. Il nome dell'app passa in alto a destra per fare spazio. Prima si fermava a 5 con \"+ 9 altri\". Con una nota sotto ne entrano 12. Con meno esercizi resta l'elenco grande."
+ },
+ "Ask first": {
+  "nl": "Eerst vragen",
+  "es": "Preguntar primero",
+  "de": "Erst fragen",
+  "fr": "Demander d’abord",
+  "it": "Chiedi prima"
+ },
+ "What Claude does with your plan after you send it a finished workout.": {
+  "nl": "Wat Claude met je schema doet nadat je een afgeronde training hebt gestuurd.",
+  "es": "Qué hace Claude con tu plan después de que le envías un entrenamiento terminado.",
+  "de": "Was Claude mit deinem Plan macht, nachdem du ein beendetes Training geschickt hast.",
+  "fr": "Ce que Claude fait de ton programme après que tu lui as envoyé une séance terminée.",
+  "it": "Cosa fa Claude con il tuo piano dopo che gli hai inviato un allenamento finito."
+ },
+ "Claude suggests the next weights and waits for your yes.": {
+  "nl": "Claude stelt de volgende gewichten voor en wacht op je ja.",
+  "es": "Claude sugiere los próximos pesos y espera tu sí.",
+  "de": "Claude schlägt die nächsten Gewichte vor und wartet auf dein Ja.",
+  "fr": "Claude propose les prochaines charges et attend ton oui.",
+  "it": "Claude suggerisce i prossimi pesi e aspetta il tuo sì."
+ },
+ "Claude changes the next weights in your plan and tells you what it changed.": {
+  "nl": "Claude past de volgende gewichten in je schema aan en zegt wat het veranderde.",
+  "es": "Claude cambia los próximos pesos de tu plan y te dice qué cambió.",
+  "de": "Claude ändert die nächsten Gewichte in deinem Plan und sagt dir, was es geändert hat.",
+  "fr": "Claude modifie les prochaines charges de ton programme et te dit ce qu’il a changé.",
+  "it": "Claude cambia i prossimi pesi nel tuo piano e ti dice cosa ha cambiato."
+ },
+ "{0} connections": {
+  "nl": "{0} verbindingen",
+  "es": "{0} conexiones",
+  "de": "{0} Verbindungen",
+  "fr": "{0} connexions",
+  "it": "{0} connessioni"
+ },
+ "Remove {0} old": {
+  "nl": "{0} oude weghalen",
+  "es": "Quitar {0} antiguas",
+  "de": "{0} alte entfernen",
+  "fr": "Retirer {0} anciennes",
+  "it": "Rimuovi {0} vecchie"
+ },
+ "Remove the {0} older connections of {1} and keep the newest": {
+  "nl": "De {0} oudere verbindingen van {1} weghalen en de nieuwste houden",
+  "es": "Quitar las {0} conexiones más antiguas de {1} y conservar la más reciente",
+  "de": "Die {0} älteren Verbindungen von {1} entfernen und die neueste behalten",
+  "fr": "Retirer les {0} connexions plus anciennes de {1} et garder la plus récente",
+  "it": "Rimuovi le {0} connessioni più vecchie di {1} e tieni la più recente"
+ },
+ "{0} old connections removed. The newest stays.": {
+  "nl": "{0} oude verbindingen weggehaald. De nieuwste blijft.",
+  "es": "{0} conexiones antiguas quitadas. La más reciente se queda.",
+  "de": "{0} alte Verbindungen entfernt. Die neueste bleibt.",
+  "fr": "{0} anciennes connexions retirées. La plus récente reste.",
+  "it": "{0} vecchie connessioni rimosse. Resta la più recente."
+ },
+ "1 old connection removed. The newest stays.": {
+  "nl": "1 oude verbinding weggehaald. De nieuwste blijft.",
+  "es": "1 conexión antigua quitada. La más reciente se queda.",
+  "de": "1 alte Verbindung entfernt. Die neueste bleibt.",
+  "fr": "1 ancienne connexion retirée. La plus récente reste.",
+  "it": "1 vecchia connessione rimossa. Resta la più recente."
+ },
+ "Each time you connect an app again it adds another connection. The newest is the one in use; remove the old ones.": {
+  "nl": "Elke keer dat je een app opnieuw verbindt komt er een verbinding bij. De nieuwste is in gebruik; haal de oude weg.",
+  "es": "Cada vez que vuelves a conectar una app se añade otra conexión. La más reciente es la que se usa; quita las antiguas.",
+  "de": "Jedes Mal, wenn du eine App erneut verbindest, kommt eine Verbindung dazu. Die neueste ist in Gebrauch; entferne die alten.",
+  "fr": "Chaque fois que tu reconnectes une app, une connexion s’ajoute. La plus récente est celle utilisée ; retire les anciennes.",
+  "it": "Ogni volta che ricolleghi un'app si aggiunge un'altra connessione. La più recente è quella in uso; rimuovi le vecchie."
+ },
+ "Connected apps, tidied": {
+  "nl": "Verbonden apps opgeruimd",
+  "es": "Apps conectadas, ordenadas",
+  "de": "Verbundene Apps, aufgeräumt",
+  "fr": "Apps connectées, rangées",
+  "it": "App collegate, in ordine"
+ },
+ "An app you connected five times is now one row with its number of connections. Remove 4 old keeps the newest, Disconnect removes them all.": {
+  "nl": "Een app die je vijf keer verbond is nu één rij met het aantal verbindingen. 4 oude weghalen houdt de nieuwste, Verbinding verbreken haalt ze allemaal weg.",
+  "es": "Una app que conectaste cinco veces ahora es una sola fila con su número de conexiones. Quitar 4 antiguas conserva la más reciente, Desconectar las quita todas.",
+  "de": "Eine App, die du fünfmal verbunden hast, ist jetzt eine Zeile mit der Zahl der Verbindungen. 4 alte entfernen behält die neueste, Trennen entfernt alle.",
+  "fr": "Une app connectée cinq fois est maintenant une seule ligne avec son nombre de connexions. Retirer 4 anciennes garde la plus récente, Déconnecter les retire toutes.",
+  "it": "Un'app collegata cinque volte ora è una sola riga con il numero di connessioni. Rimuovi 4 vecchie tiene la più recente, Scollega le rimuove tutte."
+ },
+ "Under Claude and your plan, both choices are the same width and each says what it does.": {
+  "nl": "Bij Claude en je schema zijn beide keuzes even breed en zegt elke wat hij doet.",
+  "es": "En Claude y tu plan, las dos opciones tienen el mismo ancho y cada una dice qué hace.",
+  "de": "Unter Claude und dein Plan sind beide Optionen gleich breit und jede sagt, was sie tut.",
+  "fr": "Sous Claude et ton programme, les deux choix ont la même largeur et chacun dit ce qu’il fait.",
+  "it": "In Claude e il tuo piano, le due scelte hanno la stessa larghezza e ognuna dice cosa fa."
  }
 }
