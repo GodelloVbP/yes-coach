@@ -8643,5 +8643,75 @@
   "de": "Wenn das heutige Training erledigt ist, steht alles in der Karte oben: Zurückblicken oder korrigieren, An Claude senden, Weiteres Training und Training löschen, zwei mal zwei. Die Überschrift \"Fertig:\" ist weg, und die Woche darunter sagt nicht mehr alles noch einmal.",
   "fr": "Quand la séance du jour est faite, la carte du haut réunit tout : Revoir ou corriger, Envoyer à Claude, Faire une autre séance et Supprimer la séance, deux par deux. Le titre « Terminé : » a disparu et la semaine en dessous ne répète plus tout.",
   "it": "Quando l'allenamento di oggi è finito, la scheda in alto raccoglie tutto: Rivedi o correggi, Invia a Claude, Allenati ancora e Elimina allenamento, due per due. Il titolo \"Fatto:\" non c'è più e la settimana sotto non ripete più tutto."
+ },
+ "Built, fixed or closed · {0}": {
+  "nl": "Gebouwd, opgelost of gesloten · {0}",
+  "es": "Hecho, arreglado o cerrado · {0}",
+  "de": "Gebaut, behoben oder geschlossen · {0}",
+  "fr": "Fait, corrigé ou fermé · {0}",
+  "it": "Fatto, corretto o chiuso · {0}"
+ },
+ "Not finished": {
+  "nl": "Niet afgerond",
+  "es": "Sin terminar",
+  "de": "Nicht abgeschlossen",
+  "fr": "Pas terminé",
+  "it": "Non concluso"
+ },
+ "Finished": {
+  "nl": "Afgerond",
+  "es": "Terminado",
+  "de": "Abgeschlossen",
+  "fr": "Terminé",
+  "it": "Concluso"
+ },
+ "Feature": {
+  "nl": "Functie",
+  "es": "Función",
+  "de": "Funktion",
+  "fr": "Fonction",
+  "it": "Funzione"
+ },
+ "Bug": {
+  "nl": "Bug",
+  "es": "Error",
+  "de": "Fehler",
+  "fr": "Bug",
+  "it": "Bug"
+ },
+ "{0} requests shown.": {
+  "nl": "{0} verzoeken getoond.",
+  "es": "{0} solicitudes mostradas.",
+  "de": "{0} Anfragen angezeigt.",
+  "fr": "{0} demandes affichées.",
+  "it": "{0} richieste mostrate."
+ },
+ "1 request shown.": {
+  "nl": "1 verzoek getoond.",
+  "es": "1 solicitud mostrada.",
+  "de": "1 Anfrage angezeigt.",
+  "fr": "1 demande affichée.",
+  "it": "1 richiesta mostrata."
+ },
+ "Requests you sent that are built, fixed or closed sit together in one folded group.": {
+  "nl": "Verzoeken die je stuurde en die gebouwd, opgelost of gesloten zijn, staan samen in één ingeklapte groep.",
+  "es": "Las solicitudes que enviaste y que están hechas, arregladas o cerradas se agrupan en un solo grupo plegado.",
+  "de": "Anfragen, die du geschickt hast und die gebaut, behoben oder geschlossen sind, stehen zusammen in einer eingeklappten Gruppe.",
+  "fr": "Les demandes que tu as envoyées et qui sont faites, corrigées ou fermées sont réunies dans un seul groupe replié.",
+  "it": "Le richieste che hai inviato e che sono fatte, corrette o chiuse stanno insieme in un unico gruppo chiuso."
+ },
+ "On a moderator account, Your messages has a Show filter: All, Not finished or Finished. The owner list folds its finished tickets away too.": {
+  "nl": "Op een moderatoraccount heeft Jouw berichten een filter Tonen: Alles, Niet afgerond of Afgerond. De lijst van de eigenaar klapt zijn afgeronde tickets ook in.",
+  "es": "En una cuenta de moderador, Tus mensajes tiene un filtro Mostrar: Todo, Sin terminar o Terminado. La lista del propietario también pliega sus tickets terminados.",
+  "de": "Auf einem Moderatorkonto hat Deine Nachrichten einen Filter Anzeigen: Alle, Nicht abgeschlossen oder Abgeschlossen. Die Liste des Besitzers klappt abgeschlossene Tickets ebenfalls ein.",
+  "fr": "Sur un compte modérateur, Tes messages a un filtre Afficher : Tout, Pas terminé ou Terminé. La liste du propriétaire replie aussi ses tickets terminés.",
+  "it": "Su un account moderatore, I tuoi messaggi ha un filtro Mostra: Tutto, Non concluso o Concluso. Anche l'elenco del proprietario ripiega i ticket conclusi."
+ },
+ "Finished requests fold away": {
+  "nl": "Afgeronde verzoeken klappen in",
+  "es": "Las solicitudes terminadas se pliegan",
+  "de": "Abgeschlossene Anfragen klappen ein",
+  "fr": "Les demandes terminées se replient",
+  "it": "Le richieste concluse si ripiegano"
  }
 }

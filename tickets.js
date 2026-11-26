@@ -90,11 +90,16 @@
       box.replaceChildren(h('p', 'note', 'Could not load the conversation. Close and reopen to retry.'));
     }
   };
-  const card = (t, open, viewer, info, extra) => {
+  // in a list that mixes kinds (the closed ones) each card says which kind it is
+  const KIND_TAG = { bug: 'Bug', feature: 'Feature', feedback: 'Feedback' };
+  const card = (t, open, viewer, info, extra, tag) => {
     const d = h('details', 'tk-card');
     d.dataset.id = t.id;
     const head = h('summary');
-    head.append(h('span', 'tk-title', t.title), chip(t));
+    const title = h('span', 'tk-title');
+    if (tag) title.append(h('span', 'tk-kind', KIND_TAG[t.type]));
+    title.append(t.title);
+    head.append(title, chip(t));
     const thread = h('div', 'tk-thread');
     const body = h('div', 'tk-body');
     if (viewer === 'admin') {
@@ -190,19 +195,31 @@
     return 'Sent ' + plural(mine.length, 'request') + (parts.length ? ': ' + parts.join(', ') : '') + '.';
   };
   let loadFailed = false;
+  let mineShow = 'all'; // the filter for moderator accounts: all, active (not finished) or finished
+  // everything that is built, fixed or closed sits in one group that starts closed; `list` holds its cards
+  const paintClosed = (box, sumEl, list, rows, make, forceOpen) => {
+    box.hidden = !rows.length;
+    sumEl.textContent = 'Built, fixed or closed · ' + rows.length;
+    paintCards(list, rows, make);
+    if (forceOpen && rows.length) box.open = true;
+  };
   const paintMine = () => {
     const info = (t) => 'Sent ' + when(t.created_at) + (t.resolved_at ? ' · closed ' + when(t.resolved_at) : '');
-    const make = (open) => (t, was) => card(t, open || was, 'user', info(t), (x) => (isFinal(x) ? h('span') : replyForm(x)));
-    const asked = mine.filter((t) => t.status === 'needs_info');
+    const make = (open, tag) => (t, was) => card(t, open || was, 'user', info(t), (x) => (isFinal(x) ? h('span') : replyForm(x)), tag);
+    const shown = mine.filter((t) => (mineShow === 'finished' ? isFinal(t) : mineShow === 'active' ? !isFinal(t) : true));
+    const asked = shown.filter((t) => t.status === 'needs_info');
     paintCards($('#tk-ask-list'), asked, make(true));
     $('#tk-ask').hidden = !asked.length;
-    const rest = mine.filter((t) => t.status !== 'needs_info');
+    const rest = shown.filter((t) => t.status !== 'needs_info');
+    const active = rest.filter((t) => !isFinal(t));
     GROUPS.forEach((g) => {
-      const these = rest.filter((t) => t.type === g.type);
+      const these = active.filter((t) => t.type === g.type);
       paintCards($('#tk-list-' + g.type), these, make(false));
       $('#tk-group-' + g.type).hidden = !these.length;
     });
-    $('#tk-sum').textContent = mine.length ? summaryLine() : loadFailed ? 'Could not load your requests right now.' : '';
+    paintClosed($('#tk-closed'), $('#tk-closed-sum'), $('#tk-closed-list'), rest.filter(isFinal), make(false, true), mineShow === 'finished');
+    if (mine.length) $('#tk-sum').replaceChildren(summaryLine(), ...(mineShow !== 'all' ? [' ', h('span', '', plural(shown.length, 'request') + ' shown.')] : [])); // the second sentence is its own piece, so it translates on its own
+    else $('#tk-sum').textContent = loadFailed ? 'Could not load your requests right now.' : '';
     $('#tk-count').textContent = mine.length ? String(mine.length) : '';
     $('#tk-mine').hidden = !mine.length && !loadFailed;
   };
@@ -417,7 +434,10 @@
     const waiting = all.filter(FILTERS.open).length;
     $('#tk-bar-title').textContent = 'Tickets (owner)' + (waiting ? ' · ' + waiting + ' waiting' : '');
     $('#tk-admin-sum').textContent = plural(rows.length, 'ticket') + ' shown.';
-    paintCards($('#tk-admin-list'), rows, (t, open) => card(t, open, 'admin', adminInfo(t), adminExtra), 'Nothing here.');
+    const make = (tag) => (t, open) => card(t, open, 'admin', adminInfo(t), adminExtra, tag);
+    const active = rows.filter((t) => !isFinal(t));
+    paintCards($('#tk-admin-list'), active, make(false), rows.length ? '' : 'Nothing here.');
+    paintClosed($('#tk-admin-closed'), $('#tk-admin-closed-sum'), $('#tk-admin-closed-list'), rows.filter(isFinal), make(true), show === 'closed');
   };
   const loadAdmin = async () => {
     try { all = await run(db().from('tickets').select('*').order('created_at', { ascending: false }).limit(200)); paintAdmin(); } catch (e) { $('#tk-admin-sum').textContent = 'Could not load tickets: ' + e.message; }
@@ -470,7 +490,7 @@
     return sec;
   };
   // everything you sent, by kind; a kind you have not used does not show
-  const buildMine = () => {
+  const buildMine = (owner) => {
     const sec = section('tk-mine', 'Your messages');
     sec.hidden = true;
     const count = h('span', 'p-count');
@@ -479,6 +499,12 @@
     const sum = h('p', 'note');
     sum.id = 'tk-sum';
     sec.append(sum);
+    if (owner) { // a moderator account sends a lot: it can look at what is still open, or at what is finished
+      const f = select([['all', 'All'], ['active', 'Not finished'], ['finished', 'Finished']]);
+      f.id = 'tk-mine-filter';
+      f.addEventListener('change', () => { mineShow = f.value; paintMine(); });
+      sec.append(field('Show', f));
+    }
     GROUPS.forEach((g) => {
       const grp = h('div', 'tk-group');
       grp.id = 'tk-group-' + g.type;
@@ -488,6 +514,15 @@
       grp.append(h('h3', 'tk-group-h', g.title), list);
       sec.append(grp);
     });
+    const closed = h('details', 'tk-closed');
+    closed.id = 'tk-closed';
+    closed.hidden = true;
+    const cs = h('summary');
+    cs.id = 'tk-closed-sum';
+    const cl = h('div', 'tk-list');
+    cl.id = 'tk-closed-list';
+    closed.append(cs, cl);
+    sec.append(closed);
     return sec;
   };
   // the extra bar for the owner: every ticket, to read, answer and close
@@ -502,6 +537,14 @@
     sum.id = 'tk-admin-sum';
     const list = h('div', 'tk-list');
     list.id = 'tk-admin-list';
+    const closed = h('details', 'tk-closed');
+    closed.id = 'tk-admin-closed';
+    closed.hidden = true;
+    const cs = h('summary');
+    cs.id = 'tk-admin-closed-sum';
+    const cl = h('div', 'tk-list');
+    cl.id = 'tk-admin-closed-list';
+    closed.append(cs, cl);
     const body = h('div', 'tk-bar-body');
     const copyNote = liveNote();
     const copyBox = textarea(6, 200000);
@@ -509,7 +552,7 @@
     copyBox.hidden = true;
     const copyRow = h('div', 'foot-row');
     copyRow.append(skew('small', 'Copy these tickets', () => copyTickets(copyNote, copyBox)), copyNote);
-    body.append(field('Show', filter), sum, copyRow, copyBox, list);
+    body.append(field('Show', filter), sum, copyRow, copyBox, list, closed);
     bar.append(head, body);
     return bar;
   };
@@ -541,6 +584,12 @@
 .tk-bar > summary::after { content: '+'; margin-left: auto; font-size: var(--t4); line-height: 1; }
 .tk-bar[open] > summary::after { content: '\\2212'; }
 .tk-bar-body { display: flex; flex-direction: column; gap: 0.5rem; padding-bottom: 1rem; }
+.tk-closed { border-top: 2px solid var(--line); margin-top: 0.5rem; }
+.tk-closed > summary { list-style: none; cursor: pointer; display: flex; align-items: center; min-height: 44px; font-family: var(--f-head); font-size: var(--t2); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
+.tk-closed > summary::-webkit-details-marker { display: none; }
+.tk-closed > summary::after { content: '+'; margin-left: auto; font-size: var(--t4); line-height: 1; }
+.tk-closed[open] > summary::after { content: '\\2212'; }
+.tk-kind { display: inline-block; margin-right: 0.5rem; font-family: var(--f-head); font-size: var(--t1); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
 .tk-card { border-bottom: 1px solid var(--line); }
 .tk-card > summary { list-style: none; cursor: pointer; display: flex; gap: 0.75rem; align-items: center; justify-content: space-between; min-height: 44px; padding-block: 0.5rem; font-weight: 600; }
 .tk-card > summary::-webkit-details-marker { display: none; }
@@ -582,14 +631,14 @@
     await window.claude.use('db'); // resolves once the user is signed in
     if (document.readyState === 'loading') await new Promise((r) => document.addEventListener('DOMContentLoaded', r));
     style();
+    let owner = false;
+    try { owner = (await run(db().rpc('is_admin'))) === true; } catch (e) { /* the database part is not installed yet */ }
     const wrap = h('div', 'tk-wrap in');
-    wrap.append(buildIntro(), buildAsk(), buildMine());
+    wrap.append(buildIntro(), buildAsk(), buildMine(owner));
     $('#v-feedback').replaceChildren(wrap);
     $('#tab-feedback').hidden = false;
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') refresh(); });
     refresh(true);
-    let owner = false;
-    try { owner = (await run(db().rpc('is_admin'))) === true; } catch (e) { /* the database part is not installed yet */ }
     if (owner) { wrap.prepend(buildAdmin()); loadAdmin(); }
   };
   // the app calls this when the tab is opened; before the tab is built there is nothing to refresh
