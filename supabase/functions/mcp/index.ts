@@ -31,6 +31,7 @@ const INSTRUCTIONS = [
   'Food: search_foods finds foods in the Dutch (NEVO) and international (USDA) tables the app uses; save_custom_food saves a product that is in neither, from the numbers on its label or product page; log_meals saves meals as food ids with grams or a portion; get_food_day and remove_food_entry read and remove entries.',
   'The app reads every nutrient from those tables, so the AI supplies foods and amounts, not nutrient numbers. A search lists the portions a food comes in (a slice, a piece) with grams for one; amounts that are guesses are marked estimated.',
   'A search lists the foods the person logged before at the top, marked yours, with the words they use for them and their own portion sizes; save_my_food and save_meal keep a food, a word, a portion size or a usual meal, and log_meals can log a saved meal.',
+  'A dish is logged as what it is: a cookie is a cookie (about 20 to 60 g), not its flavour, and a sandwich with a topping is the bread and the topping, searched and logged together as one meal. When a search says "Nothing matched every word", the foods shown match only some of the words and not_matched names the words left out: they are close, not exact, so the top result is worth checking against what was eaten, a left-out word that is a food of its own (honey on yoghurt, milk in a coffee) is logged as its own food, and a different kind of food that only shares a flavour word (plain white chocolate for a white chocolate cookie) is not the same food.',
   'People who switched calories off in the app get results without calories, with a note saying so.',
   'Rice, pasta, meat and eggs are listed both raw and cooked with very different numbers; a search result says which (state), and the amount is the weight in that state. Drinks are counted in millilitres. Common foods can be searched by their English names too.',
   'The plan and every saved training day come with a check of the week: hard sets per muscle per week (a working set counts 1 for the muscles it mainly trains and 0.5 for the ones it helps), the useful range for the person, how often each muscle is trained, minutes per day and findings such as a muscle trained once a week, a missing squat or hinge, more pressing than pulling, or a warm-up drill that counts as working sets.',
@@ -631,12 +632,14 @@ const loadFoods = async (env: Env, f: typeof fetch): Promise<FoodDb> => {
 // Dutch compound words ("brood" finds "tarwebrood") when the first pass fills fewer than the limit
 const PROCESSED = ['breaded', 'fried', 'battered', 'canned', 'frozen', 'sweetened', 'flavored', 'tender', 'nugget', 'patty', 'microwaved', 'fast', 'restaurant', 'sliced', 'deli', 'roll', 'prepackaged', 'powder', 'luncheon', 'dried', 'gedroogd', 'sauce', 'pie', 'taart', 'strudel', 'turnover', 'flap', 'light', 'zero', 'diet', 'lite', 'suikervrij'];
 const STOP = ['met', 'zonder', 'with', 'without', 'and', 'en', 'of', 'de', 'het', 'een', 'a', 'an', 'the', 'in', 'van', 'from', 'on'];
+// the tables say it in different words: NEVO "gekookt" / "boiled", USDA "cooked"; "raw" is "rauw"
+const SAME: Record<string, string[]> = { cooked: ['boiled', 'gekookt'], boiled: ['cooked', 'gekookt'], gekookt: ['boiled', 'cooked'], raw: ['rauw', 'uncooked'], rauw: ['raw'], fried: ['gebakken'], gebakken: ['fried'], grilled: ['gegrild', 'broiled'], gegrild: ['grilled'], roasted: ['geroosterd'], geroosterd: ['roasted'] };
 const searchOne = (db: FoodDb, q: string, limit: number, type = ''): Food[] => {
   const typed = wordsOf(q);
   const toks = typed.filter((t) => !STOP.includes(t)).length ? typed.filter((t) => !STOP.includes(t)) : typed; // "coffee with milk": the little words are not searched for
   if (!toks.length) return [];
-  const starts = (ws: string[], t: string) => ws.some((w) => w.startsWith(t));
-  const inside = (ws: string[], t: string) => ws.some((w) => w.startsWith(t) || (w.length > t.length && w.endsWith(t))); // or the end of a Dutch compound: "brood" in "tarwebrood"
+  const starts = (ws: string[], t: string) => ws.some((w) => w.startsWith(t) || (SAME[t] || []).some((x) => w.startsWith(x)));
+  const inside = (ws: string[], t: string) => ws.some((w) => w.startsWith(t) || (w.length > t.length && w.endsWith(t)) || (SAME[t] || []).some((x) => w.startsWith(x))); // or the end of a Dutch compound: "brood" in "tarwebrood"
   const tk = fold(type);
   const hits: [number, Food, boolean][] = [];
   for (const it of db.items) {
@@ -725,18 +728,52 @@ const searchFoods = (db: FoodDb, q: string, limit: number, type = ''): Food[] =>
   return out.slice(0, limit);
 };
 
-// nothing matched every word ("cake slice"): the foods that match all but one of the words, then fewer; says which words matched
-const looser = (db: FoodDb, q: string, limit: number, type = ''): { foods: Food[]; words: string } | null => {
-  const raw = fold(q).split(/[^a-z0-9]+/).filter(Boolean).filter((w) => !STOP.includes(singular(w)));
-  if (raw.length < 2 || raw.length > 5) return null;
-  for (let k = raw.length - 1; k >= 1; k--) {
-    const subs: string[][] = [];
-    const pick = (from: number, cur: string[]) => { if (cur.length === k) { subs.push(cur); return; } for (let i = from; i < raw.length; i++) pick(i + 1, [...cur, raw[i]]); };
+// nothing matched every word ("cake slice", "white chocolate cookie"): fewer words, but never without the thing that was eaten. That is the main
+// noun: the last word of an English phrase ("cookie"), the word before "met"/"with"/"van" in "koek met witte chocolade". Words that only say how
+// much (slice, bowl, plakje) are not searched for; the descriptive words furthest from the main noun go first ("white" before "chocolate").
+// A food only counts when the main noun is in its name as a food, not as the first half of a compound ("boterham-" in "Worst boterham-").
+const PORTIONISH = ['slice', 'piece', 'bit', 'bowl', 'cup', 'glass', 'handful', 'portion', 'small', 'medium', 'large', 'big', 'half', 'whole', 'plakje', 'stuk', 'stukje', 'schaaltje', 'kom', 'kopje', 'beker', 'glas', 'portie', 'klein', 'groot', 'halve', 'hele'];
+// words for a kind of food or dish: when one is in the query, that is what was eaten, and the other words describe it or sit next to it
+const FORMS = ['cookie', 'biscuit', 'cake', 'pie', 'tart', 'soup', 'stew', 'sandwich', 'wrap', 'burger', 'bar', 'shake', 'smoothie', 'latte', 'cappuccino', 'coffee', 'tea', 'juice', 'bread', 'muffin', 'brownie', 'croissant', 'pizza', 'salad', 'pasta', 'curry', 'roll', 'bun', 'sauce', 'dip', 'spread', 'yoghurt', 'yogurt', 'porridge', 'pancake', 'waffle', 'noodle', 'omelette', 'kebab', 'taco', 'burrito', 'sushi', 'dessert', 'snack', 'cracker', 'cereal', 'granola', 'drink', 'beer', 'wine',
+  'milk', 'melk', 'koek', 'koekje', 'taart', 'soep', 'broodje', 'tosti', 'reep', 'sap', 'salade', 'saus', 'pannenkoek', 'wafel', 'vla', 'pap', 'ijs', 'drank', 'bier', 'wijn', 'frites', 'friet'];
+// "almond milk", "oat drink": a plant-based version of a dairy food. The tables have none, and plain milk has other numbers, so it finds nothing
+const SUBSTITUTE = ['oat', 'almond', 'soy', 'soya', 'coconut', 'plant', 'vegan', 'rice', 'haver', 'amandel', 'soja', 'kokos', 'plantaardig', 'plantaardige'];
+const DAIRY = ['milk', 'drink', 'yoghurt', 'yogurt', 'cream', 'cheese', 'butter', 'melk', 'drank', 'kaas', 'boter', 'room', 'vla'];
+const CONNECTORS = ['met', 'zonder', 'van', 'in', 'uit', 'op', 'with', 'without', 'from', 'on'];
+// the words of a query without the little words and the portion words, and which of them is the food that was eaten
+const mainWord = (q: string): { all: string[]; core: string[]; head: string; hi: number } | null => {
+  const all = fold(q).split(/[^a-z0-9]+/).filter(Boolean);
+  const core = all.filter((w) => !STOP.includes(singular(w)) && !PORTIONISH.includes(singular(w)));
+  if (!core.length) return null;
+  const cut = all.findIndex((w) => CONNECTORS.includes(w));
+  const before = cut > 0 ? all.slice(0, cut).filter((w) => core.includes(w)) : [];
+  const forms = core.filter((w) => FORMS.includes(singular(w)));
+  const head = before.length ? before[before.length - 1] : cut === 0 ? core[0] : forms.length ? forms[forms.length - 1] : core[0]; // no kind-of-food word: the first word, a list starts with the main food
+  return { all, core, head, hi: core.indexOf(head) };
+};
+// "almond milk", "oat drink": a plant-based version of a dairy food. The tables have none, and plain milk (or a chocolate with almonds) has other
+// numbers: a food counts only when its name says the words together
+const plantPhrase = (q: string): string | null => { const m = mainWord(q); return m && DAIRY.includes(singular(m.head)) && m.core.some((w) => SUBSTITUTE.includes(singular(w))) ? m.core.join(' ') : null; };
+const sayPhrase = (f: Food, phrase: string): boolean => { const n = fold(f.name + ' ' + (f.alt || '')); return n.includes(phrase) || n.includes(phrase.split(' ').reverse().join(' ')) || /haverdrank|amandeldrank|sojadrank|kokosdrank|rijstdrank|plantaardig/.test(n); };
+const looser = (db: FoodDb, q: string, limit: number, type = ''): { foods: Food[]; words: string; missing: string[] } | null => {
+  const m = mainWord(q);
+  if (!m || m.all.length < 2 || m.all.length > 6 || plantPhrase(q)) return null;
+  const { all, core, head, hi } = m;
+  const isFood = (f: Food) => new RegExp('(?:^|[^a-z])[a-z]*' + head.replace(/[^a-z0-9]/g, '') + '[a-z]*(?![a-z-])').test(fold(f.name + ' ' + (f.alt || '')));
+  for (let k = core.length - (core.length === all.filter((w) => !STOP.includes(singular(w))).length ? 1 : 0); k >= 1; k--) {
+    const subs: number[][] = [];
+    const pick = (from: number, cur: number[]) => { if (cur.length === k) { subs.push(cur); return; } for (let i = from; i < core.length; i++) pick(i + 1, [...cur, i]); };
     pick(0, []);
+    const near = (s: number[]) => s.reduce((n, i) => n + Math.abs(i - hi), 0);
     const out: Food[] = [];
     let words = '';
-    for (const sub of subs) for (const f of searchOne(db, sub.join(' '), limit, type)) if (!out.includes(f)) { out.push(f); if (!words) words = sub.join(' '); }
-    if (out.length) return { foods: out.slice(0, limit), words };
+    let kept: number[] = [];
+    for (const sub of subs.filter((x) => x.includes(hi)).sort((x, y) => near(x) - near(y))) {
+      const w = sub.map((i) => core[i]).join(' ');
+      for (const f of searchOne(db, w, limit * 2, type)) if (isFood(f) && !out.includes(f)) { out.push(f); if (!words) { words = w; kept = sub; } }
+      if (out.length) break;
+    }
+    if (out.length) return { foods: out.slice(0, limit), words, missing: core.filter((_, i) => !kept.includes(i)) };
   }
   return null;
 };
@@ -1343,12 +1380,12 @@ const TOOLS: Tool[] = [
   {
     name: 'search_foods', title: 'Search foods', annotations: RO,
     inputSchema: obj({
-      query: { type: 'string', description: 'One or two plain words, Dutch or English, e.g. "gouda", "brown bread", "ei gekookt". Dutch compound words work: "brood" also finds "tarwebrood".' },
+      query: { type: 'string', description: 'One or two plain words, Dutch or English, e.g. "gouda", "brown bread", "ei gekookt". Dutch compound words work: "brood" also finds "tarwebrood". It works best with the food itself: "cookie", "latte", "brood" and "pindakaas" as separate searches rather than "oat milk latte".' },
       type: { type: 'string', description: 'Optional food group to stay inside, as results show it: Bread, Cheese, Eggs, Dairy, Meat, Fish, Vegetables, Fruit, Grains, Spreads, Drinks, Meals and more.' },
       queries: { type: 'array', maxItems: 8, description: 'Several foods in one go, instead of query: one search each, e.g. [{"query":"tarwebrood bruin"},{"query":"goudse","type":"Cheese"}].', items: obj({ query: { type: 'string' }, type: { type: 'string' } }, ['query']) },
       limit: { type: 'integer', description: 'Results per search, 1 to 15. Default 8 for one search, 4 each for several.' },
     }),
-    description: 'Search the NEVO (Dutch) and USDA food tables the app uses. Each result has a "food" id, its nutrients per 100 g, and the portions it can be given in (a slice, a piece) with grams for one. Foods the person logged before come first, marked yours, with the words they use for them and their own portion sizes; plain, common foods rank next. Rice, pasta, meat and eggs come both raw and cooked: each result says which (state), and the amount is the weight in that state. Drinks are in ml. An empty result means nothing matched; one plain word in Dutch or English usually finds it.',
+    description: 'Search the NEVO (Dutch) and USDA food tables the app uses. Each result has a "food" id, its nutrients per 100 g, and the portions it can be given in (a slice, a piece) with grams for one. Foods the person logged before come first, marked yours, with the words they use for them and their own portion sizes; plain, common foods rank next. Rice, pasta, meat and eggs come both raw and cooked: each result says which (state), and the amount is the weight in that state. Drinks are in ml. When no food has every word, the result says so in note and lists the words it left out in not_matched: those foods are close, not exact, so the top one is worth checking against what was eaten, and a left-out word that is a food of its own is searched on its own. An empty result means nothing matched; one plain word in Dutch or English usually finds it, and a dish made of parts is searched part by part.',
     run: async (db, a, ctx) => {
       const many = Array.isArray(a.queries) && a.queries.length > 0;
       if (many && a.queries.length > 8) fail('At most 8 searches at once.');
@@ -1376,11 +1413,12 @@ const TOOLS: Tool[] = [
           .filter((p): p is [Mine, Food] => !!p[1] && (!x.type || fold(p[1].type) === fold(x.type)))
           .sort((p, q) => q[0].n - p[0].n || q[0].last - p[0].last).slice(0, Math.min(5, limit));
         const taken = new Set(yours.map(([m]) => m.food));
-        const hits = searchFoods(tables, x.query, limit + taken.size, x.type).filter((it) => !taken.has(foodKey(it.src, it.ref))).slice(0, limit - yours.length);
+        const plant = plantPhrase(x.query);
+        const hits = searchFoods(tables, x.query, limit + taken.size, x.type).filter((it) => !taken.has(foodKey(it.src, it.ref)) && (!plant || sayPhrase(it, plant))).slice(0, limit - yours.length);
         if (!yours.length && !hits.length) {
           const l = looser(tables, x.query, limit, x.type);
-          if (l) return { results: l.foods.map((it) => out(it)), note: 'Nothing matched every word; these match "' + l.words + '".' };
-          return { results: [], note: 'Nothing matched' + (x.type ? ' in that group' : '') + '. One plain word in Dutch or English usually works.' };
+          if (l) return { results: l.foods.map((it) => out(it)), ...(l.missing.length ? { not_matched: l.missing } : {}), note: 'Nothing matched every word; these match "' + l.words + '"' + (l.missing.length ? ', not "' + l.missing.join('", "') + '"' : '') + '. They are the closest foods, not an exact match. ' + (l.missing.length ? 'If ' + (l.missing.length > 1 ? 'those words are' : 'that word is') + ' another food in the dish (a topping, a drink, a filling), search it and log it as its own item; if it only describes the same food, pick the closest one and take its portion, not a different food. ' : '') + 'The portions shown are for the food as listed.' };
+          return { results: [], note: 'Nothing matched' + (x.type ? ' in that group' : '') + '. One plain word in Dutch or English usually works. A dish made of parts (a sandwich with a topping, a latte with oat milk) is searched part by part and logged together as one meal. A product that is in neither table (a plant-based milk, a brand\'s bar) is saved from its label with save_custom_food.' };
         }
         return { results: [...yours.map(([m, it]) => out(it, m)), ...hits.map((it) => out(it))] };
       };

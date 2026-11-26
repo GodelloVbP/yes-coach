@@ -314,6 +314,30 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
     ok(loose.results.length > 0 && /Nothing matched every word/.test(loose.note) && /"cake"/.test(loose.note) && loose.results.every((x) => /cake|Cake|taart|koek/i.test(x.name + (x.english || ''))), 'a search with a word too many still finds the food: ' + JSON.stringify(loose.note));
     ok((await search('tomato cream soup', 2)).results.length > 0 && (await search('sushi tuna', 2)).results.length > 0 && (await search('tuna sandwich', 2)).results.length > 0, 'soup, sushi and tuna sandwich are found');
     ok((await call(T, 'search_foods', { query: 'zzzqq xxyyzz' })).json.results.length === 0, 'and nonsense still finds nothing');
+    // a word too many must not turn the food into something else (users: "white chocolate cookie" was logged as a piece of white chocolate)
+    {
+      const cookie = await search('white chocolate cookie', 6);
+      ok(cookie.results.length > 0 && cookie.results.every((x) => /cookie|koek|biscuit/i.test(x.name + ' ' + (x.english || ''))), 'a white chocolate cookie finds cookies, not white chocolate: ' + cookie.results.map((x) => x.name));
+      ok(JSON.stringify(cookie.not_matched) === '["white"]' && /not "white"/.test(cookie.note) && /another food|its own item/.test(cookie.note), 'and says which word it left out and what to do with it: ' + cookie.note);
+      ok(!cookie.results.some((x) => /^Chocolade/.test(x.name)), 'plain chocolate is not among them');
+      const sandwich = await call(T, 'search_foods', { query: 'boterham met pindakaas' });
+      ok(sandwich.json.results.every((x) => !/^Worst/.test(x.name)) && (!sandwich.json.results.length ? /part by part/.test(sandwich.json.note) : true), 'a sandwich with a topping is not sandwich sausage: ' + JSON.stringify(sandwich.json.results.map((x) => x.name)));
+      const latte = await search('oat milk latte', 4);
+      ok(latte.results.length > 0 && latte.results.every((x) => /latte|koffie|coffee/i.test(x.name + ' ' + (x.english || ''))) && latte.not_matched.includes('oat'), 'an oat milk latte finds the latte, not porridge or goat milk: ' + latte.results.map((x) => x.name));
+      const yog = await search('greek yoghurt honey', 3);
+      ok(/Yoghurt Griekse/.test(yog.results[0].name) && yog.not_matched.join() === 'honey', 'yoghurt with honey finds the yoghurt and leaves the honey to its own search: ' + yog.results[0].name);
+      const cooked = await search('rice cooked', 3);
+      ok(/^Rijst witte gekookt/.test(cooked.results[0].name), 'cooked finds boiled and gekookt: ' + cooked.results.map((x) => x.name));
+      const almond = await search('almond milk', 4);
+      ok(almond.results.length > 0 && almond.results.every((x) => /almond milk/i.test(x.name)), 'almond milk finds almond milk, not a chocolate with almonds: ' + almond.results.map((x) => x.name));
+      const plant = await call(T, 'search_foods', { query: 'oat milk' });
+      ok(plant.json.results.length === 0 && /save_custom_food/.test(plant.json.note), 'oat milk is not in the tables: it says so, with the way out, instead of offering porridge or cow milk: ' + plant.json.note);
+      ok((await call(T, 'search_foods', { query: 'oat milk latte' })).json.results.every((x) => /latte|coffee|koffie/i.test(x.name + ' ' + (x.english || ''))), 'but a latte with oat milk still finds the latte');
+      const kept = await search('banana bread slice', 3);
+      ok(/^Bananenbrood/.test(kept.results[0].name) && !kept.not_matched, 'a portion word (slice) is not a missing word');
+      const fromDutch = await search('koek met witte chocolade', 3);
+      ok(fromDutch.results.every((x) => /koek|biscuit|cake|kruidnoot/i.test(x.name + ' ' + (x.english || ''))) && fromDutch.not_matched.includes('witte'), 'Dutch: the word before "met" is the food: ' + fromDutch.results.map((x) => x.name));
+    }
     // raw or cooked is said, and drinks count in millilitres
     const rice = (await search('rijst witte', 8)).results;
     ok(rice.find((x) => /gekookt/.test(x.name)).state === 'cooked' && rice.find((x) => /rauw/.test(x.name)).state === 'raw', 'rice says raw or cooked');
