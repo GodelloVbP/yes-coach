@@ -31,8 +31,7 @@ def tick_at_bottom(page):
     box = page.evaluate("""() => { const t = [...document.querySelectorAll('.ex:not(.off) .set-tick')].filter((e) => e.getClientRects().length && e.getAttribute('aria-pressed') !== 'true').map((e) => e.getBoundingClientRect()).filter((r) => r.top > 80 && r.bottom < innerHeight - 10).pop(); return t ? { x: t.x + t.width / 2, y: t.y + t.height / 2 } : null; }""")
     return box
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # the end of the page with the bar up, in both views

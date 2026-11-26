@@ -18,8 +18,7 @@ RUN = """async ([n, note, weights]) => {
   return { w: cv.width, h: cv.height, layout: cv.layout, ink: cv.layout.tiles.map(ink) };
 }""".replace("NAMES_JSON", json.dumps(NAMES))
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         be = Backend()

@@ -17,8 +17,7 @@ GEOM = """() => { const l = document.querySelector('.pk-list'); const r = l.getB
   const items = [...l.querySelectorAll('.pk-item')].filter((e) => e.offsetParent); const last = items[items.length - 1]; const lb = last ? last.getBoundingClientRect().bottom : 0;
   return { top: Math.round(r.top), bottom: Math.round(r.bottom), h: Math.round(r.height), bar: Math.round(bar), lastBottom: Math.round(lb), atEnd: l.scrollTop + l.clientHeight >= l.scrollHeight - 2 }; }"""
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         for w, h in ((390, 844), (360, 640)):

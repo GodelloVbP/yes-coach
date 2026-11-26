@@ -27,8 +27,7 @@ def stored(be, key):
     d = next((d['data'] for d in reversed(be.docs) if d['path'] == 'yc/sessions/' + T), {})
     return (d.get('sets') or {}).get(key) or {}
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)

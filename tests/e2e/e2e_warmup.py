@@ -30,8 +30,7 @@ def open_day(page):
 val = lambda page, k: (page.input_value('#f-bench_%s' % k))
 warm_btn = lambda page: page.locator('.ex:not(.off) .ex-warm')
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- 1. the button and the ramp (100 kg last time, so 102.5 suggested)

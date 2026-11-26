@@ -15,8 +15,7 @@ def entries(be):
     d = next((x['data'] for x in be.docs if x['path'] == 'yc/food/' + TODAY), {'entries': {}})
     return [v for v in d.get('entries', {}).values() if v]
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         def meter(kcal, protein, **kw):

@@ -28,8 +28,7 @@ def last(page):
 def capture(page):
     page.evaluate("window.__opened = []; document.addEventListener('click', (e) => { const a = e.target.closest && e.target.closest('a[target=_blank]'); if (a) { window.__opened.push(a.href); e.preventDefault(); } }, true)")
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # 1. not on the list: only the file

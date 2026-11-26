@@ -4,7 +4,9 @@ from playwright.sync_api import sync_playwright
 
 import pathlib
 REPO = str(pathlib.Path(__file__).resolve().parents[2])
-BASE = 'http://localhost:8765/index.html'
+import os
+PORT = int(os.environ.get('YC_PORT', '8765'))
+BASE = 'http://localhost:%d/index.html' % PORT
 SUPA = 'https://qazvzhhoalkyyasakphs.supabase.co'
 ALICE, OWNER = '11111111-1111-1111-1111-111111111111', '44444444-4444-4444-4444-444444444444'
 EMAILS = {ALICE: 'alice@example.com', OWNER: 'owner@example.com'}
@@ -163,8 +165,8 @@ def send_form(page, title, text, name=None, kind=None):
     page.fill('#tk form textarea', text)
     page.click('#tk form button[type=submit]')
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+time.sleep(0.5)
 try:
     with sync_playwright() as pw:
         # ---- languages ----

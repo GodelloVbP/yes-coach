@@ -18,8 +18,7 @@ def seed(be, show_cal=True):
 def doc(be, path): return next((d['data'] for d in be.docs if d['path'] == path), None)
 def docs_under(be, prefix): return [d for d in be.docs if d['path'].startswith(prefix)]
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- 1. a custom workout with a run

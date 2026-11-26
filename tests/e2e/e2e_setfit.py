@@ -15,8 +15,7 @@ def seed(be, unit, load, rir):
     be.docs.append({'path': 'yc/sessions/' + OLD, 'data': {'date': OLD, 'template': 'a', 'sets': {
         'fp_%d' % i: {'ex': 'fp', 'n': i, 'kind': 'work', 'reps': 15, 'load': load, 'done': True, 'at': i} for i in (1, 2, 3)}}})
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         for width in (360, 390):

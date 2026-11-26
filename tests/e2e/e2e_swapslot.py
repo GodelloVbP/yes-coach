@@ -19,8 +19,7 @@ def plan(page):
     page.goto(BASE); page.wait_for_selector('#today-card', timeout=8000)
     page.click('.mainnav [data-view="plan"]'); page.wait_for_selector('.pw-board .pw-card', timeout=6000); page.wait_for_timeout(300)
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)

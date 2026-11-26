@@ -36,8 +36,7 @@ def sug_text(page):
     loc = page.locator('.ex:not(.off) .ex-sug')
     return (loc.first.text_content() or '').strip() if loc.count() and loc.first.is_visible() else ''
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- 1. every set reached the reps: one step up, with the reason, and a way back

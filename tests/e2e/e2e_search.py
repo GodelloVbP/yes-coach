@@ -37,8 +37,7 @@ def seed(be, show_cal=False):
 def day(be): return next((d['data'] for d in be.docs if d['path'] == 'yc/food/' + TODAY), {'entries': {}})
 def entries(be): return [e for e in day(be).get('entries', {}).values() if e]
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)

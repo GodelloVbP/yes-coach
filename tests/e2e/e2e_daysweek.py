@@ -26,8 +26,7 @@ def about(page):
         page.locator('#v-settings section.fold').filter(has=page.locator('#me-fields')).locator('.set-tog').click()
     page.wait_for_selector('#me-days_per_week', state='visible'); page.wait_for_timeout(300)
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # 1. the schedule says 5 a week, About you said 4: both say 5 now, and About you cannot be set apart from the plan

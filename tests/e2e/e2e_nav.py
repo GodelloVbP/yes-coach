@@ -3,8 +3,7 @@ import subprocess, time
 from harness import *
 from harness import EXTERNAL
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(0.8)
+server = serve()
 pw = sync_playwright().start()
 FIT = """() => [...document.querySelectorAll('.mainnav .tab:not([hidden]):not(.tab-sub)')].map((t) => {
   const s = t.querySelector('span'); const r = document.createRange(); r.selectNodeContents(s);

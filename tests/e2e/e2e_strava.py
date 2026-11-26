@@ -33,8 +33,7 @@ def open_row(page):
     page.click('#tab-settings'); page.wait_for_selector('#v-settings .set-tog', state='visible')
     page.locator('#v-settings section.fold').filter(has=page.locator('#strava-row')).locator('.set-tog').click() if page.locator('#strava-row').is_hidden() else None
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- 1. not on the list (the shipped config names only the owner), or switched off: nothing shows, and no button on a finished day
