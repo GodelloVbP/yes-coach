@@ -123,7 +123,7 @@ try:
             check('and becomes a link to the activity', until(lambda: page.locator('#today-card a.st-day').count() == 1) and page.get_attribute('#today-card a.st-day', 'href') == 'https://www.strava.com/activities/5001', page.inner_text('#today-card'))
             check('no second button', page.locator('#today-card button.st-day').count() == 0)
             page.click('#wk-rows .wk-blk.is-today')
-            check('the day in the week shows the link too', until(lambda: page.locator('#wk-sheet a.st-day').count() == 1), page.inner_text('#wk-sheet'))
+            check('today in the week does not repeat it', until(lambda: 'card at the top' in page.inner_text('#wk-sheet')) and page.locator('#wk-sheet .st-day').count() == 0, page.inner_text('#wk-sheet'))
         errs = session(pw, be, ALICE, s5, width=390); check('no page errors (manual)', not errs, errs)
 
         # ---- 6. Strava needs connecting again / is busy

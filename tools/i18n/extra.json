@@ -8622,5 +8622,26 @@
   "de": "Die Frage beim Entfernen öffnet sich jetzt direkt unter dem Namen der Übung, über dem Block Ziel und Letztes Mal.",
   "fr": "La question de Retirer s’ouvre maintenant juste sous le nom de l’exercice, au-dessus du bloc Objectif et Dernière fois.",
   "it": "La domanda di Rimuovi ora si apre subito sotto il nome dell'esercizio, sopra il blocco Obiettivo e Ultima volta."
+ },
+ "Today’s finished workout is in the card at the top.": {
+  "nl": "Je afgeronde training van vandaag staat in de kaart bovenaan.",
+  "es": "El entrenamiento terminado de hoy está en la tarjeta de arriba.",
+  "de": "Das heute beendete Training steht in der Karte oben.",
+  "fr": "La séance terminée du jour est dans la carte tout en haut.",
+  "it": "L'allenamento finito di oggi è nella scheda in alto."
+ },
+ "One place for today's finished workout": {
+  "nl": "Eén plek voor je afgeronde training van vandaag",
+  "es": "Un solo lugar para el entrenamiento terminado de hoy",
+  "de": "Ein Ort für das heute beendete Training",
+  "fr": "Un seul endroit pour la séance terminée du jour",
+  "it": "Un solo posto per l'allenamento finito di oggi"
+ },
+ "When today's workout is done, the card at the top holds everything: Look back or correct, Send to Claude, Train another workout and Delete workout, two by two. The \"Done:\" headline is gone and the week below no longer says it all again.": {
+  "nl": "Als je training van vandaag klaar is, staat alles in de kaart bovenaan: Terugkijken of corrigeren, Naar Claude sturen, Nog een training doen en Training verwijderen, twee aan twee. De kop \"Klaar:\" is weg en de week eronder zegt niet meer alles nog een keer.",
+  "es": "Cuando el entrenamiento de hoy está hecho, la tarjeta de arriba lo reúne todo: Revisar o corregir, Enviar a Claude, Entrenar otro y Eliminar entrenamiento, de dos en dos. El título \"Hecho:\" ya no está y la semana de abajo ya no lo repite todo.",
+  "de": "Wenn das heutige Training erledigt ist, steht alles in der Karte oben: Zurückblicken oder korrigieren, An Claude senden, Weiteres Training und Training löschen, zwei mal zwei. Die Überschrift \"Fertig:\" ist weg, und die Woche darunter sagt nicht mehr alles noch einmal.",
+  "fr": "Quand la séance du jour est faite, la carte du haut réunit tout : Revoir ou corriger, Envoyer à Claude, Faire une autre séance et Supprimer la séance, deux par deux. Le titre « Terminé : » a disparu et la semaine en dessous ne répète plus tout.",
+  "it": "Quando l'allenamento di oggi è finito, la scheda in alto raccoglie tutto: Rivedi o correggi, Invia a Claude, Allenati ancora e Elimina allenamento, due per due. Il titolo \"Fatto:\" non c'è più e la settimana sotto non ripete più tutto."
  }
 }

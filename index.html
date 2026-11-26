@@ -1,6 +1,6 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-cg/fgyGziU+GvTi1eXyRmKHjD38ODS7gneGn4fZjagY=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><!--sec--><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-gK1g1CeqNkFxNKGKMSG7EFyZUbE+IVJXvRCKN7MxuXI=' 'sha256-YVaGmAgs1mWvS3rEFlThbkajS22FsN9zG5YTT9jiFOU=' 'sha256-JfQWizLZdo6zEsfs8vFw1UmT2ujxT8H1+wkJFjUj+tI=' 'sha256-wIOtMU0BZJosjHnYbzYWBft2EK9cnS4dh4hqfq6HXZ8=' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; manifest-src 'self'; connect-src 'self' https://qazvzhhoalkyyasakphs.supabase.co wss://qazvzhhoalkyyasakphs.supabase.co https://challenges.cloudflare.com; base-uri 'none'; object-src 'none'; form-action 'self'"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><!--/sec--><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
 <title>Yes Coach!</title>
-<meta name="yc-build" content="2026-11-26 19:02Z">
+<meta name="yc-build" content="2026-11-26 21:23Z">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="icon" type="image/png" href="icon-192.png?v=3">
@@ -307,6 +307,10 @@ body:has(#tab-feedback.tk-dot) #more-feedback .nav-dot { display: inline-block; 
 .brand { display: flex; justify-content: center; }
 .brand svg { display: block; width: min(100%, 16rem); height: auto; overflow: visible; }
 .logo-t { font-family: var(--f-head); font-weight: 800; font-size: 28px; letter-spacing: 0.04em; }
+.today-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin-top: 0.5rem; }
+.today-grid .skew { width: 100%; min-height: 3.25rem; }
+.today-grid .skew > span { white-space: normal; text-align: center; line-height: 1.1; }
+.today-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
 .today-acts { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: stretch; }
 .today-acts .skew { flex: 1 1 8.5rem; width: auto; }
 .today-acts .skew.small { font-size: var(--t2); }
@@ -2065,6 +2069,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['27 Nov 2026', "One place for today's finished workout", ["When today's workout is done, the card at the top holds everything: Look back or correct, Send to Claude, Train another workout and Delete workout, two by two. The \"Done:\" headline is gone and the week below no longer says it all again."]],
     ['27 Nov 2026', "A workout can swap an exercise", ["Tap the red X on an exercise and you now get Replace next to Remove and Keep. Pick another exercise and it takes the place of the old one, for today only. Undo puts the old one back.", "The Remove question now opens right under the exercise name, above the Target and Last time block."]],
     ['27 Nov 2026', "The calendar link in small steps", ["Add to my calendar now asks one thing at a time: when you train, then Apple, Google or Outlook. Every step has a Go back, and the length is any number of minutes.", "The link itself, a new link and Stop sharing are under More."]],
     ['26 Nov 2026', "A calendar link", ["Train, Add to calendar: Add to my calendar puts your planned workouts in Apple Calendar, Google Calendar or Outlook, and they move along when you change your plan. No file to open.", "Anyone who has the link can see your planned workouts. Make a new link or Stop sharing at any time."]],
@@ -2328,7 +2333,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     return b;
   };
   const addClaudeButton = (host, day, id, hostOk) => {
-    const add = () => { if (!CONN.apps.length || !hostOk() || host.querySelector('.cl-day')) return; const b = claudeDayButton(day, id); b.classList.add('cl-day'); host.append(b); };
+    const add = () => { if (!CONN.apps.length || !hostOk() || host.querySelector('.cl-day')) return; const b = claudeDayButton(day, id); b.classList.add('cl-day'); const at = host.querySelector('#btn-look'); if (at) at.after(b); else host.append(b); };
     add();
     connInfo().then(add).catch(() => {});
   };
@@ -2716,11 +2721,27 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       const s = td.done[0];
       const t = S.templates[s.template];
       box.dataset.k = kindKey(s.template);
-      box.append(h('div', 't-head', 'Done: ' + (t ? t.name : s.label || s.split || 'workout')));
-      box.append(h('p', 'note', setsDone(s) + ' sets logged.'));
       const dayName = t ? t.name : s.label || s.split || 'workout';
-      addClaudeButton(box, { name: dayName, date: s.date }, 'btn-claude-day', () => !!box.querySelector('.t-head') && box.querySelector('.t-head').textContent.indexOf('Done') === 0);
-      addStravaButton(box, sidOf(s), () => !!box.querySelector('.t-head') && box.querySelector('.t-head').textContent.indexOf('Done') === 0);
+      box.append(h('div', 't-head done', '✓ ' + dayName));
+      box.append(h('p', 'note', setsDone(s) + ' sets logged.'));
+      // everything for today's finished workout in one place, two by two: look back, Claude, another workout, delete (the week below no longer repeats it)
+      const isDone = () => !!box.querySelector('.t-head.done');
+      const grid = h('div', 'today-grid');
+      if (t) {
+        const look = btn('skew small', 'Look back or correct');
+        look.id = 'btn-look';
+        look.addEventListener('click', () => openSession(s.date, s.template));
+        grid.append(look);
+      }
+      if (t) {
+        const del = btn('skew small', 'Delete workout');
+        del.id = 'btn-delete-day';
+        del.addEventListener('click', () => askDeleteSession(sidOf(s), s.template));
+        grid.append(del);
+      }
+      box.append(grid);
+      addClaudeButton(grid, { name: dayName, date: s.date }, 'btn-claude-day', isDone);
+      addStravaButton(box, sidOf(s), isDone);
       return;
     }
     if (td.open.length) {
@@ -2842,7 +2863,8 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     b.setAttribute('aria-expanded', String(!!S.swapOpen));
     b.addEventListener('click', () => { S.swapOpen = !S.swapOpen; renderToday(); });
     const start = box.querySelector('#btn-start');
-    if (start) { const acts = h('div', 'today-acts'); start.replaceWith(acts); acts.append(start, b); } else box.append(b);
+    const grid = box.querySelector('.today-grid');
+    if (start) { const acts = h('div', 'today-acts'); start.replaceWith(acts); acts.append(start, b); } else if (grid) { const del = grid.querySelector('#btn-delete-day'); if (del) grid.insertBefore(b, del); else grid.append(b); } else box.append(b);
     if (!S.swapOpen) return;
     const planned = td.planned.length ? td.planned[0].tpl : null;
     const panel = h('div', 'swap');
@@ -8902,7 +8924,10 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const sheet = $('#wk-sheet');
     const { byDate, dates } = model;
     sheet.replaceChildren(h('h3', '', isoDow(d) + ' ' + dm(d) + (d === today() ? ' · today' : '')));
-    byDate[d].done.forEach((s) => {
+    // today's first finished workout is on the Today card at the top, with all its buttons; saying it twice only confuses
+    const onTodayCard = d === today() && byDate[d].done.length ? 1 : 0;
+    if (onTodayCard) sheet.append(h('p', 'note', 'Today’s finished workout is in the card at the top.'));
+    byDate[d].done.slice(onTodayCard).forEach((s) => {
       const t = S.templates[s.template];
       const box = h('div', 'wk-sess');
       box.dataset.k = kindKey(s.template);
