@@ -165,7 +165,8 @@ def send_form(page, title, text, name=None, kind=None):
     page.fill('#tk form textarea', text)
     page.click('#tk form button[type=submit]')
 
-server = serve()
+server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+time.sleep(0.5)
 try:
     with sync_playwright() as pw:
         # ---- languages ----
