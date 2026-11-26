@@ -32,6 +32,7 @@ const INSTRUCTIONS = [
   'The app reads every nutrient from those tables, so the AI supplies foods and amounts, not nutrient numbers. A search lists the portions a food comes in (a slice, a piece) with grams for one; amounts that are guesses are marked estimated.',
   'A search lists the foods the person logged before at the top, marked yours, with the words they use for them and their own portion sizes; save_my_food and save_meal keep a food, a word, a portion size or a usual meal, and log_meals can log a saved meal.',
   'A dish is logged as what it is: a cookie is a cookie (about 20 to 60 g), not its flavour, and a sandwich with a topping is the bread and the topping, searched and logged together as one meal. When a search says "Nothing matched every word", the foods shown match only some of the words and not_matched names the words left out: they are close, not exact, so the top result is worth checking against what was eaten, a left-out word that is a food of its own (honey on yoghurt, milk in a coffee) is logged as its own food, and a different kind of food that only shares a flavour word (plain white chocolate for a white chocolate cookie) is not the same food.',
+  'Amounts people say are portions of the food: "half a bag" is the portion bag with count 0.5, "a large cookie" the large cookie, "two handfuls" the handful with count 2, so grams need no arithmetic. Foods that come in very different sizes (a cookie 15 to 75 g, a bag of crisps 40 to 250 g, a chocolate bar 25 to 100 g) carry size_varies with the sizes in words; a size the person did not say stays an estimate, and a size they give once is kept as their own portion for the next search.',
   'People who switched calories off in the app get results without calories, with a note saying so.',
   'Rice, pasta, meat and eggs are listed both raw and cooked with very different numbers; a search result says which (state), and the amount is the weight in that state. Drinks are counted in millilitres. Common foods can be searched by their English names too.',
   'The plan and every saved training day come with a check of the week: hard sets per muscle per week (a working set counts 1 for the muscles it mainly trains and 0.5 for the ones it helps), the useful range for the person, how often each muscle is trained, minutes per day and findings such as a muscle trained once a week, a missing squat or hinge, more pressing than pulling, or a warm-up drill that counts as working sets.',
@@ -824,17 +825,31 @@ const EXTRA_PORTIONS: [RegExp, string, number][] = [
   [/^(bier|beer)\b/, 'flesje (bottle)', 300],
 ];
 const NOT_EXTRA = /reep|bar\b|saus|sauce|deeg|dough|crust|bodem/;
+// foods that come in very different sizes, with the sizes people actually say (Dutch and English): "half a bag of chips" is the portion "zak (bag)" with count 0.5
+// and "a large cookie" is the large bakery cookie, so nobody has to guess grams. The result says size_varies; RIVM's own measures stay in the list too.
+const LADDERS: { re: RegExp; not?: RegExp; sizes: [string, number][]; note: string }[] = [
+  { re: /\b(crisps|potato chips|tortilla chips|corn chips|vegetable chips)\b/, not: /frites|fries|prepared av/, sizes: [['handje (handful)', 25], ['klein zakje (small bag)', 40], ['zak (bag)', 175], ['grote zak (large bag)', 250]], note: 'A bag of crisps is 40 g (small), about 175 g (a bag) or 250 g (a large share bag).' },
+  { re: /\bcookies?\b|\bkoekjes?\b/, not: /fortune|wafer|dough|dry mix|gingersnap|sandwich|animal|marie|biscuit/, sizes: [['klein koekje (small cookie)', 15], ['koekje (cookie)', 30], ['grote koek (large bakery cookie)', 75]], note: 'A cookie is 15 g (small), 30 g (a normal one) or 75 g (a large bakery cookie).' },
+  { re: /^(chocolade (witte|melk|puur|bitter)|chocolate,|candies, (milk chocolate|dark|semisweet|white)|chocoladereep|candybar)/, sizes: [['klein reepje (small bar)', 25], ['reep (bar)', 45], ['grote reep (large bar)', 100], ['tablet (200 g)', 200]], note: 'A chocolate bar is 25 g (small), 45 g (a bar), 100 g (large) or a whole 200 g tablet.' },
+  { re: /^(snoepmix|candy mix|candies, )/, not: /chocolate/, sizes: [['handje (handful)', 30], ['zakje (small bag)', 75], ['zak (bag)', 200]], note: 'A handful of sweets is 30 g, a small bag 75 g, a bag 200 g.' },
+  { re: /^pizza\b/, sizes: [['punt (slice)', 70], ['hele pizza (whole)', 400]], note: 'A slice of pizza is about 70 g; a whole pizza 400 g.' },
+  { re: /^(noten|nuts|pinda|peanuts|almonds|cashew|walnuts)/, not: /taart|cake|butter|ijs|ice cream/, sizes: [['handje (handful)', 30], ['schaaltje (small bowl)', 60]], note: 'A handful of nuts is 30 g.' },
+];
 // the amounts a food can be given in, best first: RIVM's household measures (grams per one), else rough sizes by kind of food
-const portionsOf = (db: FoodDb, it: Food): { source: string; list: { label: string; grams: number }[] } => {
+const portionsOf = (db: FoodDb, it: Food): { source: string; list: { label: string; grams: number }[]; sizes?: string } => {
   const rp = it.src === 'nevo' ? db.portie[it.ref] : null;
   const nm = fold(it.name + ' ' + (it.alt || ''));
   const extra = it.src === 'own' || NOT_EXTRA.test(nm) ? [] : EXTRA_PORTIONS.filter(([re]) => re.test(nm)).map(([, label, grams]) => ({ label, grams }));
+  const ladder = it.src === 'own' ? null : LADDERS.find((l) => l.re.test(nm) && !(l.not && l.not.test(nm))) || null;
+  const rungs = ladder ? ladder.sizes.map(([label, grams]) => ({ label, grams })) : [];
+  const sizes = ladder ? ladder.note : '';
   if (rp && rp.length) {
     const ranked = rp.map((m: Json, i: number) => [measureScore(String(m[0]), it.type, Number(m[1])), i, m] as [number, number, Json]).sort((a, b) => b[0] - a[0] || a[1] - b[1]);
-    return { source: 'RIVM household measures, grams for one', list: [...extra, ...ranked.map(([, , m]) => ({ label: String(m[0]), grams: Number(m[1]) })).filter((x) => x.grams > 0)] };
+    const rivm = ranked.map(([, , m]) => ({ label: String(m[0]), grams: Number(m[1]) })).filter((x) => x.grams > 0);
+    return { source: 'RIVM household measures, grams for one', list: [...extra, ...rivm.slice(0, 2), ...rungs, ...rivm.slice(2)], sizes };
   }
   const s = SIZES[it.type] || [50, 100, 200];
-  return { source: 'rough sizes for this kind of food', list: [...extra, ...['small', 'medium', 'large'].map((label, i) => ({ label, grams: s[i] }))] };
+  return { source: 'rough sizes for this kind of food', list: [...extra, ...rungs, ...['small', 'medium', 'large'].map((label, i) => ({ label, grams: s[i] }))], sizes };
 };
 // raw or cooked, for the foods where it changes the numbers a lot (rice 352 kcal raw, 146 cooked): the amount is the weight in that state
 const STATE_GROUPS = ['Meat', 'Fish', 'Grains', 'Potatoes', 'Vegetables', 'Legumes', 'Eggs', 'Plant-based', 'Meals'];
@@ -1405,7 +1420,7 @@ const TOOLS: Tool[] = [
         const portions = [...own, ...pt.list].filter((x) => !labels.has(fold(x.label)) && !!labels.add(fold(x.label))).slice(0, most);
         const rough = !/^RIVM/.test(pt.source) && pt.list.length > 0;
         if (pt.list.length) sources.add(rough ? 'rough' : 'rivm');
-        return { food: foodKey(it.src, it.ref), name: it.name, ...(it.alt ? { english: it.alt } : {}), type: it.type, ...(stateOf(it) ? { state: stateOf(it) } : {}), ...(it.unit && it.unit !== 'g' ? { unit: it.unit } : {}), per_100: macros(per(it, 100), cal), portions, ...(own.length ? { portions_are: 'the person\'s own portion sizes first' } : {}), ...(rough ? { rough_portions: true } : {}), ...(m ? { yours: true, times_logged: m.n, said: Object.keys(m.aka) } : {}) };
+        return { food: foodKey(it.src, it.ref), name: it.name, ...(it.alt ? { english: it.alt } : {}), type: it.type, ...(stateOf(it) ? { state: stateOf(it) } : {}), ...(it.unit && it.unit !== 'g' ? { unit: it.unit } : {}), per_100: macros(per(it, 100), cal), portions, ...(own.length ? { portions_are: 'the person\'s own portion sizes first' } : {}), ...(rough ? { rough_portions: true } : {}), ...(pt.sizes ? { size_varies: pt.sizes + ' Without a size from the person, one short question settles it; otherwise it stays an estimate.' } : {}), ...(m ? { yours: true, times_logged: m.n, said: Object.keys(m.aka) } : {}) };
       };
       const one = (x: { query: string; type: string }) => {
         const toks = wordsOf(x.query);
