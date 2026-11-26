@@ -40,7 +40,7 @@ def tick_all(page, n, reps, start=1):
         page.locator('.set:has(#f-bench_%d-load) .set-tick' % i).click(); page.wait_for_timeout(150)
 
 ME = "'alice@example.com'"
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)
 try:
     with sync_playwright() as pw:

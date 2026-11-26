@@ -8,7 +8,7 @@ TODAY = datetime.date.today()
 T = TODAY.isoformat()
 SAT = datetime.datetime(2026, 11, 7, 10, 0)
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)
 try:
     with sync_playwright() as pw:

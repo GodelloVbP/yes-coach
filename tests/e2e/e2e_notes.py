@@ -22,7 +22,7 @@ def start(page):
     page.goto(BASE); page.wait_for_selector('#btn-start', timeout=8000); page.click('#btn-start')
     page.wait_for_selector('.set', timeout=8000); page.wait_for_timeout(500)
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)
 try:
     with sync_playwright() as pw:

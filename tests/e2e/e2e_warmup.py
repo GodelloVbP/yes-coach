@@ -30,7 +30,7 @@ def open_day(page):
 val = lambda page, k: (page.input_value('#f-bench_%s' % k))
 warm_btn = lambda page: page.locator('.ex:not(.off) .ex-warm')
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)
 try:
     with sync_playwright() as pw:

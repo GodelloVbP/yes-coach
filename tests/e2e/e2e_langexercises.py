@@ -42,7 +42,7 @@ for code in ('nl', 'es', 'de', 'fr', 'it'):
     nm = d.get('__names', [])
     check('%s: the dictionary lists the library names (not the one that is also a screen label)' % code, len(nm) == 303 and 'Pull-up' in nm and 'Cable Y-raise' not in nm and all(isinstance(x, str) for x in nm), len(nm))
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)
 try:
     with sync_playwright() as pw:

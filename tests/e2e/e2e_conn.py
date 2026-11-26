@@ -14,7 +14,7 @@ def open_conn(page):
     if page.locator('#conn-list').is_hidden(): page.locator('#v-settings section.fold').filter(has=page.locator('#conn-list')).locator('.set-tog').click()
     page.wait_for_selector('#conn-list .foot-row', timeout=6000); page.wait_for_timeout(300)
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)
 try:
     with sync_playwright() as pw:

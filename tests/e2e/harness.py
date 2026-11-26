@@ -1,10 +1,13 @@
 """Shared pieces of the end-to-end tests: the real built app in headless Chrome with Supabase faked in memory."""
 import json, base64, subprocess, time, uuid, datetime, urllib.parse, sys
 from playwright.sync_api import sync_playwright
+import cover
 
 import pathlib
 REPO = str(pathlib.Path(__file__).resolve().parents[2])
-BASE = 'http://localhost:8765/index.html'
+import os
+PORT = int(os.environ.get('YC_PORT', '8765'))  # the runner gives every parallel test file a port of its own
+BASE = 'http://localhost:%d/index.html' % PORT
 SUPA = 'https://qazvzhhoalkyyasakphs.supabase.co'
 ALICE, OWNER = '11111111-1111-1111-1111-111111111111', '44444444-4444-4444-4444-444444444444'
 EMAILS = {ALICE: 'alice@example.com', OWNER: 'owner@example.com'}
@@ -161,6 +164,7 @@ class Backend:
 PAGE = {}  # the page being driven: waiting must go through Playwright, or its route handlers (the fake server) never run
 _tally = {'passed': 0, 'failed': 0}
 def check(name, cond, extra=''):
+    cover.snap(1.0)
     _tally['passed' if cond else 'failed'] += 1
     if not cond: print('FAIL', name, extra)
 def done():
@@ -190,6 +194,7 @@ def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, l
     ctx.route(SUPA + '/**', be.handle)
     if clock: ctx.clock.install(time=clock)  # a fixed start time that then runs on, for tests about today
     page = ctx.new_page(); errors = []
+    cover.attach(ctx, page)
     page.on('pageerror', lambda e: errors.append(str(e) + ' @ ' + str(getattr(e, 'stack', ''))[:600]))
     page.on('console', lambda m: errors.append('CSP: ' + m.text) if 'Content Security Policy' in m.text else None)
     page.on('dialog', lambda d: d.dismiss())
@@ -204,6 +209,7 @@ def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, l
         print('PAGE ERRORS:', errors[:5])
         raise
     finally:
+        cover.finish()
         br.close()
     return errors
 

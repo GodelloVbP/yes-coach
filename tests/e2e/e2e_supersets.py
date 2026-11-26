@@ -30,7 +30,7 @@ def start_day(page):
     page.wait_for_timeout(300)
 
 rest_shown = lambda page: page.get_attribute('#restbar', 'hidden') is None
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)
 try:
     with sync_playwright() as pw:

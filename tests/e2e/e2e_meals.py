@@ -22,7 +22,7 @@ def seed(be, show_cal):
 def food_doc(be): return next(d['data'] for d in be.docs if d['path'] == 'yc/food/' + TODAY)
 def live(be): return [e for e in food_doc(be)['entries'].values() if e]  # a removed entry stays as null
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)
 try:
     with sync_playwright() as pw:

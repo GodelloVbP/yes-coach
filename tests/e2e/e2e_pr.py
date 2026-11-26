@@ -36,7 +36,7 @@ def log(page, key, load, reps):
 def block(page, name):
     return page.locator('.ex', has=page.locator('.ex-name', has_text=name)).locator('.ex-pr')
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)
 try:
     with sync_playwright() as pw:

@@ -7,7 +7,7 @@ from harness import EXTERNAL
 LONG = '\n'.join('Line %d of a long text' % i for i in range(1, 31))
 GEOM = "(sel) => { const t = document.querySelector(sel); return { ov: getComputedStyle(t).overflowY, sh: t.scrollHeight, ch: t.clientHeight, top: t.scrollTop }; }"
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)
 try:
     with sync_playwright() as pw:

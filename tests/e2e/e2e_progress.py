@@ -18,7 +18,7 @@ def seed(be):
         for i, (l, r) in enumerate(sets): s['%s_%d' % (ex, i + 1)] = {'ex': ex, 'n': i + 1, 'kind': 'work', 'reps': r, 'load': l, 'done': True, 'at': i + 1}
     for d, sets in byd.items(): be.docs.append({'path': 'yc/sessions/' + d, 'data': {'date': d, 'template': None, 'sets': sets, 'split': 'Push'}})
 
-server = subprocess.Popen(['python3', '-m', 'http.server', '8765', '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(1)
 try:
     with sync_playwright() as pw:
