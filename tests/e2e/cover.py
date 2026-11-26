@@ -113,6 +113,7 @@ def finish():
                 if body and sum(cov[i] for i in body) * 2 > len(body): res.setdefault(path, set()).add(_h(t))
             pos = end + 1
     name = os.path.basename(sys.argv[0]).replace('.py', '')
+    if os.environ.get('YC_SHARD'): name += '.s' + os.environ['YC_SHARD'].split('/')[0]  # one file per shard; the runner joins them
     pathlib.Path(OUT).mkdir(parents=True, exist_ok=True)
     f = pathlib.Path(OUT) / (name + '.json')
     old = {}

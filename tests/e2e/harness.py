@@ -167,9 +167,11 @@ def check(name, cond, extra=''):
     cover.snap(1.0)
     _tally['passed' if cond else 'failed'] += 1
     if not cond: print('FAIL', name, extra)
+_prof = {'launch': 0.0, 'sleep': 0.0, 'sessions': 0, 'start': time.time()}
 def done():
     """Print the result and exit non-zero when a check failed. The last line of every suite."""
     print('passed', _tally['passed'], 'failed', _tally['failed'])
+    if os.environ.get('YC_PROFILE'): print('PROFILE wall %.1fs, %d sessions, browser start-up %.1fs, app boot per session %.1fs in total (the Train click %.1fs of it), fixed sleeps %.1fs' % (time.time() - _prof['start'], _prof['sessions'], _prof['launch'], _prof.get('boot', 0.0), _prof.get('train', 0.0), _prof['sleep']), file=sys.stderr)
     raise SystemExit(1 if _tally['failed'] else 0)
 def until(fn, secs=8):
     end = time.time() + secs
@@ -183,9 +185,34 @@ def vis(page, sel): return page.is_visible(sel)
 
 EXTERNAL = []  # every request that tried to leave localhost and the Supabase stand-in
 
+def _shell():
+    """The light headless browser that Playwright ships, when it is installed; the tests need no more than a page, and it uses about half the CPU of full Chrome."""
+    import glob
+    root = os.environ.get('PLAYWRIGHT_BROWSERS_PATH') or os.path.expanduser('~/.cache/ms-playwright')
+    hits = sorted(glob.glob(os.path.join(root, 'chromium_headless_shell-*', '*', 'chrome-headless-shell')))
+    return hits[-1] if hits else None
+
+_BROWSERS = {}
+def _browser(pw):
+    """One browser per test file; every session gets its own context, which is as clean as a new browser. YC_BROWSER=chrome runs full Chrome."""
+    if id(pw) not in _BROWSERS:
+        args = ['--no-sandbox'] + [x for x in os.environ.get('YC_FLAGS', '').split() if x]
+        want = os.environ.get('YC_BROWSER', '')
+        exe = '/usr/bin/google-chrome' if want == 'chrome' else want or _shell() or '/usr/bin/google-chrome'
+        _BROWSERS[id(pw)] = pw.chromium.launch(executable_path=exe, args=args)
+    return _BROWSERS[id(pw)]
+
+# YC_SHARD=i/n: this process runs only every n-th scenario of the file (counting session() calls), so a long file can be spread over several
+# workers. The scenarios of a file must not depend on each other: each one builds its own Backend and browser context.
+_SHARD = tuple(int(x) for x in os.environ['YC_SHARD'].split('/')) if os.environ.get('YC_SHARD') else None
+_calls = [0]
+
 def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, lang='en', clock=None):
-    br = pw.chromium.launch(executable_path='/usr/bin/google-chrome', args=['--no-sandbox'])
-    ctx = br.new_context(device_scale_factor=float(__import__('os').environ.get('DSF', '1')), viewport={'width': width, 'height': 900}, permissions=['clipboard-read', 'clipboard-write'], bypass_csp=not csp, **({'user_agent': ua} if ua else {}))
+    k = _calls[0]; _calls[0] += 1
+    if _SHARD and k % _SHARD[1] != _SHARD[0]: return []
+    _t = time.time()
+    br = _browser(pw)
+    ctx = br.new_context(**({'reduced_motion': 'reduce'} if os.environ.get('YC_MOTION') == 'reduce' else {}), device_scale_factor=float(__import__('os').environ.get('DSF', '1')), viewport={'width': width, 'height': 900}, permissions=['clipboard-read', 'clipboard-write'], bypass_csp=not csp, **({'user_agent': ua} if ua else {}))
     sess = {'access_token': jwt(uid), 'token_type': 'bearer', 'expires_in': 3600, 'expires_at': 4102444800, 'refresh_token': 'r',
             'user': {'id': uid, 'email': EMAILS[uid], 'aud': 'authenticated', 'role': 'authenticated'}}
     ctx.add_init_script("localStorage.setItem('sb-qazvzhhoalkyyasakphs-auth-token', %s)" % json.dumps(json.dumps(sess)))
@@ -194,6 +221,13 @@ def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, l
     ctx.route(SUPA + '/**', be.handle)
     if clock: ctx.clock.install(time=clock)  # a fixed start time that then runs on, for tests about today
     page = ctx.new_page(); errors = []
+    _prof['launch'] += time.time() - _t; _prof['sessions'] += 1
+    if os.environ.get('YC_PROFILE'):
+        _w = page.wait_for_timeout
+        def _sleep(ms, _w=_w):
+            _prof['sleep'] += ms / 1000.0
+            return _w(ms)
+        page.wait_for_timeout = _sleep
     cover.attach(ctx, page)
     page.on('pageerror', lambda e: errors.append(str(e) + ' @ ' + str(getattr(e, 'stack', ''))[:600]))
     page.on('console', lambda m: errors.append('CSP: ' + m.text) if 'Content Security Policy' in m.text else None)
@@ -201,16 +235,19 @@ def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, l
     page.goto(BASE + '#home')  # signed-in users open on Train; #home keeps the old tests on the page they were written for
     if not home:
         page.wait_for_selector('#v-home', state='visible')  # the app opens on Home
-        try: page.click('#hm-train', timeout=4000)
+        _c = time.time()
+        try: page.click('#hm-train', timeout=1500)
         except Exception: pass  # a dialog on top (ticket pop-up) leaves the user on Home
+        _prof['train'] = _prof.get('train', 0.0) + time.time() - _c
     PAGE['p'] = page
+    _prof['boot'] = _prof.get('boot', 0.0) + time.time() - _t
     try: scenario(page)
     except Exception:
         print('PAGE ERRORS:', errors[:5])
         raise
     finally:
         cover.finish()
-        br.close()
+        ctx.close()
     return errors
 
 

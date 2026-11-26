@@ -13,7 +13,7 @@ the tests that ran it (the old text of a removed or changed line, the new text o
 the lines around it; code almost every test runs (start-up, data tables) runs a small broad set; a change to the page's markup, the test
 setup or a file the map knows nothing about runs everything. After a green run the map is refreshed for the tests that ran.
 """
-import argparse, concurrent.futures, hashlib, json, os, pathlib, queue, re, shutil, subprocess, sys, tempfile, threading, time
+import argparse, concurrent.futures, hashlib, json, os, pathlib, re, shutil, socket, subprocess, sys, tempfile, time
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 E2E = ROOT / 'tests' / 'e2e'
@@ -21,6 +21,8 @@ MAP = ROOT / 'tests' / 'affected-map.json'
 MIN_LEN = 12
 CORE = 0.7      # a line that this share of the tests ran is start-up or data: a change there runs the smoke set
 SMOKE_N = 8
+SHARD_SECONDS = 12   # a long file is split over workers so that each part takes about this long
+MAX_SHARDS = 4
 OK = re.compile(r'^(passed|\d+ .*passed)', re.M)
 
 def sh(*cmd, cwd=ROOT, check=False):
@@ -37,7 +39,7 @@ def load_map():
     except Exception:
         return None
 
-def empty_map(): return {'version': 1, 'commit': '', 'order': [], 'tests': {}, 'index': {}, 'smoke': []}
+def empty_map(): return {'version': 1, 'commit': '', 'order': [], 'tests': {}, 'index': {}, 'smoke': [], 'noshard': []}
 
 def bit(m, name):
     if name not in m['order']: m['order'].append(name)
@@ -189,14 +191,27 @@ def run_node(timeout=300):
         res.append((pathlib.Path(c[-1]).name, r.returncode == 0, (r.stdout + r.stderr).strip().split('\n')[-1][:120]))
     return res
 
-def run_e2e(name, port, cover_dir, attempt=1):
+def free_port():
+    with socket.socket() as sk:  # a port nobody holds, also when an earlier run left a server behind
+        sk.bind(('127.0.0.1', 0))
+        return sk.getsockname()[1]
+
+def shards_for(m, name):
+    """How many parts a file runs in: by how long it took last time. Files that did not survive being split are not."""
+    if name in m.get('noshard', []): return 1
+    if 'session(' not in (E2E / (name + '.py')).read_text(): return 1  # only the shared harness knows how to run part of a file
+    dur = m['tests'].get(name, {}).get('dur', 0)
+    return 1 if dur < 2 * SHARD_SECONDS - 4 else min(MAX_SHARDS, -(-int(dur) // SHARD_SECONDS))
+
+def run_e2e(name, port, cover_dir, shard=None):
     env = dict(os.environ, YC_PORT=str(port), PYTHONDONTWRITEBYTECODE='1')
     if cover_dir: env['YC_COVER'] = cover_dir
+    if shard: env['YC_SHARD'] = shard
     t0 = time.time()
     r = subprocess.run([sys.executable, name + '.py'], cwd=E2E, env=env, capture_output=True, text=True)
     out = r.stdout + r.stderr
     ok = r.returncode == 0 and bool(OK.search(out))
-    return {'name': name, 'ok': ok, 'dur': time.time() - t0, 'out': out, 'code': r.returncode}
+    return {'name': name, 'shard': shard, 'ok': ok, 'dur': time.time() - t0, 'out': out, 'code': r.returncode}
 
 def main():
     ap = argparse.ArgumentParser(description='run the tests a change can affect')
@@ -232,43 +247,49 @@ def main():
     for n in notes: print('  note:', n)
     if a.list: return 0
     cover = tempfile.mkdtemp(prefix='yc-cover-') if not a.no_update else None
-    ports = queue.Queue()
-    for i in range(a.j): ports.put(8800 + i)
-    results, bad = {}, []
+    plan = [(n, '%d/%d' % (i, k) if k > 1 else None) for n in chosen for k in [shards_for(m, n)] for i in range(k)]
+    plan.sort(key=lambda t: -m['tests'].get(t[0], {}).get('dur', 30) / shards_for(m, t[0]))  # the long parts first
+    print('running %d parts on %d workers' % (len(plan), a.j))
+    results, bad, parts = {}, [], {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=a.j + 1) as ex:
         node_f = ex.submit(run_node)
-        def task(n):
-            p = ports.get()
-            try: return run_e2e(n, p, cover)
-            finally: ports.put(p)
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=a.j)
-        futs = [pool.submit(task, n) for n in chosen]
+        futs = [pool.submit(lambda t: run_e2e(t[0], free_port(), cover, t[1]), t) for t in plan]
         for f in concurrent.futures.as_completed(futs):
-            r = f.result(); results[r['name']] = r
-            fails = [l for l in r['out'].split('\n') if l.startswith('FAIL')]
+            r = f.result(); parts.setdefault(r['name'], []).append(r)
             last = [l for l in r['out'].split('\n') if OK.match(l)]
-            print('%s %s (%.0fs) %s' % ('ok  ' if r['ok'] else 'FAIL', r['name'], r['dur'], last[-1] if last else ''), flush=True)
-            if not r['ok']: bad.append(r['name'])
+            print('%s %s%s (%.0fs) %s' % ('ok  ' if r['ok'] else 'FAIL', r['name'], ' ' + r['shard'] if r['shard'] else '', r['dur'], last[-1] if last else ''), flush=True)
         pool.shutdown()
         node = node_f.result()
+    for n, rs in parts.items():
+        results[n] = {'name': n, 'ok': all(r['ok'] for r in rs), 'dur': sum(r['dur'] for r in rs), 'out': '\n'.join(r['out'] for r in rs)}
+        if not results[n]['ok']: bad.append(n)
     for n, ok, last in node:
         print('%s node %s %s' % ('ok  ' if ok else 'FAIL', n, last))
         if not ok: bad.append('node:' + n)
-    # a test that failed in a crowd gets one go on its own: parallel runs can be slow enough to trip a timeout
+    # a file that failed in a crowd gets one go on its own, whole: parallel runs can be slow enough to trip a timeout, and some files cannot
+    # be split by scenario (their scenarios hand state to each other)
     for n in [x for x in bad if not x.startswith('node:')]:
-        r = run_e2e(n, 8800, cover)
+        r = run_e2e(n, free_port(), cover)
         print('%s %s alone (%.0fs)' % ('ok  ' if r['ok'] else 'FAIL', n, r['dur']))
         if r['ok']:
-            print('  (it failed alongside the others and passed alone: a timing flake)'); bad.remove(n); results[n] = r
+            if any(p['shard'] for p in parts[n]):
+                print('  (it failed split and passed whole: not split from now on)')
+                m.setdefault('noshard', []).append(n)
+            else: print('  (it failed alongside the others and passed alone: a timing flake)')
+            bad.remove(n); results[n] = r
         else: results[n] = r
     for n in bad:
         r = results.get(n)
         if r: print('--- %s\n%s' % (n, '\n'.join([l for l in r['out'].split('\n') if l.startswith(('FAIL', 'PAGE ERRORS')) or 'Error' in l or 'Traceback' in l][:12])))
     if cover and not a.no_update:  # what a test that passed ran is true whatever the others did
         for n in [c for c in chosen if c not in bad]:
-            f = pathlib.Path(cover) / (n + '.json')
-            if f.exists():
-                absorb(m, n, json.loads(f.read_text()), results[n]['dur'], sha(E2E / (n + '.py')))
+            fs = sorted(pathlib.Path(cover).glob(n + '.json')) + sorted(pathlib.Path(cover).glob(n + '.s*.json'))
+            if fs:
+                cov = {}
+                for f in fs:
+                    for k, v in json.loads(f.read_text()).items(): cov.setdefault(k, set()).update(v)
+                absorb(m, n, cov, results[n]['dur'], sha(E2E / (n + '.py')))
             elif n not in m['tests']:
                 m['tests'][n] = {'sha': sha(E2E / (n + '.py')), 'dur': round(results[n]['dur'], 1), 'cov': False, 'lines': 0, 'fetched': []}
                 bit(m, n)
