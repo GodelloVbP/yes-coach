@@ -27,7 +27,7 @@ try:
         be = Backend(); be.grants = GRANT; seed(be)
         def s1(page):
             page.wait_for_selector('#today-card .t-head', timeout=8000)
-            check('the card says the day is done', 'Done' in page.text_content('#today-card .t-head'))
+            check('the card names the finished day, with a tick and no Done label', '✓' in page.text_content('#today-card .t-head') and 'Done' not in page.text_content('#today-card .t-head'), page.text_content('#today-card .t-head'))
             check('and offers Send to Claude', until(lambda: page.is_visible('#btn-claude-day')))
             page.evaluate(CATCH); page.click('#btn-claude-day'); page.wait_for_timeout(400)
             u = page.evaluate('window.__opened[0]') or ''
@@ -36,8 +36,19 @@ try:
             check('the request says what to read, how to judge, how the weight moves and what to change', all(x in q for x in ('get_sessions', 'get_plan', 'get_exercise_history', 'get_notes', 'weight_step', 'save_training_day', 'answer_note', 'Do not add or remove logged sets')), q[:300])
             check('it is not asked in another language when the app is in English', 'Reply in' not in q and len(u) < 6000, len(u))
             page.click('#wk-rows .wk-blk.is-today')
-            check('the same button is on that day in the week', until(lambda: page.locator('#wk-sheet .cl-day').count() == 1), page.inner_text('#wk-sheet'))
+            check('today in the week does not repeat the card: no second button, just a pointer to it', until(lambda: 'card at the top' in page.inner_text('#wk-sheet')) and page.locator('#wk-sheet .cl-day').count() == 0, page.inner_text('#wk-sheet'))
         errs = session(pw, be, ALICE, s1, width=390); check('no page errors (button)', not errs, errs)
+
+        # ---- 1a. an earlier day in the week still has the button in the week panel
+        be = Backend(); be.grants = GRANT; seed(be)
+        if TODAY.weekday() > 0:  # yesterday is in this week
+            y = (TODAY - datetime.timedelta(days=1)).isoformat()
+            be.docs.append({'path': 'yc/sessions/' + y, 'data': {'date': y, 'template': 'legs', 'split': 'Legs', 'label': 'Legs', 'finished_at': 1, 'sets': {'legext_1': {'ex': 'legext', 'n': 1, 'order': 1, 'kind': 'work', 'reps': 10, 'load': 50, 'done': True, 'at': 1}}}})
+            def s1a(page):
+                page.wait_for_selector('#today-card .t-head', timeout=8000)
+                page.click('#wk-rows .wk-blk >> nth=%d' % (TODAY.weekday() - 1))
+                check('yesterday in the week has Send to Claude, Look back or correct and Delete', until(lambda: page.locator('#wk-sheet .cl-day').count() == 1 and page.locator('#wk-sheet .wk-open').count() == 1 and page.locator('#wk-sheet .wk-del').count() == 1), page.inner_text('#wk-sheet'))
+            errs = session(pw, be, ALICE, s1a, width=390); check('no page errors (earlier day)', not errs, errs)
 
         # ---- 1b. in another language the reply is asked for in it
         be = Backend(); be.grants = GRANT; seed(be)

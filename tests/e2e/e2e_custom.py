@@ -63,7 +63,7 @@ try:
             page.click('.run-where button[data-w="outdoor"]')
             check('and where it was changed', until(lambda: (sess() or {}).get('where') == 'outdoor'), sess())
             page.click('#sb-back'); page.wait_for_selector('#pickday', state='visible')
-            check('the custom day is done today', 'Done: 8k run' in page.text_content('#today-card'), page.text_content('#today-card'))
+            check('the custom day is done today', '✓ 8k run' in page.text_content('#today-card') and 'Done:' not in page.text_content('#today-card'), page.text_content('#today-card'))
             page.click('.mainnav [data-view="plan"]')
             page.wait_for_timeout(500)
             check('and it is not a training day in the plan', '8k run' not in page.inner_text('#v-plan'))
