@@ -135,6 +135,23 @@ def hunks(base, path):
 GENERATED = ('name="yc-build"', 'Content-Security-Policy')  # lines the build writes itself: the timestamp, and the script hash in the security header
 def lines_of(ls): return [l.strip() for l in ls if len(l.strip()) >= MIN_LEN and not any(g in l for g in GENERATED)]
 
+def i18n_tests(base, f, m):
+    """Tests that loaded this language file and whose own text names a changed entry: the English text, or its translation. The tests about
+    languages as such (e2e_lang*) are chosen by STATIC."""
+    try:
+        old = json.loads(sh('git', 'show', base + ':' + f).stdout or '{}')
+        new = json.loads((ROOT / f).read_text())
+    except Exception:
+        return {n for n, t in m['tests'].items() if f in t.get('fetched', [])}  # unreadable: all that loaded it
+    keys = [k for k in set(old) | set(new) if old.get(k) != new.get(k) and len(k) >= 6]
+    vals = [new[k] for k in keys if isinstance(new.get(k), str) and len(new[k]) >= 6]
+    out = set()
+    for n, t in m['tests'].items():
+        if f not in t.get('fetched', []): continue
+        src = (E2E / (n + '.py')).read_text().lower()
+        if any(k.lower() in src for k in keys) or any(v.lower() in src for v in vals): out.add(n)
+    return out
+
 def select(base, m, names):
     """-> ({test: reason}, notes)"""
     sel, notes = {}, []
@@ -181,6 +198,8 @@ def select(base, m, names):
                     if new and not hit: notes.append('%s: new code with nothing known around it, smoke set' % f); add(set(m['smoke']), 'new code in ' + f)
                 add(hit & live, 'ran lines changed in ' + f)
             continue
+        if re.match(r'^i18n/\w+\.json$', f):  # a translation file: the tests that ran in that language and mention a key or text that changed
+            add(i18n_tests(base, f, m) & live, 'uses a translation that changed in ' + f); continue
         fetched = {n for n, t in m['tests'].items() if f in t.get('fetched', [])}
         if fetched: add(fetched & live, 'loads ' + f); continue
         if IGNORED.match(f): continue
