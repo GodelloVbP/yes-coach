@@ -13,7 +13,7 @@ the tests that ran it (the old text of a removed or changed line, the new text o
 the lines around it; code almost every test runs (start-up, data tables) runs a small broad set; a change to the page's markup, the test
 setup or a file the map knows nothing about runs everything. After a green run the map is refreshed for the tests that ran.
 """
-import argparse, concurrent.futures, hashlib, json, os, pathlib, re, shutil, socket, subprocess, sys, tempfile, time
+import argparse, concurrent.futures, hashlib, json, os, pathlib, re, resource, shutil, socket, subprocess, sys, tempfile, time
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 E2E = ROOT / 'tests' / 'e2e'
@@ -219,6 +219,7 @@ def main():
     ap.add_argument('--base', default='origin/main'); ap.add_argument('-j', type=int, default=3); ap.add_argument('--no-update', action='store_true')
     a = ap.parse_args()
     t_start = time.time()
+    r0 = resource.getrusage(resource.RUSAGE_CHILDREN); cpu0 = r0.ru_utime + r0.ru_stime
     if a.base == 'origin/main': subprocess.run(['git', 'fetch', '-q', 'origin', 'main'], cwd=ROOT, capture_output=True, timeout=30)  # compare with the main of today
     names = sorted(p.stem for p in E2E.glob('e2e_*.py'))
     if sh('git', 'rev-parse', '--verify', '-q', a.base).returncode: a.base = 'HEAD'
@@ -298,7 +299,9 @@ def main():
         finish_map(m)
         print('map updated for %d tests' % len([c for c in chosen if c not in bad]))
     if cover: shutil.rmtree(cover, ignore_errors=True)
-    print('%s in %.0fs: %d e2e files, %d node files' % ('FAILED' if bad else 'all passed', time.time() - t_start, len(chosen), len(node)))
+    u = resource.getrusage(resource.RUSAGE_CHILDREN)
+    cpu = u.ru_utime + u.ru_stime - cpu0
+    print('%s in %.0fs: %d e2e files, %d node files; %.0f CPU seconds on %d cores (%.0f%% busy)' % ('FAILED' if bad else 'all passed', time.time() - t_start, len(chosen), len(node), cpu, os.cpu_count(), 100 * cpu / max(1, (time.time() - t_start) * os.cpu_count())))
     return 1 if bad else 0
 
 if __name__ == '__main__':
