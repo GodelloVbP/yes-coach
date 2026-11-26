@@ -5,7 +5,7 @@
   python3 tests/run.py --list       only say which tests that is, and why
   python3 tests/run.py --all        every test (what a release or a change to the test setup needs)
   python3 tests/run.py --map        run every test with code coverage and rebuild tests/affected-map.json from scratch
-  options: --base REF (default origin/main), -j N (parallel browsers, default 3), --no-update (leave the map alone)
+  options: --base REF (default origin/main), -j N (parallel browsers, default 6), --no-update (leave the map alone)
 
 How a change picks its tests: while a browser test runs, tests/e2e/cover.py records which lines of the app it ran (JavaScript and CSS, as
 hashes of the line text, so moved lines still match). tests/affected-map.json keeps, per line, the tests that ran it. A changed line selects
@@ -216,7 +216,7 @@ def run_e2e(name, port, cover_dir, shard=None):
 def main():
     ap = argparse.ArgumentParser(description='run the tests a change can affect')
     ap.add_argument('--all', action='store_true'); ap.add_argument('--map', action='store_true'); ap.add_argument('--list', action='store_true')
-    ap.add_argument('--base', default='origin/main'); ap.add_argument('-j', type=int, default=3); ap.add_argument('--no-update', action='store_true')
+    ap.add_argument('--base', default='origin/main'); ap.add_argument('-j', type=int, default=6); ap.add_argument('--no-update', action='store_true')
     a = ap.parse_args()
     t_start = time.time()
     r0 = resource.getrusage(resource.RUSAGE_CHILDREN); cpu0 = r0.ru_utime + r0.ru_stime

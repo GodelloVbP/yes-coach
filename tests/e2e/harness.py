@@ -171,6 +171,7 @@ _prof = {'launch': 0.0, 'sleep': 0.0, 'sessions': 0, 'start': time.time()}
 def done():
     """Print the result and exit non-zero when a check failed. The last line of every suite."""
     print('passed', _tally['passed'], 'failed', _tally['failed'])
+    if os.environ.get('YC_PROFILE'): print('PROFILE renderer: ' + ', '.join('%s %.1fs' % (k[2:].replace('Duration', ''), v) for k, v in _prof.items() if k.startswith('m_')), file=sys.stderr)
     if os.environ.get('YC_PROFILE'): print('PROFILE wall %.1fs, %d sessions, browser start-up %.1fs, app boot per session %.1fs in total (the Train click %.1fs of it), fixed sleeps %.1fs' % (time.time() - _prof['start'], _prof['sessions'], _prof['launch'], _prof.get('boot', 0.0), _prof.get('train', 0.0), _prof['sleep']), file=sys.stderr)
     raise SystemExit(1 if _tally['failed'] else 0)
 def until(fn, secs=8):
@@ -240,6 +241,7 @@ def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, l
             return _w(ms)
         page.wait_for_timeout = _sleep
     cover.attach(ctx, page)
+    if os.environ.get('YC_PROFILE'): _prof['cdp'] = ctx.new_cdp_session(page); _prof['cdp'].send('Performance.enable')
     page.on('pageerror', lambda e: errors.append(str(e) + ' @ ' + str(getattr(e, 'stack', ''))[:600]))
     page.on('console', lambda m: errors.append('CSP: ' + m.text) if 'Content Security Policy' in m.text else None)
     page.on('dialog', lambda d: d.dismiss())
@@ -258,6 +260,12 @@ def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, l
         raise
     finally:
         cover.finish()
+        if os.environ.get('YC_PROFILE'):
+            try:
+                mt = {x['name']: x['value'] for x in _prof['cdp'].send('Performance.getMetrics')['metrics']}
+                for k in ('TaskDuration', 'ScriptDuration', 'LayoutDuration', 'RecalcStyleDuration', 'V8CompileDuration'):
+                    _prof['m_' + k] = _prof.get('m_' + k, 0.0) + mt.get(k, 0.0)
+            except Exception: pass
         ctx.close()
     return errors
 
