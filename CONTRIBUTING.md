@@ -31,9 +31,9 @@ Commit the regenerated `index.html` and `i18n/*.json` with your change. When a m
 sh tests/run.sh
 ```
 
-It builds, then runs the unit tests (Node 22) and the end-to-end suites in `tests/e2e/` (headless Chrome through Python Playwright, with Supabase faked in memory; Chrome is expected at `/usr/bin/google-chrome`). It must be green before a pull request. One check, `e2e_search` "with an Undo toast", fails now and then on its own; rerun it before treating it as yours.
+It builds, then runs the Node unit tests and the end-to-end suites in `tests/e2e/` (headless Chrome through Python Playwright, with Supabase faked in memory; Chrome is expected at `/usr/bin/google-chrome`), in parallel, but only the end-to-end suites a change can affect: `tests/run.py` compares with `origin/main`, and `tests/affected-map.json` says which suites ran which lines of the app (`tests/e2e/cover.py` records that with Chrome's own code coverage). A changed line selects the suites that ran it; new code is judged by the lines around it; start-up and data code runs a small broad set; a change to the page's markup, the test setup (`harness.py`, `build.py`, the runner) or a file the map does not know runs everything. `sh tests/run.sh --list` shows the selection and why, `--all` runs everything, `--map` rebuilds the map from scratch (do that after big refactors; about 9 minutes). A green run refreshes the map for the suites that ran, so commit `tests/affected-map.json` with your change. A suite that fails among others gets one more go alone and is reported as a timing flake if it passes. Run `--all` before a release or when the selection feels too thin. It must be green before a pull request. One check, `e2e_search` "with an Undo toast", fails now and then on its own.
 
-If you touch `supabase/functions/mcp/`, `rest-push/` or `strava/`, also run their suites, which `run.sh` does not include:
+If you touch `supabase/functions/mcp/`, `rest-push/` or `strava/`, their suites also run with `run.sh` (they are fast); on their own:
 
 ```bash
 node --experimental-strip-types --no-warnings supabase/tests/mcp.test.mjs

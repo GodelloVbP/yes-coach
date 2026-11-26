@@ -204,6 +204,7 @@ def main():
     ap.add_argument('--base', default='origin/main'); ap.add_argument('-j', type=int, default=3); ap.add_argument('--no-update', action='store_true')
     a = ap.parse_args()
     t_start = time.time()
+    if a.base == 'origin/main': subprocess.run(['git', 'fetch', '-q', 'origin', 'main'], cwd=ROOT, capture_output=True, timeout=30)  # compare with the main of today
     names = sorted(p.stem for p in E2E.glob('e2e_*.py'))
     if sh('git', 'rev-parse', '--verify', '-q', a.base).returncode: a.base = 'HEAD'
     b = subprocess.run([sys.executable, 'build.py'], cwd=ROOT, capture_output=True, text=True)
