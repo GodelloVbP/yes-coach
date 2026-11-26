@@ -31,8 +31,7 @@ ANSWER = {'summary': 'Adds a hinge to Day B.', 'weekdays': ['Mon', 'Tue', 'Wed',
 def doc(be, path): return next((d['data'] for d in reversed(be.docs) if d['path'] == path), None)
 def item(be, tid, ex): return next((it for it in (doc(be, 'yc/templates/' + tid) or {}).get('items', []) if it['ex'] == ex), {})
 
-server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)

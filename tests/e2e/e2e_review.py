@@ -8,8 +8,7 @@ TODAY = datetime.date.today()
 T = TODAY.isoformat()
 SAT = datetime.datetime(2026, 11, 7, 10, 0)
 
-server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- Back from a workout is a choice: coming back to the app does not undo it

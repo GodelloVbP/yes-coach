@@ -40,8 +40,7 @@ def tick_all(page, n, reps, start=1):
         page.locator('.set:has(#f-bench_%d-load) .set-tick' % i).click(); page.wait_for_timeout(150)
 
 ME = "'alice@example.com'"
-server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- 1. every set at the top of the range: asked, Hard is stored on the last set, and tapping again clears it

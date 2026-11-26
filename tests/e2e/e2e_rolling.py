@@ -22,8 +22,7 @@ def nexts(page):
     page.click('#tab-plan'); page.wait_for_selector('.pw-card', timeout=8000)
     return page.evaluate("Object.fromEntries([...document.querySelectorAll('.pw-card')].map((c) => [c.querySelector('.pw-name').textContent, c.querySelector('.pw-wd').textContent]))")
 
-server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # 1. Sunday: Legs is planned, Back is swapped in before training. Next week starts with Legs, not Back.

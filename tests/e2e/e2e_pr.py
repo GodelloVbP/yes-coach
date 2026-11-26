@@ -36,8 +36,7 @@ def log(page, key, load, reps):
 def block(page, name):
     return page.locator('.ex', has=page.locator('.ex-name', has_text=name)).locator('.ex-pr')
 
-server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- 1. a solid step in the workout: bench 60 -> 62.5 (4%)

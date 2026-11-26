@@ -32,8 +32,7 @@ def log(page, key, load, reps):
 def anim(page, sel): return page.evaluate("(s) => getComputedStyle(document.querySelector(s)).animationName", sel)
 ROW = '.set:has(#f-bench_1-load)'
 
-server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)

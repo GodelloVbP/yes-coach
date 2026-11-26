@@ -25,8 +25,7 @@ def import_history(page, text):
     until(lambda: 'w.csv' in page.text_content('#wiz'))
     page.click('#wz-history')
 
-server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- 1. an import keeps kg, also for a machine

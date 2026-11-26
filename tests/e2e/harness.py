@@ -207,6 +207,17 @@ def _browser(pw):
 _SHARD = tuple(int(x) for x in os.environ['YC_SHARD'].split('/')) if os.environ.get('YC_SHARD') else None
 _calls = [0]
 
+def serve():
+    """The static server for the app on PORT, ready as soon as it answers (the tests used to sleep a second for it)."""
+    import socket
+    p = subprocess.Popen([sys.executable, '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    end = time.time() + 8
+    while time.time() < end:
+        try:
+            socket.create_connection(('127.0.0.1', PORT), 0.2).close(); break
+        except OSError: time.sleep(0.03)
+    return p
+
 def session(pw, be, uid, scenario, width=1000, csp=False, home=False, ua=None, lang='en', clock=None):
     k = _calls[0]; _calls[0] += 1
     if _SHARD and k % _SHARD[1] != _SHARD[0]: return []

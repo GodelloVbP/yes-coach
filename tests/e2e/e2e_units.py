@@ -31,8 +31,7 @@ CASES = [
     # words that look like units but are ordinary text are left alone
     ('fr', 'Pin this page to the top', None), ('fr', '40 pin × 8 and some more words', None), ('de', '40 × 8', None),
 ]
-server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         for lang in ('fr', 'nl', 'de', 'es', 'it'):

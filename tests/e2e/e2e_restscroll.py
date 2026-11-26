@@ -12,8 +12,7 @@ def tickjs(page, key):
     page.mouse.click(b['x'] + b['width'] / 2, b['y'] + b['height'] / 2)
 def maxy(page): return page.evaluate('document.documentElement.scrollHeight - innerHeight')
 
-server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)

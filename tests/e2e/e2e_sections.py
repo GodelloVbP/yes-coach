@@ -33,8 +33,7 @@ def add_food(page):
     page.click('#fd-own-new'); page.fill('#fd-own-name', 'Rice'); page.fill('#fd-kcal', '130'); page.fill('#fd-p', '3'); page.fill('#fd-c', '28'); page.fill('#fd-f', '0.3'); page.click('#fd-add')
     until(lambda: page.is_visible('#fd-g')); page.fill('#fd-g', '200'); page.click('#fd-add')
 
-server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- 6. Food trends

@@ -27,8 +27,7 @@ def week_doc(be):
 def blk(page, i): return page.locator('.wk-blk[data-date="%s"]' % date_at(i))
 def planned(page, i): return 'drag' in (blk(page, i).get_attribute('class') or '')
 
-server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)

@@ -36,8 +36,7 @@ def quick_tap(page, loc, name):
     page.wait_for_timeout(600)
     check('%s: and it goes again' % name, page.locator('.press-ripple').count() == 0)
 
-server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)

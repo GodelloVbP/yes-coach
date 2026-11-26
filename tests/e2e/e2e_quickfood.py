@@ -21,8 +21,7 @@ check('the manifest has a Log food and a Train shortcut', [x['name'] for x in sc
 check('they open the right page inside the app scope', all(x['url'].startswith('./#') and x['url'][3:] in ('food', 'train') for x in sc) and man['scope'] == './' and man['start_url'] == './')
 check('and have an icon each', all(x.get('icons') and x['icons'][0]['src'].startswith('icon-192') for x in sc))
 
-server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- the shortcut opens Food

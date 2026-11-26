@@ -27,8 +27,7 @@ def send_form(page, title, text, name=None, kind=None):
     page.fill('#tk form textarea', text)
     page.click('#tk form button[type=submit]')
 
-server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # ---- 13. Plan: put a day in the week from the day itself; delete in plain sight; styled dropdowns

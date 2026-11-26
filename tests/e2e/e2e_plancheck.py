@@ -30,8 +30,7 @@ def to_plan(page):
 BAD = [('upper', [('bench', 4)]), ('lower', [('squat', 4), ('legext', 3)])]
 GOOD = [('a', [('squat', 3), ('bench', 3), ('row', 3)]), ('b', [('rdl', 3), ('bench', 3), ('row', 3)])]
 
-server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         # 1. the shipped config names only the owner: someone else does not see it

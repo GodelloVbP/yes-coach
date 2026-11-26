@@ -15,8 +15,7 @@ def seed(be):
 
 def tick(page, key): page.locator('.set:has(#f-%s-load) .set-tick' % key).click()
 
-server = subprocess.Popen(['python3', '-m', 'http.server', str(PORT), '--directory', REPO], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-time.sleep(1)
+server = serve()
 try:
     with sync_playwright() as pw:
         be = Backend(); seed(be)
