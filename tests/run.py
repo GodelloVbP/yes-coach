@@ -138,6 +138,8 @@ def select(base, m, names):
     def add(ts, why):
         for t in ts: sel.setdefault(t, why)
     files = changed_files(base)
+    # a rebuild alone rewrites the timestamp and the script hash in the security header: that is not a change
+    files = [f for f in files if not (f in m['index'] and f.endswith('.html') and not any(lines_of(hk['rm'] + hk['add']) for hk in hunks(base, f)))]
     live = {n for n in names}
     total = max(1, len(m['tests']))
     for n, deps in STATIC.items():  # tests the map has no coverage for follow the files they are about
