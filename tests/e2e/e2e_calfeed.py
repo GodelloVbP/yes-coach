@@ -52,10 +52,18 @@ try:
             link = page.input_value('#cal-link')
             check('the link points at the calendar function', link == 'https://qazvzhhoalkyyasakphs.supabase.co/functions/v1/calendar/' + f['token'] + '.ics', link)
             check('it warns that the link is open to anyone who has it', 'Anyone with the link can see' in page.inner_text('#cal-panel'))
-            page.evaluate("window.__opened = null; window.open = (u) => { window.__opened = u; return null; }")
+            # links open outside the app: an anchor with a new window, which a home-screen app hands to the system
+            page.evaluate("window.__opened = []; document.addEventListener('click', (e) => { const a = e.target.closest && e.target.closest('a[target=_blank]'); if (a) { window.__opened.push(a.href); e.preventDefault(); } }, true)")
             page.click('#cal-google')
-            u = page.evaluate('window.__opened') or ''
+            u = (page.evaluate('window.__opened') or [''])[-1]
             check('Google gets the subscription address', 'calendar.google.com/calendar/r?cid=' in u and 'webcal' in u and f['token'] in u, u)
+            page.click('#cal-apple')
+            u = page.evaluate('window.__opened')[-1]
+            check('Apple gets a webcal address, opened outside the app', u == 'webcal://qazvzhhoalkyyasakphs.supabase.co/functions/v1/calendar/' + f['token'] + '.ics', u)
+            page.click('#cal-open')
+            u = page.evaluate('window.__opened')[-1]
+            check('Open link opens the https address in the browser', u == link, u)
+            check('the temporary link is removed again', page.evaluate("document.querySelectorAll('a[target=_blank]').length") == 0)
             check('the file is still there', page.locator('#cal-file').count() == 1)
 
             # 3. the plan changes: the stored text follows
