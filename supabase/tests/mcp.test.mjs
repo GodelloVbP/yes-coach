@@ -359,6 +359,22 @@ const snapshot = () => JSON.stringify(rows.filter((r) => r.user_id === A && r.pa
     ok((await search('spaghetti bolognese', 1)).results[0].portions[0].label === 'bord (plate)', 'a plate of bolognese');
     const beer = (await search('beer', 1)).results[0].portions.map((x) => x.label);
     ok(beer.includes('glas (glass)') && beer.includes('flesje (bottle)'), 'a glass and a bottle of beer: ' + beer);
+    // sizes people say: a bag of crisps, a large cookie (a user logged half a bag as 75 g, and a large bakery cookie as a small one)
+    {
+      const chips = (await search('chips', 1)).results[0];
+      const labels = chips.portions.map((x) => x.label + ' ' + x.grams);
+      ok(labels.includes('zak (bag) 175') && labels.includes('grote zak (large bag) 250') && labels.includes('klein zakje (small bag) 40'), 'crisps come in a small bag, a bag and a large bag: ' + labels);
+      ok(/size_varies/.test(JSON.stringify(Object.keys(chips))) && /40 g/.test(chips.size_varies) && /one short question|estimate/.test(chips.size_varies), 'and the result says the size varies, in words: ' + chips.size_varies);
+      const half = await call(T, 'log_meals', { date: '2026-10-26', meals: [{ name: 'half a bag of chips', items: [{ food: chips.food, portion: { label: 'zak (bag)', count: 0.5 } }] }] });
+      ok(!half.err && /87\.5 g/.test(JSON.stringify(half.json)), 'half a bag is 0.5 of the bag, 87.5 g, with no arithmetic by the AI: ' + half.text.slice(0, 260));
+      const cookie = (await search('chocolate chip cookie', 1)).results[0];
+      ok(cookie.portions.some((x) => /large bakery cookie/.test(x.label) && x.grams === 75) && cookie.size_varies, 'a large bakery cookie is a size it can pick: ' + cookie.portions.map((x) => x.label + ' ' + x.grams));
+      const plain = (await search('kaas', 1)).results[0];
+      ok(!plain.size_varies, 'a food whose size does not vary does not say so');
+      const fries = (await search('french fries', 1)).results[0];
+      ok(!fries.size_varies && fries.portions.some((x) => /large/.test(x.label)), 'fries keep their own sizes and are not mistaken for crisps');
+      ok((await search('white chocolate', 1)).results[0].portions.some((x) => /reep \(bar\)/.test(x.label)), 'a chocolate bar has a bar, a large bar and a tablet');
+    }
     r = await call(T, 'log_meals', { date: '2026-10-26', meals: [{ name: 'bowl of cornflakes', items: [{ food: (await search('cornflakes', 1)).results[0].food, portion: { label: 'kom (bowl)' } }] }] });
     ok(!r.err && /40 g/.test(JSON.stringify(r.json)), 'a bowl of cornflakes can be logged by its label: ' + r.text.slice(0, 200));
   }
