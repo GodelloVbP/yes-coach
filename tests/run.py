@@ -5,6 +5,7 @@
   python3 tests/run.py --list       only say which tests that is, and why
   python3 tests/run.py --all        every test (what a release or a change to the test setup needs)
   python3 tests/run.py --map        run every test with code coverage and rebuild tests/affected-map.json from scratch
+  --quick [SECONDS]  only as many of the selected tests as fit in about that time (default 120), the ones the change belongs to most first
   options: --base REF (default origin/main), -j N (parallel browsers, default 6), --no-update (leave the map alone)
 
 How a change picks its tests: while a browser test runs, tests/e2e/cover.py records which lines of the app it ran (JavaScript and CSS, as
@@ -137,26 +138,29 @@ def lines_of(ls): return [l.strip() for l in ls if len(l.strip()) >= MIN_LEN and
 def select(base, m, names):
     """-> ({test: reason}, notes)"""
     sel, notes = {}, []
-    def add(ts, why):
-        for t in ts: sel.setdefault(t, why)
+    score = {}  # how closely a change belongs to a test: 1 / (the number of tests that ran the line), summed
+    def add(ts, why, w=0.0):
+        for t in ts:
+            sel.setdefault(t, why)
+            score[t] = score.get(t, 0.0) + w
     files = changed_files(base)
     # a rebuild alone rewrites the timestamp and the script hash in the security header: that is not a change
     files = [f for f in files if not (f in m['index'] and f.endswith('.html') and not any(lines_of(hk['rm'] + hk['add']) for hk in hunks(base, f)))]
     live = {n for n in names}
     total = max(1, len(m['tests']))
     for n, deps in STATIC.items():  # tests the map has no coverage for follow the files they are about
-        if n in live and any(re.match(d, f) for f in files for d in deps): sel.setdefault(n, 'about a file that changed')
+        if n in live and any(re.match(d, f) for f in files for d in deps): add({n}, 'about a file that changed', 1.0)
     for f in files:
         mt = re.match(r'^tests/e2e/(e2e_\w+)\.py$', f)
         if mt:
-            add({mt.group(1)} & live, 'its own file changed'); continue
+            add({mt.group(1)} & live, 'its own file changed', 1e6); continue
         if ALL_TRIGGERS.match(f):
-            return {n: 'test setup changed: ' + f for n in names}, notes
+            return {n: 'test setup changed: ' + f for n in names}, notes, {}
         if f in m['index']:
             for hk in hunks(base, f):
                 if 'm' in hk['reg'] and f.endswith('.html'):
                     if not lines_of(hk['rm'] + hk['add']): continue
-                    return {n: 'the markup of %s changed' % f for n in names}, notes
+                    return {n: 'the markup of %s changed' % f for n in names}, notes, {}
                 direct = [h(l) for l in lines_of(hk['rm'] + hk['add'])]
                 if not direct: continue
                 masks = [int(m['index'][f].get(k, '0'), 16) for k in direct]
@@ -164,7 +168,9 @@ def select(base, m, names):
                 core = [x for x in known if bin(x).count('1') >= CORE * total]
                 hit = set()
                 for x in known:
-                    if x not in core: hit |= tests_of(m, x)
+                    if x not in core:
+                        ts = tests_of(m, x); hit |= ts
+                        for t in ts: score[t] = score.get(t, 0.0) + 1.0 / len(ts)
                 new = [x for x in masks if not x]
                 if new or core:
                     if core and not hit: notes.append('%s: start-up or data code changed, smoke set' % f); add(set(m['smoke']), 'start-up or data code in ' + f)
@@ -178,8 +184,8 @@ def select(base, m, names):
         fetched = {n for n, t in m['tests'].items() if f in t.get('fetched', [])}
         if fetched: add(fetched & live, 'loads ' + f); continue
         if IGNORED.match(f): continue
-        return {n: 'a file the map knows nothing about changed: ' + f for n in names}, notes
-    return sel, notes
+        return {n: 'a file the map knows nothing about changed: ' + f for n in names}, notes, {}
+    return sel, notes, score
 
 # ------------------------------------------------------------------ running
 def run_node(timeout=300):
@@ -217,6 +223,7 @@ def main():
     ap = argparse.ArgumentParser(description='run the tests a change can affect')
     ap.add_argument('--all', action='store_true'); ap.add_argument('--map', action='store_true'); ap.add_argument('--list', action='store_true')
     ap.add_argument('--base', default='origin/main'); ap.add_argument('-j', type=int, default=6); ap.add_argument('--no-update', action='store_true')
+    ap.add_argument('--quick', nargs='?', const=120, type=int, metavar='SECONDS', help='only as many of the selected tests as fit in this time (default 120), the ones the change belongs to most first')
     a = ap.parse_args()
     t_start = time.time()
     r0 = resource.getrusage(resource.RUSAGE_CHILDREN); cpu0 = r0.ru_utime + r0.ru_stime
@@ -226,12 +233,12 @@ def main():
     b = subprocess.run([sys.executable, 'build.py'], cwd=ROOT, capture_output=True, text=True)
     if b.returncode: print(b.stdout, b.stderr); return 1
     m = load_map()
-    reasons, notes = {}, []
+    reasons, notes, score = {}, [], {}
     if a.all or a.map or not m:
         reasons = {n: ('--map' if a.map else '--all' if a.all else 'no map yet: run everything and build it') for n in names}
         if a.map or not m: m = empty_map()
     else:
-        sel, notes = select(a.base, m, names)
+        sel, notes, score = select(a.base, m, names)
         for n in names:  # new or edited tests, and tests the map has no coverage for, always run
             t = m['tests'].get(n)
             if t is None: sel.setdefault(n, 'not in the map yet')
@@ -239,6 +246,15 @@ def main():
 
         reasons = sel
     chosen = [n for n in names if n in reasons]
+    skipped = []
+    if a.quick and len(chosen) > 1:
+        chosen.sort(key=lambda n: -score.get(n, 0.0))  # the closest to the change first
+        used, keep = 0.0, []
+        for n in chosen:
+            est = m['tests'].get(n, {}).get('dur', 30) * 0.7 / a.j  # an estimate of the wall time it adds on a full set of workers
+            if keep and used + est > a.quick: skipped.append(n); continue
+            keep.append(n); used += est
+        chosen = keep
     chosen.sort(key=lambda n: -m['tests'].get(n, {}).get('dur', 30))  # the long ones first
     print('base %s, map from %s%s' % (a.base, m.get('commit') or 'nothing', ''))
     print('e2e: %d of %d tests' % (len(chosen), len(names)))
@@ -246,6 +262,7 @@ def main():
     for n in chosen: why.setdefault(reasons[n], []).append(n)
     for r, ns in sorted(why.items(), key=lambda kv: -len(kv[1])): print('  %s: %s' % (r, ', '.join(x.replace('e2e_', '') for x in ns[:12]) + (' …' if len(ns) > 12 else '')))
     for n in notes: print('  note:', n)
+    if skipped: print('  --quick left out %d of the selected tests to stay near %ds: %s (run without --quick for them)' % (len(skipped), a.quick, ', '.join(x.replace('e2e_', '') for x in skipped)))
     if a.list: return 0
     cover = tempfile.mkdtemp(prefix='yc-cover-') if not a.no_update else None
     plan = [(n, '%d/%d' % (i, k) if k > 1 else None) for n in chosen for k in [shards_for(m, n)] for i in range(k)]
