@@ -61,7 +61,7 @@ try:
                     page.get_by_role('button', name='+ Add exercise').first.click(); page.wait_for_timeout(600)
                     page.evaluate("() => window.scrollTo(0, 0)")
                     page.locator('.set:has(#f-bench_1-load) .set-tick').click(); page.wait_for_selector('#restbar', state='visible'); page.wait_for_timeout(500)
-                    page.evaluate("() => document.querySelector('.pk').scrollIntoView({block: 'start'})"); page.wait_for_timeout(500)
+                    page.evaluate("() => document.querySelector('.pk:not([hidden])').scrollIntoView({block: 'start'})"); page.wait_for_timeout(500)
                 g = page.evaluate(PK)
                 check('%s: the bar is up' % order, g['resting'], g)
                 check('%s: the list ends above the bar' % order, g['listBottom'] <= g['barTop'] + 1, g)

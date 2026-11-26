@@ -1649,7 +1649,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // The two kinds of button: orange with blue letters confirms (Save, Add, Yes), white with blue letters goes back or keeps things as they are.
   const backBtn = (text, onClick, cls = '') => { const b = btn('skew small' + (cls ? ' ' + cls : ''), text); if (onClick) b.addEventListener('click', onClick); return b; };
   // A confirm panel: a question, a go button and a keep button. Fills `box` (a new .confirm by default) and returns the go button.
-  const confirmBox = ({ label, text, yes, keep, danger, onYes, onKeep, yesId }, box = h('div', 'confirm')) => {
+  const confirmBox = ({ label, text, yes, keep, danger, onYes, onKeep, yesId, alt }, box = h('div', 'confirm')) => {
     box.setAttribute('role', 'alertdialog');
     box.setAttribute('aria-label', label);
     const go = btn('skew small pop' + (danger ? ' danger' : ''), yes); // 'danger' is only a hook: a confirm is orange whatever it does
@@ -1658,6 +1658,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     const no = backBtn(keep, onKeep, 'confirm-keep');
     const fr = h('div', 'foot-row');
     fr.append(go, no);
+    if (alt) { box.alt = backBtn(alt.label, alt.onClick); if (alt.id) box.alt.id = alt.id; fr.append(box.alt); } // a third choice, white like Keep
     box.replaceChildren(h('p', '', text), fr);
     box.go = go;
     return box;
@@ -2002,6 +2003,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['27 Nov 2026', "A workout can swap an exercise", ["Tap the red X on an exercise and you now get Replace next to Remove and Keep. Pick another exercise and it takes the place of the old one, for today only. Undo puts the old one back.", "The Remove question now opens right under the exercise name, above the Target and Last time block."]],
     ['27 Nov 2026', "The calendar link in small steps", ["Add to my calendar now asks one thing at a time: when you train, then Apple, Google or Outlook. Every step has a Go back, and the length is any number of minutes.", "The link itself, a new link and Stop sharing are under More."]],
     ['26 Nov 2026', "A calendar link", ["Train, Add to calendar: Add to my calendar puts your planned workouts in Apple Calendar, Google Calendar or Outlook, and they move along when you change your plan. No file to open.", "Anyone who has the link can see your planned workouts. Make a new link or Stop sharing at any time."]],
     ['26 Nov 2026', "The page stays where you are", ["Ticking a set no longer throws the page to the bottom when the rest timer comes up. The page only moves with the timer when you are already at the very end.", "On an iPhone the timer and the bottom buttons now stay at the bottom of the screen after the keyboard closes, instead of floating in the middle."]],
@@ -3092,7 +3094,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   };
 
   // ---- remove an exercise from this day only; the plan is untouched. Ticked sets leave the day's log (Undo brings them back).
-  const removeFromToday = (item) => {
+  const removeFromToday = (item, quiet) => {
     const sid = SID();
     const doc0 = ownDoc();
     const sets = doc0 ? Object.entries(doc0.sets || {}).filter(([, st]) => st && st.ex === item.ex && !st.removed) : [];
@@ -3110,7 +3112,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     doc.skipped = Object.assign({}, doc.skipped || {}, { [item.ex]: true });
     sets.forEach(([k]) => optimistic(sid, k, { done: false, removed: true }));
     paintSession();
-    showToast('Removed ' + exName(item.ex) + ' from today.', () => {
+    const undo = () => {
       const back = {};
       prior.forEach(([k, wasDone]) => { back[k] = { done: wasDone, removed: false, at: Date.now() }; });
       queueWrite(sid, Object.assign({ skipped: { [item.ex]: false } }, prior.length ? { sets: back } : {}), prior.map(([k]) => k));
@@ -3121,6 +3123,36 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       saveDrafts();
       if (prevExtra) S.extraSets[item.ex] = prevExtra;
       if (R && R.sid === sid) paintSession();
+    };
+    if (!quiet) showToast('Removed ' + exName(item.ex) + ' from today.', undo);
+    return undo;
+  };
+  // Replace: take an exercise out of today's workout and put another in its place (same spot, same number of rows), with one Undo for both.
+  // The plan stays the same, like Remove.
+  const replaceInToday = async (item, r) => {
+    const id = await resolveExercise(r);
+    const sid = SID();
+    const before = sessionItems().map((i) => i.ex);
+    if (id === item.ex) return;
+    if (before.includes(id)) { showToast(exName(id) + ' is already in today’s workout.', null); return; }
+    const was = ownDoc() && ownDoc().order ? ownDoc().order.slice() : null;
+    const n = rowCount(item);
+    const undoRemove = removeFromToday(item, true);
+    const order = before.slice();
+    order[before.indexOf(item.ex)] = id;
+    addToSession(id, true);
+    queueWrite(sid, { order });
+    localDoc(sid).order = order;
+    const ni = sessionItems().find((i) => i.ex === id);
+    if (ni && (S.exercises[id] || {}).unit !== 'min' && (S.exercises[item.ex] || {}).unit !== 'min') setRows(ni, n);
+    if (R) R.cur = id;
+    paintSession();
+    showToast('Replaced ' + exName(item.ex) + ' with ' + exName(id) + '.', () => {
+      addToSession(id, false);
+      undoRemove();
+      queueWrite(sid, { order: was || before });
+      localDoc(sid).order = was || before;
+      if (R && R.sid === sid) { R.cur = item.ex; paintSession(); }
     });
   };
 
@@ -3829,7 +3861,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
     xb.setAttribute('aria-expanded', 'false');
     const rmBox = h('div', 'confirm ex-rm');
     rmBox.hidden = true;
-    const closeRm = () => setOpen(xb, rmBox, false);
+    const rpk = h('div', 'pk ex-replace-pk'); // the exercise list for Replace, in the same place as the confirm: under the title
+    rpk.hidden = true;
+    const closeRm = () => { rpk.hidden = true; setOpen(xb, rmBox, false); };
     xb.addEventListener('click', () => {
       if (!rmBox.hidden) { closeRm(); return; }
       const doc = S.sessions[SID()];
@@ -3840,12 +3874,22 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         yes: 'Remove', keep: 'Keep', danger: true,
         onYes: () => removeFromToday(item),
         onKeep: () => { closeRm(); xb.focus(); },
+        alt: { label: 'Replace', id: 'ex-replace-' + item.ex, onClick: () => {
+          const onPick = async (r) => { closeRm(); await replaceInToday(item, r); };
+          const here = new Set(sessionItems().map((i) => i.ex));
+          onPick.extra = exerciseChoices().filter((r) => !(r.id.indexOf('ex:') === 0 && here.has(r.id.slice(3)))); // not what is already in today's workout
+          onPick.verb = 'Replace';
+          rpk.replaceChildren();
+          buildPicker(rmBox.alt, rpk, onPick);
+          togglePicker(rmBox.alt, rpk, onPick);
+        } },
       }, rmBox);
       setOpen(xb, rmBox, true);
       rmBox.go.focus();
     });
     ctl.append(xb);
-    wrap.append(ctl, rmBox);
+    wrap.append(ctl);
+    head.after(rmBox, rpk); // under the title, above the Target / Last time block
     // your own note for this exercise (seat, grip, position): it stays with the exercise, open, every time you do it
     wrap.append(buildStick(item.ex, ex));
     const ln = lastNoteFor(item.ex);
@@ -4899,7 +4943,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         nameRow.append(h('span', 'pk-name', r.name));
         if (SHOULDER[r.shoulder]) nameRow.append(h('span', 'chip flag ' + r.shoulder, SHOULDER[r.shoulder]));
         main.append(nameRow, h('div', 'pk-desc', r.desc), h('div', 'pk-meta', 'Main ' + r.primary + (r.secondary && r.secondary !== 'none' ? ' · Also ' + r.secondary : '') + ' · ' + r.equipment));
-        const go = btn('pk-go', 'Add', 'Add ' + r.name);
+        const go = btn('pk-go', (onPick && onPick.verb) || 'Add', (onPick && onPick.verb ? 'Replace with ' : 'Add ') + r.name);
         go.addEventListener('click', async () => {
           go.disabled = true;
           try {

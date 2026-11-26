@@ -8573,5 +8573,54 @@
   "de": "Der Link selbst, ein neuer Link und Nicht mehr teilen sind unter Mehr.",
   "fr": "Le lien lui-même, un nouveau lien et Arrêter de partager sont sous Plus.",
   "it": "Il link, un nuovo link e Smetti di condividere sono sotto Altro."
+ },
+ "Replaced {0} with {1}.": {
+  "nl": "{0} vervangen door {1}.",
+  "es": "{0} reemplazado por {1}.",
+  "de": "{0} durch {1} ersetzt.",
+  "fr": "{0} remplacé par {1}.",
+  "it": "{0} sostituito con {1}."
+ },
+ "{0} is already in today’s workout.": {
+  "nl": "{0} staat al in de training van vandaag.",
+  "es": "{0} ya está en el entrenamiento de hoy.",
+  "de": "{0} ist schon im heutigen Training.",
+  "fr": "{0} est déjà dans la séance du jour.",
+  "it": "{0} è già nell'allenamento di oggi."
+ },
+ "Replace with {0}": {
+  "nl": "Vervangen door {0}",
+  "es": "Reemplazar por {0}",
+  "de": "Durch {0} ersetzen",
+  "fr": "Remplacer par {0}",
+  "it": "Sostituisci con {0}"
+ },
+ "Replace": {
+  "nl": "Vervangen",
+  "es": "Reemplazar",
+  "de": "Ersetzen",
+  "fr": "Remplacer",
+  "it": "Sostituisci"
+ },
+ "A workout can swap an exercise": {
+  "nl": "Een oefening vervangen in je training",
+  "es": "Cambiar un ejercicio en el entrenamiento",
+  "de": "Eine Übung im Training ersetzen",
+  "fr": "Remplacer un exercice dans la séance",
+  "it": "Sostituire un esercizio nell'allenamento"
+ },
+ "Tap the red X on an exercise and you now get Replace next to Remove and Keep. Pick another exercise and it takes the place of the old one, for today only. Undo puts the old one back.": {
+  "nl": "Tik op het rode kruisje bij een oefening en je krijgt nu Vervangen naast Weghalen en Laten staan. Kies een andere oefening en die komt op de plek van de oude, alleen voor vandaag. Ongedaan maken zet de oude terug.",
+  "es": "Toca la X roja de un ejercicio y ahora tienes Reemplazar junto a Quitar y Mantener. Elige otro ejercicio y ocupa el lugar del anterior, solo por hoy. Deshacer devuelve el anterior.",
+  "de": "Tippe auf das rote X bei einer Übung und du bekommst jetzt Ersetzen neben Entfernen und Behalten. Wähle eine andere Übung, und sie nimmt den Platz der alten ein, nur für heute. Rückgängig bringt die alte zurück.",
+  "fr": "Touche le X rouge d’un exercice et tu as maintenant Remplacer à côté de Retirer et Garder. Choisis un autre exercice et il prend la place de l’ancien, pour aujourd’hui seulement. Annuler remet l’ancien.",
+  "it": "Tocca la X rossa di un esercizio e ora hai Sostituisci accanto a Rimuovi e Tieni. Scegli un altro esercizio e prende il posto del vecchio, solo per oggi. Annulla rimette il vecchio."
+ },
+ "The Remove question now opens right under the exercise name, above the Target and Last time block.": {
+  "nl": "De vraag bij Weghalen opent nu direct onder de naam van de oefening, boven het blok Doel en Vorige keer.",
+  "es": "La pregunta de Quitar ahora se abre justo bajo el nombre del ejercicio, encima del bloque Objetivo y Última vez.",
+  "de": "Die Frage beim Entfernen öffnet sich jetzt direkt unter dem Namen der Übung, über dem Block Ziel und Letztes Mal.",
+  "fr": "La question de Retirer s’ouvre maintenant juste sous le nom de l’exercice, au-dessus du bloc Objectif et Dernière fois.",
+  "it": "La domanda di Rimuovi ora si apre subito sotto il nome dell'esercizio, sopra il blocco Obiettivo e Ultima volta."
  }
 }
