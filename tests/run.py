@@ -74,6 +74,9 @@ def changed_files(base):
     out |= set(sh('git', 'ls-files', '-o', '--exclude-standard').stdout.split())
     return sorted(out)
 
+# browser tests that do not go through the shared harness, so no coverage is recorded: the files each one is about
+STATIC = {'e2e_consent': [r'consent\.html$', r'config\.js$', r'vendor/'], 'e2e_captcha': [r'captcha\.js$', r'config\.js$'],
+          'e2e_landing': [r'index\.html$', r'i18n'], 'e2e_langonly': [r'i18n', r'index\.html$']}
 ALL_TRIGGERS = re.compile(r'^(build\.py|tests/run\.(py|sh)|tests/e2e/(harness|cover)\.py)$')
 IGNORED = re.compile(r'^(.*\.(md|sql|png|webp|woff2|txt)|\.gitignore|\.nojekyll|supabase/.*|tools/.*|fonts/.*|shots/.*|tests/affected-map\.json|src/yes-coach\.html|tests/[a-z]+\.test\.mjs|tests/e2e/__pycache__/.*|manifest\.webmanifest|privacy\.html|connect\.html|CONTRIBUTING.*|.*_AUDIT.*|DESIGN_.*|PLAN_MAKER.*)$')
 
@@ -113,7 +116,8 @@ def hunks(base, path):
             cur['ctx'].append(ln[1:]); o += 1; n += 1
     return res
 
-def lines_of(ls): return [l.strip() for l in ls if len(l.strip()) >= MIN_LEN and 'name="yc-build"' not in l]
+GENERATED = ('name="yc-build"', 'Content-Security-Policy')  # lines the build writes itself: the timestamp, and the script hash in the security header
+def lines_of(ls): return [l.strip() for l in ls if len(l.strip()) >= MIN_LEN and not any(g in l for g in GENERATED)]
 
 def select(base, m, names):
     """-> ({test: reason}, notes)"""
@@ -123,6 +127,8 @@ def select(base, m, names):
     files = changed_files(base)
     live = {n for n in names}
     total = max(1, len(m['tests']))
+    for n, deps in STATIC.items():  # tests the map has no coverage for follow the files they are about
+        if n in live and any(re.match(d, f) for f in files for d in deps): sel.setdefault(n, 'about a file that changed')
     for f in files:
         mt = re.match(r'^tests/e2e/(e2e_\w+)\.py$', f)
         if mt:
@@ -198,7 +204,7 @@ def main():
             t = m['tests'].get(n)
             if t is None: sel.setdefault(n, 'not in the map yet')
             elif t['sha'] != sha(E2E / (n + '.py')): sel.setdefault(n, 'the test changed since the map')
-            elif not t.get('cov'): sel.setdefault(n, 'no coverage recorded for it')
+
         reasons = sel
     chosen = [n for n in names if n in reasons]
     chosen.sort(key=lambda n: -m['tests'].get(n, {}).get('dur', 30))  # the long ones first
