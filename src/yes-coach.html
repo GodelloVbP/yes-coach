@@ -9110,6 +9110,9 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   const calUrl = (tok) => ((window.YC_CONFIG || {}).supabaseUrl || '') + '/functions/v1/calendar/' + tok + '.ics';
   const calWebcal = (tok) => calUrl(tok).replace(/^https?:/, 'webcal:');
   const calGoogle = (tok) => 'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent(calWebcal(tok));
+  // open an address outside the app, in the phone's own browser or the app that handles it (a calendar for webcal://). A link click with a new
+  // window is what a home-screen app hands to the system; setting location or window.open to a non-web address often does nothing there.
+  const openOutside = (url) => { const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener'; document.body.append(a); a.click(); a.remove(); };
   const calToken = () => Array.from(crypto.getRandomValues(new Uint8Array(24)), (b) => b.toString(16).padStart(2, '0')).join('');
   const calPrefs = () => Object.assign({ time: '18:00', min: 75 }, calFeed.row && calFeed.row.prefs);
   const calBuild = () => { const pr = calPrefs(); return buildIcs(CAL_WEEKS, pr.time, Number(pr.min) || 75, { feed: true, start: mondayOf(today()) }); };
@@ -9186,17 +9189,20 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
         const apple = /iP(hone|ad|od)|Macintosh/.test(navigator.userAgent);
         const bApple = btn((apple ? 'skew pop' : 'skew') + ' small', 'Add to Apple Calendar');
         bApple.id = 'cal-apple';
-        bApple.addEventListener('click', () => { window.location.href = calWebcal(tok); });
+        bApple.addEventListener('click', () => openOutside(calWebcal(tok)));
         const bGoogle = btn((apple ? 'skew' : 'skew pop') + ' small', 'Add to Google Calendar');
         bGoogle.id = 'cal-google';
-        bGoogle.addEventListener('click', () => { window.open(calGoogle(tok), '_blank', 'noopener'); });
+        bGoogle.addEventListener('click', () => openOutside(calGoogle(tok)));
         const link = h('input'); link.id = 'cal-link'; link.readOnly = true; link.value = calUrl(tok); link.setAttribute('aria-label', 'Calendar link');
         link.addEventListener('focus', () => link.select());
         const bCopy = btn('skew small', 'Copy link');
         bCopy.id = 'cal-copy';
         bCopy.addEventListener('click', async () => { msg.textContent = (await copyText(link.value, link)) ? 'Link copied. In Outlook, add a calendar from the internet and paste it.' : 'Select the link and copy it.'; });
+        const bOpen = btn('skew small', 'Open link');
+        bOpen.id = 'cal-open';
+        bOpen.addEventListener('click', () => openOutside(calUrl(tok)));
         const row = h('div', 'foot-row');
-        row.append(apple ? bApple : bGoogle, apple ? bGoogle : bApple, bCopy);
+        row.append(apple ? bApple : bGoogle, apple ? bGoogle : bApple, bCopy, bOpen);
         const ask = h('div');
         const stopB = plainBtn('textbtn', 'Stop sharing', null, () => {
           ask.replaceChildren(confirmBox({ label: 'Stop sharing your calendar', text: 'The link stops working. Your calendar app keeps the old events until you remove the calendar there.', yes: 'Stop sharing', keep: 'Keep it', danger: true, yesId: 'cal-stop-yes',

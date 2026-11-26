@@ -8419,5 +8419,12 @@
   "de": "Jeder, der den Link hat, kann deine geplanten Trainings sehen. Erstelle jederzeit einen neuen Link oder beende das Teilen.",
   "fr": "Toute personne qui a le lien peut voir tes séances prévues. Crée un nouveau lien ou arrête de partager à tout moment.",
   "it": "Chiunque abbia il link può vedere i tuoi allenamenti previsti. Crea un nuovo link o smetti di condividere in qualsiasi momento."
+ },
+ "Open link": {
+  "nl": "Link openen",
+  "es": "Abrir enlace",
+  "de": "Link öffnen",
+  "fr": "Ouvrir le lien",
+  "it": "Apri link"
  }
 }
