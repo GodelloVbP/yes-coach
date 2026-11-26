@@ -251,7 +251,7 @@ def main():
         chosen.sort(key=lambda n: -score.get(n, 0.0))  # the closest to the change first
         used, keep = 0.0, []
         for n in chosen:
-            est = m['tests'].get(n, {}).get('dur', 30) * 0.7 / a.j  # an estimate of the wall time it adds on a full set of workers
+            est = m['tests'].get(n, {}).get('dur', 30) * 1.2 / a.j  # an estimate of the wall time it adds on a full set of workers
             if keep and used + est > a.quick: skipped.append(n); continue
             keep.append(n); used += est
         chosen = keep
