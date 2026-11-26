@@ -64,8 +64,21 @@ def absorb(m, name, cov, dur, test_sha):
 
 def finish_map(m):
     m['commit'] = sh('git', 'rev-parse', '--short', 'HEAD').stdout.strip()
-    alive = [(len([1 for f in m['index'].values() for v in f.values() if int(v, 16) >> i & 1]), n) for i, n in enumerate(m['order']) if n in m['tests']]
-    m['smoke'] = [n for _, n in sorted(alive, reverse=True)[:SMOKE_N]]
+    # the smoke set: a few cheap tests that between them run as many different lines as possible (greedy, by new lines per second), so a
+    # change in start-up or data code still meets a broad sample of the app
+    universe = {(f, k): int(v, 16) for f, hs in m['index'].items() for k, v in hs.items()}
+    chosen, left = [], set(universe)
+    for _ in range(SMOKE_N):
+        best, gain = None, 0
+        for n in m['order']:
+            if n not in m['tests'] or n in chosen: continue
+            i = m['order'].index(n)
+            g = sum(1 for key in left if universe[key] >> i & 1) / max(8.0, m['tests'][n].get('dur', 30))
+            if g > gain: best, gain = n, g
+        if best is None: break
+        i = m['order'].index(best)
+        chosen.append(best); left = {key for key in left if not universe[key] >> i & 1}
+    m['smoke'] = chosen
     MAP.write_text(json.dumps(m, separators=(',', ':'), sort_keys=True) + '\n')
 
 # ------------------------------------------------------------------ which tests
