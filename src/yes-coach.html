@@ -2002,6 +2002,7 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
   // ---- Home: the logo, how many people use Yes Coach!, and what changed lately (newest first)
   const CHANGELOG = [
     ['15 Nov 2026', "Plans that are checked", ["Build my plan picks a split for your days a week: full body, upper and lower body, or push, pull and legs, and fits each day to your workout length.", "Every weighted exercise gets a rep range: the app adds reps before it adds weight.", "A plan from your AI is checked: a muscle trained only once a week, no squat or hinge, more pressing than pulling. One tap sends what it found back to your AI."]],
+    ['27 Nov 2026', "The calendar link in small steps", ["Add to my calendar now asks one thing at a time: when you train, then Apple, Google or Outlook. Every step has a Go back, and the length is any number of minutes.", "The link itself, a new link and Stop sharing are under More."]],
     ['26 Nov 2026', "A calendar link", ["Train, Add to calendar: Add to my calendar puts your planned workouts in Apple Calendar, Google Calendar or Outlook, and they move along when you change your plan. No file to open.", "Anyone who has the link can see your planned workouts. Make a new link or Stop sharing at any time."]],
     ['26 Nov 2026', "The page stays where you are", ["Ticking a set no longer throws the page to the bottom when the rest timer comes up. The page only moves with the timer when you are already at the very end.", "On an iPhone the timer and the bottom buttons now stay at the bottom of the screen after the keyboard closes, instead of floating in the middle."]],
     ['25 Nov 2026', "Change a place in your order", ["Each workout in your order has a Change to… menu, so Legs, Upper, Legs can become Upper, Upper, Legs in one step.", "When a workout then comes twice in a row, Spread them out puts the next different one between them. You can undo it."]],
@@ -9147,93 +9148,171 @@ const LIB = [{"id":"l01","name":"Machine chest press","group":"Chest","primary":
       if (text !== calFeed.row.ics) calStore(Object.assign({}, calFeed.row, { ics: text })).catch(() => {});
     }, 2500);
   };
+  const calOutlook = (tok) => 'https://outlook.live.com/calendar/0/addfromweb?url=' + encodeURIComponent(calUrl(tok)) + '&name=' + encodeURIComponent('Yes Coach!');
+  // one small step at a time, never more than three buttons: home -> when you train -> which calendar -> done; "More" holds the link itself
+  let calMsg = '';
   const calPanel = () => {
     const box = $('#cal-panel');
     if (!box.hidden) { box.hidden = true; $('#btn-cal').setAttribute('aria-expanded', 'false'); return; }
     box.hidden = false;
     $('#btn-cal').setAttribute('aria-expanded', 'true');
+    let step = 'home';
+    let draft = null; // the time and length picked before the link exists
+    let which = '';
+    const goBack = (to) => backBtn('Go back', () => { calMsg = ''; step = to; paint(); });
+    const text = (t, cls = 'note') => h('p', cls, t);
+    const guess = /iP(hone|ad|od)|Macintosh/.test(navigator.userAgent) ? 'apple' : /Windows/.test(navigator.userAgent) ? 'outlook' : 'google';
+    const ensureFeed = async () => {
+      if (calFeed.row) return true;
+      const prefs = draft || { time: '18:00', min: 75 };
+      const row = { token: calToken(), ics: '', prefs };
+      calFeed.row = row;
+      const ics = calBuild().text;
+      try { await calStore({ token: row.token, ics, prefs }); return true; } catch (e) { calFeed.row = null; return false; }
+    };
     const paint = () => {
       box.replaceChildren();
+      const feed = calOn();
       const msg = h('p', 'note');
       msg.id = 'cal-msg';
       msg.setAttribute('aria-live', 'polite');
-      const feed = calOn();
-      if (feed && !calFeed.loaded) { box.append(h('p', 'note', 'Loading…')); calLoad().then(() => { if (!box.hidden) paint(); }); return; }
-      const tm = h('input'); tm.type = 'time'; tm.id = 'cal-time'; tm.value = calPrefs().time;
-      const du = h('select'); du.id = 'cal-dur';
-      [['60', '1 h'], ['75', '1 h 15'], ['90', '1 h 30']].forEach(([v, l]) => du.append(new Option(l, v)));
-      du.value = String(calPrefs().min);
-      const grid = h('div', 'ed-fields');
-      grid.append(edField('Start time', tm), edField('Length', du));
-      box.append(grid);
-      const savePrefs = () => {
-        if (!calFeed.row) return;
-        const row = Object.assign({}, calFeed.row, { prefs: { time: tm.value || '18:00', min: Number(du.value) } });
-        calFeed.row = row;
-        calStore(Object.assign({}, row, { ics: calBuild().text })).then(() => { msg.textContent = 'Saved. Your calendar picks it up within a few hours.'; }).catch(() => { msg.textContent = 'Not saved. Check your connection.'; });
-      };
-      if (feed && calFeed.err) box.append(h('p', 'note', 'The calendar link is not available right now. You can still download a file.'));
-      else if (feed && !calFeed.row) {
-        const on = btn('skew pop', 'Add to my calendar');
-        on.id = 'cal-sub';
-        on.addEventListener('click', async () => {
-          if (!calBuild().n) { msg.textContent = 'No planned days left in the next weeks.'; return; }
-          on.disabled = true;
-          const prefs = { time: tm.value || '18:00', min: Number(du.value) };
-          calFeed.row = { token: calToken(), ics: '', prefs };
-          try { await calStore({ token: calFeed.row.token, ics: calBuild().text, prefs }); paint(); } catch (e) { calFeed.row = null; on.disabled = false; msg.textContent = 'Not saved. Check your connection.'; }
+      msg.textContent = calMsg;
+      calMsg = '';
+      if (feed && !calFeed.loaded) { box.append(text('Loading…')); calLoad().then(() => { if (!box.hidden) paint(); }); return; }
+      const on = feed && !!calFeed.row;
+      const finish = (...kids) => { box.append(...kids, msg); };
+      // ---- a file, once (and the only thing for an account without the link)
+      if (step === 'file' || !feed || calFeed.err) {
+        const wk = h('select'); wk.id = 'cal-weeks';
+        [['1', 'The week shown'], ['4', 'The week shown and the next 3']].forEach(([v, l]) => wk.append(new Option(l, v)));
+        const tm = h('input'); tm.type = 'time'; tm.id = 'cal-time'; tm.value = calPrefs().time;
+        const du = h('input'); du.type = 'number'; du.id = 'cal-len'; du.min = '15'; du.max = '480'; du.step = '5'; du.inputMode = 'numeric'; du.value = String(calPrefs().min);
+        const grid = h('div', 'ed-fields');
+        grid.append(edField('Start time', tm), edField('Length (minutes)', du), edField('Weeks', wk));
+        const go = btn('skew pop', 'Download calendar file');
+        go.id = 'cal-file';
+        go.addEventListener('click', async () => {
+          const min = Number(du.value);
+          if (!(min >= 15 && min <= 480)) { msg.textContent = 'Length has to be 15 to 480 minutes.'; return; }
+          const { text: ics, n } = buildIcs(Number(wk.value), tm.value || '18:00', min);
+          if (!n) { msg.textContent = 'No planned days left in that range.'; return; }
+          msg.textContent = await download('yes-coach-schedule.ics', ics, plural(n, 'training day') + ' in the file. Open it to add them to Apple Calendar, Google Calendar or Outlook.');
         });
-        box.append(h('p', 'note', 'Your workouts show up in your calendar and move along when you change your plan. Works with Apple, Google and Outlook.'), on);
-      } else if (feed) {
+        const kids = [];
+        if (feed && calFeed.err) kids.push(text('The calendar link is not available right now. You can still download a file.'));
+        kids.push(grid, text('Past dates and days you already trained are left out. After changing your days, delete the old events first: some calendars add duplicates.'), go);
+        if (feed && !calFeed.err) kids.push(goBack('home'));
+        finish(...kids);
+        return;
+      }
+      // ---- home
+      if (step === 'home') {
+        if (!on) {
+          const go = btn('skew pop', 'Add to my calendar');
+          go.id = 'cal-sub';
+          go.addEventListener('click', () => { draft = calPrefs(); step = 'when'; paint(); });
+          const fl = plainBtn('textbtn', 'Download a file instead', null, () => { step = 'file'; paint(); });
+          fl.id = 'cal-file-link';
+          finish(text('Your workouts show up in your calendar and move along when you change your plan. Works with Apple, Google and Outlook.'), go, fl);
+        } else {
+          const add = btn('skew pop', 'Add to a calendar');
+          add.id = 'cal-add';
+          add.addEventListener('click', () => { step = 'pick'; paint(); });
+          const chg = btn('skew', 'Change time or length');
+          chg.id = 'cal-when';
+          chg.addEventListener('click', () => { draft = calPrefs(); step = 'when'; paint(); });
+          const more = plainBtn('textbtn', 'More', null, () => { step = 'manage'; paint(); });
+          more.id = 'cal-more';
+          finish(text('Your workouts are in your calendar and follow your plan.'), add, chg, more);
+        }
+        return;
+      }
+      // ---- when do you train
+      if (step === 'when') {
+        const pr = draft || calPrefs();
+        const tm = h('input'); tm.type = 'time'; tm.id = 'cal-time'; tm.value = pr.time;
+        const du = h('input'); du.type = 'number'; du.id = 'cal-len'; du.min = '15'; du.max = '480'; du.step = '5'; du.inputMode = 'numeric'; du.value = String(pr.min);
+        const grid = h('div', 'ed-fields');
+        grid.append(edField('Start time', tm), edField('Length (minutes)', du));
+        const next = btn('skew pop', on ? 'Save' : 'Next');
+        next.id = 'cal-next';
+        next.addEventListener('click', async () => {
+          const min = Number(du.value);
+          if (!(min >= 15 && min <= 480)) { msg.textContent = 'Length has to be 15 to 480 minutes.'; return; }
+          draft = { time: tm.value || '18:00', min: Math.round(min) };
+          if (!on) { step = 'pick'; paint(); return; }
+          const row = Object.assign({}, calFeed.row, { prefs: draft });
+          calFeed.row = row;
+          try { await calStore(Object.assign({}, row, { ics: calBuild().text })); calMsg = 'Saved. Your calendar picks it up within a few hours.'; step = 'home'; } catch (e) { msg.textContent = 'Not saved. Check your connection.'; return; }
+          paint();
+        });
+        finish(text('When do you train?', 'lab'), grid, next, goBack('home'));
+        return;
+      }
+      // ---- which calendar
+      if (step === 'pick') {
+        const mk = (id, key, label, url) => {
+          const b = btn('skew' + (guess === key ? ' pop' : ''), label);
+          b.id = 'cal-' + key;
+          b.addEventListener('click', async () => {
+            b.disabled = true;
+            if (!(await ensureFeed())) { b.disabled = false; msg.textContent = 'Not saved. Check your connection.'; return; }
+            which = key;
+            openOutside(url(calFeed.row.token));
+            step = 'done';
+            paint();
+          });
+          return b;
+        };
+        const order = [['apple', 'Apple Calendar', calWebcal], ['google', 'Google Calendar', calGoogle], ['outlook', 'Outlook', calOutlook]];
+        order.sort((x, y) => (y[0] === guess) - (x[0] === guess));
+        finish(text('Which calendar do you use?', 'lab'), ...order.map(([k, l, u]) => mk('cal-' + k, k, l, u)), goBack(on ? 'home' : 'when'));
+        return;
+      }
+      // ---- done
+      if (step === 'done') {
+        const say = { apple: 'Tap Subscribe in the window that opens. Your workouts show up within a minute.', google: 'Google asks you to confirm on its website. New workouts can take up to a day to show up.', outlook: 'Outlook asks you to confirm on its website.' }[which];
+        const ok = btn('skew pop', 'Done');
+        ok.id = 'cal-done';
+        ok.addEventListener('click', () => { step = 'home'; box.hidden = true; $('#btn-cal').setAttribute('aria-expanded', 'false'); });
+        const other = plainBtn('textbtn', 'Try another calendar', null, () => { step = 'pick'; paint(); });
+        other.id = 'cal-other';
+        finish(text(say), ok, other);
+        return;
+      }
+      // ---- more: the link itself
+      if (step === 'manage' && on) {
         const tok = calFeed.row.token;
-        const apple = /iP(hone|ad|od)|Macintosh/.test(navigator.userAgent);
-        const bApple = btn((apple ? 'skew pop' : 'skew') + ' small', 'Add to Apple Calendar');
-        bApple.id = 'cal-apple';
-        bApple.addEventListener('click', () => openOutside(calWebcal(tok)));
-        const bGoogle = btn((apple ? 'skew' : 'skew pop') + ' small', 'Add to Google Calendar');
-        bGoogle.id = 'cal-google';
-        bGoogle.addEventListener('click', () => openOutside(calGoogle(tok)));
         const link = h('input'); link.id = 'cal-link'; link.readOnly = true; link.value = calUrl(tok); link.setAttribute('aria-label', 'Calendar link');
         link.addEventListener('focus', () => link.select());
-        const bCopy = btn('skew small', 'Copy link');
+        const bCopy = btn('skew', 'Copy link');
         bCopy.id = 'cal-copy';
         bCopy.addEventListener('click', async () => { msg.textContent = (await copyText(link.value, link)) ? 'Link copied. In Outlook, add a calendar from the internet and paste it.' : 'Select the link and copy it.'; });
-        const bOpen = btn('skew small', 'Open link');
+        const bOpen = plainBtn('textbtn', 'Open link', null, null);
         bOpen.id = 'cal-open';
         bOpen.addEventListener('click', () => openOutside(calUrl(tok)));
-        const row = h('div', 'foot-row');
-        row.append(apple ? bApple : bGoogle, apple ? bGoogle : bApple, bCopy, bOpen);
         const ask = h('div');
-        const stopB = plainBtn('textbtn', 'Stop sharing', null, () => {
-          ask.replaceChildren(confirmBox({ label: 'Stop sharing your calendar', text: 'The link stops working. Your calendar app keeps the old events until you remove the calendar there.', yes: 'Stop sharing', keep: 'Keep it', danger: true, yesId: 'cal-stop-yes',
-            onKeep: () => ask.replaceChildren(),
-            onYes: async () => { const r = await window.YC_API.sb.from('calendar_feeds').delete().eq('token', tok); if (r && r.error) { msg.textContent = 'Not stopped. Check your connection.'; return; } calFeed.row = null; paint(); $('#cal-msg').textContent = 'Stopped. The link no longer works.'; } }));
-        });
-        stopB.id = 'cal-stop';
-        const newB = plainBtn('textbtn', 'Make a new link', null, () => {
+        const newB = btn('skew', 'Make a new link');
+        newB.id = 'cal-new';
+        newB.addEventListener('click', () => {
           ask.replaceChildren(confirmBox({ label: 'Make a new link', text: 'The old link stops working. Add the calendar again with the new one.', yes: 'Make a new link', keep: 'Keep the old one', danger: true, yesId: 'cal-new-yes',
             onKeep: () => ask.replaceChildren(),
-            onYes: async () => { const row2 = Object.assign({}, calFeed.row, { token: calToken(), ics: calBuild().text }); try { await calStore(row2); paint(); $('#cal-msg').textContent = 'New link made. Add the calendar again.'; } catch (e) { msg.textContent = 'Not saved. Check your connection.'; } } }));
+            onYes: async () => { const row2 = Object.assign({}, calFeed.row, { token: calToken(), ics: calBuild().text }); try { await calStore(row2); calMsg = 'New link made. Add the calendar again.'; paint(); } catch (e) { msg.textContent = 'Not saved. Check your connection.'; } } }));
         });
-        newB.id = 'cal-new';
-        const more = h('div', 'foot-row');
-        more.append(newB, stopB);
-        box.append(h('span', 'lab', 'Your calendar link is on'), row, link, h('p', 'note', 'It updates when you change your plan; your calendar app checks every few hours. Anyone with the link can see your planned workouts.'), more, ask);
-        tm.addEventListener('change', savePrefs);
-        du.addEventListener('change', savePrefs);
+        const stopB = btn('skew', 'Stop sharing');
+        stopB.id = 'cal-stop';
+        stopB.addEventListener('click', () => {
+          ask.replaceChildren(confirmBox({ label: 'Stop sharing your calendar', text: 'The link stops working. Your calendar app keeps the old events until you remove the calendar there.', yes: 'Stop sharing', keep: 'Keep it', danger: true, yesId: 'cal-stop-yes',
+            onKeep: () => ask.replaceChildren(),
+            onYes: async () => { const r = await window.YC_API.sb.from('calendar_feeds').delete().eq('token', tok); if (r && r.error) { msg.textContent = 'Not stopped. Check your connection.'; return; } calFeed.row = null; calMsg = 'Stopped. The link no longer works.'; step = 'home'; paint(); } }));
+        });
+        const row = h('div', 'foot-row');
+        row.append(bCopy, newB, stopB);
+        finish(text('Your calendar link', 'lab'), link, text('It updates when you change your plan; your calendar app checks every few hours. Anyone with the link can see your planned workouts.'), row, ask, bOpen, goBack('home'));
+        return;
       }
-      // a file, once: kept for calendars that cannot subscribe
-      const wk = h('select'); wk.id = 'cal-weeks';
-      [['1', 'The week shown'], ['4', 'The week shown and the next 3']].forEach(([v, l]) => wk.append(new Option(l, v)));
-      const go = btn('skew small', 'Download calendar file');
-      go.id = 'cal-file';
-      go.addEventListener('click', async () => {
-        const { text, n } = buildIcs(Number(wk.value), tm.value || '18:00', Number(du.value));
-        if (!n) { msg.textContent = 'No planned days left in that range.'; return; }
-        msg.textContent = await download('yes-coach-schedule.ics', text, plural(n, 'training day') + ' in the file. Open it to add them to Apple Calendar, Google Calendar or Outlook.');
-      });
-      if (feed) box.append(h('span', 'lab', 'Or a file, once'));
-      box.append(edField('Weeks', wk), h('p', 'note', 'Past dates and days you already trained are left out. After changing your days, delete the old events first: some calendars add duplicates.'), go, msg);
+      step = 'home';
+      paint();
     };
     paint();
   };

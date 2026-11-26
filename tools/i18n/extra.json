@@ -8426,5 +8426,152 @@
   "de": "Link öffnen",
   "fr": "Ouvrir le lien",
   "it": "Apri link"
+ },
+ "Download a file instead": {
+  "nl": "Download in plaats daarvan een bestand",
+  "es": "Descargar un archivo en su lugar",
+  "de": "Stattdessen eine Datei herunterladen",
+  "fr": "Télécharger plutôt un fichier",
+  "it": "Scarica invece un file"
+ },
+ "Your workouts are in your calendar and follow your plan.": {
+  "nl": "Je trainingen staan in je agenda en volgen je schema.",
+  "es": "Tus entrenamientos están en tu calendario y siguen tu plan.",
+  "de": "Deine Trainings sind in deinem Kalender und folgen deinem Plan.",
+  "fr": "Tes séances sont dans ton calendrier et suivent ton programme.",
+  "it": "I tuoi allenamenti sono nel tuo calendario e seguono il tuo piano."
+ },
+ "Add to a calendar": {
+  "nl": "Aan een agenda toevoegen",
+  "es": "Añadir a un calendario",
+  "de": "Zu einem Kalender hinzufügen",
+  "fr": "Ajouter à un calendrier",
+  "it": "Aggiungi a un calendario"
+ },
+ "Change time or length": {
+  "nl": "Tijd of duur wijzigen",
+  "es": "Cambiar hora o duración",
+  "de": "Zeit oder Dauer ändern",
+  "fr": "Changer l’heure ou la durée",
+  "it": "Cambia ora o durata"
+ },
+ "When do you train?": {
+  "nl": "Wanneer train je?",
+  "es": "¿Cuándo entrenas?",
+  "de": "Wann trainierst du?",
+  "fr": "Quand t’entraînes-tu ?",
+  "it": "Quando ti alleni?"
+ },
+ "Length (minutes)": {
+  "nl": "Duur (minuten)",
+  "es": "Duración (minutos)",
+  "de": "Dauer (Minuten)",
+  "fr": "Durée (minutes)",
+  "it": "Durata (minuti)"
+ },
+ "Next": {
+  "nl": "Volgende",
+  "es": "Siguiente",
+  "de": "Weiter",
+  "fr": "Suivant",
+  "it": "Avanti"
+ },
+ "Go back": {
+  "nl": "Terug",
+  "es": "Volver",
+  "de": "Zurück",
+  "fr": "Retour",
+  "it": "Indietro"
+ },
+ "Which calendar do you use?": {
+  "nl": "Welke agenda gebruik je?",
+  "es": "¿Qué calendario usas?",
+  "de": "Welchen Kalender nutzt du?",
+  "fr": "Quel calendrier utilises-tu ?",
+  "it": "Quale calendario usi?"
+ },
+ "Apple Calendar": {
+  "nl": "Apple Agenda",
+  "es": "Calendario de Apple",
+  "de": "Apple Kalender",
+  "fr": "Calendrier Apple",
+  "it": "Calendario Apple"
+ },
+ "Google Calendar": {
+  "nl": "Google Agenda",
+  "es": "Google Calendar",
+  "de": "Google Kalender",
+  "fr": "Google Agenda",
+  "it": "Google Calendar"
+ },
+ "Outlook": {
+  "nl": "Outlook",
+  "es": "Outlook",
+  "de": "Outlook",
+  "fr": "Outlook",
+  "it": "Outlook"
+ },
+ "Tap Subscribe in the window that opens. Your workouts show up within a minute.": {
+  "nl": "Tik op Abonneren in het venster dat opent. Je trainingen verschijnen binnen een minuut.",
+  "es": "Toca Suscribirse en la ventana que se abre. Tus entrenamientos aparecen en un minuto.",
+  "de": "Tippe im geöffneten Fenster auf Abonnieren. Deine Trainings erscheinen innerhalb einer Minute.",
+  "fr": "Touche S’abonner dans la fenêtre qui s’ouvre. Tes séances apparaissent en une minute.",
+  "it": "Tocca Iscriviti nella finestra che si apre. I tuoi allenamenti compaiono entro un minuto."
+ },
+ "Google asks you to confirm on its website. New workouts can take up to a day to show up.": {
+  "nl": "Google vraagt je om te bevestigen op zijn website. Nieuwe trainingen kunnen tot een dag duren voor ze verschijnen.",
+  "es": "Google te pide confirmar en su sitio web. Los entrenamientos nuevos pueden tardar hasta un día en aparecer.",
+  "de": "Google bittet dich, auf der Website zu bestätigen. Neue Trainings können bis zu einen Tag brauchen, bis sie erscheinen.",
+  "fr": "Google te demande de confirmer sur son site. Les nouvelles séances peuvent mettre jusqu’à un jour à apparaître.",
+  "it": "Google ti chiede di confermare sul suo sito. I nuovi allenamenti possono impiegare fino a un giorno per comparire."
+ },
+ "Outlook asks you to confirm on its website.": {
+  "nl": "Outlook vraagt je om te bevestigen op zijn website.",
+  "es": "Outlook te pide confirmar en su sitio web.",
+  "de": "Outlook bittet dich, auf der Website zu bestätigen.",
+  "fr": "Outlook te demande de confirmer sur son site.",
+  "it": "Outlook ti chiede di confermare sul suo sito."
+ },
+ "Try another calendar": {
+  "nl": "Probeer een andere agenda",
+  "es": "Probar otro calendario",
+  "de": "Anderen Kalender versuchen",
+  "fr": "Essayer un autre calendrier",
+  "it": "Prova un altro calendario"
+ },
+ "Your calendar link": {
+  "nl": "Je agendalink",
+  "es": "Tu enlace de calendario",
+  "de": "Dein Kalenderlink",
+  "fr": "Ton lien de calendrier",
+  "it": "Il tuo link del calendario"
+ },
+ "Length has to be 15 to 480 minutes.": {
+  "nl": "De duur moet 15 tot 480 minuten zijn.",
+  "es": "La duración debe ser de 15 a 480 minutos.",
+  "de": "Die Dauer muss 15 bis 480 Minuten betragen.",
+  "fr": "La durée doit être de 15 à 480 minutes.",
+  "it": "La durata deve essere da 15 a 480 minuti."
+ },
+ "The calendar link in small steps": {
+  "nl": "De agendalink in kleine stappen",
+  "es": "El enlace de calendario en pasos pequeños",
+  "de": "Der Kalenderlink in kleinen Schritten",
+  "fr": "Le lien de calendrier en petites étapes",
+  "it": "Il link del calendario in piccoli passi"
+ },
+ "Add to my calendar now asks one thing at a time: when you train, then Apple, Google or Outlook. Every step has a Go back, and the length is any number of minutes.": {
+  "nl": "Aan mijn agenda toevoegen vraagt nu één ding tegelijk: wanneer je traint, daarna Apple, Google of Outlook. Elke stap heeft een Terug, en de duur is elk aantal minuten.",
+  "es": "Añadir a mi calendario ahora pregunta una cosa a la vez: cuándo entrenas y luego Apple, Google u Outlook. Cada paso tiene un Volver, y la duración es cualquier número de minutos.",
+  "de": "Zu meinem Kalender hinzufügen fragt jetzt eins nach dem anderen: wann du trainierst, dann Apple, Google oder Outlook. Jeder Schritt hat ein Zurück, und die Dauer ist eine beliebige Anzahl Minuten.",
+  "fr": "Ajouter à mon calendrier pose maintenant une question à la fois : quand tu t’entraînes, puis Apple, Google ou Outlook. Chaque étape a un Retour, et la durée peut être n’importe quel nombre de minutes.",
+  "it": "Aggiungi al mio calendario ora chiede una cosa alla volta: quando ti alleni, poi Apple, Google o Outlook. Ogni passo ha un Indietro, e la durata è un numero qualsiasi di minuti."
+ },
+ "The link itself, a new link and Stop sharing are under More.": {
+  "nl": "De link zelf, een nieuwe link en Stoppen met delen staan onder Meer.",
+  "es": "El enlace, un enlace nuevo y Dejar de compartir están en Más.",
+  "de": "Der Link selbst, ein neuer Link und Nicht mehr teilen sind unter Mehr.",
+  "fr": "Le lien lui-même, un nouveau lien et Arrêter de partager sont sous Plus.",
+  "it": "Il link, un nuovo link e Smetti di condividere sono sotto Altro."
  }
 }
