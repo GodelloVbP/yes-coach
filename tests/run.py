@@ -148,8 +148,8 @@ def i18n_tests(base, f, m):
     out = set()
     for n, t in m['tests'].items():
         if f not in t.get('fetched', []): continue
-        src = (E2E / (n + '.py')).read_text()
-        if any(k in src for k in keys) or any(v in src for v in vals): out.add(n)
+        src = (E2E / (n + '.py')).read_text().lower()
+        if any(k.lower() in src for k in keys) or any(v.lower() in src for v in vals): out.add(n)
     return out
 
 def select(base, m, names):
