@@ -308,8 +308,9 @@ def main():
                 for f in fs:
                     for k, v in json.loads(f.read_text()).items(): cov.setdefault(k, set()).update(v)
                 absorb(m, n, cov, results[n]['dur'], sha(E2E / (n + '.py')))
-            elif n not in m['tests']:
-                m['tests'][n] = {'sha': sha(E2E / (n + '.py')), 'dur': round(results[n]['dur'], 1), 'cov': False, 'lines': 0, 'fetched': []}
+            else:  # a test with no coverage of its own (it does not use the shared harness): remember that it passed as it is now
+                t = m['tests'].setdefault(n, {'cov': False, 'lines': 0, 'fetched': []})
+                t.update(sha=sha(E2E / (n + '.py')), dur=round(results[n]['dur'], 1))
                 bit(m, n)
         for n in list(m['tests']):
             if n not in names: m['tests'].pop(n); [m['index'].pop(f) for f in list(m['index']) if not m['index'][f]]
