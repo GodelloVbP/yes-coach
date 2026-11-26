@@ -75,53 +75,43 @@ def _file_for(url):
     f = REPO / path
     return (path, f.read_text(errors='replace')) if f.is_file() else (None, None)
 
-def _lines_hit(text, spans):
-    starts = [0]
-    for i, ch in enumerate(text):
-        if ch == '\n': starts.append(i + 1)
-    out = set()
-    for a, b in spans:
-        la, lb = bisect.bisect_right(starts, a) - 1, bisect.bisect_right(starts, max(a, b - 1)) - 1
-        for ln in range(la, lb + 1): out.add(ln)
-    return starts, out
-
 def finish():
-    """Write the lines that ran: {file: [line hashes]}."""
+    """Write the lines that ran: {file: [line hashes]}. A line counts when most of its characters ran: the line that only creates a
+    function runs in every test, the lines inside it only in the tests that call it."""
     if not OUT: return
     snap(0)
-    res = {}
+    files = {}
+    def paint(path, text, start, flags):
+        cov = files.setdefault(path, [text, bytearray(len(text))])[1]
+        for i, v in enumerate(flags):
+            if v: cov[start + i] = 1
     for key, arr in _s['js'].items():
         url, src = _s['src'][key]
         path, text = _file_for(url)
         if path is None: continue
         base = 0 if src == text else text.find(src)
-        if base < 0: continue
-        spans, i, n = [], 0, len(arr)
-        while i < n:  # runs of covered characters
-            if arr[i]:
-                j = i
-                while j < n and arr[j]: j += 1
-                spans.append((base + i, base + j)); i = j
-            else: i += 1
-        lines = text.split('\n')
-        _, hit = _lines_hit(text, spans)
-        for ln in hit:
-            t = lines[ln].strip()
-            if len(t) >= MIN_LEN: res.setdefault(path, set()).add(_h(t))
+        if base >= 0: paint(path, text, base, arr)
     for key, spans in _s['css'].items():
         header = _s['sheets'].get(key)
         sheet = _s['texts'].get(key)
         if not header or not sheet: continue
         path, text = _file_for(header.get('sourceURL') or '')
         if path is None: continue
-        lines = text.split('\n')
-        sl = sheet.split('\n')
-        off = header.get('startLine', 0)
-        starts, hit = _lines_hit(sheet, spans)
-        for ln in hit:
-            if ln >= len(sl): continue
-            t = sl[ln].strip()
-            if len(t) >= MIN_LEN: res.setdefault(path, set()).add(_h(t))
+        base = 0 if sheet == text else text.find(sheet)
+        if base < 0: continue
+        flags = bytearray(len(sheet))
+        for a, b in spans: flags[a:b] = b'\x01' * (b - a)
+        paint(path, text, base, flags)
+    res = {}
+    for path, (text, cov) in files.items():
+        pos = 0
+        for line in text.split('\n'):
+            end = pos + len(line)
+            t = line.strip()
+            if len(t) >= MIN_LEN:
+                body = [i for i in range(pos, end) if not text[i].isspace()]
+                if body and sum(cov[i] for i in body) * 2 > len(body): res.setdefault(path, set()).add(_h(t))
+            pos = end + 1
     name = os.path.basename(sys.argv[0]).replace('.py', '')
     pathlib.Path(OUT).mkdir(parents=True, exist_ok=True)
     f = pathlib.Path(OUT) / (name + '.json')
